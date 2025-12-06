@@ -780,6 +780,11 @@ export default function AdminReports() {
   };
 
   const sendManualEmailFromTemplate = async (template, response) => {
+    if (!response) {
+      alert('אין נתוני משתמש');
+      return;
+    }
+
     setSendingEmailType(`template_${template.id}_${response.id}`);
     const emailLanguage = response.language || 'he';
 
@@ -787,12 +792,13 @@ export default function AdminReports() {
       const userEmail = response.personal_info?.email || response.created_by;
       const userName = response.personal_info?.full_name || 'משתמש';
 
-      const userExists = users.some(u => u.email === userEmail);
-      if (!userExists) {
-        alert(emailLanguage === 'en' ? `Cannot send email - user ${userEmail} is not registered in the application.\n\nTo send emails, the user must be registered in the system via Dashboard -> Users.` : `לא ניתן לשלוח מייל - המשתמש ${userEmail} לא רשום באפליקציה.\n\nכדי לשלוח מיילים, המשתמש צריך להיות רשום במערכת דרך Dashboard -> Users.`);
+      if (!userEmail) {
+        alert('לא נמצאה כתובת מייל למשתמש');
         setSendingEmailType(null);
         return;
       }
+
+      console.log('Sending email to:', userEmail, 'with template:', template.name_he);
 
       // יצירת קוד קופון אם התבנית כוללת קופון
       let couponCode = null;
@@ -823,11 +829,15 @@ export default function AdminReports() {
         .replace(/{questionnaireUrl}/g, questionnaireUrl)
         .replace(/{couponCode}/g, couponCode || '');
 
+      console.log('Attempting to send email...');
+      
       await base44.integrations.Core.SendEmail({
         to: userEmail,
         subject: emailSubject,
         body: emailHtml
       });
+
+      console.log('Email sent successfully');
 
       await base44.entities.EmailLog.create({
         to_email: userEmail,
@@ -844,7 +854,7 @@ export default function AdminReports() {
       setTemplateSelectionDialog({ open: false, response: null });
     } catch (error) {
       console.error("Error sending manual email:", error);
-      alert(emailLanguage === 'en' ? `Error sending email: ${error.message || 'Unknown error'}` : `שגיאה בשליחת המייל: ${error.message || 'שגיאה לא ידועה'}`);
+      alert(`שגיאה בשליחת המייל ל-${response.personal_info?.email || response.created_by}: ${error.message || 'שגיאה לא ידועה'}`);
     } finally {
       setSendingEmailType(null);
     }
