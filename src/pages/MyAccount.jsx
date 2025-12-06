@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, FileText, Award, ShoppingCart, Gift, CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle } from 'lucide-react';
+import { Loader2, FileText, Award, ShoppingCart, Gift, CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle, Lock } from 'lucide-react';
 import { useTranslation } from '@/components/i18n/useTranslation';
 
 export default function MyAccount() {
@@ -234,19 +234,33 @@ export default function MyAccount() {
                   {reports.map((report) => (
                     <div
                       key={report.id}
-                      className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                      className={`p-4 border rounded-lg transition-colors ${report.purchased !== false ? 'hover:bg-gray-50' : 'bg-orange-50 border-orange-200'}`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium">{report.report_id}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{report.report_id}</span>
+                          {report.purchased === false && (
+                            <Lock className="w-4 h-4 text-orange-600" />
+                          )}
+                        </div>
                         <span className="text-sm text-gray-500">
                           {new Date(report.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
                         </span>
                       </div>
-                      <Link to={createPageUrl(`ReportView?reportId=${report.id}`)}>
-                        <Button size="sm" className="w-full mt-2">
-                          {language === 'he' ? 'צפה בדוח' : 'View Report'}
-                        </Button>
-                      </Link>
+                      {report.purchased === false ? (
+                        <Link to={createPageUrl(`Completion?responseId=${report.questionnaire_response_id}`)}>
+                          <Button size="sm" className="w-full mt-2 bg-orange-600 hover:bg-orange-700">
+                            <ShoppingCart className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
+                            {language === 'he' ? 'רכוש דוח' : 'Purchase Report'}
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Link to={createPageUrl(`ReportView?reportId=${report.id}`)}>
+                          <Button size="sm" className="w-full mt-2">
+                            {language === 'he' ? 'צפה בדוח' : 'View Report'}
+                          </Button>
+                        </Link>
+                      )}
                     </div>
                   ))}
                 </div>
