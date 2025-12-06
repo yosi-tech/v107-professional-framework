@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Loader2, Gift, CheckCircle } from 'lucide-react';
+import { Loader2, Gift, CheckCircle, LogIn, Shield } from 'lucide-react';
 
 export default function Survey() {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ export default function Survey() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [couponCode, setCouponCode] = useState(null);
+  const [isLoginRequired, setIsLoginRequired] = useState(false);
   
   const [responses, setResponses] = useState({
     q1: '',
@@ -69,16 +70,23 @@ export default function Survey() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        setIsLoading(false);
       } catch (e) {
         console.error("User not logged in");
-        // הפניה להתחברות עם חזרה לסקר
-        base44.auth.redirectToLogin(window.location.href);
-        return;
+        setIsLoginRequired(true);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchUser();
   }, []);
+
+  const handleLogin = async () => {
+    try {
+      await base44.auth.redirectToLogin(window.location.href);
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -131,6 +139,43 @@ export default function Survey() {
     return (
       <div className="min-h-screen flex justify-center items-center" dir="rtl">
         <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  if (isLoginRequired) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-20 px-4" dir="rtl">
+        <div className="max-w-2xl mx-auto text-center">
+          <Card className="shadow-xl border-t-4 border-blue-600">
+            <CardHeader className="pb-6">
+              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-blue-200">
+                <Shield className="w-10 h-10 text-blue-600" />
+              </div>
+              <CardTitle className="text-3xl font-bold text-gray-900 mb-2">
+                נדרשת התחברות למערכת
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <p className="text-lg text-gray-600">
+                כדי לענות על הסקר ולקבל קוד קופון, יש להתחבר לחשבון.
+              </p>
+              
+              <Button
+                size="lg"
+                onClick={handleLogin}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg py-6"
+              >
+                <LogIn className="w-5 h-5 ml-2" />
+                התחבר והמשך לסקר
+              </Button>
+              
+              <p className="text-sm text-gray-500 mt-4">
+                ההתחברות מאובטחת. אנחנו מכבדים את הפרטיות שלך.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
