@@ -1368,6 +1368,14 @@ export default function AdminReports() {
                 const email = response.personal_info?.email || 'אימייל לא זמין';
                 const age = response.personal_info?.age;
                 const occupation = response.personal_info?.occupation;
+                
+                // מציאת כל השאלונים של אותו משתמש
+                const userEmail = response.personal_info?.email || response.created_by;
+                const userAllResponses = responses.filter(r => 
+                  (r.personal_info?.email === userEmail || r.created_by === userEmail)
+                ).sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime());
+                const responseIndex = userAllResponses.findIndex(r => r.id === response.id) + 1;
+                const hasMultipleResponses = userAllResponses.length > 1;
 
                 const hasPurchasedFullReport = userInfo?.has_purchased_full_report ?? false;
                 const hasPurchasedAnswersDownload = userInfo?.has_purchased_answers_download ?? false;
@@ -1412,9 +1420,16 @@ export default function AdminReports() {
                         <div className="flex-1 min-w-0 w-full">
                           <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-row-reverse">
                             <div className="flex-1 min-w-0 text-right">
-                              <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
-                                {fullName}
-                              </h3>
+                              <div className="flex items-center gap-2 flex-row-reverse">
+                                <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
+                                  {fullName}
+                                </h3>
+                                {hasMultipleResponses && (
+                                  <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-300 text-xs">
+                                    שאלון #{responseIndex} מתוך {userAllResponses.length}
+                                  </Badge>
+                                )}
+                              </div>
                               <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 text-xs sm:text-sm text-gray-600">
                                 <span className="flex items-center gap-1 flex-row-reverse truncate max-w-full">
                                   <span className="truncate">{email}</span>
