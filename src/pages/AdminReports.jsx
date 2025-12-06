@@ -302,13 +302,14 @@ export default function AdminReports() {
 
   const loadData = async () => {
     try {
-      const [allResponses, allReports, allUsers, allEmailLogs] = await Promise.all([
+      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs] = await Promise.all([
         base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date'),
+        base44.entities.QuestionnaireResponse.filter({ status: 'in_progress' }, '-created_date'),
         base44.entities.GeneratedReport.list('-created_date'),
         base44.entities.User.list(),
         base44.entities.EmailLog.list('-created_date')
       ]);
-      setResponses(allResponses);
+      setResponses([...completedResponses, ...inProgressResponses]);
       setReports(allReports);
       setUsers(allUsers);
       setEmailLogs(allEmailLogs);
@@ -849,7 +850,24 @@ export default function AdminReports() {
     });
   };
 
+  const getInProgressUsers = () => {
+    return users.filter(u => {
+      const hasInProgressResponse = responses.some(r =>
+        (r.created_by === u.email || r.personal_info?.email === u.email) &&
+        r.status === 'in_progress'
+      );
+      const hasCompletedResponse = responses.some(r =>
+        (r.created_by === u.email || r.personal_info?.email === u.email) &&
+        r.status === 'completed'
+      );
+      
+      // רק אם יש in_progress ואין completed
+      return hasInProgressResponse && !hasCompletedResponse;
+    });
+  };
+
   const abandonedUsers = getAbandonedUsers();
+  const inProgressUsers = getInProgressUsers();
 
   const handleSimulatePurchase = async () => {
     if (!simulationForm.userEmail) {
@@ -925,7 +943,7 @@ export default function AdminReports() {
               <FileText className="w-4 h-4" />
             </TabsTrigger>
             <TabsTrigger value="abandoned" className="flex items-center gap-2 flex-row-reverse">
-              <span>משתמשים שנטשו ({abandonedUsers.length})</span>
+              <span>משתמשים שנטשו ({inProgressUsers.length + abandonedUsers.length})</span>
               <AlertTriangle className="w-4 h-4" />
             </TabsTrigger>
           </TabsList>
@@ -1161,15 +1179,101 @@ export default function AdminReports() {
           </TabsContent>
 
           <TabsContent value="abandoned">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-right">משתמשים שסיימו שאלון אך לא רכשו דו"ח</CardTitle>
-                <p className="text-gray-600 text-sm mt-1 text-right">רשימת משתמשים שהשלימו שאלון V107 אך לא רכשו דו"ח מלא או הורדת תשובות.</p>
-              </CardHeader>
-              <CardContent>
+            <div className="space-y-6">
+              {/* משתמשים שהתחילו ולא סיימו */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right flex items-center gap-2 justify-end">
+                    <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">
+                      {inProgressUsers.length}
+                    </Badge>
+                    <span>משתמשים שהתחילו שאלון ולא סיימו</span>
+                    <AlertCircle className="w-5 h-5 text-yellow-600" />
+                  </CardTitle>
+                  <p className="text-gray-600 text-sm mt-1 text-right">משתמשים שהתחילו למלא את השאלון אך עדיין לא השלימו אותו.</p>
+                </CardHeader>
+                <CardContent>
+                  {inProgressUsers.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                      <p className="text-gray-600">אין משתמשים עם שאלון בתהליך</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {inProgressUsers.map(user => {
+                        const userResponse = responses.find(r =>
+                          (r.created_by === user.email || r.personal_info?.email === user.email) &&
+                          r.status === 'in_progress'
+                        );
+                        const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
+
+                        return (
+                          <Card key={user.id} className="border-yellow-300 bg-yellow-50">
+                            <CardContent className="p-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 flex-row-reverse">
+                                  <Button
+                                    onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
+                                    disabled={!userResponse || isSending}
+                                    className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse"
+                                  >
+                                    <span>שלח מייל נטישה</span>
+                                    {isSending ? (
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                      <Mail className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                  
+                                  <Badge variant="outline" className="bg-yellow-100 border-yellow-400 text-yellow-800 flex items-center gap-1 flex-row-reverse">
+                                    <Clock className="w-3 h-3" />
+                                    שאלון בתהליך
+                                  </Badge>
+                                </div>
+                                
+                                <div className="text-right">
+                                  <h4 className="font-semibold">{user.full_name || 'שם לא זמין'}</h4>
+                                  <p className="text-sm text-gray-600">{user.email}</p>
+                                  {userResponse?.created_date && (
+                                    <>
+                                      <p className="text-xs text-gray-500 mt-1">
+                                        התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yyyy HH:mm')}
+                                      </p>
+                                      <p className="text-xs font-semibold text-yellow-700 mt-1">
+                                        {(() => {
+                                          const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
+                                          return `עברו ${hoursAgo} שעות`;
+                                        })()}
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* משתמשים שסיימו ולא רכשו */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right flex items-center gap-2 justify-end">
+                    <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300">
+                      {abandonedUsers.length}
+                    </Badge>
+                    <span>משתמשים שסיימו שאלון אך לא רכשו דו"ח</span>
+                    <AlertTriangle className="w-5 h-5 text-orange-600" />
+                  </CardTitle>
+                  <p className="text-gray-600 text-sm mt-1 text-right">רשימת משתמשים שהשלימו שאלון V107 אך לא רכשו דו"ח מלא או הורדת תשובות.</p>
+                </CardHeader>
+                <CardContent>
                 {abandonedUsers.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <div className="text-center py-8">
+                    <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-600">אין משתמשים שנטשו כרגע. כל הכבוד!</p>
                   </div>
                 ) : (
@@ -1193,32 +1297,30 @@ export default function AdminReports() {
                           <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2 flex-row-reverse">
-                                {completedAfterAbandonment ? (
-                                  <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse">
-                                    <CheckCircle className="w-4 h-4" />
-                                    השלים לאחר מייל נטישה
-                                  </Badge>
-                                ) : (
-                                  <Button
-                                    onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
-                                    disabled={!userResponse || isSending}
-                                    className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
-                                  >
-                                    <span>שלח מייל נטישה</span>
-                                    {isSending ? (
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
-                                      <Mail className="w-4 h-4" />
-                                    )}
-                                  </Button>
-                                )}
-                                
-                                {userResponse && (
-                                  <Badge variant="outline" className="bg-blue-50 border-blue-300 text-blue-700 flex items-center gap-1 flex-row-reverse">
-                                    <CheckCircle className="w-3 h-3" />
-                                    יש שאלון מלא
-                                  </Badge>
-                                )}
+                              {completedAfterAbandonment ? (
+                                <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse">
+                                  <CheckCircle className="w-4 h-4" />
+                                  השלים לאחר מייל נטישה
+                                </Badge>
+                              ) : (
+                                <Button
+                                  onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
+                                  disabled={!userResponse || isSending}
+                                  className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
+                                >
+                                  <span>שלח מייל נטישה</span>
+                                  {isSending ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                  ) : (
+                                    <Mail className="w-4 h-4" />
+                                  )}
+                                </Button>
+                              )}
+
+                              <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse">
+                                <CheckCircle className="w-3 h-3" />
+                                השלים שאלון
+                              </Badge>
                               </div>
                               
                               <div className="text-right">
@@ -1245,8 +1347,9 @@ export default function AdminReports() {
                     })}
                   </div>
                 )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
