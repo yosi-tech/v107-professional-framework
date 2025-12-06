@@ -143,6 +143,36 @@ export default function MyAccount() {
           </Button>
         </div>
 
+        {/* פעולות מהירות */}
+        <Card className="shadow-lg mb-6">
+          <CardHeader>
+            <CardTitle>
+              {language === 'he' ? 'פעולות מהירות' : 'Quick Actions'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-4">
+              <Link to={createPageUrl('Questionnaire')}>
+                <Button className="w-full" variant="outline">
+                  <FileText className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
+                  {language === 'he' ? 'מלא שאלון חדש' : 'New Questionnaire'}
+                </Button>
+              </Link>
+              <Link to={createPageUrl('Survey')}>
+                <Button className="w-full" variant="outline">
+                  <Gift className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
+                  {language === 'he' ? 'מלא סקר לקופון' : 'Fill Survey for Coupon'}
+                </Button>
+              </Link>
+              <Link to={createPageUrl('Home')}>
+                <Button className="w-full" variant="outline">
+                  {language === 'he' ? 'חזור לדף הבית' : 'Back to Home'}
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid md:grid-cols-2 gap-6">
           {/* שאלונים */}
           <Card className="shadow-lg">
@@ -374,36 +404,6 @@ export default function MyAccount() {
             </CardContent>
           </Card>
         </div>
-
-        {/* פעולות מהירות */}
-        <Card className="shadow-lg mt-6">
-          <CardHeader>
-            <CardTitle>
-              {language === 'he' ? 'פעולות מהירות' : 'Quick Actions'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
-              <Link to={createPageUrl('Questionnaire')}>
-                <Button className="w-full" variant="outline">
-                  <FileText className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
-                  {language === 'he' ? 'מלא שאלון חדש' : 'New Questionnaire'}
-                </Button>
-              </Link>
-              <Link to={createPageUrl('Survey')}>
-                <Button className="w-full" variant="outline">
-                  <Gift className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
-                  {language === 'he' ? 'מלא סקר לקופון' : 'Fill Survey for Coupon'}
-                </Button>
-              </Link>
-              <Link to={createPageUrl('Home')}>
-                <Button className="w-full" variant="outline">
-                  {language === 'he' ? 'חזור לדף הבית' : 'Back to Home'}
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
