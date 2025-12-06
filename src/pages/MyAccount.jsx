@@ -272,7 +272,7 @@ export default function MyAccount() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{report.report_id}</span>
-                          {(report.purchased === false && !user?.has_purchased_full_report) && (
+                          {!hasPurchased && (
                             <Lock className="w-4 h-4 text-orange-600" />
                           )}
                         </div>
@@ -280,7 +280,7 @@ export default function MyAccount() {
                           {new Date(report.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
                         </span>
                       </div>
-                      {(report.purchased === false && !user?.has_purchased_full_report) ? (
+                      {!hasPurchased ? (
                         <Link to={createPageUrl(`Completion?responseId=${report.questionnaire_response_id}`)}>
                           <Button size="sm" className="w-full mt-2 bg-orange-600 hover:bg-orange-700">
                             <ShoppingCart className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
@@ -295,7 +295,8 @@ export default function MyAccount() {
                         </Link>
                       )}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
