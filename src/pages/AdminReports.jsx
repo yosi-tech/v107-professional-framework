@@ -24,7 +24,8 @@ import {
   Send,
   DollarSign,
   Users,
-  AlertTriangle
+  AlertTriangle,
+  LogOut
 } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
