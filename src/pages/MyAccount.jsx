@@ -32,13 +32,12 @@ export default function MyAccount() {
 
         // טען דוחות
         try {
-          const userReports = await base44.entities.GeneratedReport.filter(
-            { user_email: currentUser.email },
-            '-created_date'
-          );
+          const userReports = await base44.entities.GeneratedReport.list('-created_date');
+          console.log('Fetched reports:', userReports);
+          console.log('Current user email:', currentUser.email);
           setReports(userReports);
         } catch (e) {
-          console.log('No reports found');
+          console.error('Error loading reports:', e);
         }
 
         // טען סקרים
