@@ -168,15 +168,20 @@ export default function ReportView() {
 
   const loadReport = async () => {
     let userIsAdmin = false;
+    let currentUser = null;
+    
     try {
+      // Get current user - MUST be authenticated to view report
       try {
-        const currentUser = await base44.auth.me();
+        currentUser = await base44.auth.me();
         setUser(currentUser);
-        userIsAdmin = (currentUser.role === 'admin');
+        userIsAdmin = (currentUser?.role === 'admin');
         setIsAdmin(userIsAdmin);
       } catch (e) {
-        setIsAdmin(false);
-        userIsAdmin = false;
+        console.log("User not authenticated - redirecting to login");
+        // Redirect to login if not authenticated
+        base44.auth.redirectToLogin(window.location.href);
+        return;
       }
 
       const urlParams = new URLSearchParams(window.location.search);
@@ -188,18 +193,27 @@ export default function ReportView() {
         return;
       }
 
-      // Try to get report directly by ID
+      console.log("Fetching report with ID:", reportId);
+      console.log("Current user email:", currentUser.email);
+      
+      // Fetch reports - RLS will automatically filter by user_email or admin role
       let loadedReport;
       try {
-        const allReports = await base44.entities.GeneratedReport.list();
+        const allReports = await base44.entities.GeneratedReport.list('-created_date');
+        console.log(`User can access ${allReports.length} reports`);
+        
         loadedReport = allReports.find(r => r.id === reportId);
         
         if (!loadedReport) {
-          console.error("Report not found for ID:", reportId);
+          console.error(`Report not found or access denied. ID: ${reportId}`);
+          console.log("User email:", currentUser.email);
           setReport(null);
           setIsLoading(false);
           return;
         }
+        
+        console.log("Report loaded successfully:", loadedReport.report_id);
+        console.log("Report user_email:", loadedReport.user_email);
       } catch (e) {
         console.error("Error fetching reports:", e);
         setReport(null);
@@ -207,23 +221,27 @@ export default function ReportView() {
         return;
       }
       
-      // Validate report structure
-      if (!loadedReport.domain_scores || Object.keys(loadedReport.domain_scores).length === 0) {
-        console.error("Report missing domain_scores data");
+      // Validate critical report data
+      if (!loadedReport.domain_scores) {
+        console.warn("Report missing domain_scores - report may be incomplete");
+        loadedReport.domain_scores = {};
+      }
+      
+      if (!loadedReport.executive_summary) {
+        console.warn("Report missing executive_summary");
+        loadedReport.executive_summary = {};
       }
       
       setReport(loadedReport);
       setCurrentLanguage(loadedReport.language || 'he');
 
+      // Load questionnaire response if admin
       if (userIsAdmin && loadedReport.questionnaire_response_id) {
         try {
-          const responseData = await base44.entities.QuestionnaireResponse.filter(
-            { id: loadedReport.questionnaire_response_id },
-            '',
-            1
-          );
-          if (responseData && responseData.length > 0) {
-            setQuestionnaireResponse(responseData[0]);
+          const responseData = await base44.entities.QuestionnaireResponse.list('-created_date');
+          const response = responseData.find(r => r.id === loadedReport.questionnaire_response_id);
+          if (response) {
+            setQuestionnaireResponse(response);
           }
         } catch (e) {
           console.error("Error loading questionnaire response:", e);
@@ -231,7 +249,7 @@ export default function ReportView() {
       }
 
     } catch (error) {
-      console.error("Error loading report:", error);
+      console.error("Unexpected error loading report:", error);
       setReport(null);
     } finally {
       setIsLoading(false);
