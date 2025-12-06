@@ -875,6 +875,125 @@ export default function AdminReports() {
   const abandonedUsers = getAbandonedUsers();
   const inProgressUsers = getInProgressUsers();
 
+  function EmailTemplateCard({ template, onEdit }) {
+    const [showPreview, setShowPreview] = React.useState(false);
+    const [previewLangLocal, setPreviewLangLocal] = React.useState('he');
+
+    return (
+      <Card className="hover:shadow-lg transition-shadow">
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 text-right">
+              <div className="flex items-center gap-3 mb-3 flex-row-reverse">
+                <Badge variant={template.active ? "default" : "outline"}>
+                  {template.active ? 'פעיל' : 'לא פעיל'}
+                </Badge>
+                <h3 className="text-lg font-semibold">{template.name_he}</h3>
+              </div>
+
+              <p className="text-sm text-gray-600 mb-2">{template.description_he}</p>
+
+              <div className="flex gap-2 flex-wrap justify-end mt-3">
+                <Badge variant="outline" className="text-xs">
+                  {template.template_type === 'abandonment_incomplete' && 'נטישה לפני סיום'}
+                  {template.template_type === 'abandonment_reminder_96h' && 'תזכורת 96 שעות'}
+                  {template.template_type === 'abandonment_after_completion' && 'נטישה אחרי סיום'}
+                  {template.template_type === 'full_report_purchase' && 'רכישת דוח מלא'}
+                  {template.template_type === 'answers_download_purchase' && 'רכישת תשובות'}
+                  {template.template_type === 'online_coaching_purchase' && 'רכישת ליווי'}
+                  {template.template_type === 'report_ready' && 'דוח מוכן'}
+                  {template.template_type === 'consultation_request' && 'בקשת ייעוץ'}
+                  {template.template_type === 'questionnaire_completion' && 'השלמת שאלון'}
+                </Badge>
+
+                <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs">
+                  {template.trigger_event === 'manual' && '⚙️ ידני'}
+                  {template.trigger_event === 'on_navigation_away' && '🚪 ניווט החוצה'}
+                  {template.trigger_event === 'after_96_hours' && '⏰ 96 שעות'}
+                  {template.trigger_event === 'after_completion_no_purchase' && '✅ סיום ללא רכישה'}
+                  {template.trigger_event === 'on_purchase' && '💳 רכישה'}
+                  {template.trigger_event === 'on_report_generation' && '📊 יצירת דוח'}
+                  {template.trigger_event === 'on_consultation_request' && '💬 בקשת ייעוץ'}
+                  {template.trigger_event === 'on_questionnaire_submit' && '📝 הגשת שאלון'}
+                </Badge>
+
+                {template.include_coupon && (
+                  <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                    <DollarSign className="w-3 h-3 ml-1" />
+                    קופון {template.coupon_amount} ₪
+                  </Badge>
+                )}
+              </div>
+
+              {showPreview && (
+                <div className="mt-4 space-y-3">
+                  <div className="flex justify-center gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={previewLangLocal === 'he' ? 'default' : 'outline'}
+                      onClick={() => setPreviewLangLocal('he')}
+                    >
+                      🇮🇱 עברית
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={previewLangLocal === 'en' ? 'default' : 'outline'}
+                      onClick={() => setPreviewLangLocal('en')}
+                    >
+                      🇬🇧 English
+                    </Button>
+                  </div>
+
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm font-medium mb-2 text-right">
+                      {previewLangLocal === 'he' ? 'נושא: ' : 'Subject: '}
+                      {previewLangLocal === 'he' ? template.subject_he : template.subject_en}
+                    </p>
+                    <div className="border rounded-lg bg-white overflow-hidden shadow">
+                      <iframe
+                        srcDoc={(previewLangLocal === 'he' ? template.content_he : template.content_en)
+                          .replace(/{userName}/g, previewLangLocal === 'he' ? 'ישראל ישראלי' : 'John Doe')
+                          .replace(/{questionnaireUrl}/g, '#questionnaire')
+                          .replace(/{reportUrl}/g, '#report')
+                          .replace(/{surveyUrl}/g, '#survey')
+                          .replace(/{couponCode}/g, 'DEMO50')
+                          .replace(/{purchaseUrl}/g, '#purchase')
+                        }
+                        className="w-full h-[400px] border-0"
+                        title="Email Preview"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPreview(!showPreview)}
+              >
+                <Eye className="w-4 h-4 ml-2" />
+                {showPreview ? 'סגור תצוגה' : 'תצוגה מקדימה'}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onEdit}
+              >
+                <FileText className="w-4 h-4 ml-2" />
+                ערוך
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const handleSimulatePurchase = async () => {
     if (!simulationForm.userEmail) {
       alert('יש למלא כתובת אימייל');
