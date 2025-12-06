@@ -594,7 +594,7 @@ export default function AdminReports() {
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
           <tr>
             <td align="center" style="padding: 30px 0;">
-              <a href="${reportUrl}" target="_blank" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+              <a href="${reportUrl}" target="_blank" rel="noopener noreferrer" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: #ffffff !important; text-decoration: none !important; padding: 16px 40px; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; mso-hide: all;">
                 📊 צפה בדו"ח המלא
               </a>
             </td>
@@ -689,7 +689,7 @@ export default function AdminReports() {
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
           <tr>
             <td align="center" style="padding: 30px 0;">
-              <a href="${reportUrl}" target="_blank" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+              <a href="${reportUrl}" target="_blank" rel="noopener noreferrer" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: #ffffff !important; text-decoration: none !important; padding: 16px 40px; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; mso-hide: all;">
                 📊 View Full Report
               </a>
             </td>
