@@ -303,7 +303,7 @@ export default function MyAccount() {
                           </Button>
                         </Link>
                       ) : (
-                        <Link to={createPageUrl(`ReportView?reportId=${report.id}`)}>
+                        <Link to={createPageUrl(`ReportView?reportid=${report.id}`)}>
                           <Button size="sm" className="w-full mt-2">
                             {language === 'he' ? 'צפה בדוח' : 'View Report'}
                           </Button>
