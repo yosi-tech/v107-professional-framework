@@ -54,6 +54,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Define the mapping for Hebrew to English domain names
 const HEBREW_TO_ENGLISH_DOMAIN_NAMES = {
@@ -1188,6 +1195,43 @@ export default function AdminReports() {
       }
 
       await base44.entities.User.update(userToUpdate.id, updateData);
+      await loadData();
+      alert('סטטוס רכישה עודכן בהצלחה!');
+    } catch (error) {
+      console.error("Error updating user purchase status:", error);
+      alert('שגיאה בעדכון סטטוס הרכישה');
+    }
+  };
+
+  const handleUserPurchaseStatusChange = async (userEmail, status) => {
+    try {
+      let updateData = {
+        has_purchased_full_report: false,
+        has_purchased_answers_download: false,
+      };
+
+      if (status === 'full_report') {
+        updateData.has_purchased_full_report = true;
+      } else if (status === 'answers_download') {
+        updateData.has_purchased_answers_download = true;
+      }
+
+      const userToUpdate = users.find(u => u.email === userEmail);
+      if (!userToUpdate) {
+        alert('משתמש לא נמצא');
+        return;
+      }
+
+      await base44.entities.User.update(userToUpdate.id, updateData);
+
+      // עדכן גם את כל הדוחות הרלוונטיים
+      const userReports = reports.filter(r => r.user_email === userEmail);
+      for (const report of userReports) {
+        await base44.entities.GeneratedReport.update(report.id, {
+          purchased: status !== 'none'
+        });
+      }
+
       await loadData();
       alert('סטטוס רכישה עודכן בהצלחה!');
     } catch (error) {
