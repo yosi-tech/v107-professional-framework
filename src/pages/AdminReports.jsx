@@ -30,6 +30,7 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { calculateAllDomains, identifyStrengthsAndWeaknesses } from "@/components/utils/reportCalculations";
+import AnimatedDoughnutRace from "@/components/admin/AnimatedDoughnutRace";
 import {
   Dialog,
   DialogContent,
@@ -2337,123 +2338,81 @@ export default function AdminReports() {
                 </Card>
               </div>
 
-              {/* ניתוח מפורט לכל שאלה */}
+              {/* Animated Doughnut Charts */}
+              <div className="space-y-6">
+                {surveyResponses.length > 0 ? (
+                  <>
+                    <AnimatedDoughnutRace
+                      title="שאלה 1: מה הסיבה העיקרית שבחרת שלא לרכוש עכשיו?"
+                      question="ניתוח התפלגות הסיבות לאי-רכישה"
+                      responses={surveyResponses.map(s => s.responses?.q1).filter(Boolean)}
+                      colors={[
+                        'rgba(239, 68, 68, 0.9)',
+                        'rgba(251, 146, 60, 0.9)',
+                        'rgba(245, 158, 11, 0.9)',
+                        'rgba(59, 130, 246, 0.9)',
+                        'rgba(168, 85, 247, 0.9)'
+                      ]}
+                    />
+
+                    <AnimatedDoughnutRace
+                      title="שאלה 2: באיזה מחיר היית שוקל/ת לרכוש?"
+                      question="ניתוח נקודת המחיר האופטימלית"
+                      responses={surveyResponses.map(s => s.responses?.q2).filter(Boolean)}
+                      colors={[
+                        'rgba(34, 197, 94, 0.9)',
+                        'rgba(16, 185, 129, 0.9)',
+                        'rgba(20, 184, 166, 0.9)',
+                        'rgba(6, 182, 212, 0.9)',
+                        'rgba(14, 165, 233, 0.9)'
+                      ]}
+                    />
+
+                    <AnimatedDoughnutRace
+                      title="שאלה 3: מה היה יכול לשכנע אותך לרכוש?"
+                      question="גורמי השכנוע המרכזיים"
+                      responses={surveyResponses.map(s => s.responses?.q3).filter(Boolean)}
+                      colors={[
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(147, 51, 234, 0.9)',
+                        'rgba(126, 34, 206, 0.9)',
+                        'rgba(109, 40, 217, 0.9)',
+                        'rgba(91, 33, 182, 0.9)'
+                      ]}
+                    />
+                  </>
+                ) : (
+                  <Card>
+                    <CardContent className="p-12 text-center">
+                      <FileSearch className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <p className="text-gray-500">אין תוצאות סקר להצגה</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+
+              {/* הערות והצעות */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-right">ניתוח מפורט של תשובות</CardTitle>
+                <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
+                  <CardTitle className="text-right">הערות והצעות לשיפור</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* שאלה 1 */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-lg mb-3 text-right">מה הסיבה העיקרית שבחרת שלא לרכוש?</h3>
-                    <div className="space-y-2">
-                      {(() => {
-                        const q1Responses = surveyResponses.map(s => s.responses?.q1).filter(Boolean);
-                        if (q1Responses.length === 0) return <p className="text-gray-500 text-right">אין נתונים</p>;
-                        const counts = {};
-                        q1Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
-                        return Object.entries(counts)
-                          .sort((a, b) => b[1] - a[1])
-                          .map(([answer, count]) => (
-                            <div key={answer} className="flex items-center justify-between gap-4">
-                              <div className="flex-1 bg-blue-100 rounded-full h-8 relative overflow-hidden">
-                                <div 
-                                  className="bg-blue-500 h-full flex items-center justify-start px-3 text-white text-sm font-medium transition-all"
-                                  style={{ width: `${(count / q1Responses.length) * 100}%` }}
-                                >
-                                  {Math.round((count / q1Responses.length) * 100)}%
-                                </div>
-                              </div>
-                              <div className="text-right flex-shrink-0">
-                                <p className="text-sm font-medium">{answer}</p>
-                                <p className="text-xs text-gray-500">{count} תשובות</p>
-                              </div>
-                            </div>
-                          ));
-                      })()}
-                    </div>
-                  </div>
-
-                  {/* שאלה 2 */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-lg mb-3 text-right">באיזה מחיר היית שוקל/ת לרכוש?</h3>
-                    <div className="space-y-2">
-                      {(() => {
-                        const q2Responses = surveyResponses.map(s => s.responses?.q2).filter(Boolean);
-                        if (q2Responses.length === 0) return <p className="text-gray-500 text-right">אין נתונים</p>;
-                        const counts = {};
-                        q2Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
-                        return Object.entries(counts)
-                          .sort((a, b) => b[1] - a[1])
-                          .map(([answer, count]) => (
-                            <div key={answer} className="flex items-center justify-between gap-4">
-                              <div className="flex-1 bg-green-100 rounded-full h-8 relative overflow-hidden">
-                                <div 
-                                  className="bg-green-500 h-full flex items-center justify-start px-3 text-white text-sm font-medium transition-all"
-                                  style={{ width: `${(count / q2Responses.length) * 100}%` }}
-                                >
-                                  {Math.round((count / q2Responses.length) * 100)}%
-                                </div>
-                              </div>
-                              <div className="text-right flex-shrink-0">
-                                <p className="text-sm font-medium">{answer}</p>
-                                <p className="text-xs text-gray-500">{count} תשובות</p>
-                              </div>
-                            </div>
-                          ));
-                      })()}
-                    </div>
-                  </div>
-
-                  {/* שאלה 3 */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-lg mb-3 text-right">מה היה יכול לשכנע אותך לרכוש?</h3>
-                    <div className="space-y-2">
-                      {(() => {
-                        const q3Responses = surveyResponses.map(s => s.responses?.q3).filter(Boolean);
-                        if (q3Responses.length === 0) return <p className="text-gray-500 text-right">אין נתונים</p>;
-                        const counts = {};
-                        q3Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
-                        return Object.entries(counts)
-                          .sort((a, b) => b[1] - a[1])
-                          .map(([answer, count]) => (
-                            <div key={answer} className="flex items-center justify-between gap-4">
-                              <div className="flex-1 bg-purple-100 rounded-full h-8 relative overflow-hidden">
-                                <div 
-                                  className="bg-purple-500 h-full flex items-center justify-start px-3 text-white text-sm font-medium transition-all"
-                                  style={{ width: `${(count / q3Responses.length) * 100}%` }}
-                                >
-                                  {Math.round((count / q3Responses.length) * 100)}%
-                                </div>
-                              </div>
-                              <div className="text-right flex-shrink-0">
-                                <p className="text-sm font-medium">{answer}</p>
-                                <p className="text-xs text-gray-500">{count} תשובות</p>
-                              </div>
-                            </div>
-                          ));
-                      })()}
-                    </div>
-                  </div>
-
-                  {/* הערות והצעות */}
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                    <h3 className="font-semibold text-lg mb-3 text-right">הערות והצעות לשיפור</h3>
-                    <div className="space-y-3">
-                      {surveyResponses
-                        .filter(s => s.responses?.q4)
-                        .map((survey) => (
-                          <div key={survey.id} className="bg-white p-3 rounded-lg border">
-                            <p className="text-sm text-gray-900 mb-2">{survey.responses.q4}</p>
-                            <p className="text-xs text-gray-500">
-                              {survey.user_email || survey.created_by} • {new Date(survey.created_date).toLocaleDateString('he-IL')}
-                            </p>
-                          </div>
-                        ))}
-                      {surveyResponses.filter(s => s.responses?.q4).length === 0 && (
-                        <p className="text-gray-500 text-right text-sm">אין הערות נוספות</p>
-                      )}
-                    </div>
+                <CardContent className="p-6">
+                  <div className="space-y-3">
+                    {surveyResponses
+                      .filter(s => s.responses?.q4)
+                      .map((survey) => (
+                        <div key={survey.id} className="bg-white p-4 rounded-lg border-r-4 border-blue-500 shadow-sm hover:shadow-md transition-shadow">
+                          <p className="text-sm text-gray-900 mb-2 text-right">{survey.responses.q4}</p>
+                          <p className="text-xs text-gray-500 text-right">
+                            {survey.user_email || survey.created_by} • {new Date(survey.created_date).toLocaleDateString('he-IL')}
+                          </p>
+                        </div>
+                      ))}
+                    {surveyResponses.filter(s => s.responses?.q4).length === 0 && (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500 text-sm">אין הערות נוספות</p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
