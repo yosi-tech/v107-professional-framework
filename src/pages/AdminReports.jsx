@@ -827,12 +827,6 @@ export default function AdminReports() {
         });
       }
 
-      // מציאת הדוח הקשור לשאלון
-      const relatedReport = getReportForResponse(response.id);
-      const reportUrl = relatedReport 
-        ? `${window.location.origin}${createPageUrl(`ReportView?reportId=${relatedReport.id}`)}`
-        : `${window.location.origin}${createPageUrl('MyAccount')}`;
-
       // קבלת התוכן לפי שפה
       const emailSubject = emailLanguage === 'he' ? template.subject_he : template.subject_en;
       let emailHtml = emailLanguage === 'he' ? template.content_he : template.content_en;
@@ -840,6 +834,7 @@ export default function AdminReports() {
       // החלפת משתנים בתוכן המייל
       const surveyUrl = `${window.location.origin}${createPageUrl('Survey')}`;
       const questionnaireUrl = `${window.location.origin}${createPageUrl('Questionnaire')}`;
+      const reportUrl = `${window.location.origin}${createPageUrl('MyAccount')}`;
       const purchaseUrl = `${window.location.origin}${createPageUrl(`Completion?responseId=${response.id}`)}`;
       
       emailHtml = emailHtml
