@@ -263,6 +263,7 @@ export default function AdminReports() {
   const [users, setUsers] = useState([]);
   const [emailLogs, setEmailLogs] = useState([]);
   const [emailTemplates, setEmailTemplates] = useState([]);
+  const [surveyResponses, setSurveyResponses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingTemplate, setEditingTemplate] = useState(null);
   const [templateDialog, setTemplateDialog] = useState(false);
