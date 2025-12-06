@@ -1206,6 +1206,12 @@ export default function AdminReports() {
                           r.status === 'in_progress'
                         );
                         const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
+                        
+                        // ספירת מיילי נטישה שנשלחו למשתמש
+                        const abandonmentEmailsCount = emailLogs.filter(log =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_survey_reminder') &&
+                          (log.related_user_email === user.email || log.to_email === user.email)
+                        ).length;
 
                         return (
                           <Card key={user.id} className="border-yellow-300 bg-yellow-50">
@@ -1229,6 +1235,13 @@ export default function AdminReports() {
                                     <Clock className="w-3 h-3" />
                                     שאלון בתהליך
                                   </Badge>
+                                  
+                                  {abandonmentEmailsCount > 0 && (
+                                    <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse">
+                                      <Mail className="w-3 h-3" />
+                                      {abandonmentEmailsCount} מיילי נטישה נשלחו
+                                    </Badge>
+                                  )}
                                 </div>
                                 
                                 <div className="text-right">
@@ -1283,7 +1296,7 @@ export default function AdminReports() {
                         r.created_by === user.email || r.personal_info?.email === user.email
                       );
                       const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
-                      
+
                       // בדיקה האם המשתמש השלים שאלון לאחר שנשלח לו מייל נטישה
                       const abandonmentEmail = emailLogs.find(log => 
                         log.email_type === 'abandonment_survey' && 
@@ -1292,35 +1305,48 @@ export default function AdminReports() {
                       const completedAfterAbandonment = abandonmentEmail && userResponse && 
                         new Date(userResponse.created_date) > new Date(abandonmentEmail.created_date);
 
+                      // ספירת מיילי נטישה שנשלחו למשתמש
+                      const abandonmentEmailsCount = emailLogs.filter(log =>
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_survey_reminder') &&
+                        (log.related_user_email === user.email || log.to_email === user.email)
+                      ).length;
+
                       return (
                         <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
                           <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2 flex-row-reverse">
-                              {completedAfterAbandonment ? (
-                                <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse">
-                                  <CheckCircle className="w-4 h-4" />
-                                  השלים לאחר מייל נטישה
-                                </Badge>
-                              ) : (
-                                <Button
-                                  onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
-                                  disabled={!userResponse || isSending}
-                                  className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
-                                >
-                                  <span>שלח מייל נטישה</span>
-                                  {isSending ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                  ) : (
-                                    <Mail className="w-4 h-4" />
-                                  )}
-                                </Button>
-                              )}
+                                {completedAfterAbandonment ? (
+                                  <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse">
+                                    <CheckCircle className="w-4 h-4" />
+                                    השלים לאחר מייל נטישה
+                                  </Badge>
+                                ) : (
+                                  <Button
+                                    onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
+                                    disabled={!userResponse || isSending}
+                                    className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
+                                  >
+                                    <span>שלח מייל נטישה</span>
+                                    {isSending ? (
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                      <Mail className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                )}
 
-                              <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse">
-                                <CheckCircle className="w-3 h-3" />
-                                השלים שאלון
-                              </Badge>
+                                <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse">
+                                  <CheckCircle className="w-3 h-3" />
+                                  השלים שאלון
+                                </Badge>
+
+                                {abandonmentEmailsCount > 0 && (
+                                  <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse">
+                                    <Mail className="w-3 h-3" />
+                                    {abandonmentEmailsCount} מיילי נטישה נשלחו
+                                  </Badge>
+                                )}
                               </div>
                               
                               <div className="text-right">
