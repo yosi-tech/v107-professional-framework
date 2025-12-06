@@ -1201,9 +1201,17 @@ export default function AdminReports() {
                                 <h4 className="font-semibold">{user.full_name || 'שם לא זמין'}</h4>
                                 <p className="text-sm text-gray-600">{user.email}</p>
                                 {userResponse?.created_date && (
-                                  <p className="text-xs text-gray-500 mt-1">
-                                    סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yyyy HH:mm')}
-                                  </p>
+                                  <>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                      סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yyyy HH:mm')}
+                                    </p>
+                                    <p className="text-xs font-semibold text-orange-600 mt-1">
+                                      {(() => {
+                                        const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
+                                        return `עברו ${hoursAgo} שעות`;
+                                      })()}
+                                    </p>
+                                  </>
                                 )}
                               </div>
                             </div>
