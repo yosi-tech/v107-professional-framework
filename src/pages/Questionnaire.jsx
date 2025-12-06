@@ -704,6 +704,10 @@ export default function Questionnaire() {
         finalResponseId = newResponse.id;
       }
 
+      // Generate report automatically in background (don't wait for it)
+      base44.functions.invoke('generateReportAutomatic', { responseId: finalResponseId })
+        .catch(err => console.error('Background report generation failed:', err));
+
       navigate(createPageUrl(`Completion?responseId=${finalResponseId}`));
     } catch (error) {
       console.error('Error submitting questionnaire:', error);
