@@ -1445,7 +1445,7 @@ export default function AdminReports() {
                     <span>משתמשים שהתחילו שאלון ולא סיימו</span>
                     <AlertCircle className="w-5 h-5 text-yellow-600" />
                   </CardTitle>
-                  <p className="text-gray-600 text-sm mt-1 text-right">משתמשים שהתחילו למלא את השאלון אך עדיין לא השלימו אותו.</p>
+                  <p className="text-gray-600 text-sm mt-1 text-right" dir="rtl">משתמשים שהתחילו למלא את השאלון אך עדיין לא השלימו אותו.</p>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="not-sent" className="w-full">
@@ -1782,7 +1782,7 @@ export default function AdminReports() {
                     <span>משתמשים שסיימו שאלון אך לא רכשו דו"ח</span>
                     <AlertTriangle className="w-5 h-5 text-orange-600" />
                   </CardTitle>
-                  <p className="text-gray-600 text-sm mt-1 text-right">רשימת משתמשים שהשלימו שאלון V107 אך לא רכשו דו"ח מלא או הורדת תשובות.</p>
+                  <p className="text-gray-600 text-sm mt-1 text-right" dir="rtl">רשימת משתמשים שהשלימו שאלון V107 אך לא רכשו דו"ח מלא או הורדת תשובות.</p>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="not-sent" className="w-full">
