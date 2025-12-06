@@ -1935,7 +1935,11 @@ export default function AdminReports() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={templateSelectionDialog.open} onOpenChange={(open) => !sendingEmailType && setTemplateSelectionDialog({ open, response: templateSelectionDialog.response })}>
+      <Dialog open={templateSelectionDialog.open} onOpenChange={(open) => {
+        if (!sendingEmailType) {
+          setTemplateSelectionDialog({ open, response: open ? templateSelectionDialog.response : null });
+        }
+      }}>
         <DialogContent className="sm:max-w-2xl" dir="rtl">
           <DialogHeader>
             <DialogTitle>בחר תבנית מייל לשליחה</DialogTitle>
