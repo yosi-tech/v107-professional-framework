@@ -30,6 +30,10 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { DOMAIN_MAPPING } from "@/components/utils/reportCalculations";
+import ExecutiveSummaryEditor from "@/components/report/ExecutiveSummaryEditor";
+import TrafficLightsEditor from "@/components/report/TrafficLightsEditor";
+import KPIsEditor from "@/components/report/KPIsEditor";
+import RecommendationsEditor from "@/components/report/RecommendationsEditor";
 
 // Localized text mapping
 const TEXTS = {
@@ -271,29 +275,30 @@ export default function ReportView() {
     setEditedContent({ ...editedContent, [section]: undefined });
   };
 
-  const saveEdit = async (section) => {
+  const saveEdit = async (section, data) => {
     if (!isAdmin) return;
     try {
       const updatedReport = { ...report };
       
       if (section === 'executive_summary') {
-        updatedReport.executive_summary = JSON.parse(editedContent[section]);
+        updatedReport.executive_summary = data;
       } else if (section.startsWith('domain_analysis_')) {
         const domainKey = section.replace('domain_analysis_', '');
-        updatedReport.domain_analysis[domainKey] = editedContent[section];
+        updatedReport.domain_analysis[domainKey] = data;
       } else if (section === 'traffic_lights_table') {
-        updatedReport.traffic_lights_table = JSON.parse(editedContent[section]);
+        updatedReport.traffic_lights_table = data;
       } else if (section === 'kpis') {
-        updatedReport.kpis = JSON.parse(editedContent[section]);
+        updatedReport.kpis = data;
       } else if (section === 'action_plan') {
-        updatedReport.action_plan = JSON.parse(editedContent[section]);
+        updatedReport.action_plan = data;
       } else if (section === 'focused_recommendations') {
-        updatedReport.focused_recommendations = JSON.parse(editedContent[section]);
+        updatedReport.focused_recommendations = data;
       }
 
       await base44.entities.GeneratedReport.update(report.id, updatedReport);
       setReport(updatedReport);
       setEditMode({ ...editMode, [section]: false });
+      setEditedContent({ ...editedContent, [section]: undefined });
     } catch (error) {
       console.error(getText("errorSavingChanges"), error);
       alert(getText("errorSavingChanges"));
@@ -551,27 +556,12 @@ export default function ReportView() {
           </CardHeader>
           <CardContent>
             {editMode.executive_summary ? (
-              <div className="space-y-4 no-print">
-                <Textarea
-                  value={editedContent.executive_summary || ''}
-                  onChange={(e) => setEditedContent({...editedContent, executive_summary: e.target.value})}
-                  rows={15}
-                  className="font-mono text-sm"
-                  placeholder={getText("jsonPlaceholderExecutiveSummary")}
+              <div className="no-print">
+                <ExecutiveSummaryEditor
+                  data={report.executive_summary}
+                  onSave={(data) => saveEdit('executive_summary', data)}
+                  onCancel={() => cancelEdit('executive_summary')}
                 />
-                <div className="flex gap-2">
-                  <Button onClick={() => saveEdit('executive_summary')}>
-                    <Save className="w-4 h-4 ml-2" />
-                    {getText("save")}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => cancelEdit('executive_summary')}
-                  >
-                    <X className="w-4 h-4 ml-2" />
-                    {getText("cancel")}
-                  </Button>
-                </div>
               </div>
             ) : (
               <div className="space-y-6">
@@ -842,27 +832,12 @@ export default function ReportView() {
           </CardHeader>
           <CardContent>
             {editMode.traffic_lights_table ? (
-              <div className="space-y-4 no-print">
-                <Textarea
-                  value={editedContent.traffic_lights_table || ''}
-                  onChange={(e) => setEditedContent({...editedContent, traffic_lights_table: e.target.value})}
-                  rows={12}
-                  className="font-mono text-sm"
-                  placeholder={getText("jsonPlaceholderTrafficLights")}
+              <div className="no-print">
+                <TrafficLightsEditor
+                  data={report.traffic_lights_table}
+                  onSave={(data) => saveEdit('traffic_lights_table', data)}
+                  onCancel={() => cancelEdit('traffic_lights_table')}
                 />
-                <div className="flex gap-2">
-                  <Button onClick={() => saveEdit('traffic_lights_table')}>
-                    <Save className="w-4 h-4 ml-2" />
-                    {getText("save")}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => cancelEdit('traffic_lights_table')}
-                  >
-                    <X className="w-4 h-4 ml-2" />
-                    {getText("cancel")}
-                  </Button>
-                </div>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -913,27 +888,12 @@ export default function ReportView() {
           </CardHeader>
           <CardContent>
             {editMode.kpis ? (
-              <div className="space-y-4 no-print">
-                <Textarea
-                  value={editedContent.kpis || ''}
-                  onChange={(e) => setEditedContent({...editedContent, kpis: e.target.value})}
-                  rows={10}
-                  className="font-mono text-sm"
-                  placeholder={getText("jsonPlaceholderKPIs")}
+              <div className="no-print">
+                <KPIsEditor
+                  data={report.kpis}
+                  onSave={(data) => saveEdit('kpis', data)}
+                  onCancel={() => cancelEdit('kpis')}
                 />
-                <div className="flex gap-2">
-                  <Button onClick={() => saveEdit('kpis')}>
-                    <Save className="w-4 h-4 ml-2" />
-                    {getText("save")}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => cancelEdit('kpis')}
-                  >
-                    <X className="w-4 h-4 ml-2" />
-                    {getText("cancel")}
-                  </Button>
-                </div>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -978,27 +938,12 @@ export default function ReportView() {
           </CardHeader>
           <CardContent>
             {editMode.action_plan ? (
-              <div className="space-y-4 no-print">
-                <Textarea
-                  value={editedContent.action_plan || ''}
-                  onChange={(e) => setEditedContent({...editedContent, action_plan: e.target.value})}
-                  rows={15}
-                  className="font-mono text-sm"
-                  placeholder={getText("jsonPlaceholderActionPlan")}
+              <div className="no-print">
+                <ActionPlanEditor
+                  data={report.action_plan}
+                  onSave={(data) => saveEdit('action_plan', data)}
+                  onCancel={() => cancelEdit('action_plan')}
                 />
-                <div className="flex gap-2">
-                  <Button onClick={() => saveEdit('action_plan')}>
-                    <Save className="w-4 h-4 ml-2" />
-                    {getText("save")}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => cancelEdit('action_plan')}
-                  >
-                    <X className="w-4 h-4 ml-2" />
-                    {getText("cancel")}
-                  </Button>
-                </div>
               </div>
             ) : (
               <div className="space-y-6">
@@ -1068,27 +1013,12 @@ export default function ReportView() {
           </CardHeader>
           <CardContent>
             {editMode.focused_recommendations ? (
-              <div className="space-y-4 no-print">
-                <Textarea
-                  value={editedContent.focused_recommendations || ''}
-                  onChange={(e) => setEditedContent({...editedContent, focused_recommendations: e.target.value})}
-                  rows={8}
-                  className="font-mono text-sm"
-                  placeholder={getText("jsonPlaceholderRecommendations")}
+              <div className="no-print">
+                <RecommendationsEditor
+                  data={report.focused_recommendations}
+                  onSave={(data) => saveEdit('focused_recommendations', data)}
+                  onCancel={() => cancelEdit('focused_recommendations')}
                 />
-                <div className="flex gap-2">
-                  <Button onClick={() => saveEdit('focused_recommendations')}>
-                    <Save className="w-4 h-4 ml-2" />
-                    {getText("save")}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => cancelEdit('focused_recommendations')}
-                  >
-                    <X className="w-4 h-4 ml-2" />
-                    {getText("cancel")}
-                  </Button>
-                </div>
               </div>
             ) : (
               <ul className="space-y-3">
