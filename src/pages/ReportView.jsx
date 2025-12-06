@@ -610,27 +610,27 @@ export default function ReportView() {
                 <div className="space-y-4 mb-8">
                 <Card className="border-l-4 border-l-amber-500 bg-amber-50 print-avoid-break">
                 <CardContent className="p-6">
-                <h3 className="text-lg font-bold text-amber-900 mb-3">
-                {language === 'he' ? 'הבהרה משפטית' : 'Legal Disclaimer'}
-                </h3>
-                <p className="text-sm text-gray-800 leading-relaxed">
-                {language === 'he' 
-                  ? 'הבהרה משפטית: מסמך זה הינו כלי אבחון וייעוץ אסטרטגי המופק באמצעות שילוב יכולות של אלגוריתם ייחודי שפיתחנו, לצד בקרה אנושית קפדנית. הניתוח מבוסס על מאגר ידע נרחב הכולל מאות אלפי שאלונים ודוחות שהוכנו ברחבי העולם ונועד לשקף תמונת מצב נכון למועד המילוי. אין לראות במסמך זה ייעוץ משפטי, פיננסי או התחייבות לתוצאות עסקיות. השימוש במידע הינו באחריות המשתמש בלבד.'
-                  : 'Legal Disclaimer: This document is a diagnostic and strategic consulting tool produced through a combination of our proprietary algorithm capabilities alongside meticulous human oversight. The analysis is based on an extensive knowledge base containing hundreds of thousands of questionnaires and reports prepared worldwide and aims to reflect an accurate snapshot as of the completion date. This document should not be considered legal, financial advice or a commitment to business results. Use of the information is solely at the user\'s own responsibility.'}
-                </p>
+                  <h3 className="text-lg font-bold text-amber-900 mb-3">
+                    {currentLanguage === 'he' ? 'הבהרה משפטית' : 'Legal Disclaimer'}
+                  </h3>
+                  <p className="text-sm text-gray-800 leading-relaxed">
+                    {currentLanguage === 'he' 
+                      ? 'הבהרה משפטית: מסמך זה הינו כלי אבחון וייעוץ אסטרטגי המופק באמצעות שילוב יכולות של אלגוריתם ייחודי שפיתחנו, לצד בקרה אנושית קפדנית. הניתוח מבוסס על מאגר ידע נרחב הכולל מאות אלפי שאלונים ודוחות שהוכנו ברחבי העולם ונועד לשקף תמונת מצב נכון למועד המילוי. אין לראות במסמך זה ייעוץ משפטי, פיננסי או התחייבות לתוצאות עסקיות. השימוש במידע הינו באחריות המשתמש בלבד.'
+                      : 'Legal Disclaimer: This document is a diagnostic and strategic consulting tool produced through a combination of our proprietary algorithm capabilities alongside meticulous human oversight. The analysis is based on an extensive knowledge base containing hundreds of thousands of questionnaires and reports prepared worldwide and aims to reflect an accurate snapshot as of the completion date. This document should not be considered legal, financial advice or a commitment to business results. Use of the information is solely at the user\'s own responsibility.'}
+                  </p>
                 </CardContent>
                 </Card>
 
                 <Card className="border-l-4 border-l-blue-500 bg-blue-50 print-avoid-break">
                 <CardContent className="p-6">
-                <h3 className="text-lg font-bold text-blue-900 mb-3">
-                {language === 'he' ? 'אודות המתודולוגיה' : 'About the Methodology'}
-                </h3>
-                <p className="text-sm text-gray-800 leading-relaxed">
-                {language === 'he'
-                  ? 'דו"ח אבחון זה הופק באמצעות מתודולוגיית V107 Professional Framework™, הסורקת 107 נקודות מידע אישיות ומצליבה אותן מול 11 ממדים קריטיים להצלחה עסקית. הניתוח משלב אלגוריתמיקה מתקדמת לזיהוי דפוסים (Pattern Recognition) יחד עם בקרה אנושית, במטרה לזקק עבורך את הניתוח האובייקטיבי והמדויק ביותר.'
-                  : 'This diagnostic report was produced using the V107 Professional Framework™ methodology, which scans 107 personal data points and cross-references them against 11 critical dimensions of business success. The analysis combines advanced pattern recognition algorithms with human oversight, aiming to distill the most objective and accurate analysis for you.'}
-                </p>
+                  <h3 className="text-lg font-bold text-blue-900 mb-3">
+                    {currentLanguage === 'he' ? 'אודות המתודולוגיה' : 'About the Methodology'}
+                  </h3>
+                  <p className="text-sm text-gray-800 leading-relaxed">
+                    {currentLanguage === 'he'
+                      ? 'דו"ח אבחון זה הופק באמצעות מתודולוגיית V107 Professional Framework™, הסורקת 107 נקודות מידע אישיות ומצליבה אותן מול 11 ממדים קריטיים להצלחה עסקית. הניתוח משלב אלגוריתמיקה מתקדמת לזיהוי דפוסים (Pattern Recognition) יחד עם בקרה אנושית, במטרה לזקק עבורך את הניתוח האובייקטיבי והמדויק ביותר.'
+                      : 'This diagnostic report was produced using the V107 Professional Framework™ methodology, which scans 107 personal data points and cross-references them against 11 critical dimensions of business success. The analysis combines advanced pattern recognition algorithms with human oversight, aiming to distill the most objective and accurate analysis for you.'}
+                  </p>
                 </CardContent>
                 </Card>
                 </div>
@@ -1067,19 +1067,19 @@ export default function ReportView() {
           <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
             <CardTitle className="text-2xl flex items-center gap-2">
               <TrendingUp className="w-6 h-6" />
-              {language === 'he' ? 'V107 BOOSTER - מסלול שיפור ממוקד' : 'V107 BOOSTER - Targeted Improvement Track'}
+              {currentLanguage === 'he' ? 'V107 BOOSTER - מסלול שיפור ממוקד' : 'V107 BOOSTER - Targeted Improvement Track'}
             </CardTitle>
-          </CardHeader>
-          <CardContent className="p-8">
+            </CardHeader>
+            <CardContent className="p-8">
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-lg border-2 border-purple-200">
                 <h3 className="text-xl font-bold text-purple-900 mb-4">
-                  {language === 'he' 
+                  {currentLanguage === 'he' 
                     ? `זיהינו את הנקודה החשובה ביותר לשיפור: ${report.executive_summary?.improvement_areas?.[0] || 'תחום מרכזי'}`
                     : `We've identified the most important area for improvement: ${report.executive_summary?.improvement_areas?.[0] || 'Key Domain'}`}
                 </h3>
                 <p className="text-gray-800 leading-relaxed mb-4">
-                  {language === 'he'
+                  {currentLanguage === 'he'
                     ? 'כדי לוודא שאתה סוגר את הפער הזה, הוספנו למערכת עבורך את ה-V107 BOOSTER: מסלול השתלמות ממוקד של 7 ימים לשיפור התחום הזה. במהלך השבוע תקבל כל יום משימה ממוקדת במייל (Micro-Learning) שתעזור לך לחזק את היכולת הזו בצורה מעשית ומידית.'
                     : 'To ensure you close this gap, we\'ve added the V107 BOOSTER to your account: a focused 7-day improvement track for this domain. Throughout the week, you\'ll receive a daily targeted task via email (Micro-Learning) that will help you strengthen this capability in a practical and immediate way.'}
                 </p>
@@ -1087,38 +1087,38 @@ export default function ReportView() {
                 <div className="bg-green-50 p-5 rounded-lg border border-green-200 mb-4">
                   <h4 className="font-bold text-green-900 mb-3 flex items-center gap-2">
                     <CheckCircle className="w-5 h-5" />
-                    {language === 'he' ? 'מודל "תשלום מבוסס הצלחה"' : '"Pay for Success" Model'}
+                    {currentLanguage === 'he' ? 'מודל "תשלום מבוסס הצלחה"' : '"Pay for Success" Model'}
                   </h4>
                   <p className="text-green-900 text-sm leading-relaxed mb-3">
-                    {language === 'he'
+                    {currentLanguage === 'he'
                       ? 'ביום ה-7 תתבקש למלא שאלון קצר. רק במידה ונראה שיפור במדד, תחויב ב-199 ₪.'
                       : 'On day 7, you\'ll be asked to complete a short questionnaire. You\'ll only be charged ₪199 if we see improvement in the metric.'}
                   </p>
                   <p className="text-xl font-bold text-green-800">
-                    {language === 'he' ? 'לא שיפרת? לא שילמת.' : 'No improvement? No payment.'}
+                    {currentLanguage === 'he' ? 'לא שיפרת? לא שילמת.' : 'No improvement? No payment.'}
                   </p>
                 </div>
 
                 <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
                   <h4 className="font-semibold text-purple-900 mb-2">
-                    {language === 'he' ? 'מה כולל המסלול?' : 'What does the track include?'}
+                    {currentLanguage === 'he' ? 'מה כולל המסלול?' : 'What does the track include?'}
                   </h4>
                   <ul className="space-y-2 text-sm text-gray-800">
                     <li className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">✓</span>
-                      <span>{language === 'he' ? '7 משימות יומיות ממוקדות במייל' : '7 daily targeted tasks via email'}</span>
+                      <span>{currentLanguage === 'he' ? '7 משימות יומיות ממוקדות במייל' : '7 daily targeted tasks via email'}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">✓</span>
-                      <span>{language === 'he' ? 'כלים מעשיים ליישום מיידי' : 'Practical tools for immediate implementation'}</span>
+                      <span>{currentLanguage === 'he' ? 'כלים מעשיים ליישום מיידי' : 'Practical tools for immediate implementation'}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">✓</span>
-                      <span>{language === 'he' ? 'מעקב אחר התקדמות אישית' : 'Personal progress tracking'}</span>
+                      <span>{currentLanguage === 'he' ? 'מעקב אחר התקדמות אישית' : 'Personal progress tracking'}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">✓</span>
-                      <span>{language === 'he' ? 'שאלון סיכום וביקורת ביום ה-7' : 'Summary and review questionnaire on day 7'}</span>
+                      <span>{currentLanguage === 'he' ? 'שאלון סיכום וביקורת ביום ה-7' : 'Summary and review questionnaire on day 7'}</span>
                     </li>
                   </ul>
                 </div>
@@ -1126,12 +1126,12 @@ export default function ReportView() {
 
               <div className="text-center">
                 <p className="text-sm text-gray-600 mb-4">
-                  {language === 'he' 
+                  {currentLanguage === 'he' 
                     ? 'מעוניין להתחיל? צור קשר עם צוות התמיכה שלנו'
                     : 'Interested in starting? Contact our support team'}
                 </p>
                 <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-                  {language === 'he' ? 'התחל את ה-BOOSTER' : 'Start the BOOSTER'}
+                  {currentLanguage === 'he' ? 'התחל את ה-BOOSTER' : 'Start the BOOSTER'}
                 </Button>
               </div>
             </div>
