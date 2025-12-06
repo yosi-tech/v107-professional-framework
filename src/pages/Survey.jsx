@@ -72,9 +72,9 @@ export default function Survey() {
         setIsLoading(false);
       } catch (e) {
         console.error("User not logged in");
-        setIsLoading(false);
-        // הפניה לדף הבית כשאין משתמש מחובר
-        window.location.href = createPageUrl('Home');
+        // הפניה להתחברות עם חזרה לסקר
+        base44.auth.redirectToLogin(window.location.href);
+        return;
       }
     };
     fetchUser();
