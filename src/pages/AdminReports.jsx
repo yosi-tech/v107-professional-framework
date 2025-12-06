@@ -1783,8 +1783,10 @@ export default function AdminReports() {
         description_en: template?.description_en || '',
         active: template?.active ?? true,
         include_coupon: template?.include_coupon ?? false,
-        coupon_amount: template?.coupon_amount || 50
+        coupon_amount: template?.coupon_amount || 50,
+        aiPrompt: ''
       });
+      const [isGeneratingAI, setIsGeneratingAI] = React.useState(false);
 
       React.useEffect(() => {
       if (template) {
@@ -1829,6 +1831,75 @@ export default function AdminReports() {
       return;
       }
       onSave(formData);
+      };
+
+      const handleGenerateWithAI = async () => {
+        if (!formData.aiPrompt) return;
+
+        setIsGeneratingAI(true);
+        try {
+          const prompt = `אתה מעצב מיילים מקצועי. צור תבנית מייל HTML עבור אפליקציית V107.
+
+      תיאור: ${formData.aiPrompt}
+
+      דרישות:
+      1. צור HTML מעוצב יפה ומקצועי עם CSS מוטמע
+      2. שמור על עיצוב responsive
+      3. השתמש בצבעים מקצועיים (#3b82f6 כצבע ראשי, #1e3a8a כצבע משני)
+      4. כלול כפתור call-to-action בולט
+      5. צור גרסה בעברית (RTL) וגרסה באנגלית (LTR)
+      6. השתמש במשתנים כמו {userName}, {questionnaireUrl}, {reportUrl}, {surveyUrl}, {couponCode}, {purchaseUrl}
+      7. הוסף אייקוני אימוג'י מתאימים
+
+      החזר בפורמט JSON בלבד:
+      {
+      "name_he": "שם התבנית בעברית",
+      "name_en": "Template Name in English",
+      "subject_he": "נושא המייל בעברית",
+      "subject_en": "Email Subject in English",
+      "content_he": "תוכן HTML מלא בעברית",
+      "content_en": "Full HTML content in English",
+      "description_he": "תיאור קצר של התבנית",
+      "description_en": "Short description of template"
+      }`;
+
+          const result = await base44.integrations.Core.InvokeLLM({
+            prompt: prompt,
+            response_json_schema: {
+              type: "object",
+              properties: {
+                name_he: { type: "string" },
+                name_en: { type: "string" },
+                subject_he: { type: "string" },
+                subject_en: { type: "string" },
+                content_he: { type: "string" },
+                content_en: { type: "string" },
+                description_he: { type: "string" },
+                description_en: { type: "string" }
+              }
+            }
+          });
+
+          setFormData({
+            ...formData,
+            name_he: result.name_he,
+            name_en: result.name_en,
+            subject_he: result.subject_he,
+            subject_en: result.subject_en,
+            content_he: result.content_he,
+            content_en: result.content_en,
+            description_he: result.description_he,
+            description_en: result.description_en,
+            aiPrompt: ''
+          });
+
+          alert('התבנית נוצרה בהצלחה! בדוק את התוצאה ובצע התאמות במידת הצורך.');
+        } catch (error) {
+          console.error('Error generating template:', error);
+          alert('שגיאה ביצירת התבנית: ' + error.message);
+        } finally {
+          setIsGeneratingAI(false);
+        }
       };
 
       return (
@@ -1880,6 +1951,36 @@ export default function AdminReports() {
                 <option value="on_consultation_request">בקשת ייעוץ</option>
                 <option value="on_questionnaire_submit">בהגשת שאלון</option>
               </select>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="flex items-center gap-2 mb-3 flex-row-reverse">
+                <Label className="font-semibold">🤖 יצירת תבנית באמצעות AI</Label>
+              </div>
+              <Textarea
+                placeholder="תאר במילים פשוטות מה המייל צריך לכלול... (לדוגמה: מייל המעודד משתמש לחזור ולהשלים את השאלון, עם טון חברי ומעודד)"
+                value={formData.aiPrompt || ''}
+                onChange={(e) => setFormData({...formData, aiPrompt: e.target.value})}
+                className="min-h-[80px] text-right mb-2"
+                dir="rtl"
+              />
+              <Button
+                type="button"
+                onClick={() => handleGenerateWithAI()}
+                disabled={isGeneratingAI || !formData.aiPrompt}
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                {isGeneratingAI ? (
+                  <>
+                    <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                    מייצר תבנית...
+                  </>
+                ) : (
+                  <>
+                    ✨ צור תבנית באמצעות AI
+                  </>
+                )}
+              </Button>
             </div>
 
             <div className="flex items-center gap-4 flex-row-reverse">
