@@ -82,7 +82,7 @@ export default function Survey() {
 
   const handleLogin = async () => {
     try {
-      await base44.auth.redirectToLogin(window.location.href);
+      await base44.auth.loginWithRedirect(window.location.href);
     } catch (error) {
       console.error('Login error:', error);
     }
