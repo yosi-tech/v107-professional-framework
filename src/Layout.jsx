@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { FileText, Shield, User } from "lucide-react";
+import { FileText, Shield, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChatBot from "@/components/ai/ChatBot";
 import { LanguageProvider } from "@/components/i18n/LanguageContext";
 import { useTranslation } from "@/components/i18n/useTranslation";
 import { LanguageContext } from "@/components/i18n/LanguageContext";
-import { User } from "@/entities/User";
+import { base44 } from "@/api/base44Client";
 
 function AppLayout({ children }) {
   const location = useLocation();
@@ -19,7 +19,7 @@ function AppLayout({ children }) {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const currentUser = await User.me();
+        const currentUser = await base44.auth.me();
         setUser(currentUser);
       } catch (error) {
         // User not logged in or other error
@@ -289,7 +289,7 @@ function AppLayout({ children }) {
               
               {!isLoadingUser && user && (
                 <Link to={createPageUrl("MyAccount")} className={`text-sm font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("MyAccount") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
-                  <User className="w-4 h-4" />
+                  <UserIcon className="w-4 h-4" />
                   {language === 'he' ? 'האזור שלי' : 'My Account'}
                 </Link>
               )}
