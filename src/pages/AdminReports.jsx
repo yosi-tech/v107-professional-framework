@@ -286,6 +286,10 @@ export default function AdminReports() {
   const [isSimulating, setIsSimulating] = useState(false);
   const [deletingTemplateId, setDeletingTemplateId] = useState(null);
   const [activeTab, setActiveTab] = useState('reports');
+  const [filters, setFilters] = useState({
+    hasPurchased: 'all', // 'all', 'purchased', 'not_purchased'
+    hasReport: 'all', // 'all', 'has_report', 'no_report'
+  });
 
   useEffect(() => {
     checkAdminAndLoadData();
@@ -949,8 +953,27 @@ export default function AdminReports() {
   const filteredResponses = responses.filter(r => {
     const fullName = r.personal_info?.full_name || '';
     const email = r.personal_info?.email || '';
-    return fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const searchMatch = fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
            email.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    if (!searchMatch) return false;
+
+    // סינון לפי רכישה
+    if (filters.hasPurchased !== 'all') {
+      const userInfo = getUserForResponse(r);
+      const hasPurchased = (userInfo?.has_purchased_full_report ?? false) || (userInfo?.has_purchased_answers_download ?? false);
+      if (filters.hasPurchased === 'purchased' && !hasPurchased) return false;
+      if (filters.hasPurchased === 'not_purchased' && hasPurchased) return false;
+    }
+
+    // סינון לפי דוח
+    if (filters.hasReport !== 'all') {
+      const hasReport = !!getReportForResponse(r.id);
+      if (filters.hasReport === 'has_report' && !hasReport) return false;
+      if (filters.hasReport === 'no_report' && hasReport) return false;
+    }
+
+    return true;
   });
 
   const getAbandonedUsers = () => {
@@ -1242,7 +1265,7 @@ export default function AdminReports() {
               </Card>
             </div>
 
-            <div className="mb-6">
+            <div className="mb-6 space-y-4">
               <div className="relative">
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
@@ -1252,6 +1275,47 @@ export default function AdminReports() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pr-10 text-right"
                 />
+              </div>
+
+              <div className="flex gap-3 flex-wrap justify-end">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-gray-700">רכישה:</label>
+                  <select
+                    value={filters.hasPurchased}
+                    onChange={(e) => setFilters({...filters, hasPurchased: e.target.value})}
+                    className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-right"
+                    dir="rtl"
+                  >
+                    <option value="all">הכל</option>
+                    <option value="purchased">רכש</option>
+                    <option value="not_purchased">לא רכש</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-gray-700">דוח:</label>
+                  <select
+                    value={filters.hasReport}
+                    onChange={(e) => setFilters({...filters, hasReport: e.target.value})}
+                    className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-right"
+                    dir="rtl"
+                  >
+                    <option value="all">הכל</option>
+                    <option value="has_report">יש דוח</option>
+                    <option value="no_report">אין דוח</option>
+                  </select>
+                </div>
+
+                {(filters.hasPurchased !== 'all' || filters.hasReport !== 'all') && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setFilters({ hasPurchased: 'all', hasReport: 'all' })}
+                    className="text-xs"
+                  >
+                    נקה סינונים
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -1280,8 +1344,28 @@ export default function AdminReports() {
                   'תשובות בלבד' :
                   'לא רכש';
 
+                // חישוב כמה שעות עברו
+                const hoursAgo = Math.floor((Date.now() - new Date(response.created_date).getTime()) / (1000 * 60 * 60));
+                
+                // בדיקה אם נשלח דוח ללקוח
+                const reportSentEmail = emails.find(e => e.email_type === 'report_ready');
+                const isReportSent = !!reportSentEmail;
+                
+                // קביעת צבע רקע לפי זמן ושליחת דוח
+                let cardBgClass = '';
+                let timeWarningClass = '';
+                if (existingReport && !isReportSent) {
+                  if (hoursAgo >= 96) {
+                    cardBgClass = 'bg-red-50 border-red-300';
+                    timeWarningClass = 'text-red-700 font-bold';
+                  } else if (hoursAgo >= 72) {
+                    cardBgClass = 'bg-yellow-50 border-yellow-300';
+                    timeWarningClass = 'text-yellow-700 font-semibold';
+                  }
+                }
+
                 return (
-                  <Card key={response.id} className="hover:shadow-lg transition-shadow">
+                  <Card key={response.id} className={`hover:shadow-lg transition-shadow ${cardBgClass}`}>
                     <CardContent className="p-4 sm:p-6">
                       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div className="flex-1 min-w-0 w-full">
@@ -1298,6 +1382,10 @@ export default function AdminReports() {
                                 <span className="flex items-center gap-1 flex-row-reverse">
                                   {format(new Date(response.created_date), 'dd/MM/yy HH:mm')}
                                   <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                                </span>
+                                <span className={`flex items-center gap-1 flex-row-reverse ${timeWarningClass}`}>
+                                  <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                                  {hoursAgo} שעות
                                 </span>
                               </div>
                             </div>
@@ -1326,8 +1414,8 @@ export default function AdminReports() {
                             )}
 
                             {existingReport && (
-                              <Badge className="bg-green-100 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
-                                יש דו"ח
+                              <Badge className={`flex items-center gap-1 flex-row-reverse text-xs ${isReportSent ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}>
+                                {isReportSent ? 'דוח נשלח ללקוח' : 'דוח לא נשלח'}
                                 <CheckCircle className="w-3 h-3" />
                               </Badge>
                             )}
