@@ -839,7 +839,7 @@ export default function AdminReports() {
 
       console.log('Email sent successfully');
 
-      const newEmailLog = await base44.entities.EmailLog.create({
+      await base44.entities.EmailLog.create({
         to_email: userEmail,
         email_type: template.template_type,
         subject: emailSubject,
@@ -849,14 +849,11 @@ export default function AdminReports() {
         language: emailLanguage
       });
 
-      // עדכון מיידי של ה-state
-      setEmailLogs([newEmailLog, ...emailLogs]);
-
-      alert(emailLanguage === 'en' ? `Email sent successfully to ${userEmail}` : `מייל נשלח בהצלחה ל-${userEmail}`);
-      setTemplateSelectionDialog({ open: false, response: null });
-      
-      // טעינה מחדש של כל הנתונים ברקע
+      // טעינה מחדש של כל הנתונים
       await loadData();
+      
+      setTemplateSelectionDialog({ open: false, response: null });
+      alert(emailLanguage === 'en' ? `Email sent successfully to ${userEmail}` : `מייל נשלח בהצלחה ל-${userEmail}`);
     } catch (error) {
       console.error("Error sending manual email:", error);
       alert(`שגיאה בשליחת המייל ל-${response.personal_info?.email || response.created_by}: ${error.message || 'שגיאה לא ידועה'}`);
