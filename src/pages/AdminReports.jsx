@@ -289,6 +289,7 @@ export default function AdminReports() {
   const [filters, setFilters] = useState({
     hasPurchased: 'all', // 'all', 'purchased', 'not_purchased'
     hasReport: 'all', // 'all', 'has_report', 'no_report'
+    questionnaireStatus: 'all', // 'all', 'completed', 'in_progress', 'abandoned'
   });
 
   useEffect(() => {
@@ -973,6 +974,11 @@ export default function AdminReports() {
       if (filters.hasReport === 'no_report' && hasReport) return false;
     }
 
+    // סינון לפי סטטוס שאלון
+    if (filters.questionnaireStatus !== 'all') {
+      if (r.status !== filters.questionnaireStatus) return false;
+    }
+
     return true;
   });
 
@@ -1310,11 +1316,26 @@ export default function AdminReports() {
                   </select>
                 </div>
 
-                {(filters.hasPurchased !== 'all' || filters.hasReport !== 'all') && (
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-gray-700">סטטוס שאלון:</label>
+                  <select
+                    value={filters.questionnaireStatus}
+                    onChange={(e) => setFilters({...filters, questionnaireStatus: e.target.value})}
+                    className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-right"
+                    dir="rtl"
+                  >
+                    <option value="all">הכל</option>
+                    <option value="completed">שאלון מלא</option>
+                    <option value="in_progress">בתהליך</option>
+                    <option value="abandoned">נטש שאלון</option>
+                  </select>
+                </div>
+
+                {(filters.hasPurchased !== 'all' || filters.hasReport !== 'all' || filters.questionnaireStatus !== 'all') && (
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setFilters({ hasPurchased: 'all', hasReport: 'all' })}
+                    onClick={() => setFilters({ hasPurchased: 'all', hasReport: 'all', questionnaireStatus: 'all' })}
                     className="text-xs"
                   >
                     נקה סינונים
@@ -1399,6 +1420,23 @@ export default function AdminReports() {
                           </div>
 
                           <div className="flex gap-1 sm:gap-2 mb-3 flex-wrap justify-end">
+                            {response.status === 'completed' ? (
+                              <Badge className="bg-green-100 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                שאלון מלא
+                                <CheckCircle className="w-3 h-3" />
+                              </Badge>
+                            ) : response.status === 'abandoned' ? (
+                              <Badge className="bg-red-100 text-red-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                נטש שאלון
+                                <AlertCircle className="w-3 h-3" />
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-yellow-100 text-yellow-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                בתהליך
+                                <Clock className="w-3 h-3" />
+                              </Badge>
+                            )}
+
                             <Badge variant="outline" className="flex items-center gap-1 flex-row-reverse text-xs">
                               {purchaseStatus}
                               {paymentAmount > 0 && ` (${paymentAmount} ₪)`}
