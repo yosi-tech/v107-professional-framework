@@ -1211,7 +1211,7 @@ export default function AdminReports() {
         </div>
 
         <Tabs defaultValue="reports" className="w-full" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="reports" className="flex items-center gap-2 flex-row-reverse">
               <span>שאלונים ודו"חות</span>
               <FileText className="w-4 h-4" />
@@ -1223,6 +1223,10 @@ export default function AdminReports() {
             <TabsTrigger value="survey-results" className="flex items-center gap-2 flex-row-reverse">
               <span>תוצאות הסקר ({surveyResponses.length})</span>
               <FileSearch className="w-4 h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center gap-2 flex-row-reverse">
+              <span>כל המשתמשים ({users.length})</span>
+              <Users className="w-4 h-4" />
             </TabsTrigger>
             <TabsTrigger value="email-templates" className="flex items-center gap-2 flex-row-reverse">
               <span>תבניות מיילים</span>
@@ -2495,6 +2499,80 @@ export default function AdminReports() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-right">כל המשתמשים במערכת</CardTitle>
+                <p className="text-gray-600 text-sm mt-1 text-right" dir="rtl">
+                  רשימה מלאה של כל המשתמשים הרשומים באפליקציה
+                </p>
+              </CardHeader>
+              <CardContent>
+                {users.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 text-lg">אין משתמשים רשומים</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {users.map(user => {
+                      const userResponses = responses.filter(r => 
+                        r.created_by === user.email || r.personal_info?.email === user.email
+                      );
+                      const userReports = reports.filter(r => r.user_email === user.email);
+                      const hasPurchased = (user.has_purchased_full_report ?? false) || (user.has_purchased_answers_download ?? false);
+
+                      return (
+                        <Card key={user.id} className="border">
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between gap-4 flex-row-reverse">
+                              <div className="flex-1 text-right">
+                                <div className="flex items-center gap-2 mb-2 flex-row-reverse">
+                                  <h4 className="font-semibold text-base">{user.full_name || 'שם לא זמין'}</h4>
+                                  {user.role === 'admin' && (
+                                    <Badge className="bg-purple-600 text-white text-xs">
+                                      Admin
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-sm text-gray-600 mb-2">{user.email}</p>
+                                <p className="text-xs text-gray-500">
+                                  נרשם: {format(new Date(user.created_date), 'dd/MM/yyyy HH:mm')}
+                                </p>
+                                
+                                <div className="flex gap-2 flex-wrap justify-end mt-3">
+                                  <Badge variant="outline" className="text-xs">
+                                    {userResponses.length} שאלונים
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    {userReports.length} דוחות
+                                  </Badge>
+                                  {hasPurchased ? (
+                                    <Badge className="bg-green-100 text-green-800 text-xs">
+                                      רכש מוצר
+                                    </Badge>
+                                  ) : (
+                                    <Badge variant="outline" className="text-xs">
+                                      לא רכש
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                              
+                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <UserIcon className="w-5 h-5 text-blue-600" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="email-templates">
