@@ -264,9 +264,11 @@ function AppLayout({ children }) {
             <Link
               to={createPageUrl("Home")}
               className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-              <div className="w-12 h-12 gradient-primary rounded-lg flex items-center justify-center shadow-lg">
-                <FileText className="w-6 h-6 text-white" />
-              </div>
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/0544f5a69_logo.png" 
+                alt="V107 Logo" 
+                className="w-12 h-12 rounded-lg shadow-lg object-contain"
+              />
               <div>
                 <h1 className="text-xl font-bold text-slate-800">
                   V107
