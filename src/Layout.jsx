@@ -356,9 +356,8 @@ function AppLayout({ children }) {
                   <Link 
                     to={createPageUrl("MyAccount")} 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`text-sm font-semibold transition-colors flex items-center gap-2 px-4 py-2 rounded-lg ${location.pathname === createPageUrl("MyAccount") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                    className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname === createPageUrl("MyAccount") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
                   >
-                    <UserIcon className="w-4 h-4" />
                     {language === 'he' ? 'האזור שלי' : 'My Account'}
                   </Link>
                 )}
