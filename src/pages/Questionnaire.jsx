@@ -4,7 +4,7 @@ import { User } from "@/entities/User";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, ArrowRight, ArrowLeft, Loader2, LogIn, Shield, Info, PlayCircle, User as UserIcon, FileText, Undo2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useBlocker } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -499,7 +499,7 @@ export default function Questionnaire() {
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
 
-  // Warning before leaving questionnaire page
+  // Warning before leaving questionnaire page (browser close/refresh)
   useEffect(() => {
     if (currentStep >= 0) { // Only show warning if user is in the questionnaire (not intro)
       const handleBeforeUnload = (e) => {
@@ -517,6 +517,28 @@ export default function Questionnaire() {
       };
     }
   }, [currentStep, language]);
+
+  // Block navigation to other pages within the app
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      currentStep >= 0 && // Only block if in questionnaire
+      currentLocation.pathname !== nextLocation.pathname
+  );
+
+  // Handle blocked navigation
+  useEffect(() => {
+    if (blocker.state === "blocked") {
+      const confirmMessage = language === 'he' ?
+        'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.' :
+        'Are you sure you want to leave? Your progress has been saved automatically and you can return to continue later.';
+      
+      if (window.confirm(confirmMessage)) {
+        blocker.proceed();
+      } else {
+        blocker.reset();
+      }
+    }
+  }, [blocker, language]);
 
   const autoSaveProgress = useCallback(async () => {
     if (!user) return;
