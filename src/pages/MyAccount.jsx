@@ -261,11 +261,14 @@ export default function MyAccount() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {reports.map((report) => (
-                    <div
-                      key={report.id}
-                      className={`p-4 border rounded-lg transition-colors ${report.purchased !== false ? 'hover:bg-gray-50' : 'bg-orange-50 border-orange-200'}`}
-                    >
+                  {reports.map((report) => {
+                    const hasPurchased = (report.purchased !== false) || user?.has_purchased_full_report || user?.has_purchased_answers_download;
+                    
+                    return (
+                      <div
+                        key={report.id}
+                        className={`p-4 border rounded-lg transition-colors ${hasPurchased ? 'hover:bg-gray-50' : 'bg-orange-50 border-orange-200'}`}
+                      >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{report.report_id}</span>
