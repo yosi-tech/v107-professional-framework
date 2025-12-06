@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { QuestionnaireResponse } from "@/entities/QuestionnaireResponse";
-import { User } from "@/entities/User";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, ArrowRight, ArrowLeft, Loader2, LogIn, Shield, Info, PlayCircle, User as UserIcon, FileText, Undo2 } from "lucide-react";
@@ -489,7 +488,7 @@ export default function Questionnaire() {
 
   const checkAuthAndLoadData = useCallback(async () => {
     try {
-      const currentUser = await User.me();
+      const currentUser = await base44.auth.me();
       setUser(currentUser);
       await loadExistingResponses(currentUser);
     } catch (error) {
