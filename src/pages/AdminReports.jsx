@@ -25,7 +25,10 @@ import {
   DollarSign,
   Users,
   AlertTriangle,
-  LogOut
+  LogOut,
+  BarChart3,
+  Settings,
+  TrendingUp
 } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
@@ -273,6 +276,7 @@ export default function AdminReports() {
   const [emailLogs, setEmailLogs] = useState([]);
   const [emailTemplates, setEmailTemplates] = useState([]);
   const [surveyResponses, setSurveyResponses] = useState([]);
+  const [siteSettings, setSiteSettings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingTemplate, setEditingTemplate] = useState(null);
   const [templateDialog, setTemplateDialog] = useState(false);
@@ -324,14 +328,15 @@ export default function AdminReports() {
 
   const loadData = async () => {
     try {
-      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses] = await Promise.all([
+      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses, allSiteSettings] = await Promise.all([
         base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date'),
         base44.entities.QuestionnaireResponse.filter({ status: 'in_progress' }, '-created_date'),
         base44.entities.GeneratedReport.list('-created_date'),
         base44.entities.User.list(),
         base44.entities.EmailLog.list('-created_date'),
         base44.entities.EmailTemplate.list('-created_date'),
-        base44.entities.SurveyResponse.list('-created_date')
+        base44.entities.SurveyResponse.list('-created_date'),
+        base44.entities.SiteSettings.list().catch(() => [])
       ]);
       setResponses([...completedResponses, ...inProgressResponses]);
       setReports(allReports);
@@ -339,6 +344,7 @@ export default function AdminReports() {
       setEmailLogs(allEmailLogs);
       setEmailTemplates(allEmailTemplates);
       setSurveyResponses(allSurveyResponses);
+      setSiteSettings(allSiteSettings);
     } catch (error) {
       console.error("Error loading data:", error);
     }
@@ -1273,7 +1279,7 @@ export default function AdminReports() {
         </div>
 
         <Tabs defaultValue="reports" className="w-full" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-8 gap-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-7 mb-8 gap-1">
             <TabsTrigger value="reports" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
               <span className="hidden sm:inline">שאלונים ודו"חות</span>
               <span className="sm:hidden">שאלונים</span>
@@ -1298,6 +1304,16 @@ export default function AdminReports() {
               <span className="hidden sm:inline">תבניות מיילים</span>
               <span className="sm:hidden">תבניות</span>
               <Mail className="w-3 h-3 sm:w-4 sm:h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
+              <span className="hidden sm:inline">ניתוח רכישות</span>
+              <span className="sm:hidden">ניתוח</span>
+              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="seo-settings" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
+              <span className="hidden sm:inline">הגדרות SEO</span>
+              <span className="sm:hidden">SEO</span>
+              <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
             </TabsTrigger>
           </TabsList>
 
@@ -2656,6 +2672,334 @@ export default function AdminReports() {
                   </Card>
                 )}
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <div className="space-y-6">
+              {/* סטטיסטיקות כלליות */}
+              <div className="grid md:grid-cols-4 gap-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">סה"כ רכישות</CardTitle>
+                    <DollarSign className="w-4 h-4 text-green-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-green-600">
+                      {users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">דוחות מלאים</CardTitle>
+                    <FileText className="w-4 h-4 text-blue-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-blue-600">
+                      {users.filter(u => u.has_purchased_full_report).length}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">הורדות תשובות</CardTitle>
+                    <FileText className="w-4 h-4 text-purple-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-purple-600">
+                      {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">שיעור המרה</CardTitle>
+                    <TrendingUp className="w-4 h-4 text-orange-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-orange-600">
+                      {responses.filter(r => r.status === 'completed').length > 0 
+                        ? `${Math.round((users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length / responses.filter(r => r.status === 'completed').length) * 100)}%`
+                        : '0%'
+                      }
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* פילוח רכישות לפי סוג */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right">פילוח רכישות לפי סוג מוצר</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {/* דוח מלא רגיל */}
+                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                      <div className="text-right flex-1">
+                        <div className="font-semibold text-blue-900">דו"ח מלא (299 ₪)</div>
+                        <div className="text-sm text-blue-700">
+                          {users.filter(u => u.has_purchased_full_report && !u.express_delivery).length} רכישות
+                        </div>
+                      </div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        {users.filter(u => u.has_purchased_full_report && !u.express_delivery).length * 299} ₪
+                      </div>
+                    </div>
+
+                    {/* דוח מלא מואץ */}
+                    <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+                      <div className="text-right flex-1">
+                        <div className="font-semibold text-purple-900">דו"ח מלא + מואץ (378 ₪)</div>
+                        <div className="text-sm text-purple-700">
+                          {users.filter(u => u.has_purchased_full_report && u.express_delivery).length} רכישות
+                        </div>
+                      </div>
+                      <div className="text-2xl font-bold text-purple-600">
+                        {users.filter(u => u.has_purchased_full_report && u.express_delivery).length * 378} ₪
+                      </div>
+                    </div>
+
+                    {/* הורדת תשובות */}
+                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                      <div className="text-right flex-1">
+                        <div className="font-semibold text-green-900">הורדת תשובות (59 ₪)</div>
+                        <div className="text-sm text-green-700">
+                          {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length} רכישות
+                        </div>
+                      </div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59} ₪
+                      </div>
+                    </div>
+
+                    {/* סה"כ */}
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg border-2 border-green-300">
+                      <div className="text-right flex-1">
+                        <div className="font-bold text-lg text-gray-900">סה"כ הכנסות</div>
+                      </div>
+                      <div className="text-3xl font-bold text-green-700">
+                        {
+                          users.filter(u => u.has_purchased_full_report && !u.express_delivery).length * 299 +
+                          users.filter(u => u.has_purchased_full_report && u.express_delivery).length * 378 +
+                          users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59
+                        } ₪
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* רשימת רוכשים */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right">רשימת רוכשים ({users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).map(user => {
+                      const userReports = reports.filter(r => r.user_email === user.email);
+                      const purchaseType = user.has_purchased_full_report 
+                        ? (user.express_delivery ? 'דו"ח מלא + מואץ (378 ₪)' : 'דו"ח מלא (299 ₪)')
+                        : 'הורדת תשובות (59 ₪)';
+                      const amount = user.has_purchased_full_report 
+                        ? (user.express_delivery ? 378 : 299)
+                        : 59;
+
+                      return (
+                        <Card key={user.id} className="border">
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between flex-row-reverse">
+                              <div className="text-right flex-1">
+                                <h4 className="font-semibold">{user.full_name || 'שם לא זמין'}</h4>
+                                <p className="text-sm text-gray-600">{user.email}</p>
+                                <div className="flex gap-2 mt-2 flex-wrap justify-end">
+                                  <Badge className="bg-green-100 text-green-800 text-xs">
+                                    {purchaseType}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    {userReports.length} דוחות
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    הצטרף: {format(new Date(user.created_date), 'dd/MM/yyyy')}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <div className="text-2xl font-bold text-green-600">
+                                {amount} ₪
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+
+                    {users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length === 0 && (
+                      <div className="text-center py-12">
+                        <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500">אין רכישות עדיין</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="seo-settings">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right">הגדרות SEO ופיקסלים</CardTitle>
+                  <p className="text-sm text-gray-600 text-right mt-2">
+                    הגדר פיקסלי מעקב וכלי אנליטיקס לאתר
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {/* Facebook Pixel */}
+                    <div>
+                      <Label className="text-right block mb-2">Facebook Pixel ID</Label>
+                      <Input
+                        value={siteSettings.find(s => s.setting_key === 'facebook_pixel')?.setting_value || ''}
+                        onChange={async (e) => {
+                          const value = e.target.value;
+                          const existing = siteSettings.find(s => s.setting_key === 'facebook_pixel');
+                          
+                          try {
+                            if (existing) {
+                              await base44.entities.SiteSettings.update(existing.id, { setting_value: value });
+                            } else {
+                              await base44.entities.SiteSettings.create({
+                                setting_key: 'facebook_pixel',
+                                setting_value: value,
+                                description: 'Facebook Pixel for tracking',
+                                active: true
+                              });
+                            }
+                            await loadData();
+                          } catch (error) {
+                            console.error('Error saving Facebook Pixel:', error);
+                          }
+                        }}
+                        placeholder="הכנס Facebook Pixel ID"
+                        className="text-left"
+                        dir="ltr"
+                      />
+                      <p className="text-xs text-gray-500 mt-1 text-right">
+                        ניתן למצוא את ה-Pixel ID בפייסבוק Business Manager
+                      </p>
+                    </div>
+
+                    {/* Google Analytics */}
+                    <div>
+                      <Label className="text-right block mb-2">Google Analytics Measurement ID</Label>
+                      <Input
+                        value={siteSettings.find(s => s.setting_key === 'google_analytics')?.setting_value || ''}
+                        onChange={async (e) => {
+                          const value = e.target.value;
+                          const existing = siteSettings.find(s => s.setting_key === 'google_analytics');
+                          
+                          try {
+                            if (existing) {
+                              await base44.entities.SiteSettings.update(existing.id, { setting_value: value });
+                            } else {
+                              await base44.entities.SiteSettings.create({
+                                setting_key: 'google_analytics',
+                                setting_value: value,
+                                description: 'Google Analytics Measurement ID',
+                                active: true
+                              });
+                            }
+                            await loadData();
+                          } catch (error) {
+                            console.error('Error saving Google Analytics:', error);
+                          }
+                        }}
+                        placeholder="G-XXXXXXXXXX"
+                        className="text-left"
+                        dir="ltr"
+                      />
+                      <p className="text-xs text-gray-500 mt-1 text-right">
+                        Measurement ID מתחיל ב-G- ונמצא ב-Google Analytics Admin
+                      </p>
+                    </div>
+
+                    {/* Google Tag Manager */}
+                    <div>
+                      <Label className="text-right block mb-2">Google Tag Manager ID (אופציונלי)</Label>
+                      <Input
+                        value={siteSettings.find(s => s.setting_key === 'google_tag_manager')?.setting_value || ''}
+                        onChange={async (e) => {
+                          const value = e.target.value;
+                          const existing = siteSettings.find(s => s.setting_key === 'google_tag_manager');
+                          
+                          try {
+                            if (existing) {
+                              await base44.entities.SiteSettings.update(existing.id, { setting_value: value });
+                            } else {
+                              await base44.entities.SiteSettings.create({
+                                setting_key: 'google_tag_manager',
+                                setting_value: value,
+                                description: 'Google Tag Manager Container ID',
+                                active: true
+                              });
+                            }
+                            await loadData();
+                          } catch (error) {
+                            console.error('Error saving GTM:', error);
+                          }
+                        }}
+                        placeholder="GTM-XXXXXXX"
+                        className="text-left"
+                        dir="ltr"
+                      />
+                      <p className="text-xs text-gray-500 mt-1 text-right">
+                        Container ID מתחיל ב-GTM- ונמצא ב-Google Tag Manager
+                      </p>
+                    </div>
+
+                    {/* הוראות יישום */}
+                    <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                      <h3 className="font-semibold text-blue-900 mb-3 text-right">איך להטמיע את הפיקסלים?</h3>
+                      <div className="space-y-2 text-sm text-blue-800 text-right">
+                        <p>1. הזן את הקודים המתאימים בשדות למעלה</p>
+                        <p>2. הפיקסלים יתווספו אוטומטית לכל עמודי האתר</p>
+                        <p>3. ניתן לאמת התקנה דרך כלי האבחון של Facebook/Google</p>
+                      </div>
+                    </div>
+
+                    {/* סטטוס פעיל */}
+                    <Card className="bg-green-50 border-green-200">
+                      <CardContent className="p-4">
+                        <div className="text-right">
+                          <h4 className="font-semibold text-green-900 mb-2">פיקסלים פעילים:</h4>
+                          <div className="space-y-2">
+                            {siteSettings.filter(s => s.active && s.setting_value).map(setting => (
+                              <div key={setting.id} className="flex items-center gap-2 flex-row-reverse">
+                                <CheckCircle className="w-4 h-4 text-green-600" />
+                                <span className="text-sm">
+                                  {setting.setting_key === 'facebook_pixel' && 'Facebook Pixel'}
+                                  {setting.setting_key === 'google_analytics' && 'Google Analytics'}
+                                  {setting.setting_key === 'google_tag_manager' && 'Google Tag Manager'}
+                                </span>
+                                <code className="text-xs bg-white px-2 py-1 rounded">{setting.setting_value}</code>
+                              </div>
+                            ))}
+                            {siteSettings.filter(s => s.active && s.setting_value).length === 0 && (
+                              <p className="text-sm text-gray-600">לא הוגדרו פיקסלים עדיין</p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
           </Tabs>
