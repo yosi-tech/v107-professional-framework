@@ -1414,7 +1414,11 @@ export default function AdminReports() {
               </div>
 
               <div className="grid gap-4">
-                {emailTemplates.map(template => (
+                {emailTemplates.map(template => {
+                  const [showPreview, setShowPreview] = React.useState(false);
+                  const [previewLangLocal, setPreviewLangLocal] = React.useState('he');
+
+                  return (
                   <Card key={template.id} className="hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between gap-4">
@@ -1459,9 +1463,61 @@ export default function AdminReports() {
                               </Badge>
                             )}
                           </div>
+
+                          {showPreview && (
+                            <div className="mt-4 space-y-3">
+                              <div className="flex justify-center gap-2">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant={previewLangLocal === 'he' ? 'default' : 'outline'}
+                                  onClick={() => setPreviewLangLocal('he')}
+                                >
+                                  🇮🇱 עברית
+                                </Button>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant={previewLangLocal === 'en' ? 'default' : 'outline'}
+                                  onClick={() => setPreviewLangLocal('en')}
+                                >
+                                  🇬🇧 English
+                                </Button>
+                              </div>
+
+                              <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="text-sm font-medium mb-2 text-right">
+                                  {previewLangLocal === 'he' ? 'נושא: ' : 'Subject: '}
+                                  {previewLangLocal === 'he' ? template.subject_he : template.subject_en}
+                                </p>
+                                <div className="border rounded-lg bg-white overflow-hidden shadow">
+                                  <iframe
+                                    srcDoc={(previewLangLocal === 'he' ? template.content_he : template.content_en)
+                                      .replace(/{userName}/g, previewLangLocal === 'he' ? 'ישראל ישראלי' : 'John Doe')
+                                      .replace(/{questionnaireUrl}/g, '#questionnaire')
+                                      .replace(/{reportUrl}/g, '#report')
+                                      .replace(/{surveyUrl}/g, '#survey')
+                                      .replace(/{couponCode}/g, 'DEMO50')
+                                      .replace(/{purchaseUrl}/g, '#purchase')
+                                    }
+                                    className="w-full h-[400px] border-0"
+                                    title="Email Preview"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex flex-col gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowPreview(!showPreview)}
+                          >
+                            <Eye className="w-4 h-4 ml-2" />
+                            {showPreview ? 'סגור תצוגה' : 'תצוגה מקדימה'}
+                          </Button>
                           <Button
                             variant="outline"
                             size="sm"
@@ -1477,7 +1533,8 @@ export default function AdminReports() {
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                );
+                })}
 
                 {emailTemplates.length === 0 && (
                   <Card>
@@ -1787,6 +1844,7 @@ export default function AdminReports() {
         aiPrompt: ''
       });
       const [isGeneratingAI, setIsGeneratingAI] = React.useState(false);
+      const [previewLang, setPreviewLang] = React.useState('he');
 
       React.useEffect(() => {
       if (template) {
@@ -1912,6 +1970,53 @@ export default function AdminReports() {
           </DialogDescription>
         </DialogHeader>
 
+        <Tabs defaultValue="edit" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="edit">עריכת תבנית</TabsTrigger>
+            <TabsTrigger value="preview">תצוגה מקדימה</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="preview" className="space-y-4">
+            <div className="flex justify-center gap-2 mb-4">
+              <Button
+                type="button"
+                variant={previewLang === 'he' ? 'default' : 'outline'}
+                onClick={() => setPreviewLang('he')}
+              >
+                🇮🇱 עברית
+              </Button>
+              <Button
+                type="button"
+                variant={previewLang === 'en' ? 'default' : 'outline'}
+                onClick={() => setPreviewLang('en')}
+              >
+                🇬🇧 English
+              </Button>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold mb-2 text-right">
+                {previewLang === 'he' ? 'נושא: ' : 'Subject: '}
+                {previewLang === 'he' ? formData.subject_he : formData.subject_en}
+              </h3>
+              <div className="border rounded-lg bg-white overflow-hidden shadow-lg">
+                <iframe
+                  srcDoc={(previewLang === 'he' ? formData.content_he : formData.content_en)
+                    .replace('{userName}', previewLang === 'he' ? 'ישראל ישראלי' : 'John Doe')
+                    .replace('{questionnaireUrl}', '#questionnaire')
+                    .replace('{reportUrl}', '#report')
+                    .replace('{surveyUrl}', '#survey')
+                    .replace('{couponCode}', 'DEMO50')
+                    .replace('{purchaseUrl}', '#purchase')
+                  }
+                  className="w-full h-[600px] border-0"
+                  title="Email Preview"
+                />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="edit">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -2122,9 +2227,9 @@ export default function AdminReports() {
                 </p>
               </div>
             </div>
-          </div>
+            </div>
 
-          <div className="flex gap-3 pt-4 border-t">
+            <div className="flex gap-3 pt-4 border-t">
             <Button
               type="button"
               variant="outline"
@@ -2139,9 +2244,11 @@ export default function AdminReports() {
             >
               שמור תבנית
             </Button>
-          </div>
-        </form>
-      </DialogContent>
-      </Dialog>
+            </div>
+            </form>
+            </TabsContent>
+            </Tabs>
+            </DialogContent>
+            </Dialog>
       );
       }
