@@ -1572,6 +1572,28 @@ export default function AdminReports() {
                   <p className="text-gray-600 text-sm mt-1 text-right">רשימת משתמשים שהשלימו שאלון V107 אך לא רכשו דו"ח מלא או הורדת תשובות.</p>
                 </CardHeader>
                 <CardContent>
+                  <Tabs defaultValue="all" className="w-full">
+                    <TabsList className="grid w-full grid-cols-3 mb-4">
+                      <TabsTrigger value="all">הכל ({abandonedUsers.length})</TabsTrigger>
+                      <TabsTrigger value="sent">נשלחו מיילים ({abandonedUsers.filter(u => {
+                        const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
+                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                        return emailLogs.some(log =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                          (log.related_user_email === userEmail || log.to_email === userEmail)
+                        );
+                      }).length})</TabsTrigger>
+                      <TabsTrigger value="not-sent">לא נשלחו מיילים ({abandonedUsers.filter(u => {
+                        const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
+                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                        return !emailLogs.some(log =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                          (log.related_user_email === userEmail || log.to_email === userEmail)
+                        );
+                      }).length})</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="all">
                 {abandonedUsers.length === 0 ? (
                   <div className="text-center py-8">
                     <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
@@ -1683,10 +1705,229 @@ export default function AdminReports() {
                     })}
                   </div>
                 )}
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+                    </TabsContent>
+
+                    <TabsContent value="sent">
+                {abandonedUsers.filter(u => {
+                  const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
+                  const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                  return emailLogs.some(log =>
+                    (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                    (log.related_user_email === userEmail || log.to_email === userEmail)
+                  );
+                }).length === 0 ? (
+                  <div className="text-center py-8">
+                    <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-600">אין משתמשים שנשלחו להם מיילים</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {abandonedUsers.filter(u => {
+                      const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
+                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                      return emailLogs.some(log =>
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                        (log.related_user_email === userEmail || log.to_email === userEmail)
+                      );
+                    }).map(user => {
+                      const userResponse = responses.find(r =>
+                        r.created_by === user.email || r.personal_info?.email === user.email
+                      );
+                      const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
+
+                      // בדיקה האם המשתמש השלים שאלון לאחר שנשלח לו מייל נטישה
+                      const abandonmentEmail = emailLogs.find(log => 
+                        log.email_type === 'abandonment_survey' && 
+                        (log.related_user_email === user.email || log.to_email === user.email)
+                      );
+                      const completedAfterAbandonment = abandonmentEmail && userResponse && 
+                        new Date(userResponse.created_date) > new Date(abandonmentEmail.created_date);
+
+                      // ספירת מיילי נטישה שנשלחו למשתמש
+                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+                      const abandonmentEmailsCount = emailLogs.filter(log =>
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                        (log.related_user_email === userEmail || log.to_email === userEmail)
+                      ).length;
+
+                      return (
+                        <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
+                          <CardContent className="p-3 sm:p-4">
+                            <div className="flex flex-col gap-3">
+                              <div className="text-right">
+                                <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
+                                <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
+                                {userResponse?.created_date && (
+                                  <>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                      סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
+                                    </p>
+                                    <p className="text-xs font-semibold text-orange-600 mt-1">
+                                      {(() => {
+                                        const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
+                                        return `עברו ${hoursAgo} שעות`;
+                                      })()}
+                                    </p>
+                                  </>
+                                )}
+                              </div>
+
+                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
+                                {completedAfterAbandonment ? (
+                                  <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse justify-center text-xs py-2">
+                                    <CheckCircle className="w-4 h-4" />
+                                    השלים לאחר מייל נטישה
+                                  </Badge>
+                                ) : (
+                                  <Button
+                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                    disabled={!userResponse || isSending}
+                                    className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
+                                  >
+                                    <span>שלח מייל נטישה</span>
+                                    {isSending ? (
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                      <Mail className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                )}
+
+                                <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
+                                  <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                    <CheckCircle className="w-3 h-3" />
+                                    <span className="hidden sm:inline">השלים שאלון</span>
+                                    <span className="sm:hidden">השלים</span>
+                                  </Badge>
+
+                                  {abandonmentEmailsCount > 0 ? (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        const userEmails = emailLogs.filter(log =>
+                                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                                          (log.related_user_email === userEmail || log.to_email === userEmail)
+                                        );
+                                        setViewingEmails(userEmails);
+                                      }}
+                                      className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2"
+                                    >
+                                      <Mail className="w-3 h-3" />
+                                      <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה</span>
+                                      <span className="sm:hidden">{abandonmentEmailsCount}</span>
+                                    </Button>
+                                  ) : (
+                                    <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
+                                      <Mail className="w-3 h-3" />
+                                      <span className="hidden sm:inline">לא נשלח מייל נטישה</span>
+                                      <span className="sm:hidden">לא נשלח</span>
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                    </div>
+                    )}
+                    </TabsContent>
+
+                    <TabsContent value="not-sent">
+                    {abandonedUsers.filter(u => {
+                    const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
+                    const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                    return !emailLogs.some(log =>
+                    (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                    (log.related_user_email === userEmail || log.to_email === userEmail)
+                    );
+                    }).length === 0 ? (
+                    <div className="text-center py-8">
+                    <CheckCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-600">אין משתמשים ללא מיילים - הכל מטופל!</p>
+                    </div>
+                    ) : (
+                    <div className="space-y-4">
+                    {abandonedUsers.filter(u => {
+                      const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
+                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                      return !emailLogs.some(log =>
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                        (log.related_user_email === userEmail || log.to_email === userEmail)
+                      );
+                    }).map(user => {
+                      const userResponse = responses.find(r =>
+                        r.created_by === user.email || r.personal_info?.email === user.email
+                      );
+                      const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
+
+                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+
+                      return (
+                        <Card key={user.id} className="border-orange-200">
+                          <CardContent className="p-3 sm:p-4">
+                            <div className="flex flex-col gap-3">
+                              <div className="text-right">
+                                <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
+                                <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
+                                {userResponse?.created_date && (
+                                  <>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                      סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
+                                    </p>
+                                    <p className="text-xs font-semibold text-orange-600 mt-1">
+                                      {(() => {
+                                        const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
+                                        return `עברו ${hoursAgo} שעות`;
+                                      })()}
+                                    </p>
+                                  </>
+                                )}
+                              </div>
+
+                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
+                                <Button
+                                  onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                  disabled={!userResponse || isSending}
+                                  className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
+                                >
+                                  <span>שלח מייל נטישה</span>
+                                  {isSending ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                  ) : (
+                                    <Mail className="w-4 h-4" />
+                                  )}
+                                </Button>
+
+                                <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
+                                  <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                    <CheckCircle className="w-3 h-3" />
+                                    <span className="hidden sm:inline">השלים שאלון</span>
+                                    <span className="sm:hidden">השלים</span>
+                                  </Badge>
+
+                                  <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
+                                    <Mail className="w-3 h-3" />
+                                    <span className="hidden sm:inline">לא נשלח מייל נטישה</span>
+                                    <span className="sm:hidden">לא נשלח</span>
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                    </div>
+                    )}
+                    </TabsContent>
+                    </Tabs>
+                    </CardContent>
+                    </Card>
+                    </div>
+                    </TabsContent>
 
           <TabsContent value="email-templates">
             <div className="space-y-6">
