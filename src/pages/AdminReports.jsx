@@ -2737,59 +2737,88 @@ export default function AdminReports() {
                   <CardTitle className="text-right">פילוח רכישות לפי סוג מוצר</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {/* דוח מלא רגיל */}
-                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                      <div className="text-right flex-1">
-                        <div className="font-semibold text-blue-900">דו"ח מלא (299 ₪)</div>
-                        <div className="text-sm text-blue-700">
-                          {users.filter(u => u.has_purchased_full_report && !u.express_delivery).length} רכישות
-                        </div>
-                      </div>
-                      <div className="text-2xl font-bold text-blue-600">
-                        {users.filter(u => u.has_purchased_full_report && !u.express_delivery).length * 299} ₪
-                      </div>
-                    </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-right py-3 px-4 font-semibold">סוג מוצר</th>
+                          <th className="text-center py-3 px-4 font-semibold">כמות רכישות</th>
+                          <th className="text-left py-3 px-4 font-semibold">סה"כ הכנסות</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b hover:bg-blue-50">
+                          <td className="py-4 px-4 text-right">
+                            <div className="font-semibold text-blue-900">דו"ח מלא</div>
+                            <div className="text-sm text-gray-600">299 ₪ למוצר</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <Badge className="bg-blue-100 text-blue-800">
+                              {users.filter(u => u.has_purchased_full_report && !u.express_delivery).length}
+                            </Badge>
+                          </td>
+                          <td className="text-left py-4 px-4">
+                            <div className="text-xl font-bold text-blue-600">
+                              {users.filter(u => u.has_purchased_full_report && !u.express_delivery).length * 299} ₪
+                            </div>
+                          </td>
+                        </tr>
 
-                    {/* דוח מלא מואץ */}
-                    <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
-                      <div className="text-right flex-1">
-                        <div className="font-semibold text-purple-900">דו"ח מלא + מואץ (378 ₪)</div>
-                        <div className="text-sm text-purple-700">
-                          {users.filter(u => u.has_purchased_full_report && u.express_delivery).length} רכישות
-                        </div>
-                      </div>
-                      <div className="text-2xl font-bold text-purple-600">
-                        {users.filter(u => u.has_purchased_full_report && u.express_delivery).length * 378} ₪
-                      </div>
-                    </div>
+                        <tr className="border-b hover:bg-purple-50">
+                          <td className="py-4 px-4 text-right">
+                            <div className="font-semibold text-purple-900">דו"ח מלא + מואץ</div>
+                            <div className="text-sm text-gray-600">378 ₪ למוצר</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <Badge className="bg-purple-100 text-purple-800">
+                              {users.filter(u => u.has_purchased_full_report && u.express_delivery).length}
+                            </Badge>
+                          </td>
+                          <td className="text-left py-4 px-4">
+                            <div className="text-xl font-bold text-purple-600">
+                              {users.filter(u => u.has_purchased_full_report && u.express_delivery).length * 378} ₪
+                            </div>
+                          </td>
+                        </tr>
 
-                    {/* הורדת תשובות */}
-                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                      <div className="text-right flex-1">
-                        <div className="font-semibold text-green-900">הורדת תשובות (59 ₪)</div>
-                        <div className="text-sm text-green-700">
-                          {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length} רכישות
-                        </div>
-                      </div>
-                      <div className="text-2xl font-bold text-green-600">
-                        {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59} ₪
-                      </div>
-                    </div>
+                        <tr className="border-b hover:bg-green-50">
+                          <td className="py-4 px-4 text-right">
+                            <div className="font-semibold text-green-900">הורדת תשובות</div>
+                            <div className="text-sm text-gray-600">59 ₪ למוצר</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <Badge className="bg-green-100 text-green-800">
+                              {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length}
+                            </Badge>
+                          </td>
+                          <td className="text-left py-4 px-4">
+                            <div className="text-xl font-bold text-green-600">
+                              {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59} ₪
+                            </div>
+                          </td>
+                        </tr>
 
-                    {/* סה"כ */}
-                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg border-2 border-green-300">
-                      <div className="text-right flex-1">
-                        <div className="font-bold text-lg text-gray-900">סה"כ הכנסות</div>
-                      </div>
-                      <div className="text-3xl font-bold text-green-700">
-                        {
-                          users.filter(u => u.has_purchased_full_report && !u.express_delivery).length * 299 +
-                          users.filter(u => u.has_purchased_full_report && u.express_delivery).length * 378 +
-                          users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59
-                        } ₪
-                      </div>
-                    </div>
+                        <tr className="bg-gradient-to-l from-green-100 to-blue-100 border-t-2 border-green-500">
+                          <td className="py-4 px-4 text-right">
+                            <div className="text-xl font-bold text-gray-900">סה"כ הכנסות</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <Badge className="bg-gray-800 text-white">
+                              {users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length}
+                            </Badge>
+                          </td>
+                          <td className="text-left py-4 px-4">
+                            <div className="text-3xl font-bold text-green-700">
+                              {
+                                users.filter(u => u.has_purchased_full_report && !u.express_delivery).length * 299 +
+                                users.filter(u => u.has_purchased_full_report && u.express_delivery).length * 378 +
+                                users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59
+                              } ₪
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </CardContent>
               </Card>
