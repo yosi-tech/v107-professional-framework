@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Testimonial } from "@/entities/Testimonial";
 import { useTranslation } from "@/components/i18n/useTranslation";
 import { motion } from "framer-motion";
 
@@ -44,7 +43,7 @@ export default function Home() {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const data = await Testimonial.list('-created_date');
+        const data = await base44.entities.Testimonial.list('-created_date');
         setTestimonials(data);
       } catch (error) {
         console.error("Failed to fetch testimonials:", error);
