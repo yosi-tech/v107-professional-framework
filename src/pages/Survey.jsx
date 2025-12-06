@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -73,8 +72,12 @@ export default function Survey() {
       } catch (e) {
         console.error("User not logged in");
         // הפניה להתחברות עם חזרה לסקר
-        const currentUrl = window.location.href;
-        await base44.auth.redirectToLogin(currentUrl);
+        try {
+          await base44.auth.redirectToLogin(window.location.href);
+        } catch (redirectError) {
+          // אם יש בעיה בהפניה, נעביר לדף הבית
+          window.location.href = createPageUrl('Home');
+        }
         return;
       } finally {
         setIsLoading(false);

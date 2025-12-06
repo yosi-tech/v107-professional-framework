@@ -2142,6 +2142,92 @@ export default function AdminReports() {
                     </div>
                     </TabsContent>
 
+          <TabsContent value="survey-results">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-right">תוצאות סקר נטישה</CardTitle>
+                <p className="text-gray-600 text-sm mt-1 text-right" dir="rtl">
+                  תשובות ממשתמשים שמילאו את סקר הנטישה
+                </p>
+              </CardHeader>
+              <CardContent>
+                {surveyResponses.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500 text-lg">אין עדיין תוצאות סקר</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {surveyResponses.map((survey) => (
+                      <Card key={survey.id} className="border-r-4 border-r-purple-500">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4 flex-row-reverse">
+                            <div className="text-right flex-1">
+                              <p className="font-semibold text-gray-900">
+                                {survey.user_email || survey.created_by || 'משתמש'}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {new Date(survey.created_date).toLocaleDateString('he-IL', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                              {survey.coupon_code && (
+                                <div className="mt-2 inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
+                                  קופון: {survey.coupon_code}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-4 text-right" dir="rtl">
+                            {survey.responses.q1 && (
+                              <div className="bg-gray-50 p-4 rounded-lg">
+                                <p className="text-sm font-semibold text-gray-700 mb-2">
+                                  מה הסיבה העיקרית שבחרת שלא לרכוש את הדו"ח עכשיו?
+                                </p>
+                                <p className="text-gray-900">{survey.responses.q1}</p>
+                              </div>
+                            )}
+                            
+                            {survey.responses.q2 && (
+                              <div className="bg-gray-50 p-4 rounded-lg">
+                                <p className="text-sm font-semibold text-gray-700 mb-2">
+                                  באיזה מחיר היית שוקל/ת לרכוש את הדו"ח המלא?
+                                </p>
+                                <p className="text-gray-900">{survey.responses.q2}</p>
+                              </div>
+                            )}
+                            
+                            {survey.responses.q3 && (
+                              <div className="bg-gray-50 p-4 rounded-lg">
+                                <p className="text-sm font-semibold text-gray-700 mb-2">
+                                  מה היה יכול לשכנע אותך לרכוש את הדו"ח?
+                                </p>
+                                <p className="text-gray-900">{survey.responses.q3}</p>
+                              </div>
+                            )}
+                            
+                            {survey.responses.q4 && (
+                              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <p className="text-sm font-semibold text-blue-900 mb-2">
+                                  הערות והצעות לשיפור:
+                                </p>
+                                <p className="text-blue-900">{survey.responses.q4}</p>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="email-templates">
             <div className="space-y-6">
               <div className="flex justify-end items-center">
