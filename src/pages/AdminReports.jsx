@@ -2972,6 +2972,9 @@ export default function AdminReports() {
       });
       const [isGeneratingAI, setIsGeneratingAI] = React.useState(false);
       const [previewLang, setPreviewLang] = React.useState('he');
+      const [contentMode, setContentMode] = React.useState('simple'); // 'simple' or 'html'
+      const [simpleContent, setSimpleContent] = React.useState({ he: '', en: '' });
+      const [isConvertingToHtml, setIsConvertingToHtml] = React.useState(false);
 
       React.useEffect(() => {
       if (template) {
@@ -3009,13 +3012,78 @@ export default function AdminReports() {
       }
       }, [template]);
 
-      const handleSubmit = (e) => {
-      e.preventDefault();
-      if (!formData.name_he || !formData.subject_he || !formData.content_he) {
-      alert('יש למלא לפחות את השדות בעברית');
-      return;
-      }
-      onSave(formData);
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!formData.name_he || !formData.subject_he) {
+          alert('יש למלא לפחות את השם והנושא בעברית');
+          return;
+        }
+
+        // אם במצב Simple ויש תוכן, המר ל-HTML
+        if (contentMode === 'simple' && (simpleContent.he || simpleContent.en)) {
+          setIsConvertingToHtml(true);
+          try {
+            const convertedHtml = await convertSimpleToHtml(simpleContent.he, simpleContent.en);
+            const finalData = {
+              ...formData,
+              content_he: convertedHtml.content_he,
+              content_en: convertedHtml.content_en
+            };
+            onSave(finalData);
+          } catch (error) {
+            alert('שגיאה בהמרת התוכן ל-HTML: ' + error.message);
+          } finally {
+            setIsConvertingToHtml(false);
+          }
+          return;
+        }
+
+        if (!formData.content_he) {
+          alert('יש למלא את תוכן המייל בעברית');
+          return;
+        }
+        onSave(formData);
+      };
+
+      const convertSimpleToHtml = async (textHe, textEn) => {
+        const prompt = `המר את התוכן הטקסטואלי הבא לתבניות HTML מעוצבות ומקצועיות עבור מיילים.
+
+תוכן בעברית:
+${textHe || 'אין תוכן'}
+
+תוכן באנגלית:
+${textEn || 'אין תוכן'}
+
+דרישות:
+1. צור HTML מעוצב יפה ומקצועי עם CSS מוטמע
+2. עיצוב responsive
+3. צבעים מקצועיים (#3b82f6 כצבע ראשי, #1e3a8a כצבע משני, #f59e0b כצבע מבטא)
+4. כפתורים בולטים עם gradient
+5. גרסה עברית ב-RTL וגרסה אנגלית ב-LTR
+6. שמור על המשתנים כמו {userName}, {questionnaireUrl}, {reportUrl}, {surveyUrl}, {couponCode}, {purchaseUrl}
+7. הוסף אייקוני אימוג'י מתאימים
+8. כלול header עם לוגו V107 וכותרת
+9. כלול footer עם זכויות יוצרים
+10. טקסט קריא ונגיש
+
+החזר JSON בלבד:
+{
+  "content_he": "HTML מלא בעברית",
+  "content_en": "Full HTML in English"
+}`;
+
+        const result = await base44.integrations.Core.InvokeLLM({
+          prompt: prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              content_he: { type: "string" },
+              content_en: { type: "string" }
+            }
+          }
+        });
+
+        return result;
       };
 
       const handleGenerateWithAI = async () => {
@@ -3251,7 +3319,27 @@ export default function AdminReports() {
           </div>
 
           <div className="border-t pt-4">
-            <h3 className="font-semibold mb-3 text-right">תוכן בעברית</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-right">תוכן המייל</h3>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={contentMode === 'simple' ? 'default' : 'outline'}
+                  onClick={() => setContentMode('simple')}
+                >
+                  ✍️ טקסט פשוט
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={contentMode === 'html' ? 'default' : 'outline'}
+                  onClick={() => setContentMode('html')}
+                >
+                  💻 HTML
+                </Button>
+              </div>
+            </div>
 
             <div className="space-y-4">
               <div>
@@ -3287,19 +3375,35 @@ export default function AdminReports() {
                 />
               </div>
 
-              <div>
-                <Label>תוכן המייל (HTML)</Label>
-                <Textarea
-                  value={formData.content_he}
-                  onChange={(e) => setFormData({...formData, content_he: e.target.value})}
-                  placeholder="תוכן HTML של המייל..."
-                  className="min-h-[200px] font-mono text-sm text-right"
-                  dir="rtl"
-                />
-                <p className="text-xs text-gray-500 mt-1 text-right">
-                  ניתן להשתמש במשתנים: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
-                </p>
-              </div>
+              {contentMode === 'simple' ? (
+                <div>
+                  <Label>תוכן המייל בעברית (טקסט פשוט)</Label>
+                  <Textarea
+                    value={simpleContent.he}
+                    onChange={(e) => setSimpleContent({...simpleContent, he: e.target.value})}
+                    placeholder="כתוב את תוכן המייל בשפה רגילה... המערכת תמיר אותו אוטומטית לעיצוב מקצועי."
+                    className="min-h-[200px] text-right"
+                    dir="rtl"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 text-right">
+                    ניתן להשתמש במשתנים: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <Label>תוכן המייל (HTML)</Label>
+                  <Textarea
+                    value={formData.content_he}
+                    onChange={(e) => setFormData({...formData, content_he: e.target.value})}
+                    placeholder="תוכן HTML של המייל..."
+                    className="min-h-[200px] font-mono text-sm text-right"
+                    dir="rtl"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 text-right">
+                    ניתן להשתמש במשתנים: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -3340,19 +3444,35 @@ export default function AdminReports() {
                 />
               </div>
 
-              <div>
-                <Label>Email Content (HTML)</Label>
-                <Textarea
-                  value={formData.content_en}
-                  onChange={(e) => setFormData({...formData, content_en: e.target.value})}
-                  placeholder="HTML email content..."
-                  className="min-h-[200px] font-mono text-sm text-left"
-                  dir="ltr"
-                />
-                <p className="text-xs text-gray-500 mt-1 text-left">
-                  Available variables: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
-                </p>
-              </div>
+              {contentMode === 'simple' ? (
+                <div>
+                  <Label>Email Content (Plain Text)</Label>
+                  <Textarea
+                    value={simpleContent.en}
+                    onChange={(e) => setSimpleContent({...simpleContent, en: e.target.value})}
+                    placeholder="Write your email content in plain language... The system will convert it to professional HTML."
+                    className="min-h-[200px] text-left"
+                    dir="ltr"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 text-left">
+                    Available variables: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <Label>Email Content (HTML)</Label>
+                  <Textarea
+                    value={formData.content_en}
+                    onChange={(e) => setFormData({...formData, content_en: e.target.value})}
+                    placeholder="HTML email content..."
+                    className="min-h-[200px] font-mono text-sm text-left"
+                    dir="ltr"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 text-left">
+                    Available variables: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
+                  </p>
+                </div>
+              )}
             </div>
             </div>
 
@@ -3360,14 +3480,23 @@ export default function AdminReports() {
             <Button
               type="submit"
               className="flex-1 bg-blue-600 hover:bg-blue-700"
+              disabled={isConvertingToHtml}
             >
-              שמור תבנית
+              {isConvertingToHtml ? (
+                <>
+                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                  ממיר ושומר...
+                </>
+              ) : (
+                'שמור תבנית'
+              )}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="flex-1"
+              disabled={isConvertingToHtml}
             >
               ביטול
             </Button>
