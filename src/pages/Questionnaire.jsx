@@ -4,7 +4,7 @@ import { User } from "@/entities/User";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, ArrowRight, ArrowLeft, Loader2, LogIn, Shield, Info, PlayCircle, User as UserIcon, FileText, Undo2 } from "lucide-react";
-import { useNavigate, unstable_useBlocker as useBlocker } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -459,7 +459,9 @@ export default function Questionnaire() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoginRequired, setIsLoginRequired] = useState(false);
+  const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const questions = language === 'he' ? questionsHe : questionsEn;
   const sectionTitles = language === 'he' ? sectionTitlesHe : sectionTitlesEn;
@@ -499,9 +501,14 @@ export default function Questionnaire() {
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
 
+  // Set navigation blocking status
+  useEffect(() => {
+    setShouldBlockNavigation(currentStep >= 0);
+  }, [currentStep]);
+
   // Warning before leaving questionnaire page (browser close/refresh)
   useEffect(() => {
-    if (currentStep >= 0) { // Only show warning if user is in the questionnaire (not intro)
+    if (shouldBlockNavigation) {
       const handleBeforeUnload = (e) => {
         e.preventDefault();
         e.returnValue = language === 'he' ? 
@@ -516,29 +523,41 @@ export default function Questionnaire() {
         window.removeEventListener('beforeunload', handleBeforeUnload);
       };
     }
-  }, [currentStep, language]);
+  }, [shouldBlockNavigation, language]);
 
-  // Block navigation to other pages within the app
-  const blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      currentStep >= 0 && // Only block if in questionnaire
-      currentLocation.pathname !== nextLocation.pathname
-  );
-
-  // Handle blocked navigation
+  // Intercept all Link clicks and navigation attempts
   useEffect(() => {
-    if (blocker.state === "blocked") {
-      const confirmMessage = language === 'he' ?
-        'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.' :
-        'Are you sure you want to leave? Your progress has been saved automatically and you can return to continue later.';
-      
-      if (window.confirm(confirmMessage)) {
-        blocker.proceed();
-      } else {
-        blocker.reset();
+    if (!shouldBlockNavigation) return;
+
+    const handleClick = (e) => {
+      // Check if clicked element or its parent is a link
+      const link = e.target.closest('a');
+      if (link && link.href) {
+        const targetUrl = new URL(link.href);
+        const currentUrl = new URL(window.location.href);
+        
+        // If navigating to a different page within the app
+        if (targetUrl.origin === currentUrl.origin && targetUrl.pathname !== currentUrl.pathname) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const confirmMessage = language === 'he' ?
+            'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.' :
+            'Are you sure you want to leave? Your progress has been saved automatically and you can return to continue later.';
+          
+          if (window.confirm(confirmMessage)) {
+            window.location.href = link.href;
+          }
+        }
       }
-    }
-  }, [blocker, language]);
+    };
+
+    document.addEventListener('click', handleClick, true);
+
+    return () => {
+      document.removeEventListener('click', handleClick, true);
+    };
+  }, [shouldBlockNavigation, language]);
 
   const autoSaveProgress = useCallback(async () => {
     if (!user) return;
