@@ -2855,9 +2855,9 @@ export default function AdminReports() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 max-h-[60vh] overflow-y-auto p-2">
-            {emailTemplates.filter(t => t.active && (t.template_type === 'abandonment_incomplete' || t.template_type === 'abandonment_reminder_96h' || t.template_type === 'abandonment_after_completion')).length === 0 ? (
+            {emailTemplates.filter(t => t.active).length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500 mb-4">אין תבניות נטישה פעילות במערכת</p>
+                <p className="text-gray-500 mb-4">אין תבניות מייל פעילות במערכת</p>
                 <Button
                   onClick={() => {
                     setTemplateSelectionDialog({ open: false, response: null });
@@ -2870,7 +2870,7 @@ export default function AdminReports() {
               </div>
             ) : (
               emailTemplates
-                .filter(t => t.active && (t.template_type === 'abandonment_incomplete' || t.template_type === 'abandonment_reminder_96h' || t.template_type === 'abandonment_after_completion'))
+                .filter(t => t.active)
                 .map(template => {
                   const isSending = sendingEmailType === `template_${template.id}_${templateSelectionDialog.response?.id}`;
                   return (
@@ -2885,6 +2885,12 @@ export default function AdminReports() {
                                 {template.template_type === 'abandonment_incomplete' && 'נטישה לפני סיום'}
                                 {template.template_type === 'abandonment_reminder_96h' && 'תזכורת 96 שעות'}
                                 {template.template_type === 'abandonment_after_completion' && 'נטישה אחרי סיום'}
+                                {template.template_type === 'full_report_purchase' && 'רכישת דוח מלא'}
+                                {template.template_type === 'answers_download_purchase' && 'רכישת תשובות'}
+                                {template.template_type === 'online_coaching_purchase' && 'רכישת ליווי'}
+                                {template.template_type === 'report_ready' && 'דוח מוכן'}
+                                {template.template_type === 'consultation_request' && 'בקשת ייעוץ'}
+                                {template.template_type === 'questionnaire_completion' && 'השלמת שאלון'}
                               </Badge>
                               {template.include_coupon && (
                                 <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
