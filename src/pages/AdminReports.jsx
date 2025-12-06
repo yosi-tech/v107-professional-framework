@@ -1649,11 +1649,22 @@ export default function AdminReports() {
                                   </Badge>
 
                                   {abandonmentEmailsCount > 0 ? (
-                                    <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        const userEmails = emailLogs.filter(log =>
+                                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                                          (log.related_user_email === user.email || log.to_email === user.email)
+                                        );
+                                        setViewingEmails(userEmails);
+                                      }}
+                                      className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2"
+                                    >
                                       <Mail className="w-3 h-3" />
-                                      <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה נשלחו</span>
-                                      <span className="sm:hidden">{abandonmentEmailsCount} מיילים</span>
-                                    </Badge>
+                                      <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה</span>
+                                      <span className="sm:hidden">{abandonmentEmailsCount}</span>
+                                    </Button>
                                   ) : (
                                     <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
                                       <Mail className="w-3 h-3" />
