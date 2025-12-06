@@ -1236,10 +1236,15 @@ export default function AdminReports() {
                                     שאלון בתהליך
                                   </Badge>
                                   
-                                  {abandonmentEmailsCount > 0 && (
+                                  {abandonmentEmailsCount > 0 ? (
                                     <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse">
                                       <Mail className="w-3 h-3" />
                                       {abandonmentEmailsCount} מיילי נטישה נשלחו
+                                    </Badge>
+                                  ) : (
+                                    <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse">
+                                      <Mail className="w-3 h-3" />
+                                      לא נשלח מייל נטישה
                                     </Badge>
                                   )}
                                 </div>
@@ -1341,10 +1346,15 @@ export default function AdminReports() {
                                   השלים שאלון
                                 </Badge>
 
-                                {abandonmentEmailsCount > 0 && (
+                                {abandonmentEmailsCount > 0 ? (
                                   <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse">
                                     <Mail className="w-3 h-3" />
                                     {abandonmentEmailsCount} מיילי נטישה נשלחו
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse">
+                                    <Mail className="w-3 h-3" />
+                                    לא נשלח מייל נטישה
                                   </Badge>
                                 )}
                               </div>
