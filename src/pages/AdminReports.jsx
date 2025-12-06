@@ -1153,18 +1153,18 @@ export default function AdminReports() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="text-right order-1 sm:order-2 w-full sm:w-auto">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">ניהול V107</h1>
+            <p className="text-sm sm:text-base text-gray-600">ניהול שאלונים, דו"חות ומשתמשים</p>
+          </div>
           <Button
             onClick={() => setSimulationDialog(true)}
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-purple-600 hover:bg-purple-700 order-2 sm:order-1 w-full sm:w-auto text-sm"
           >
             <DollarSign className="w-4 h-4 ml-2" />
             דמה רכישת מוצר
           </Button>
-          <div className="text-right">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">ניהול V107</h1>
-            <p className="text-gray-600">ניהול שאלונים, דו"חות ומשתמשים</p>
-          </div>
         </div>
 
         <Tabs defaultValue="reports" className="w-full">
@@ -1184,34 +1184,34 @@ export default function AdminReports() {
           </TabsList>
 
           <TabsContent value="reports">
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
               <Card>
                 <CardHeader className="flex flex-row-reverse items-center justify-between pb-2">
                   <FileText className="w-4 h-4 text-gray-500" />
-                  <CardTitle className="text-sm font-medium text-gray-600">שאלונים שהושלמו</CardTitle>
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">שאלונים שהושלמו</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-right">{responses.length}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-right">{responses.length}</div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row-reverse items-center justify-between pb-2">
                   <CheckCircle className="w-4 h-4 text-green-600" />
-                  <CardTitle className="text-sm font-medium text-gray-600">דו"חות שנוצרו</CardTitle>
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">דו"חות שנוצרו</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-green-600 text-right">{reports.length}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-green-600 text-right">{reports.length}</div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row-reverse items-center justify-between pb-2">
                   <Clock className="w-4 h-4 text-orange-600" />
-                  <CardTitle className="text-sm font-medium text-gray-600">ממתינים לדו"ח</CardTitle>
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">ממתינים לדו"ח</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-orange-600 text-right">
+                  <div className="text-xl sm:text-2xl font-bold text-orange-600 text-right">
                     {responses.length - reports.length}
                   </div>
                 </CardContent>
@@ -1258,32 +1258,32 @@ export default function AdminReports() {
 
                 return (
                   <Card key={response.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-3 flex-row-reverse">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0 w-full">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-row-reverse">
                             <div className="flex-1 min-w-0 text-right">
-                              <h3 className="text-lg font-semibold text-gray-900 truncate">
+                              <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
                                 {fullName}
                               </h3>
-                              <div className="flex items-center gap-1 text-sm text-gray-600 flex-wrap justify-end">
-                                <span className="flex items-center gap-1 flex-row-reverse">
+                              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 text-xs sm:text-sm text-gray-600">
+                                <span className="flex items-center gap-1 flex-row-reverse truncate max-w-full">
                                   <span className="truncate">{email}</span>
-                                  <Mail className="w-4 h-4" />
+                                  <Mail className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                                 </span>
                                 <span className="flex items-center gap-1 flex-row-reverse">
-                                  {format(new Date(response.created_date), 'dd/MM/yyyy HH:mm')}
-                                  <Calendar className="w-4 h-4" />
+                                  {format(new Date(response.created_date), 'dd/MM/yy HH:mm')}
+                                  <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                                 </span>
                               </div>
                             </div>
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                              <UserIcon className="w-5 h-5 text-blue-600" />
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                              <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                             </div>
                           </div>
 
-                          <div className="flex gap-2 mb-3 flex-wrap justify-end">
-                            <Badge variant="outline" className="flex items-center gap-1 flex-row-reverse">
+                          <div className="flex gap-1 sm:gap-2 mb-3 flex-wrap justify-end">
+                            <Badge variant="outline" className="flex items-center gap-1 flex-row-reverse text-xs">
                               {purchaseStatus}
                               {paymentAmount > 0 && ` (${paymentAmount} ₪)`}
                               <DollarSign className="w-3 h-3" />
@@ -1294,7 +1294,7 @@ export default function AdminReports() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setViewingEmails(emails)}
-                                className="h-6 text-xs flex items-center gap-1 flex-row-reverse"
+                                className="h-6 text-xs flex items-center gap-1 flex-row-reverse px-2"
                               >
                                 {emails.length} מיילים
                                 <Mail className="w-3 h-3" />
@@ -1302,7 +1302,7 @@ export default function AdminReports() {
                             )}
 
                             {existingReport && (
-                              <Badge className="bg-green-100 text-green-800 flex items-center gap-1 flex-row-reverse">
+                              <Badge className="bg-green-100 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
                                 יש דו"ח
                                 <CheckCircle className="w-3 h-3" />
                               </Badge>
@@ -1310,7 +1310,7 @@ export default function AdminReports() {
                           </div>
 
                           {(age || occupation) && (
-                            <div className="text-sm text-gray-600 text-right">
+                            <div className="text-xs sm:text-sm text-gray-600 text-right">
                               {age && `גיל: ${age}`}
                               {age && occupation && ' · '}
                               {occupation && `תחום: ${occupation}`}
@@ -1318,10 +1318,10 @@ export default function AdminReports() {
                           )}
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="outline" size="sm" disabled={isDeleting || isGenerating}>
+                              <Button variant="outline" size="sm" disabled={isDeleting || isGenerating} className="flex-1 sm:flex-none text-xs sm:text-sm">
                                 ▼ פעולות
                               </Button>
                             </DropdownMenuTrigger>
@@ -1450,47 +1450,15 @@ export default function AdminReports() {
 
                         return (
                           <Card key={user.id} className="border-yellow-300 bg-yellow-50">
-                            <CardContent className="p-4">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 flex-row-reverse">
-                                  <Button
-                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
-                                    disabled={!userResponse || isSending}
-                                    className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse"
-                                  >
-                                    <span>שלח מייל נטישה</span>
-                                    {isSending ? (
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
-                                      <Mail className="w-4 h-4" />
-                                    )}
-                                  </Button>
-                                  
-                                  <Badge variant="outline" className="bg-yellow-100 border-yellow-400 text-yellow-800 flex items-center gap-1 flex-row-reverse">
-                                    <Clock className="w-3 h-3" />
-                                    שאלון בתהליך
-                                  </Badge>
-                                  
-                                  {abandonmentEmailsCount > 0 ? (
-                                    <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse">
-                                      <Mail className="w-3 h-3" />
-                                      {abandonmentEmailsCount} מיילי נטישה נשלחו
-                                    </Badge>
-                                  ) : (
-                                    <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse">
-                                      <Mail className="w-3 h-3" />
-                                      לא נשלח מייל נטישה
-                                    </Badge>
-                                  )}
-                                </div>
-                                
+                            <CardContent className="p-3 sm:p-4">
+                              <div className="flex flex-col gap-3">
                                 <div className="text-right">
-                                  <h4 className="font-semibold">{user.full_name || 'שם לא זמין'}</h4>
-                                  <p className="text-sm text-gray-600">{user.email}</p>
+                                  <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
+                                  <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
                                   {userResponse?.created_date && (
                                     <>
                                       <p className="text-xs text-gray-500 mt-1">
-                                        התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yyyy HH:mm')}
+                                        התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                       </p>
                                       <p className="text-xs font-semibold text-yellow-700 mt-1">
                                         {(() => {
@@ -1500,6 +1468,42 @@ export default function AdminReports() {
                                       </p>
                                     </>
                                   )}
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
+                                  <Button
+                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                    disabled={!userResponse || isSending}
+                                    className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
+                                  >
+                                    <span>שלח מייל נטישה</span>
+                                    {isSending ? (
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                      <Mail className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                  
+                                  <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
+                                    <Badge variant="outline" className="bg-yellow-100 border-yellow-400 text-yellow-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                      <Clock className="w-3 h-3" />
+                                      שאלון בתהליך
+                                    </Badge>
+                                    
+                                    {abandonmentEmailsCount > 0 ? (
+                                      <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                        <Mail className="w-3 h-3" />
+                                        <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה נשלחו</span>
+                                        <span className="sm:hidden">{abandonmentEmailsCount} מיילים</span>
+                                      </Badge>
+                                    ) : (
+                                      <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
+                                        <Mail className="w-3 h-3" />
+                                        <span className="hidden sm:inline">לא נשלח מייל נטישה</span>
+                                        <span className="sm:hidden">לא נשלח</span>
+                                      </Badge>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </CardContent>
@@ -1553,11 +1557,29 @@ export default function AdminReports() {
 
                       return (
                         <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 flex-row-reverse">
+                          <CardContent className="p-3 sm:p-4">
+                            <div className="flex flex-col gap-3">
+                              <div className="text-right">
+                                <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
+                                <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
+                                {userResponse?.created_date && (
+                                  <>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                      סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
+                                    </p>
+                                    <p className="text-xs font-semibold text-orange-600 mt-1">
+                                      {(() => {
+                                        const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
+                                        return `עברו ${hoursAgo} שעות`;
+                                      })()}
+                                    </p>
+                                  </>
+                                )}
+                              </div>
+
+                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
                                 {completedAfterAbandonment ? (
-                                  <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse">
+                                  <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse justify-center text-xs py-2">
                                     <CheckCircle className="w-4 h-4" />
                                     השלים לאחר מייל נטישה
                                   </Badge>
@@ -1565,7 +1587,7 @@ export default function AdminReports() {
                                   <Button
                                     onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
                                     disabled={!userResponse || isSending}
-                                    className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
+                                    className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
                                   >
                                     <span>שלח מייל נטישה</span>
                                     {isSending ? (
@@ -1576,40 +1598,27 @@ export default function AdminReports() {
                                   </Button>
                                 )}
 
-                                <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse">
-                                  <CheckCircle className="w-3 h-3" />
-                                  השלים שאלון
-                                </Badge>
+                                <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
+                                  <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                    <CheckCircle className="w-3 h-3" />
+                                    <span className="hidden sm:inline">השלים שאלון</span>
+                                    <span className="sm:hidden">השלים</span>
+                                  </Badge>
 
-                                {abandonmentEmailsCount > 0 ? (
-                                  <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse">
-                                    <Mail className="w-3 h-3" />
-                                    {abandonmentEmailsCount} מיילי נטישה נשלחו
-                                  </Badge>
-                                ) : (
-                                  <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse">
-                                    <Mail className="w-3 h-3" />
-                                    לא נשלח מייל נטישה
-                                  </Badge>
-                                )}
-                              </div>
-                              
-                              <div className="text-right">
-                                <h4 className="font-semibold">{user.full_name || 'שם לא זמין'}</h4>
-                                <p className="text-sm text-gray-600">{user.email}</p>
-                                {userResponse?.created_date && (
-                                  <>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                      סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yyyy HH:mm')}
-                                    </p>
-                                    <p className="text-xs font-semibold text-orange-600 mt-1">
-                                      {(() => {
-                                        const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                        return `עברו ${hoursAgo} שעות`;
-                                      })()}
-                                    </p>
-                                  </>
-                                )}
+                                  {abandonmentEmailsCount > 0 ? (
+                                    <Badge variant="outline" className="bg-purple-100 border-purple-300 text-purple-800 flex items-center gap-1 flex-row-reverse text-xs">
+                                      <Mail className="w-3 h-3" />
+                                      <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה נשלחו</span>
+                                      <span className="sm:hidden">{abandonmentEmailsCount} מיילים</span>
+                                    </Badge>
+                                  ) : (
+                                    <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
+                                      <Mail className="w-3 h-3" />
+                                      <span className="hidden sm:inline">לא נשלח מייל נטישה</span>
+                                      <span className="sm:hidden">לא נשלח</span>
+                                    </Badge>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </CardContent>
