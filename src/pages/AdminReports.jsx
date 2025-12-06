@@ -827,6 +827,12 @@ export default function AdminReports() {
         });
       }
 
+      // מציאת הדוח הקשור לשאלון
+      const relatedReport = getReportForResponse(response.id);
+      const reportUrl = relatedReport 
+        ? `${window.location.origin}${createPageUrl(`ReportView?reportId=${relatedReport.id}`)}`
+        : `${window.location.origin}${createPageUrl('MyAccount')}`;
+
       // קבלת התוכן לפי שפה
       const emailSubject = emailLanguage === 'he' ? template.subject_he : template.subject_en;
       let emailHtml = emailLanguage === 'he' ? template.content_he : template.content_en;
@@ -834,10 +840,14 @@ export default function AdminReports() {
       // החלפת משתנים בתוכן המייל
       const surveyUrl = `${window.location.origin}${createPageUrl('Survey')}`;
       const questionnaireUrl = `${window.location.origin}${createPageUrl('Questionnaire')}`;
+      const purchaseUrl = `${window.location.origin}${createPageUrl(`Completion?responseId=${response.id}`)}`;
+      
       emailHtml = emailHtml
         .replace(/{userName}/g, userName)
         .replace(/{surveyUrl}/g, surveyUrl)
         .replace(/{questionnaireUrl}/g, questionnaireUrl)
+        .replace(/{reportUrl}/g, reportUrl)
+        .replace(/{purchaseUrl}/g, purchaseUrl)
         .replace(/{couponCode}/g, couponCode || '');
 
       console.log('Attempting to send email...');
