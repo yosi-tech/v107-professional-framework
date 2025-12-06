@@ -9,10 +9,11 @@ Deno.serve(async (req) => {
         const cutoffTime = new Date(now.getTime() - (96 * 60 * 60 * 1000));
 
         // מציאת כל המיילים של abandonment_survey שנשלחו לפני יותר מ-96 שעות
-        const abandonmentEmails = await base44.asServiceRole.entities.EmailLog.filter({
-            email_type: 'abandonment_survey',
-            created_date: { $lt: cutoffTime.toISOString() }
-        });
+        const allAbandonmentEmails = await base44.asServiceRole.entities.EmailLog.list('-created_date');
+        const abandonmentEmails = allAbandonmentEmails.filter(email => 
+            email.email_type === 'abandonment_survey' && 
+            new Date(email.created_date) < cutoffTime
+        );
 
         if (!abandonmentEmails || abandonmentEmails.length === 0) {
             return Response.json({
