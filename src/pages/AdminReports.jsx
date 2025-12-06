@@ -1429,6 +1429,24 @@ export default function AdminReports() {
 
           <TabsContent value="abandoned">
             <div className="space-y-6">
+              <div className="flex justify-end mb-4">
+                <Button
+                  onClick={() => setViewingEmails(emailLogs.filter(log => 
+                    log.email_type === 'abandonment_survey' || 
+                    log.email_type === 'abandonment_reminder_96h' ||
+                    log.email_type === 'abandonment_after_completion'
+                  ))}
+                  variant="outline"
+                  className="flex items-center gap-2 flex-row-reverse"
+                >
+                  <Mail className="w-4 h-4" />
+                  היסטוריית מיילי נטישה ({emailLogs.filter(log => 
+                    log.email_type === 'abandonment_survey' || 
+                    log.email_type === 'abandonment_reminder_96h' ||
+                    log.email_type === 'abandonment_after_completion'
+                  ).length})
+                </Button>
+              </div>
               {/* משתמשים שהתחילו ולא סיימו */}
               <Card>
                 <CardHeader>
