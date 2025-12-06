@@ -476,7 +476,7 @@ export default function Home() {
               <div className="overflow-hidden rounded-3xl">
                 <div
                   className="flex transition-transform duration-700 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  style={{ transform: language === 'he' ? `translateX(${currentSlide * 100}%)` : `translateX(-${currentSlide * 100}%)` }}
                 >
                   {testimonials.map((testimonial, index) => (
                     <div key={testimonial.id || index} className="w-full flex-shrink-0 px-4">
