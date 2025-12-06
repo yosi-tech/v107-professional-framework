@@ -499,6 +499,25 @@ export default function Questionnaire() {
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
 
+  // Warning before leaving questionnaire page
+  useEffect(() => {
+    if (currentStep >= 0) { // Only show warning if user is in the questionnaire (not intro)
+      const handleBeforeUnload = (e) => {
+        e.preventDefault();
+        e.returnValue = language === 'he' ? 
+          'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.' :
+          'Are you sure you want to leave? Your progress has been saved automatically and you can return to continue later.';
+        return e.returnValue;
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }
+  }, [currentStep, language]);
+
   const autoSaveProgress = useCallback(async () => {
     if (!user) return;
 
