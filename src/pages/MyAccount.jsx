@@ -30,10 +30,10 @@ export default function MyAccount() {
         );
         setQuestionnaireResponses(responses);
 
-        // טען דוחות - סינון מפורש בקוד
+        // טען דוחות - סינון לפי user_email
         try {
           const allReports = await base44.entities.GeneratedReport.list('-created_date');
-          const myReports = allReports.filter(report => report.created_by === currentUser.email);
+          const myReports = allReports.filter(report => report.user_email === currentUser.email);
           setReports(myReports);
         } catch (e) {
           console.log('No reports found');
