@@ -1187,8 +1187,8 @@ export default function AdminReports() {
           </div>
         </div>
 
-        <Tabs defaultValue="reports" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+        <Tabs defaultValue="reports" className="w-full" value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="reports" className="flex items-center gap-2 flex-row-reverse">
               <span>שאלונים ודו"חות</span>
               <FileText className="w-4 h-4" />
@@ -1196,6 +1196,10 @@ export default function AdminReports() {
             <TabsTrigger value="abandoned" className="flex items-center gap-2 flex-row-reverse">
               <span>משתמשים שנטשו ({inProgressUsers.length + abandonedUsers.length})</span>
               <AlertTriangle className="w-4 h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="survey-results" className="flex items-center gap-2 flex-row-reverse">
+              <span>תוצאות הסקר ({surveyResponses.length})</span>
+              <FileSearch className="w-4 h-4" />
             </TabsTrigger>
             <TabsTrigger value="email-templates" className="flex items-center gap-2 flex-row-reverse">
               <span>תבניות מיילים</span>
@@ -2147,175 +2151,262 @@ export default function AdminReports() {
                     </TabsContent>
 
           <TabsContent value="survey-results">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-right">תוצאות סקר נטישה</CardTitle>
-                <p className="text-gray-600 text-sm mt-1 text-right" dir="rtl">
-                  תשובות ממשתמשים שמילאו את סקר הנטישה
-                </p>
-              </CardHeader>
-              <CardContent>
-                {surveyResponses.length === 0 ? (
-                  <div className="text-center py-12">
-                    <p className="text-gray-500 text-lg">אין עדיין תוצאות סקר</p>
+            <div className="space-y-6">
+              {/* ניתוח כללי */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">סה"כ סקרים</CardTitle>
+                    <FileSearch className="w-4 h-4 text-purple-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-purple-600">{surveyResponses.length}</div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">סיבת נטישה מובילה</CardTitle>
+                    <AlertCircle className="w-4 h-4 text-orange-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm font-semibold text-right">
+                      {(() => {
+                        const q1Responses = surveyResponses.map(s => s.responses?.q1).filter(Boolean);
+                        if (q1Responses.length === 0) return 'אין נתונים';
+                        const counts = {};
+                        q1Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
+                        const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+                        return top ? `${top[0]} (${top[1]})` : 'אין נתונים';
+                      })()}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">טווח מחיר מועדף</CardTitle>
+                    <DollarSign className="w-4 h-4 text-green-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm font-semibold text-right">
+                      {(() => {
+                        const q2Responses = surveyResponses.map(s => s.responses?.q2).filter(Boolean);
+                        if (q2Responses.length === 0) return 'אין נתונים';
+                        const counts = {};
+                        q2Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
+                        const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+                        return top ? `${top[0]} (${top[1]})` : 'אין נתונים';
+                      })()}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* ניתוח מפורט לכל שאלה */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right">ניתוח מפורט של תשובות</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* שאלה 1 */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-lg mb-3 text-right">מה הסיבה העיקרית שבחרת שלא לרכוש?</h3>
+                    <div className="space-y-2">
+                      {(() => {
+                        const q1Responses = surveyResponses.map(s => s.responses?.q1).filter(Boolean);
+                        if (q1Responses.length === 0) return <p className="text-gray-500 text-right">אין נתונים</p>;
+                        const counts = {};
+                        q1Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
+                        return Object.entries(counts)
+                          .sort((a, b) => b[1] - a[1])
+                          .map(([answer, count]) => (
+                            <div key={answer} className="flex items-center justify-between gap-4">
+                              <div className="flex-1 bg-blue-100 rounded-full h-8 relative overflow-hidden">
+                                <div 
+                                  className="bg-blue-500 h-full flex items-center justify-start px-3 text-white text-sm font-medium transition-all"
+                                  style={{ width: `${(count / q1Responses.length) * 100}%` }}
+                                >
+                                  {Math.round((count / q1Responses.length) * 100)}%
+                                </div>
+                              </div>
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-sm font-medium">{answer}</p>
+                                <p className="text-xs text-gray-500">{count} תשובות</p>
+                              </div>
+                            </div>
+                          ));
+                      })()}
+                    </div>
                   </div>
-                ) : (
-                  <div className="space-y-6">
-                    {surveyResponses.map((survey) => (
-                      <Card key={survey.id} className="border-r-4 border-r-purple-500">
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4 flex-row-reverse">
-                            <div className="text-right flex-1">
-                              <p className="font-semibold text-gray-900">
-                                {survey.user_email || survey.created_by || 'משתמש'}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                {new Date(survey.created_date).toLocaleDateString('he-IL', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </p>
-                              {survey.coupon_code && (
-                                <div className="mt-2 inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
-                                  קופון: {survey.coupon_code}
+
+                  {/* שאלה 2 */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-lg mb-3 text-right">באיזה מחיר היית שוקל/ת לרכוש?</h3>
+                    <div className="space-y-2">
+                      {(() => {
+                        const q2Responses = surveyResponses.map(s => s.responses?.q2).filter(Boolean);
+                        if (q2Responses.length === 0) return <p className="text-gray-500 text-right">אין נתונים</p>;
+                        const counts = {};
+                        q2Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
+                        return Object.entries(counts)
+                          .sort((a, b) => b[1] - a[1])
+                          .map(([answer, count]) => (
+                            <div key={answer} className="flex items-center justify-between gap-4">
+                              <div className="flex-1 bg-green-100 rounded-full h-8 relative overflow-hidden">
+                                <div 
+                                  className="bg-green-500 h-full flex items-center justify-start px-3 text-white text-sm font-medium transition-all"
+                                  style={{ width: `${(count / q2Responses.length) * 100}%` }}
+                                >
+                                  {Math.round((count / q2Responses.length) * 100)}%
+                                </div>
+                              </div>
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-sm font-medium">{answer}</p>
+                                <p className="text-xs text-gray-500">{count} תשובות</p>
+                              </div>
+                            </div>
+                          ));
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* שאלה 3 */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-lg mb-3 text-right">מה היה יכול לשכנע אותך לרכוש?</h3>
+                    <div className="space-y-2">
+                      {(() => {
+                        const q3Responses = surveyResponses.map(s => s.responses?.q3).filter(Boolean);
+                        if (q3Responses.length === 0) return <p className="text-gray-500 text-right">אין נתונים</p>;
+                        const counts = {};
+                        q3Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
+                        return Object.entries(counts)
+                          .sort((a, b) => b[1] - a[1])
+                          .map(([answer, count]) => (
+                            <div key={answer} className="flex items-center justify-between gap-4">
+                              <div className="flex-1 bg-purple-100 rounded-full h-8 relative overflow-hidden">
+                                <div 
+                                  className="bg-purple-500 h-full flex items-center justify-start px-3 text-white text-sm font-medium transition-all"
+                                  style={{ width: `${(count / q3Responses.length) * 100}%` }}
+                                >
+                                  {Math.round((count / q3Responses.length) * 100)}%
+                                </div>
+                              </div>
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-sm font-medium">{answer}</p>
+                                <p className="text-xs text-gray-500">{count} תשובות</p>
+                              </div>
+                            </div>
+                          ));
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* הערות והצעות */}
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <h3 className="font-semibold text-lg mb-3 text-right">הערות והצעות לשיפור</h3>
+                    <div className="space-y-3">
+                      {surveyResponses
+                        .filter(s => s.responses?.q4)
+                        .map((survey) => (
+                          <div key={survey.id} className="bg-white p-3 rounded-lg border">
+                            <p className="text-sm text-gray-900 mb-2">{survey.responses.q4}</p>
+                            <p className="text-xs text-gray-500">
+                              {survey.user_email || survey.created_by} • {new Date(survey.created_date).toLocaleDateString('he-IL')}
+                            </p>
+                          </div>
+                        ))}
+                      {surveyResponses.filter(s => s.responses?.q4).length === 0 && (
+                        <p className="text-gray-500 text-right text-sm">אין הערות נוספות</p>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* רשימת תגובות מפורטת */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right">תשובות בודדות ({surveyResponses.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {surveyResponses.length === 0 ? (
+                    <div className="text-center py-12">
+                      <FileSearch className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <p className="text-gray-500 text-lg">אין עדיין תוצאות סקר</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {surveyResponses.map((survey) => (
+                        <Card key={survey.id} className="border-r-4 border-r-purple-500">
+                          <CardContent className="p-6">
+                            <div className="flex items-start justify-between mb-4 flex-row-reverse">
+                              <div className="text-right flex-1">
+                                <p className="font-semibold text-gray-900">
+                                  {survey.user_email || survey.created_by || 'משתמש'}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  {new Date(survey.created_date).toLocaleDateString('he-IL', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </p>
+                                {survey.coupon_code && (
+                                  <div className="mt-2 inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
+                                    קופון: {survey.coupon_code}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-4 text-right" dir="rtl">
+                              {survey.responses.q1 && (
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                                    מה הסיבה העיקרית שבחרת שלא לרכוש את הדו"ח עכשיו?
+                                  </p>
+                                  <p className="text-gray-900">{survey.responses.q1}</p>
+                                </div>
+                              )}
+                              
+                              {survey.responses.q2 && (
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                                    באיזה מחיר היית שוקל/ת לרכוש את הדו"ח המלא?
+                                  </p>
+                                  <p className="text-gray-900">{survey.responses.q2}</p>
+                                </div>
+                              )}
+                              
+                              {survey.responses.q3 && (
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                                    מה היה יכול לשכנע אותך לרכוש את הדו"ח?
+                                  </p>
+                                  <p className="text-gray-900">{survey.responses.q3}</p>
+                                </div>
+                              )}
+                              
+                              {survey.responses.q4 && (
+                                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                  <p className="text-sm font-semibold text-blue-900 mb-2">
+                                    הערות והצעות לשיפור:
+                                  </p>
+                                  <p className="text-blue-900">{survey.responses.q4}</p>
                                 </div>
                               )}
                             </div>
-                          </div>
-                          
-                          <div className="space-y-4 text-right" dir="rtl">
-                            {survey.responses.q1 && (
-                              <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-sm font-semibold text-gray-700 mb-2">
-                                  מה הסיבה העיקרית שבחרת שלא לרכוש את הדו"ח עכשיו?
-                                </p>
-                                <p className="text-gray-900">{survey.responses.q1}</p>
-                              </div>
-                            )}
-                            
-                            {survey.responses.q2 && (
-                              <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-sm font-semibold text-gray-700 mb-2">
-                                  באיזה מחיר היית שוקל/ת לרכוש את הדו"ח המלא?
-                                </p>
-                                <p className="text-gray-900">{survey.responses.q2}</p>
-                              </div>
-                            )}
-                            
-                            {survey.responses.q3 && (
-                              <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-sm font-semibold text-gray-700 mb-2">
-                                  מה היה יכול לשכנע אותך לרכוש את הדו"ח?
-                                </p>
-                                <p className="text-gray-900">{survey.responses.q3}</p>
-                              </div>
-                            )}
-                            
-                            {survey.responses.q4 && (
-                              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                                <p className="text-sm font-semibold text-blue-900 mb-2">
-                                  הערות והצעות לשיפור:
-                                </p>
-                                <p className="text-blue-900">{survey.responses.q4}</p>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="survey-results">
-          <Card>
-          <CardHeader>
-          <CardTitle className="text-right">תוצאות סקר נטישה</CardTitle>
-          <p className="text-gray-600 text-sm mt-1 text-right" dir="rtl">
-          תשובות ממשתמשים שמילאו את סקר הנטישה
-          </p>
-          </CardHeader>
-          <CardContent>
-          {surveyResponses.length === 0 ? (
-          <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">אין עדיין תוצאות סקר</p>
-          </div>
-          ) : (
-          <div className="space-y-6">
-          {surveyResponses.map((survey) => (
-           <Card key={survey.id} className="border-r-4 border-r-purple-500">
-             <CardContent className="p-6">
-               <div className="flex items-start justify-between mb-4 flex-row-reverse">
-                 <div className="text-right flex-1">
-                   <p className="font-semibold text-gray-900">
-                     {survey.user_email || survey.created_by || 'משתמש'}
-                   </p>
-                   <p className="text-sm text-gray-500">
-                     {new Date(survey.created_date).toLocaleDateString('he-IL', {
-                       year: 'numeric',
-                       month: 'long',
-                       day: 'numeric',
-                       hour: '2-digit',
-                       minute: '2-digit'
-                     })}
-                   </p>
-                   {survey.coupon_code && (
-                     <div className="mt-2 inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
-                       קופון: {survey.coupon_code}
-                     </div>
-                   )}
-                 </div>
-               </div>
-
-               <div className="space-y-4 text-right" dir="rtl">
-                 {survey.responses.q1 && (
-                   <div className="bg-gray-50 p-4 rounded-lg">
-                     <p className="text-sm font-semibold text-gray-700 mb-2">
-                       מה הסיבה העיקרית שבחרת שלא לרכוש את הדו"ח עכשיו?
-                     </p>
-                     <p className="text-gray-900">{survey.responses.q1}</p>
-                   </div>
-                 )}
-
-                 {survey.responses.q2 && (
-                   <div className="bg-gray-50 p-4 rounded-lg">
-                     <p className="text-sm font-semibold text-gray-700 mb-2">
-                       באיזה מחיר היית שוקל/ת לרכוש את הדו"ח המלא?
-                     </p>
-                     <p className="text-gray-900">{survey.responses.q2}</p>
-                   </div>
-                 )}
-
-                 {survey.responses.q3 && (
-                   <div className="bg-gray-50 p-4 rounded-lg">
-                     <p className="text-sm font-semibold text-gray-700 mb-2">
-                       מה היה יכול לשכנע אותך לרכוש את הדו"ח?
-                     </p>
-                     <p className="text-gray-900">{survey.responses.q3}</p>
-                   </div>
-                 )}
-
-                 {survey.responses.q4 && (
-                   <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                     <p className="text-sm font-semibold text-blue-900 mb-2">
-                       הערות והצעות לשיפור:
-                     </p>
-                     <p className="text-blue-900">{survey.responses.q4}</p>
-                   </div>
-                 )}
-               </div>
-             </CardContent>
-           </Card>
-          ))}
-          </div>
-          )}
-          </CardContent>
-          </Card>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="email-templates">
