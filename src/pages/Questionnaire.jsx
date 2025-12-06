@@ -530,60 +530,63 @@ export default function Questionnaire() {
   useEffect(() => {
     if (!shouldBlockNavigation) return;
 
-    const handleClick = async (e) => {
+    const handleClick = (e) => {
       // Check if clicked element or its parent is a link
       const link = e.target.closest('a');
       if (link && link.href) {
         const targetUrl = new URL(link.href);
         const currentUrl = new URL(window.location.href);
-        
+
         // If navigating to a different page within the app
         if (targetUrl.origin === currentUrl.origin && targetUrl.pathname !== currentUrl.pathname) {
           e.preventDefault();
           e.stopPropagation();
-          
+
           const confirmMessage = language === 'he' ?
             'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.' :
             'Are you sure you want to leave? Your progress has been saved automatically and you can return to continue later.';
-          
+
           if (window.confirm(confirmMessage)) {
-            // Mark questionnaire as abandoned and send email
-            if (savedResponseId && user) {
-              try {
-                await base44.entities.QuestionnaireResponse.update(savedResponseId, {
-                  status: 'abandoned'
-                });
+            // Mark questionnaire as abandoned and send email - async operation
+            (async () => {
+              if (savedResponseId && user) {
+                try {
+                  await base44.entities.QuestionnaireResponse.update(savedResponseId, {
+                    status: 'abandoned'
+                  });
 
-                // Send abandonment email
-                const { getAbandonmentEmailTemplate } = await import('@/components/email/AbandonmentEmailTemplate');
-                const surveyUrl = `${window.location.origin}${createPageUrl('Survey')}`;
-                const userName = personalInfo.full_name || user.full_name || 'משתמש';
-                const userEmail = personalInfo.email || user.email;
-                
-                const emailTemplate = getAbandonmentEmailTemplate(userName, surveyUrl, language);
+                  // Send abandonment email
+                  const { getAbandonmentEmailTemplate } = await import('@/components/email/AbandonmentEmailTemplate');
+                  const surveyUrl = `${window.location.origin}${createPageUrl('Survey')}`;
+                  const userName = personalInfo.full_name || user.full_name || 'משתמש';
+                  const userEmail = personalInfo.email || user.email;
 
-                await base44.integrations.Core.SendEmail({
-                  to: userEmail,
-                  subject: emailTemplate.subject,
-                  body: emailTemplate.html
-                });
+                  const emailTemplate = getAbandonmentEmailTemplate(userName, surveyUrl, language);
 
-                // Log the email
-                await base44.entities.EmailLog.create({
-                  to_email: userEmail,
-                  email_type: 'abandonment_survey',
-                  subject: emailTemplate.subject,
-                  related_user_email: userEmail,
-                  related_questionnaire_response_id: savedResponseId,
-                  sent_manually: false,
-                  language: language
-                });
-              } catch (error) {
-                console.error("Failed to mark as abandoned or send email:", error);
+                  await base44.integrations.Core.SendEmail({
+                    to: userEmail,
+                    subject: emailTemplate.subject,
+                    body: emailTemplate.html
+                  });
+
+                  // Log the email
+                  await base44.entities.EmailLog.create({
+                    to_email: userEmail,
+                    email_type: 'abandonment_survey',
+                    subject: emailTemplate.subject,
+                    related_user_email: userEmail,
+                    related_questionnaire_response_id: savedResponseId,
+                    sent_manually: false,
+                    language: language
+                  });
+                } catch (error) {
+                  console.error("Failed to mark as abandoned or send email:", error);
+                }
               }
-            }
-            
-            window.location.href = link.href;
+
+              // Navigate after async operations complete
+              window.location.href = link.href;
+            })();
           }
         }
       }
