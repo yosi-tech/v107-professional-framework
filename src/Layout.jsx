@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { FileText, Shield, User as UserIcon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import ChatBot from "@/components/ai/ChatBot";
 import { LanguageProvider } from "@/components/i18n/LanguageContext";
 import { useTranslation } from "@/components/i18n/useTranslation";
@@ -449,28 +450,116 @@ function AppLayout({ children }) {
         {children}
       </main>
       
-      <footer className="bg-primary text-white py-12">
+      <footer className="bg-primary text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-8 h-8 gradient-accent rounded-lg flex items-center justify-center shadow-lg">
-                <FileText className="w-4 h-4 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+            {/* Company Info */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/0544f5a69_logo.png" 
+                  alt="V107 Logo" 
+                  className="w-10 h-10 rounded-lg shadow-lg object-contain"
+                />
+                <h3 className="text-xl font-bold">V107</h3>
               </div>
-              <h3 className="text-xl font-bold">V107</h3>
-            </div>
-            <p className="text-slate-400 mb-6 max-w-2xl mx-auto text-sm">
-              {t('layout.footer_subtitle')}
-            </p>
-            <div className="flex justify-center gap-6 mb-6">
-              <Link to={createPageUrl("TermsOfService")} className="text-sm text-slate-400 hover:text-white transition-colors">{t('layout.footer_terms')}</Link>
-              <Link to={createPageUrl("PrivacyPolicy")} className="text-sm text-slate-400 hover:text-white transition-colors">{t('layout.footer_privacy')}</Link>
-              <Link to={createPageUrl("CancellationPolicy")} className="text-sm text-slate-400 hover:text-white transition-colors">{t('layout.footer_cancellation')}</Link>
-            </div>
-            <div className="border-t border-slate-700 pt-6">
-              <p className="text-xs text-slate-500">
-                {t('layout.footer_copyright')}
+              <p className="text-slate-400 text-sm leading-relaxed">
+                {t('layout.footer_subtitle')}
               </p>
             </div>
+
+            {/* Quick Links - Company */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">{t('layout.footer_company')}</h4>
+              <ul className="space-y-3">
+                <li>
+                  <Link to={createPageUrl("Home")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {t('layout.nav_home')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={createPageUrl("About")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {t('layout.nav_about')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={createPageUrl("Articles")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {t('layout.nav_articles')}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Quick Links - Resources */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">{t('layout.footer_resources')}</h4>
+              <ul className="space-y-3">
+                <li>
+                  <Link to={createPageUrl("Questionnaire")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {t('layout.nav_questionnaire')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={createPageUrl("TermsOfService")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {t('layout.footer_terms')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={createPageUrl("PrivacyPolicy")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {t('layout.footer_privacy')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={createPageUrl("CancellationPolicy")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {t('layout.footer_cancellation')}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Newsletter */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">{t('layout.footer_newsletter')}</h4>
+              <p className="text-slate-400 text-sm mb-4">
+                {t('layout.footer_newsletter_desc')}
+              </p>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                const email = e.target.email.value;
+                if (!email) return;
+
+                try {
+                  await base44.entities.ContactInquiry.create({
+                    name: 'Newsletter Subscriber',
+                    email: email,
+                    message: 'Newsletter subscription request',
+                    source: 'newsletter_footer'
+                  });
+                  alert(t('layout.footer_newsletter_success'));
+                  e.target.reset();
+                } catch (error) {
+                  console.error('Newsletter subscription error:', error);
+                }
+              }} className="flex gap-2">
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder={t('layout.footer_newsletter_placeholder')}
+                  required
+                  className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-accent"
+                />
+                <Button type="submit" className="gradient-accent px-6 whitespace-nowrap">
+                  {t('layout.footer_newsletter_button')}
+                </Button>
+              </form>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-slate-700 pt-8 text-center">
+            <p className="text-xs text-slate-500">
+              {t('layout.footer_copyright')}
+            </p>
           </div>
         </div>
       </footer>
