@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { FileText, Shield, User as UserIcon } from "lucide-react";
+import { FileText, Shield, User as UserIcon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChatBot from "@/components/ai/ChatBot";
 import { LanguageProvider } from "@/components/i18n/LanguageContext";
@@ -15,6 +15,7 @@ function AppLayout({ children }) {
   const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -276,7 +277,8 @@ function AppLayout({ children }) {
               </div>
             </Link>
 
-            <nav className="flex items-center gap-4 sm:gap-6">
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-4 sm:gap-6">
               <Link to={createPageUrl("Home")} className={`text-sm font-semibold transition-colors ${location.pathname === createPageUrl("Home") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
                 {t('layout.nav_home')}
               </Link>
@@ -302,7 +304,7 @@ function AppLayout({ children }) {
               )}
               
               <Link to={createPageUrl("Questionnaire")}>
-                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5 hidden sm:flex">
+                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5">
                     {t('layout.start_questionnaire_btn')}
                   </Button>
               </Link>
@@ -310,6 +312,90 @@ function AppLayout({ children }) {
                 {t('layout.lang_switcher')}
               </Button>
             </nav>
+
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6 text-slate-700" />
+              ) : (
+                <Menu className="w-6 h-6 text-slate-700" />
+              )}
+            </button>
+          </div>
+          
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden border-t border-slate-200 py-4">
+              <nav className="flex flex-col gap-4">
+                <Link 
+                  to={createPageUrl("Home")} 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname === createPageUrl("Home") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                >
+                  {t('layout.nav_home')}
+                </Link>
+                <Link 
+                  to={createPageUrl("Articles")} 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname.startsWith(createPageUrl("Articles")) ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                >
+                  {t('layout.nav_articles')}
+                </Link>
+                <Link 
+                  to={createPageUrl("About")} 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname === createPageUrl("About") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                >
+                  {t('layout.nav_about')}
+                </Link>
+                
+                {!isLoadingUser && user && (
+                  <Link 
+                    to={createPageUrl("MyAccount")} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`text-sm font-semibold transition-colors flex items-center gap-2 px-4 py-2 rounded-lg ${location.pathname === createPageUrl("MyAccount") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                  >
+                    <UserIcon className="w-4 h-4" />
+                    {language === 'he' ? 'האזור שלי' : 'My Account'}
+                  </Link>
+                )}
+
+                {!isLoadingUser && isAdmin && (
+                  <Link 
+                    to={createPageUrl("AdminReports")} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`text-sm font-semibold transition-colors flex items-center gap-2 px-4 py-2 rounded-lg ${location.pathname === createPageUrl("AdminReports") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                  >
+                    <Shield className="w-4 h-4" />
+                    {language === 'he' ? 'אדמין' : 'Admin'}
+                  </Link>
+                )}
+                
+                <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
+                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5 w-full">
+                    {t('layout.start_questionnaire_btn')}
+                  </Button>
+                </Link>
+                
+                <div className="px-4">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => {
+                      toggleLanguage();
+                      setIsMobileMenuOpen(false);
+                    }} 
+                    className="w-full"
+                  >
+                    {t('layout.lang_switcher')}
+                  </Button>
+                </div>
+              </nav>
+            </div>
+          )}
           </div>
         </div>
       </header>

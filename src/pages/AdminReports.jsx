@@ -30,7 +30,7 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { calculateAllDomains, identifyStrengthsAndWeaknesses } from "@/components/utils/reportCalculations";
-import AnimatedDoughnutRace from "@/components/admin/AnimatedDoughnutRace";
+import UnifiedSurveyChart from "@/components/admin/UnifiedSurveyChart";
 import {
   Dialog,
   DialogContent,
@@ -2338,58 +2338,8 @@ export default function AdminReports() {
                 </Card>
               </div>
 
-              {/* Animated Doughnut Charts */}
-              <div className="space-y-6">
-                {surveyResponses.length > 0 ? (
-                  <>
-                    <AnimatedDoughnutRace
-                      title="שאלה 1: מה הסיבה העיקרית שבחרת שלא לרכוש עכשיו?"
-                      question="ניתוח התפלגות הסיבות לאי-רכישה"
-                      responses={surveyResponses.map(s => s.responses?.q1).filter(Boolean)}
-                      colors={[
-                        'rgba(239, 68, 68, 0.9)',
-                        'rgba(251, 146, 60, 0.9)',
-                        'rgba(245, 158, 11, 0.9)',
-                        'rgba(59, 130, 246, 0.9)',
-                        'rgba(168, 85, 247, 0.9)'
-                      ]}
-                    />
-
-                    <AnimatedDoughnutRace
-                      title="שאלה 2: באיזה מחיר היית שוקל/ת לרכוש?"
-                      question="ניתוח נקודת המחיר האופטימלית"
-                      responses={surveyResponses.map(s => s.responses?.q2).filter(Boolean)}
-                      colors={[
-                        'rgba(34, 197, 94, 0.9)',
-                        'rgba(16, 185, 129, 0.9)',
-                        'rgba(20, 184, 166, 0.9)',
-                        'rgba(6, 182, 212, 0.9)',
-                        'rgba(14, 165, 233, 0.9)'
-                      ]}
-                    />
-
-                    <AnimatedDoughnutRace
-                      title="שאלה 3: מה היה יכול לשכנע אותך לרכוש?"
-                      question="גורמי השכנוע המרכזיים"
-                      responses={surveyResponses.map(s => s.responses?.q3).filter(Boolean)}
-                      colors={[
-                        'rgba(168, 85, 247, 0.9)',
-                        'rgba(147, 51, 234, 0.9)',
-                        'rgba(126, 34, 206, 0.9)',
-                        'rgba(109, 40, 217, 0.9)',
-                        'rgba(91, 33, 182, 0.9)'
-                      ]}
-                    />
-                  </>
-                ) : (
-                  <Card>
-                    <CardContent className="p-12 text-center">
-                      <FileSearch className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <p className="text-gray-500">אין תוצאות סקר להצגה</p>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
+              {/* Unified Survey Chart with Selector */}
+              <UnifiedSurveyChart surveyResponses={surveyResponses} />
 
               {/* הערות והצעות */}
               <Card>
