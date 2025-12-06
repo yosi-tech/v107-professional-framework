@@ -14,6 +14,7 @@ import AdminReports from './pages/AdminReports';
 import ReportView from './pages/ReportView';
 import QuestionnaireExport from './pages/QuestionnaireExport';
 import Survey from './pages/Survey';
+import MyAccount from './pages/MyAccount';
 import __Layout from './Layout.jsx';
 
 
@@ -34,6 +35,7 @@ export const PAGES = {
     "ReportView": ReportView,
     "QuestionnaireExport": QuestionnaireExport,
     "Survey": Survey,
+    "MyAccount": MyAccount,
 }
 
 export const pagesConfig = {

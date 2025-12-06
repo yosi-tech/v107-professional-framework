@@ -640,7 +640,7 @@ export default function Questionnaire() {
 
   const handleLogin = async () => {
     try {
-      await User.loginWithRedirect(window.location.href);
+      await base44.auth.loginWithRedirect(window.location.href);
     } catch (error) {
       console.error('Login error:', error);
     }

@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { FileText, Shield } from "lucide-react";
+import { FileText, Shield, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChatBot from "@/components/ai/ChatBot";
 import { LanguageProvider } from "@/components/i18n/LanguageContext";
@@ -287,6 +287,13 @@ function AppLayout({ children }) {
                 {t('layout.nav_about')}
               </Link>
               
+              {!isLoadingUser && user && (
+                <Link to={createPageUrl("MyAccount")} className={`text-sm font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("MyAccount") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+                  <User className="w-4 h-4" />
+                  {language === 'he' ? 'האזור שלי' : 'My Account'}
+                </Link>
+              )}
+
               {!isLoadingUser && isAdmin && (
                 <Link to={createPageUrl("AdminReports")} className={`text-sm font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
                   <Shield className="w-4 h-4" />

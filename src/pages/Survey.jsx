@@ -70,6 +70,8 @@ export default function Survey() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
+        // אם המשתמש כבר מחובר, אין צורך בהתחברות נוספת
+        setIsLoginRequired(false);
       } catch (e) {
         console.error("User not logged in");
         setIsLoginRequired(true);
@@ -80,13 +82,11 @@ export default function Survey() {
     fetchUser();
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     try {
-      base44.auth.loginWithRedirect(window.location.href);
+      await base44.auth.loginWithRedirect(window.location.href);
     } catch (error) {
       console.error('Login error:', error);
-      // אם יש שגיאה, ננסה דרך אלטרנטיבית
-      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth`;
     }
   };
 
