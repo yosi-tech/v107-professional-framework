@@ -30,10 +30,13 @@ export default function MyAccount() {
         );
         setQuestionnaireResponses(responses);
 
-        // טען דוחות - RLS מסנן אוטומטית לפי המייל של המשתמש
+        // טען דוחות - ננסה גם list וגם filter
         try {
           const allReports = await base44.entities.GeneratedReport.list('-created_date');
-          setReports(allReports);
+          const filteredReports = await base44.entities.GeneratedReport.filter({ user_email: currentUser.email }, '-created_date');
+          
+          // נשתמש בתוצאות המפולטרות אם list לא עובד
+          setReports(filteredReports.length > 0 ? filteredReports : allReports);
         } catch (e) {
           console.log('No reports found');
         }
