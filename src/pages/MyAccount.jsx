@@ -66,7 +66,7 @@ export default function MyAccount() {
       } catch (error) {
         console.error('Error loading user data:', error);
         // הפנה להתחברות אם אין משתמש מחובר
-        await base44.auth.loginWithRedirect(window.location.href);
+        base44.auth.redirectToLogin(window.location.href);
       } finally {
         setIsLoading(false);
       }
