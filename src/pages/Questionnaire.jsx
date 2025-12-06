@@ -462,6 +462,7 @@ export default function Questionnaire() {
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { base44 } = await import('@/api/base44Client');
 
   const questions = language === 'he' ? questionsHe : questionsEn;
   const sectionTitles = language === 'he' ? sectionTitlesHe : sectionTitlesEn;
