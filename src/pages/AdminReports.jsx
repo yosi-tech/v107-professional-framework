@@ -274,6 +274,7 @@ export default function AdminReports() {
   const [sendingReportId, setSendingReportId] = useState(null);
   const [sendingEmailType, setSendingEmailType] = useState(null);
   const [languageDialog, setLanguageDialog] = useState({ open: false, report: null, response: null });
+  const [templateSelectionDialog, setTemplateSelectionDialog] = useState({ open: false, response: null });
   const [simulationDialog, setSimulationDialog] = useState(false);
   const [simulationForm, setSimulationForm] = useState({
     userEmail: '',
@@ -282,6 +283,7 @@ export default function AdminReports() {
     language: 'he'
   });
   const [isSimulating, setIsSimulating] = useState(false);
+  const [deletingTemplateId, setDeletingTemplateId] = useState(null);
 
   useEffect(() => {
     checkAdminAndLoadData();
@@ -777,6 +779,77 @@ export default function AdminReports() {
     }
   };
 
+  const sendManualEmailFromTemplate = async (template, response) => {
+    setSendingEmailType(`template_${template.id}_${response.id}`);
+    const emailLanguage = response.language || 'he';
+
+    try {
+      const userEmail = response.personal_info?.email || response.created_by;
+      const userName = response.personal_info?.full_name || 'משתמש';
+
+      const userExists = users.some(u => u.email === userEmail);
+      if (!userExists) {
+        alert(emailLanguage === 'en' ? `Cannot send email - user ${userEmail} is not registered in the application.\n\nTo send emails, the user must be registered in the system via Dashboard -> Users.` : `לא ניתן לשלוח מייל - המשתמש ${userEmail} לא רשום באפליקציה.\n\nכדי לשלוח מיילים, המשתמש צריך להיות רשום במערכת דרך Dashboard -> Users.`);
+        setSendingEmailType(null);
+        return;
+      }
+
+      // יצירת קוד קופון אם התבנית כוללת קופון
+      let couponCode = null;
+      if (template.include_coupon) {
+        couponCode = `TEMPLATE-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        const validUntil = new Date();
+        validUntil.setDate(validUntil.getDate() + 30);
+
+        await base44.entities.Coupon.create({
+          code: couponCode,
+          discount_amount: template.coupon_amount || 50,
+          valid_until: validUntil.toISOString(),
+          user_email: userEmail,
+          source: 'abandonment_survey'
+        });
+      }
+
+      // קבלת התוכן לפי שפה
+      const emailSubject = emailLanguage === 'he' ? template.subject_he : template.subject_en;
+      let emailHtml = emailLanguage === 'he' ? template.content_he : template.content_en;
+
+      // החלפת משתנים בתוכן המייל
+      const surveyUrl = `${window.location.origin}${createPageUrl('Survey')}`;
+      const questionnaireUrl = `${window.location.origin}${createPageUrl('Questionnaire')}`;
+      emailHtml = emailHtml
+        .replace(/{userName}/g, userName)
+        .replace(/{surveyUrl}/g, surveyUrl)
+        .replace(/{questionnaireUrl}/g, questionnaireUrl)
+        .replace(/{couponCode}/g, couponCode || '');
+
+      await base44.integrations.Core.SendEmail({
+        to: userEmail,
+        subject: emailSubject,
+        body: emailHtml
+      });
+
+      await base44.entities.EmailLog.create({
+        to_email: userEmail,
+        email_type: template.template_type,
+        subject: emailSubject,
+        related_user_email: userEmail,
+        related_questionnaire_response_id: response.id,
+        sent_manually: true,
+        language: emailLanguage
+      });
+
+      await loadData();
+      alert(emailLanguage === 'en' ? `Email sent successfully to ${userEmail}` : `מייל נשלח בהצלחה ל-${userEmail}`);
+      setTemplateSelectionDialog({ open: false, response: null });
+    } catch (error) {
+      console.error("Error sending manual email:", error);
+      alert(emailLanguage === 'en' ? `Error sending email: ${error.message || 'Unknown error'}` : `שגיאה בשליחת המייל: ${error.message || 'שגיאה לא ידועה'}`);
+    } finally {
+      setSendingEmailType(null);
+    }
+  };
+
   const sendManualEmail = async (emailType, response, report = null) => {
     setSendingEmailType(`${emailType}_${response.id}`);
     const emailLanguage = response.language || 'he';
@@ -837,6 +910,24 @@ export default function AdminReports() {
     }
   };
 
+  const deleteTemplate = async (templateId) => {
+    if (!window.confirm('האם אתה בטוח שברצונך למחוק את התבנית? פעולה זו אינה הפיכה.')) {
+      return;
+    }
+
+    setDeletingTemplateId(templateId);
+    try {
+      await base44.entities.EmailTemplate.delete(templateId);
+      await loadData();
+      alert('התבנית נמחקה בהצלחה');
+    } catch (error) {
+      console.error("Error deleting template:", error);
+      alert('שגיאה במחיקת התבנית');
+    } finally {
+      setDeletingTemplateId(null);
+    }
+  };
+
   const filteredResponses = responses.filter(r => {
     const fullName = r.personal_info?.full_name || '';
     const email = r.personal_info?.email || '';
@@ -875,9 +966,10 @@ export default function AdminReports() {
   const abandonedUsers = getAbandonedUsers();
   const inProgressUsers = getInProgressUsers();
 
-  function EmailTemplateCard({ template, onEdit }) {
+  function EmailTemplateCard({ template, onEdit, onDelete }) {
     const [showPreview, setShowPreview] = React.useState(false);
     const [previewLangLocal, setPreviewLangLocal] = React.useState('he');
+    const isDeleting = deletingTemplateId === template.id;
 
     return (
       <Card className="hover:shadow-lg transition-shadow">
@@ -986,6 +1078,20 @@ export default function AdminReports() {
               >
                 <FileText className="w-4 h-4 ml-2" />
                 ערוך
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onDelete}
+                disabled={isDeleting}
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                {isDeleting ? (
+                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                ) : (
+                  <Trash2 className="w-4 h-4 ml-2" />
+                )}
+                מחק
               </Button>
             </div>
           </div>
@@ -1265,10 +1371,10 @@ export default function AdminReports() {
                               )}
 
                               <DropdownMenuItem
-                                onClick={() => sendManualEmail('abandonment_survey', response)}
-                                disabled={isSendingManualAbandonment || isGenerating || isDeleting || isSendingManualReportReady}
+                                onClick={() => setTemplateSelectionDialog({ open: true, response })}
+                                disabled={isGenerating || isDeleting || isSendingManualReportReady}
                               >
-                                <span className="ml-auto">מייל נטישה</span>
+                                <span className="ml-auto">שלח מייל מתבנית</span>
                                 <Mail className="w-4 h-4 mr-2" />
                               </DropdownMenuItem>
 
@@ -1348,7 +1454,7 @@ export default function AdminReports() {
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2 flex-row-reverse">
                                   <Button
-                                    onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
+                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
                                     disabled={!userResponse || isSending}
                                     className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse"
                                   >
@@ -1457,7 +1563,7 @@ export default function AdminReports() {
                                   </Badge>
                                 ) : (
                                   <Button
-                                    onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
+                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
                                     disabled={!userResponse || isSending}
                                     className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
                                   >
@@ -1541,6 +1647,7 @@ export default function AdminReports() {
                       setEditingTemplate(template);
                       setTemplateDialog(true);
                     }}
+                    onDelete={() => deleteTemplate(template.id)}
                   />
                 ))}
 
@@ -1805,6 +1912,70 @@ export default function AdminReports() {
                 )}
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={templateSelectionDialog.open} onOpenChange={(open) => setTemplateSelectionDialog({ open, response: null })}>
+        <DialogContent className="sm:max-w-2xl" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>בחר תבנית מייל לשליחה</DialogTitle>
+            <DialogDescription>
+              בחר תבנית מייל מהרשימה למטה לשליחה למשתמש
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+            {emailTemplates.filter(t => t.active).length === 0 ? (
+              <p className="text-center text-gray-500 py-8">אין תבניות פעילות במערכת</p>
+            ) : (
+              emailTemplates.filter(t => t.active).map(template => {
+                const isSending = sendingEmailType === `template_${template.id}_${templateSelectionDialog.response?.id}`;
+                return (
+                  <Card key={template.id} className="hover:shadow-md transition-shadow cursor-pointer">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <Button
+                          onClick={() => sendManualEmailFromTemplate(template, templateSelectionDialog.response)}
+                          disabled={isSending}
+                          variant="outline"
+                          size="sm"
+                          className="flex-shrink-0"
+                        >
+                          {isSending ? (
+                            <>
+                              <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                              שולח...
+                            </>
+                          ) : (
+                            <>
+                              <Send className="w-4 h-4 ml-2" />
+                              שלח
+                            </>
+                          )}
+                        </Button>
+                        <div className="flex-1 text-right">
+                          <h4 className="font-semibold text-lg mb-1">{template.name_he}</h4>
+                          <p className="text-sm text-gray-600 mb-2">{template.description_he}</p>
+                          <div className="flex gap-2 flex-wrap justify-end">
+                            <Badge variant="outline" className="text-xs">
+                              {template.template_type === 'abandonment_incomplete' && 'נטישה לפני סיום'}
+                              {template.template_type === 'abandonment_reminder_96h' && 'תזכורת 96 שעות'}
+                              {template.template_type === 'abandonment_after_completion' && 'נטישה אחרי סיום'}
+                            </Badge>
+                            {template.include_coupon && (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                                <DollarSign className="w-3 h-3 ml-1" />
+                                קופון {template.coupon_amount} ₪
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })
+            )}
           </div>
         </DialogContent>
       </Dialog>
