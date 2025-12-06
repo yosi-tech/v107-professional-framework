@@ -1383,7 +1383,12 @@ export default function AdminReports() {
                 // קביעת צבע רקע לפי זמן ושליחת דוח
                 let cardBgClass = '';
                 let timeWarningClass = '';
-                if (existingReport && !isReportSent) {
+                
+                // ירוק עדין אם שאלון מלא ודוח נשלח ללקוח
+                if (response.status === 'completed' && isReportSent) {
+                  cardBgClass = 'bg-green-50 border-green-300';
+                } else if (existingReport && !isReportSent) {
+                  // אדום/צהוב אם יש דוח אבל לא נשלח
                   if (hoursAgo >= 96) {
                     cardBgClass = 'bg-red-50 border-red-300';
                     timeWarningClass = 'text-red-700 font-bold';
