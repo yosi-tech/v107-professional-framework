@@ -188,15 +188,24 @@ export default function ReportView() {
         return;
       }
 
-      const reportData = await base44.entities.GeneratedReport.filter({ id: reportId }, '', 1);
-      if (!reportData || reportData.length === 0) {
-        console.error("Report not found for ID:", reportId);
+      // Try to get report directly by ID
+      let loadedReport;
+      try {
+        const allReports = await base44.entities.GeneratedReport.list();
+        loadedReport = allReports.find(r => r.id === reportId);
+        
+        if (!loadedReport) {
+          console.error("Report not found for ID:", reportId);
+          setReport(null);
+          setIsLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.error("Error fetching reports:", e);
         setReport(null);
         setIsLoading(false);
         return;
       }
-
-      const loadedReport = reportData[0];
       
       // Validate report structure
       if (!loadedReport.domain_scores || Object.keys(loadedReport.domain_scores).length === 0) {
