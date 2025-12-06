@@ -80,11 +80,13 @@ export default function Survey() {
     fetchUser();
   }, []);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     try {
-      await base44.auth.loginWithRedirect(window.location.href);
+      base44.auth.loginWithRedirect(window.location.href);
     } catch (error) {
       console.error('Login error:', error);
+      // אם יש שגיאה, ננסה דרך אלטרנטיבית
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth`;
     }
   };
 
