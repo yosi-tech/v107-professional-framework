@@ -69,18 +69,12 @@ export default function Survey() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
+        setIsLoading(false);
       } catch (e) {
         console.error("User not logged in");
-        // הפניה להתחברות עם חזרה לסקר
-        try {
-          await base44.auth.redirectToLogin(window.location.href);
-        } catch (redirectError) {
-          // אם יש בעיה בהפניה, נעביר לדף הבית
-          window.location.href = createPageUrl('Home');
-        }
-        return;
-      } finally {
         setIsLoading(false);
+        // הפניה לדף הבית כשאין משתמש מחובר
+        window.location.href = createPageUrl('Home');
       }
     };
     fetchUser();
