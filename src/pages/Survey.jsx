@@ -16,6 +16,7 @@ export default function Survey() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [couponCode, setCouponCode] = useState(null);
   const [isLoginRequired, setIsLoginRequired] = useState(false);
+  const [alreadyCompleted, setAlreadyCompleted] = useState(false);
   
   const [responses, setResponses] = useState({
     q1: '',
@@ -70,8 +71,22 @@ export default function Survey() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        // אם המשתמש כבר מחובר, אין צורך בהתחברות נוספת
         setIsLoginRequired(false);
+        
+        // בדוק אם המשתמש כבר מילא סקר
+        try {
+          const existingSurveys = await base44.entities.SurveyResponse.filter(
+            { created_by: currentUser.email },
+            '-created_date',
+            1
+          );
+          
+          if (existingSurveys.length > 0) {
+            setAlreadyCompleted(true);
+          }
+        } catch (e) {
+          console.log('No previous surveys found');
+        }
       } catch (e) {
         console.error("User not logged in");
         setIsLoginRequired(true);
@@ -171,6 +186,40 @@ export default function Survey() {
               <p className="text-sm text-gray-500 mt-4">
                 ההתחברות מאובטחת. אנחנו מכבדים את הפרטיות שלך.
               </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (alreadyCompleted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 py-20 px-4" dir="rtl">
+        <div className="max-w-2xl mx-auto text-center">
+          <Card className="shadow-xl border-t-4 border-blue-600">
+            <CardHeader className="pb-6">
+              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-blue-200">
+                <CheckCircle className="w-10 h-10 text-blue-600" />
+              </div>
+              <CardTitle className="text-3xl font-bold text-gray-900 mb-2">
+                כבר מילאת את הסקר
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <p className="text-lg text-gray-600">
+                תודה! כבר מילאת את הסקר וקיבלת קוד קופון. ניתן למלא את הסקר פעם אחת בלבד.
+              </p>
+              <p className="text-sm text-gray-500">
+                את הקופון שלך ניתן למצוא באזור האישי תחת "הקופונים שלי"
+              </p>
+              <Button
+                size="lg"
+                onClick={() => navigate(createPageUrl('MyAccount'))}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                עבור לאזור האישי
+              </Button>
             </CardContent>
           </Card>
         </div>
