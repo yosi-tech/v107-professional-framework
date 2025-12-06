@@ -849,10 +849,12 @@ export default function AdminReports() {
         language: emailLanguage
       });
 
+      // סגירת הדיאלוג
+      setTemplateSelectionDialog({ open: false, response: null });
+      
       // טעינה מחדש של כל הנתונים
       await loadData();
       
-      setTemplateSelectionDialog({ open: false, response: null });
       alert(emailLanguage === 'en' ? `Email sent successfully to ${userEmail}` : `מייל נשלח בהצלחה ל-${userEmail}`);
     } catch (error) {
       console.error("Error sending manual email:", error);
