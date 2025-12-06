@@ -30,14 +30,12 @@ export default function MyAccount() {
         );
         setQuestionnaireResponses(responses);
 
-        // טען דוחות
+        // טען דוחות - RLS מסנן אוטומטית לפי המייל של המשתמש
         try {
-          const userReports = await base44.entities.GeneratedReport.list('-created_date');
-          console.log('Fetched reports:', userReports);
-          console.log('Current user email:', currentUser.email);
-          setReports(userReports);
+          const allReports = await base44.entities.GeneratedReport.list('-created_date');
+          setReports(allReports);
         } catch (e) {
-          console.error('Error loading reports:', e);
+          console.log('No reports found');
         }
 
         // טען סקרים
