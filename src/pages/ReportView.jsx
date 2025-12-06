@@ -17,7 +17,8 @@ import {
   Target,
   TrendingUp,
   AlertCircle,
-  ArrowRight
+  ArrowRight,
+  CheckCircle
 } from "lucide-react";
 import { format } from "date-fns";
 import { 
