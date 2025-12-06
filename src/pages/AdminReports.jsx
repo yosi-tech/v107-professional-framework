@@ -1925,65 +1925,79 @@ export default function AdminReports() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={templateSelectionDialog.open} onOpenChange={(open) => setTemplateSelectionDialog({ open, response: null })}>
+      <Dialog open={templateSelectionDialog.open} onOpenChange={(open) => !sendingEmailType && setTemplateSelectionDialog({ open, response: templateSelectionDialog.response })}>
         <DialogContent className="sm:max-w-2xl" dir="rtl">
           <DialogHeader>
             <DialogTitle>בחר תבנית מייל לשליחה</DialogTitle>
             <DialogDescription>
-              בחר תבנית מייל מהרשימה למטה לשליחה למשתמש
+              {templateSelectionDialog.response?.personal_info?.full_name && 
+                `שליחת מייל אל: ${templateSelectionDialog.response.personal_info.full_name} (${templateSelectionDialog.response.personal_info?.email || templateSelectionDialog.response.created_by})`
+              }
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-            {emailTemplates.filter(t => t.active).length === 0 ? (
-              <p className="text-center text-gray-500 py-8">אין תבניות פעילות במערכת</p>
+          <div className="space-y-3 max-h-[60vh] overflow-y-auto p-2">
+            {emailTemplates.filter(t => t.active && (t.template_type === 'abandonment_incomplete' || t.template_type === 'abandonment_reminder_96h' || t.template_type === 'abandonment_after_completion')).length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-4">אין תבניות נטישה פעילות במערכת</p>
+                <Button
+                  onClick={() => {
+                    setTemplateSelectionDialog({ open: false, response: null });
+                    setTemplateDialog(true);
+                  }}
+                  variant="outline"
+                >
+                  צור תבנית חדשה
+                </Button>
+              </div>
             ) : (
-              emailTemplates.filter(t => t.active).map(template => {
-                const isSending = sendingEmailType === `template_${template.id}_${templateSelectionDialog.response?.id}`;
-                return (
-                  <Card key={template.id} className="hover:shadow-md transition-shadow cursor-pointer">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <Button
-                          onClick={() => sendManualEmailFromTemplate(template, templateSelectionDialog.response)}
-                          disabled={isSending}
-                          variant="outline"
-                          size="sm"
-                          className="flex-shrink-0"
-                        >
-                          {isSending ? (
-                            <>
-                              <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                              שולח...
-                            </>
-                          ) : (
-                            <>
-                              <Send className="w-4 h-4 ml-2" />
-                              שלח
-                            </>
-                          )}
-                        </Button>
-                        <div className="flex-1 text-right">
-                          <h4 className="font-semibold text-lg mb-1">{template.name_he}</h4>
-                          <p className="text-sm text-gray-600 mb-2">{template.description_he}</p>
-                          <div className="flex gap-2 flex-wrap justify-end">
-                            <Badge variant="outline" className="text-xs">
-                              {template.template_type === 'abandonment_incomplete' && 'נטישה לפני סיום'}
-                              {template.template_type === 'abandonment_reminder_96h' && 'תזכורת 96 שעות'}
-                              {template.template_type === 'abandonment_after_completion' && 'נטישה אחרי סיום'}
-                            </Badge>
-                            {template.include_coupon && (
-                              <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
-                                <DollarSign className="w-3 h-3 ml-1" />
-                                קופון {template.coupon_amount} ₪
-                              </Badge>
+              emailTemplates
+                .filter(t => t.active && (t.template_type === 'abandonment_incomplete' || t.template_type === 'abandonment_reminder_96h' || t.template_type === 'abandonment_after_completion'))
+                .map(template => {
+                  const isSending = sendingEmailType === `template_${template.id}_${templateSelectionDialog.response?.id}`;
+                  return (
+                    <Card key={template.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <Button
+                            onClick={() => templateSelectionDialog.response && sendManualEmailFromTemplate(template, templateSelectionDialog.response)}
+                            disabled={isSending || !templateSelectionDialog.response}
+                            className="bg-blue-600 hover:bg-blue-700 flex-shrink-0"
+                            size="sm"
+                          >
+                            {isSending ? (
+                              <>
+                                <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                                שולח...
+                              </>
+                            ) : (
+                              <>
+                                <Send className="w-4 h-4 ml-2" />
+                                שלח
+                              </>
                             )}
+                          </Button>
+                          <div className="flex-1 text-right">
+                            <h4 className="font-semibold text-base mb-1">{template.name_he}</h4>
+                            <p className="text-xs text-gray-600 mb-2">{template.description_he}</p>
+                            <div className="flex gap-2 flex-wrap justify-end">
+                              <Badge variant="outline" className="text-xs">
+                                {template.template_type === 'abandonment_incomplete' && 'נטישה לפני סיום'}
+                                {template.template_type === 'abandonment_reminder_96h' && 'תזכורת 96 שעות'}
+                                {template.template_type === 'abandonment_after_completion' && 'נטישה אחרי סיום'}
+                              </Badge>
+                              {template.include_coupon && (
+                                <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                                  <DollarSign className="w-3 h-3 ml-1" />
+                                  קופון {template.coupon_amount} ₪
+                                </Badge>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })
+                      </CardContent>
+                    </Card>
+                  );
+                })
             )}
           </div>
         </DialogContent>
