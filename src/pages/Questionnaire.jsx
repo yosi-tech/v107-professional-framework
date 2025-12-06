@@ -529,7 +529,7 @@ export default function Questionnaire() {
   useEffect(() => {
     if (!shouldBlockNavigation) return;
 
-    const handleClick = (e) => {
+    const handleClick = async (e) => {
       // Check if clicked element or its parent is a link
       const link = e.target.closest('a');
       if (link && link.href) {
@@ -546,6 +546,42 @@ export default function Questionnaire() {
             'Are you sure you want to leave? Your progress has been saved automatically and you can return to continue later.';
           
           if (window.confirm(confirmMessage)) {
+            // Mark questionnaire as abandoned and send email
+            if (currentResponseId && user) {
+              try {
+                await base44.entities.QuestionnaireResponse.update(currentResponseId, {
+                  status: 'abandoned'
+                });
+
+                // Send abandonment email
+                const { getAbandonmentEmailTemplate } = await import('@/components/email/AbandonmentEmailTemplate');
+                const surveyUrl = `${window.location.origin}${createPageUrl('Survey')}`;
+                const userName = personalInfo.full_name || user.full_name || 'משתמש';
+                const userEmail = personalInfo.email || user.email;
+                
+                const emailTemplate = getAbandonmentEmailTemplate(userName, surveyUrl, language);
+
+                await base44.integrations.Core.SendEmail({
+                  to: userEmail,
+                  subject: emailTemplate.subject,
+                  body: emailTemplate.html
+                });
+
+                // Log the email
+                await base44.entities.EmailLog.create({
+                  to_email: userEmail,
+                  email_type: 'abandonment_survey',
+                  subject: emailTemplate.subject,
+                  related_user_email: userEmail,
+                  related_questionnaire_response_id: currentResponseId,
+                  sent_manually: false,
+                  language: language
+                });
+              } catch (error) {
+                console.error("Failed to mark as abandoned or send email:", error);
+              }
+            }
+            
             window.location.href = link.href;
           }
         }
@@ -557,7 +593,7 @@ export default function Questionnaire() {
     return () => {
       document.removeEventListener('click', handleClick, true);
     };
-  }, [shouldBlockNavigation, language]);
+  }, [shouldBlockNavigation, language, currentResponseId, user, personalInfo]);
 
   const autoSaveProgress = useCallback(async () => {
     if (!user) return;
