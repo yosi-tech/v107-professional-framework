@@ -55,6 +55,18 @@ Deno.serve(async (req) => {
                     continue;
                 }
 
+                // בדיקה אם המשתמש השלים שאלון חדש לאחר מייל הנטישה
+                const newQuestionnaire = await base44.asServiceRole.entities.QuestionnaireResponse.filter({
+                    created_by: userEmail,
+                    status: 'completed',
+                    created_date: { $gt: emailLog.created_date }
+                }, '', 1);
+
+                if (newQuestionnaire && newQuestionnaire.length > 0) {
+                    // המשתמש השלים שאלון לאחר מייל הנטישה - לא צריך תזכורת
+                    continue;
+                }
+
                 // המשתמש לא מילא את הסקר - שולחים תזכורת
                 
                 // קבלת פרטי המשתמש

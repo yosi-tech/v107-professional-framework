@@ -1179,23 +1179,38 @@ export default function AdminReports() {
                         r.created_by === user.email || r.personal_info?.email === user.email
                       );
                       const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
+                      
+                      // בדיקה האם המשתמש השלים שאלון לאחר שנשלח לו מייל נטישה
+                      const abandonmentEmail = emailLogs.find(log => 
+                        log.email_type === 'abandonment_survey' && 
+                        (log.related_user_email === user.email || log.to_email === user.email)
+                      );
+                      const completedAfterAbandonment = abandonmentEmail && userResponse && 
+                        new Date(userResponse.created_date) > new Date(abandonmentEmail.created_date);
 
                       return (
-                        <Card key={user.id} className="border-orange-200">
+                        <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
                           <CardContent className="p-4">
                             <div className="flex items-center justify-between">
-                              <Button
-                                onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
-                                disabled={!userResponse || isSending}
-                                className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
-                              >
-                                <span>שלח מייל נטישה</span>
-                                {isSending ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <Mail className="w-4 h-4" />
-                                )}
-                              </Button>
+                              {completedAfterAbandonment ? (
+                                <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse">
+                                  <CheckCircle className="w-4 h-4" />
+                                  השלים לאחר מייל נטישה
+                                </Badge>
+                              ) : (
+                                <Button
+                                  onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
+                                  disabled={!userResponse || isSending}
+                                  className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
+                                >
+                                  <span>שלח מייל נטישה</span>
+                                  {isSending ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                  ) : (
+                                    <Mail className="w-4 h-4" />
+                                  )}
+                                </Button>
+                              )}
                               
                               <div className="text-right">
                                 <h4 className="font-semibold">{user.full_name || 'שם לא זמין'}</h4>
