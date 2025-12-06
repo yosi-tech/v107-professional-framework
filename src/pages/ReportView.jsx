@@ -183,34 +183,47 @@ export default function ReportView() {
       const reportId = urlParams.get('reportId');
       
       if (!reportId) {
-        alert(getText("reportIdMissing"));
+        console.error("Missing reportId parameter");
+        setIsLoading(false);
         return;
       }
 
       const reportData = await base44.entities.GeneratedReport.filter({ id: reportId }, '', 1);
-      if (reportData.length === 0) {
-        alert(getText("reportNotFound"));
+      if (!reportData || reportData.length === 0) {
+        console.error("Report not found for ID:", reportId);
+        setReport(null);
+        setIsLoading(false);
         return;
       }
 
       const loadedReport = reportData[0];
+      
+      // Validate report structure
+      if (!loadedReport.domain_scores || Object.keys(loadedReport.domain_scores).length === 0) {
+        console.error("Report missing domain_scores data");
+      }
+      
       setReport(loadedReport);
-      setCurrentLanguage(loadedReport.language || 'he'); // Set language from report
+      setCurrentLanguage(loadedReport.language || 'he');
 
-      if (userIsAdmin) {
-        const responseData = await base44.entities.QuestionnaireResponse.filter(
-          { id: loadedReport.questionnaire_response_id },
-          '',
-          1
-        );
-        if (responseData.length > 0) {
-          setQuestionnaireResponse(responseData[0]);
+      if (userIsAdmin && loadedReport.questionnaire_response_id) {
+        try {
+          const responseData = await base44.entities.QuestionnaireResponse.filter(
+            { id: loadedReport.questionnaire_response_id },
+            '',
+            1
+          );
+          if (responseData && responseData.length > 0) {
+            setQuestionnaireResponse(responseData[0]);
+          }
+        } catch (e) {
+          console.error("Error loading questionnaire response:", e);
         }
       }
 
     } catch (error) {
-      console.error(getText("errorLoadingReport"), error);
-      alert(getText("errorLoadingReport"));
+      console.error("Error loading report:", error);
+      setReport(null);
     } finally {
       setIsLoading(false);
     }
