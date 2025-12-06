@@ -1475,9 +1475,10 @@ export default function AdminReports() {
                         const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
                         
                         // ספירת מיילי נטישה שנשלחו למשתמש
+                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
                         const abandonmentEmailsCount = emailLogs.filter(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_survey_reminder') &&
-                          (log.related_user_email === user.email || log.to_email === user.email)
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                          (log.related_user_email === userEmail || log.to_email === userEmail)
                         ).length;
 
                         return (
@@ -1529,7 +1530,7 @@ export default function AdminReports() {
                                         onClick={() => {
                                           const userEmails = emailLogs.filter(log =>
                                             (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                                            (log.related_user_email === user.email || log.to_email === user.email)
+                                            (log.related_user_email === userEmail || log.to_email === userEmail)
                                           );
                                           setViewingEmails(userEmails);
                                         }}
@@ -1593,9 +1594,10 @@ export default function AdminReports() {
                         new Date(userResponse.created_date) > new Date(abandonmentEmail.created_date);
 
                       // ספירת מיילי נטישה שנשלחו למשתמש
+                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
                       const abandonmentEmailsCount = emailLogs.filter(log =>
-                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_survey_reminder') &&
-                        (log.related_user_email === user.email || log.to_email === user.email)
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
+                        (log.related_user_email === userEmail || log.to_email === userEmail)
                       ).length;
 
                       return (
@@ -1655,7 +1657,7 @@ export default function AdminReports() {
                                       onClick={() => {
                                         const userEmails = emailLogs.filter(log =>
                                           (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                                          (log.related_user_email === user.email || log.to_email === user.email)
+                                          (log.related_user_email === userEmail || log.to_email === userEmail)
                                         );
                                         setViewingEmails(userEmails);
                                       }}
