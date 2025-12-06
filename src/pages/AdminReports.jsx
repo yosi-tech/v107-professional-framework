@@ -1433,6 +1433,23 @@ export default function AdminReports() {
                               {template.template_type === 'abandonment_incomplete' && 'נטישה לפני סיום'}
                               {template.template_type === 'abandonment_reminder_96h' && 'תזכורת 96 שעות'}
                               {template.template_type === 'abandonment_after_completion' && 'נטישה אחרי סיום'}
+                              {template.template_type === 'full_report_purchase' && 'רכישת דוח מלא'}
+                              {template.template_type === 'answers_download_purchase' && 'רכישת תשובות'}
+                              {template.template_type === 'online_coaching_purchase' && 'רכישת ליווי'}
+                              {template.template_type === 'report_ready' && 'דוח מוכן'}
+                              {template.template_type === 'consultation_request' && 'בקשת ייעוץ'}
+                              {template.template_type === 'questionnaire_completion' && 'השלמת שאלון'}
+                            </Badge>
+
+                            <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs">
+                              {template.trigger_event === 'manual' && '⚙️ ידני'}
+                              {template.trigger_event === 'on_navigation_away' && '🚪 ניווט החוצה'}
+                              {template.trigger_event === 'after_96_hours' && '⏰ 96 שעות'}
+                              {template.trigger_event === 'after_completion_no_purchase' && '✅ סיום ללא רכישה'}
+                              {template.trigger_event === 'on_purchase' && '💳 רכישה'}
+                              {template.trigger_event === 'on_report_generation' && '📊 יצירת דוח'}
+                              {template.trigger_event === 'on_consultation_request' && '💬 בקשת ייעוץ'}
+                              {template.trigger_event === 'on_questionnaire_submit' && '📝 הגשת שאלון'}
                             </Badge>
 
                             {template.include_coupon && (
@@ -1754,51 +1771,54 @@ export default function AdminReports() {
 
       function EmailTemplateDialog({ open, onOpenChange, template, onSave }) {
       const [formData, setFormData] = React.useState({
-      template_type: template?.template_type || 'abandonment_incomplete',
-      name_he: template?.name_he || '',
-      name_en: template?.name_en || '',
-      subject_he: template?.subject_he || '',
-      subject_en: template?.subject_en || '',
-      content_he: template?.content_he || '',
-      content_en: template?.content_en || '',
-      description_he: template?.description_he || '',
-      description_en: template?.description_en || '',
-      active: template?.active ?? true,
-      include_coupon: template?.include_coupon ?? false,
-      coupon_amount: template?.coupon_amount || 50
+        template_type: template?.template_type || 'abandonment_incomplete',
+        trigger_event: template?.trigger_event || 'manual',
+        name_he: template?.name_he || '',
+        name_en: template?.name_en || '',
+        subject_he: template?.subject_he || '',
+        subject_en: template?.subject_en || '',
+        content_he: template?.content_he || '',
+        content_en: template?.content_en || '',
+        description_he: template?.description_he || '',
+        description_en: template?.description_en || '',
+        active: template?.active ?? true,
+        include_coupon: template?.include_coupon ?? false,
+        coupon_amount: template?.coupon_amount || 50
       });
 
       React.useEffect(() => {
       if (template) {
-      setFormData({
-        template_type: template.template_type,
-        name_he: template.name_he,
-        name_en: template.name_en,
-        subject_he: template.subject_he,
-        subject_en: template.subject_en,
-        content_he: template.content_he,
-        content_en: template.content_en,
-        description_he: template.description_he || '',
-        description_en: template.description_en || '',
-        active: template.active ?? true,
-        include_coupon: template.include_coupon ?? false,
-        coupon_amount: template.coupon_amount || 50
-      });
+        setFormData({
+          template_type: template.template_type,
+          trigger_event: template.trigger_event || 'manual',
+          name_he: template.name_he,
+          name_en: template.name_en,
+          subject_he: template.subject_he,
+          subject_en: template.subject_en,
+          content_he: template.content_he,
+          content_en: template.content_en,
+          description_he: template.description_he || '',
+          description_en: template.description_en || '',
+          active: template.active ?? true,
+          include_coupon: template.include_coupon ?? false,
+          coupon_amount: template.coupon_amount || 50
+        });
       } else {
-      setFormData({
-        template_type: 'abandonment_incomplete',
-        name_he: '',
-        name_en: '',
-        subject_he: '',
-        subject_en: '',
-        content_he: '',
-        content_en: '',
-        description_he: '',
-        description_en: '',
-        active: true,
-        include_coupon: false,
-        coupon_amount: 50
-      });
+        setFormData({
+          template_type: 'abandonment_incomplete',
+          trigger_event: 'manual',
+          name_he: '',
+          name_en: '',
+          subject_he: '',
+          subject_en: '',
+          content_he: '',
+          content_en: '',
+          description_he: '',
+          description_en: '',
+          active: true,
+          include_coupon: false,
+          coupon_amount: 50
+        });
       }
       }, [template]);
 
@@ -1834,6 +1854,31 @@ export default function AdminReports() {
                 <option value="abandonment_incomplete">נטישה לפני סיום השאלון</option>
                 <option value="abandonment_reminder_96h">תזכורת 96 שעות</option>
                 <option value="abandonment_after_completion">נטישה אחרי סיום השאלון</option>
+                <option value="full_report_purchase">רכישת דוח מלא</option>
+                <option value="answers_download_purchase">רכישת הורדת תשובות</option>
+                <option value="online_coaching_purchase">רכישת ליווי אונליין</option>
+                <option value="report_ready">דוח מוכן</option>
+                <option value="consultation_request">בקשת ייעוץ</option>
+                <option value="questionnaire_completion">השלמת שאלון</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>טריגר</Label>
+              <select
+                value={formData.trigger_event}
+                onChange={(e) => setFormData({...formData, trigger_event: e.target.value})}
+                className="w-full border rounded-md p-2 text-right"
+                dir="rtl"
+              >
+                <option value="manual">ידני בלבד</option>
+                <option value="on_navigation_away">בעת ניווט החוצה מהשאלון</option>
+                <option value="after_96_hours">אחרי 96 שעות</option>
+                <option value="after_completion_no_purchase">אחרי סיום ללא רכישה</option>
+                <option value="on_purchase">ברכישת מוצר</option>
+                <option value="on_report_generation">ביצירת דוח</option>
+                <option value="on_consultation_request">בקשת ייעוץ</option>
+                <option value="on_questionnaire_submit">בהגשת שאלון</option>
               </select>
             </div>
 
