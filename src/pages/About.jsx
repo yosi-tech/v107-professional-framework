@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -158,7 +157,7 @@ export default function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <img 
-                src="https://media.licdn.com/dms/image/v2/D4D03AQHcuwPxFsiqCA/profile-displayphoto-shrink_400_400/B4DZUzDB6UHYAg-/0/1740318187648?e=1762992000&v=beta&t=R4Kjvx83MrI99OQO5gYzCscPVE6G3tsh2DTGuqPvMd0"
+                src="https://media.licdn.com/dms/image/v2/D4D03AQHcuwPxFsiqCA/profile-displayphoto-shrink_400_400/B4DZUzDB6UHYAg-/0/1740318187648?e=1766620800&v=beta&t=171NXEbdlQ6Zgs9XeWW5K7HpXdL2ThSc5sjGAAPRZgU"
                 alt={language === 'he' ? 'יוסי אלון – יועץ ליזמים (AVENTURA 107)' : 'Yossi Alon – Business Consultant (AVENTURA 107)'}
                 className="w-48 h-48 rounded-full mx-auto object-cover shadow-2xl border-4 border-amber-500"
               />
