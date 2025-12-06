@@ -237,19 +237,34 @@ export default function MyAccount() {
           </Card>
 
           {/* דוחות */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-green-600" />
-                {language === 'he' ? 'הדוחות שלי' : 'My Reports'}
-              </CardTitle>
-              <CardDescription>
-                {language === 'he' 
-                  ? `${reports.length} דוחות` 
-                  : `${reports.length} reports`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="w-5 h-5 text-green-600" />
+                  {language === 'he' ? 'הדוחות שלי' : 'My Reports'}
+                </CardTitle>
+                <CardDescription>
+                  {language === 'he' 
+                    ? `${reports.length} דוחות` 
+                    : `${reports.length} reports`}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {/* Debug Info */}
+                <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mb-4">
+                  <p className="text-sm"><strong>מייל מחובר:</strong> {user?.email}</p>
+                  <p className="text-sm"><strong>סה"כ דוחות שנמצאו:</strong> {reports.length}</p>
+                  {reports.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm font-semibold">פרטי דוחות:</p>
+                      {reports.map((r, idx) => (
+                        <p key={idx} className="text-xs">
+                          {idx + 1}. {r.report_id} - מייל: {r.user_email} - נרכש: {r.purchased ? 'כן' : 'לא'}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               {reports.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500">
