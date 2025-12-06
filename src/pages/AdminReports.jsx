@@ -1442,7 +1442,7 @@ export default function AdminReports() {
                   <p className="text-gray-600 text-sm mt-1 text-right">משתמשים שהתחילו למלא את השאלון אך עדיין לא השלימו אותו.</p>
                 </CardHeader>
                 <CardContent>
-                  <Tabs defaultValue="all" className="w-full">
+                  <Tabs defaultValue="not-sent" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 mb-4">
                       <TabsTrigger value="all">הכל ({inProgressUsers.length})</TabsTrigger>
                       <TabsTrigger value="sent">נשלחו מיילים ({inProgressUsers.filter(u => {
@@ -1779,7 +1779,7 @@ export default function AdminReports() {
                   <p className="text-gray-600 text-sm mt-1 text-right">רשימת משתמשים שהשלימו שאלון V107 אך לא רכשו דו"ח מלא או הורדת תשובות.</p>
                 </CardHeader>
                 <CardContent>
-                  <Tabs defaultValue="all" className="w-full">
+                  <Tabs defaultValue="not-sent" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 mb-4">
                       <TabsTrigger value="all">הכל ({abandonedUsers.length})</TabsTrigger>
                       <TabsTrigger value="sent">נשלחו מיילים ({abandonedUsers.filter(u => {
