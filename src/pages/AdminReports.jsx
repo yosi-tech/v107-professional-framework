@@ -47,6 +47,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getAbandonmentEmailTemplate } from "@/components/email/AbandonmentEmailTemplate";
 import { simulatePurchase } from "@/functions/simulatePurchase";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Define the mapping for Hebrew to English domain names
 const HEBREW_TO_ENGLISH_DOMAIN_NAMES = {
@@ -1160,6 +1167,34 @@ export default function AdminReports() {
       </Card>
     );
   }
+
+  const handleUserPurchaseStatusChange = async (userEmail, status) => {
+    try {
+      let updateData = {
+        has_purchased_full_report: false,
+        has_purchased_answers_download: false,
+      };
+
+      if (status === 'full_report') {
+        updateData.has_purchased_full_report = true;
+      } else if (status === 'answers_download') {
+        updateData.has_purchased_answers_download = true;
+      }
+
+      const userToUpdate = users.find(u => u.email === userEmail);
+      if (!userToUpdate) {
+        alert('משתמש לא נמצא');
+        return;
+      }
+
+      await base44.entities.User.update(userToUpdate.id, updateData);
+      await loadData();
+      alert('סטטוס רכישה עודכן בהצלחה!');
+    } catch (error) {
+      console.error("Error updating user purchase status:", error);
+      alert('שגיאה בעדכון סטטוס הרכישה');
+    }
+  };
 
   const handleSimulatePurchase = async () => {
     if (!simulationForm.userEmail) {
@@ -2499,7 +2534,8 @@ export default function AdminReports() {
                         r.created_by === user.email || r.personal_info?.email === user.email
                       );
                       const userReports = reports.filter(r => r.user_email === user.email);
-                      const hasPurchased = (user.has_purchased_full_report ?? false) || (user.has_purchased_answers_download ?? false);
+                      const hasPurchasedFullReport = (user.has_purchased_full_report ?? false);
+                      const hasPurchasedAnswersDownload = (user.has_purchased_answers_download ?? false);
 
                       return (
                         <Card key={user.id} className="border">
@@ -2526,15 +2562,22 @@ export default function AdminReports() {
                                   <Badge variant="outline" className="text-xs">
                                     {userReports.length} דוחות
                                   </Badge>
-                                  {hasPurchased ? (
-                                    <Badge className="bg-green-100 text-green-800 text-xs">
-                                      רכש מוצר
-                                    </Badge>
-                                  ) : (
-                                    <Badge variant="outline" className="text-xs">
-                                      לא רכש
-                                    </Badge>
-                                  )}
+                                </div>
+                                <div className="mt-3">
+                                  <Label className="text-xs mb-2 block">סטטוס תשלום:</Label>
+                                  <Select
+                                    value={hasPurchasedFullReport ? 'full_report' : (hasPurchasedAnswersDownload ? 'answers_download' : 'none')}
+                                    onValueChange={(value) => handleUserPurchaseStatusChange(user.email, value)}
+                                  >
+                                    <SelectTrigger className="w-full text-right">
+                                      <SelectValue placeholder="בחר סטטוס" />
+                                    </SelectTrigger>
+                                    <SelectContent dir="rtl">
+                                      <SelectItem value="full_report">רכש דוח מלא ✅</SelectItem>
+                                      <SelectItem value="answers_download">רכש תשובות בלבד 📄</SelectItem>
+                                      <SelectItem value="none">לא רכש ❌</SelectItem>
+                                    </SelectContent>
+                                  </Select>
                                 </div>
                               </div>
                               
