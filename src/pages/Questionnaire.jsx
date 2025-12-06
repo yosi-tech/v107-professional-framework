@@ -462,7 +462,6 @@ export default function Questionnaire() {
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { base44 } = await import('@/api/base44Client');
 
   const questions = language === 'he' ? questionsHe : questionsEn;
   const sectionTitles = language === 'he' ? sectionTitlesHe : sectionTitlesEn;
@@ -548,9 +547,9 @@ export default function Questionnaire() {
           
           if (window.confirm(confirmMessage)) {
             // Mark questionnaire as abandoned and send email
-            if (currentResponseId && user) {
+            if (savedResponseId && user) {
               try {
-                await base44.entities.QuestionnaireResponse.update(currentResponseId, {
+                await base44.entities.QuestionnaireResponse.update(savedResponseId, {
                   status: 'abandoned'
                 });
 
@@ -574,7 +573,7 @@ export default function Questionnaire() {
                   email_type: 'abandonment_survey',
                   subject: emailTemplate.subject,
                   related_user_email: userEmail,
-                  related_questionnaire_response_id: currentResponseId,
+                  related_questionnaire_response_id: savedResponseId,
                   sent_manually: false,
                   language: language
                 });
@@ -594,7 +593,7 @@ export default function Questionnaire() {
     return () => {
       document.removeEventListener('click', handleClick, true);
     };
-  }, [shouldBlockNavigation, language, currentResponseId, user, personalInfo]);
+  }, [shouldBlockNavigation, language, savedResponseId, user, personalInfo]);
 
   const autoSaveProgress = useCallback(async () => {
     if (!user) return;
