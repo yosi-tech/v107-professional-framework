@@ -1192,25 +1192,34 @@ export default function AdminReports() {
                         <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
                           <CardContent className="p-4">
                             <div className="flex items-center justify-between">
-                              {completedAfterAbandonment ? (
-                                <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse">
-                                  <CheckCircle className="w-4 h-4" />
-                                  השלים לאחר מייל נטישה
-                                </Badge>
-                              ) : (
-                                <Button
-                                  onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
-                                  disabled={!userResponse || isSending}
-                                  className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
-                                >
-                                  <span>שלח מייל נטישה</span>
-                                  {isSending ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                  ) : (
-                                    <Mail className="w-4 h-4" />
-                                  )}
-                                </Button>
-                              )}
+                              <div className="flex items-center gap-2 flex-row-reverse">
+                                {completedAfterAbandonment ? (
+                                  <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse">
+                                    <CheckCircle className="w-4 h-4" />
+                                    השלים לאחר מייל נטישה
+                                  </Badge>
+                                ) : (
+                                  <Button
+                                    onClick={() => userResponse && sendManualEmail('abandonment_survey', userResponse)}
+                                    disabled={!userResponse || isSending}
+                                    className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse"
+                                  >
+                                    <span>שלח מייל נטישה</span>
+                                    {isSending ? (
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                      <Mail className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                )}
+                                
+                                {userResponse && (
+                                  <Badge variant="outline" className="bg-blue-50 border-blue-300 text-blue-700 flex items-center gap-1 flex-row-reverse">
+                                    <CheckCircle className="w-3 h-3" />
+                                    יש שאלון מלא
+                                  </Badge>
+                                )}
+                              </div>
                               
                               <div className="text-right">
                                 <h4 className="font-semibold">{user.full_name || 'שם לא זמין'}</h4>
