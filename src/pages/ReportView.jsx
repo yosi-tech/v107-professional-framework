@@ -185,7 +185,7 @@ export default function ReportView() {
       }
 
       const urlParams = new URLSearchParams(window.location.search);
-      const reportId = urlParams.get('reportId');
+      const reportId = urlParams.get('reportId') || urlParams.get('reportid');
       
       if (!reportId) {
         console.error("Missing reportId parameter");
