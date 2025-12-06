@@ -450,25 +450,29 @@ export default function Home() {
       </section>
 
       {/* Social Proof - Testimonials */}
-      {!isLoadingTestimonials && testimonials.length > 0 && (
-        <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                  {language === 'he' ? 'מה יזמים אומרים עלינו' : 'What Entrepreneurs Say'}
-                </h2>
-                <p className="text-xl text-gray-600">
-                  {language === 'he' ? 'סיפורי הצלחה מהשטח' : 'Success Stories from the Field'}
-                </p>
-              </motion.div>
-            </div>
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
+                {language === 'he' ? 'מה יזמים אומרים עלינו' : 'What Entrepreneurs Say'}
+              </h2>
+              <p className="text-xl text-gray-600">
+                {language === 'he' ? 'סיפורי הצלחה מהשטח' : 'Success Stories from the Field'}
+              </p>
+            </motion.div>
+          </div>
 
+          {isLoadingTestimonials ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="text-gray-400">{language === 'he' ? 'טוען...' : 'Loading...'}</div>
+            </div>
+          ) : testimonials.length > 0 ? (
             <div className="relative">
               <div className="overflow-hidden rounded-3xl">
                 <div
@@ -495,7 +499,7 @@ export default function Home() {
                             <div className="w-16 h-16 bg-gradient-to-br from-slate-700 to-slate-900 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
                               {testimonial.name.charAt(0)}
                             </div>
-                            <div className="text-right">
+                            <div className={language === 'he' ? 'text-right' : 'text-left'}>
                               <p className="font-bold text-gray-900 text-xl">{testimonial.name}</p>
                               <p className="text-gray-600">{testimonial.title}</p>
                             </div>
@@ -536,9 +540,13 @@ export default function Home() {
                 </>
               )}
             </div>
-          </div>
-        </section>
-      )}
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500">{language === 'he' ? 'אין עדויות להצגה' : 'No testimonials available'}</p>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Final CTA - Strong & Compelling */}
       <section className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
