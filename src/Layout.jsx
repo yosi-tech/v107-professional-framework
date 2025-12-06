@@ -396,7 +396,6 @@ function AppLayout({ children }) {
               </nav>
             </div>
           )}
-          </div>
         </div>
       </header>
 
