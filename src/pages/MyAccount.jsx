@@ -30,13 +30,11 @@ export default function MyAccount() {
         );
         setQuestionnaireResponses(responses);
 
-        // טען דוחות - ננסה גם list וגם filter
+        // טען דוחות - סינון מפורש בקוד
         try {
           const allReports = await base44.entities.GeneratedReport.list('-created_date');
-          const filteredReports = await base44.entities.GeneratedReport.filter({ user_email: currentUser.email }, '-created_date');
-          
-          // נשתמש בתוצאות המפולטרות אם list לא עובד
-          setReports(filteredReports.length > 0 ? filteredReports : allReports);
+          const myReports = allReports.filter(report => report.created_by === currentUser.email);
+          setReports(myReports);
         } catch (e) {
           console.log('No reports found');
         }
