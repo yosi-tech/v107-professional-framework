@@ -261,7 +261,10 @@ export default function AdminReports() {
   const [reports, setReports] = useState([]);
   const [users, setUsers] = useState([]);
   const [emailLogs, setEmailLogs] = useState([]);
+  const [emailTemplates, setEmailTemplates] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [editingTemplate, setEditingTemplate] = useState(null);
+  const [templateDialog, setTemplateDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [generatingReportId, setGeneratingReportId] = useState(null);
   const [viewingResponse, setViewingResponse] = useState(null);
@@ -302,17 +305,19 @@ export default function AdminReports() {
 
   const loadData = async () => {
     try {
-      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs] = await Promise.all([
+      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates] = await Promise.all([
         base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date'),
         base44.entities.QuestionnaireResponse.filter({ status: 'in_progress' }, '-created_date'),
         base44.entities.GeneratedReport.list('-created_date'),
         base44.entities.User.list(),
-        base44.entities.EmailLog.list('-created_date')
+        base44.entities.EmailLog.list('-created_date'),
+        base44.entities.EmailTemplate.list('-created_date')
       ]);
       setResponses([...completedResponses, ...inProgressResponses]);
       setReports(allReports);
       setUsers(allUsers);
       setEmailLogs(allEmailLogs);
+      setEmailTemplates(allEmailTemplates);
     } catch (error) {
       console.error("Error loading data:", error);
     }
@@ -937,7 +942,7 @@ export default function AdminReports() {
         </div>
 
         <Tabs defaultValue="reports" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="reports" className="flex items-center gap-2 flex-row-reverse">
               <span>שאלונים ודו"חות</span>
               <FileText className="w-4 h-4" />
@@ -945,6 +950,10 @@ export default function AdminReports() {
             <TabsTrigger value="abandoned" className="flex items-center gap-2 flex-row-reverse">
               <span>משתמשים שנטשו ({inProgressUsers.length + abandonedUsers.length})</span>
               <AlertTriangle className="w-4 h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="email-templates" className="flex items-center gap-2 flex-row-reverse">
+              <span>תבניות מיילים</span>
+              <Mail className="w-4 h-4" />
             </TabsTrigger>
           </TabsList>
 
@@ -1387,8 +1396,99 @@ export default function AdminReports() {
               </Card>
             </div>
           </TabsContent>
-        </Tabs>
-      </div>
+
+          <TabsContent value="email-templates">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <Button
+                  onClick={() => {
+                    setEditingTemplate(null);
+                    setTemplateDialog(true);
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <Mail className="w-4 h-4 ml-2" />
+                  תבנית מייל חדשה
+                </Button>
+              </div>
+
+              <div className="grid gap-4">
+                {emailTemplates.map(template => (
+                  <Card key={template.id} className="hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 text-right">
+                          <div className="flex items-center gap-3 mb-3 flex-row-reverse">
+                            <Badge variant={template.active ? "default" : "outline"}>
+                              {template.active ? 'פעיל' : 'לא פעיל'}
+                            </Badge>
+                            <h3 className="text-lg font-semibold">{template.name_he}</h3>
+                          </div>
+
+                          <p className="text-sm text-gray-600 mb-2">{template.description_he}</p>
+
+                          <div className="flex gap-2 flex-wrap justify-end mt-3">
+                            <Badge variant="outline" className="text-xs">
+                              {template.template_type === 'abandonment_incomplete' && 'נטישה לפני סיום'}
+                              {template.template_type === 'abandonment_reminder_96h' && 'תזכורת 96 שעות'}
+                              {template.template_type === 'abandonment_after_completion' && 'נטישה אחרי סיום'}
+                            </Badge>
+
+                            {template.include_coupon && (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                                <DollarSign className="w-3 h-3 ml-1" />
+                                קופון {template.coupon_amount} ₪
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setEditingTemplate(template);
+                              setTemplateDialog(true);
+                            }}
+                          >
+                            <FileText className="w-4 h-4 ml-2" />
+                            ערוך
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                {emailTemplates.length === 0 && (
+                  <Card>
+                    <CardContent className="p-12 text-center">
+                      <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        אין תבניות מיילים
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        צור תבניות מיילים אוטומטיות למערכת
+                      </p>
+                      <Button
+                        onClick={() => {
+                          setEditingTemplate(null);
+                          setTemplateDialog(true);
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        <Mail className="w-4 h-4 ml-2" />
+                        צור תבנית ראשונה
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+          </Tabs>
+          </div>
 
       <Dialog open={!!viewingResponse} onOpenChange={() => setViewingResponse(null)}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" dir="rtl">
@@ -1625,6 +1725,276 @@ export default function AdminReports() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
-  );
-}
+
+      <EmailTemplateDialog
+        open={templateDialog}
+        onOpenChange={setTemplateDialog}
+        template={editingTemplate}
+        onSave={async (templateData) => {
+          try {
+            if (editingTemplate) {
+              await base44.entities.EmailTemplate.update(editingTemplate.id, templateData);
+            } else {
+              await base44.entities.EmailTemplate.create(templateData);
+            }
+            await loadData();
+            setTemplateDialog(false);
+            setEditingTemplate(null);
+            alert('התבנית נשמרה בהצלחה!');
+          } catch (error) {
+            console.error('Error saving template:', error);
+            alert('שגיאה בשמירת התבנית');
+          }
+        }}
+      />
+      </div>
+      );
+      }
+
+      function EmailTemplateDialog({ open, onOpenChange, template, onSave }) {
+      const [formData, setFormData] = React.useState({
+      template_type: template?.template_type || 'abandonment_incomplete',
+      name_he: template?.name_he || '',
+      name_en: template?.name_en || '',
+      subject_he: template?.subject_he || '',
+      subject_en: template?.subject_en || '',
+      content_he: template?.content_he || '',
+      content_en: template?.content_en || '',
+      description_he: template?.description_he || '',
+      description_en: template?.description_en || '',
+      active: template?.active ?? true,
+      include_coupon: template?.include_coupon ?? false,
+      coupon_amount: template?.coupon_amount || 50
+      });
+
+      React.useEffect(() => {
+      if (template) {
+      setFormData({
+        template_type: template.template_type,
+        name_he: template.name_he,
+        name_en: template.name_en,
+        subject_he: template.subject_he,
+        subject_en: template.subject_en,
+        content_he: template.content_he,
+        content_en: template.content_en,
+        description_he: template.description_he || '',
+        description_en: template.description_en || '',
+        active: template.active ?? true,
+        include_coupon: template.include_coupon ?? false,
+        coupon_amount: template.coupon_amount || 50
+      });
+      } else {
+      setFormData({
+        template_type: 'abandonment_incomplete',
+        name_he: '',
+        name_en: '',
+        subject_he: '',
+        subject_en: '',
+        content_he: '',
+        content_en: '',
+        description_he: '',
+        description_en: '',
+        active: true,
+        include_coupon: false,
+        coupon_amount: 50
+      });
+      }
+      }, [template]);
+
+      const handleSubmit = (e) => {
+      e.preventDefault();
+      if (!formData.name_he || !formData.subject_he || !formData.content_he) {
+      alert('יש למלא לפחות את השדות בעברית');
+      return;
+      }
+      onSave(formData);
+      };
+
+      return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" dir="rtl">
+        <DialogHeader>
+          <DialogTitle>{template ? 'עריכת תבנית מייל' : 'תבנית מייל חדשה'}</DialogTitle>
+          <DialogDescription>
+            הגדר את תוכן המייל האוטומטי בעברית ובאנגלית
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>סוג תבנית</Label>
+              <select
+                value={formData.template_type}
+                onChange={(e) => setFormData({...formData, template_type: e.target.value})}
+                className="w-full border rounded-md p-2 text-right"
+                dir="rtl"
+              >
+                <option value="abandonment_incomplete">נטישה לפני סיום השאלון</option>
+                <option value="abandonment_reminder_96h">תזכורת 96 שעות</option>
+                <option value="abandonment_after_completion">נטישה אחרי סיום השאלון</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-4 flex-row-reverse">
+              <div className="flex items-center gap-2 flex-row-reverse">
+                <Label>פעיל</Label>
+                <input
+                  type="checkbox"
+                  checked={formData.active}
+                  onChange={(e) => setFormData({...formData, active: e.target.checked})}
+                  className="w-4 h-4"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 flex-row-reverse">
+                <Label>כולל קופון</Label>
+                <input
+                  type="checkbox"
+                  checked={formData.include_coupon}
+                  onChange={(e) => setFormData({...formData, include_coupon: e.target.checked})}
+                  className="w-4 h-4"
+                />
+              </div>
+
+              {formData.include_coupon && (
+                <div className="flex items-center gap-2 flex-row-reverse">
+                  <Label>סכום קופון (₪)</Label>
+                  <Input
+                    type="number"
+                    value={formData.coupon_amount}
+                    onChange={(e) => setFormData({...formData, coupon_amount: parseInt(e.target.value)})}
+                    className="w-20 text-right"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="border-t pt-4">
+            <h3 className="font-semibold mb-3 text-right">תוכן בעברית</h3>
+
+            <div className="space-y-4">
+              <div>
+                <Label>שם התבנית</Label>
+                <Input
+                  value={formData.name_he}
+                  onChange={(e) => setFormData({...formData, name_he: e.target.value})}
+                  placeholder="למשל: מייל עידוד להשלמת שאלון"
+                  className="text-right"
+                  dir="rtl"
+                />
+              </div>
+
+              <div>
+                <Label>תיאור (אופציונלי)</Label>
+                <Input
+                  value={formData.description_he}
+                  onChange={(e) => setFormData({...formData, description_he: e.target.value})}
+                  placeholder="תיאור קצר של המייל"
+                  className="text-right"
+                  dir="rtl"
+                />
+              </div>
+
+              <div>
+                <Label>נושא המייל</Label>
+                <Input
+                  value={formData.subject_he}
+                  onChange={(e) => setFormData({...formData, subject_he: e.target.value})}
+                  placeholder="נושא המייל"
+                  className="text-right"
+                  dir="rtl"
+                />
+              </div>
+
+              <div>
+                <Label>תוכן המייל (HTML)</Label>
+                <Textarea
+                  value={formData.content_he}
+                  onChange={(e) => setFormData({...formData, content_he: e.target.value})}
+                  placeholder="תוכן HTML של המייל..."
+                  className="min-h-[200px] font-mono text-sm text-right"
+                  dir="rtl"
+                />
+                <p className="text-xs text-gray-500 mt-1 text-right">
+                  ניתן להשתמש במשתנים: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t pt-4">
+            <h3 className="font-semibold mb-3 text-right">English Content</h3>
+
+            <div className="space-y-4">
+              <div>
+                <Label>Template Name</Label>
+                <Input
+                  value={formData.name_en}
+                  onChange={(e) => setFormData({...formData, name_en: e.target.value})}
+                  placeholder="e.g.: Questionnaire Completion Encouragement"
+                  className="text-left"
+                  dir="ltr"
+                />
+              </div>
+
+              <div>
+                <Label>Description (optional)</Label>
+                <Input
+                  value={formData.description_en}
+                  onChange={(e) => setFormData({...formData, description_en: e.target.value})}
+                  placeholder="Brief description"
+                  className="text-left"
+                  dir="ltr"
+                />
+              </div>
+
+              <div>
+                <Label>Email Subject</Label>
+                <Input
+                  value={formData.subject_en}
+                  onChange={(e) => setFormData({...formData, subject_en: e.target.value})}
+                  placeholder="Email subject"
+                  className="text-left"
+                  dir="ltr"
+                />
+              </div>
+
+              <div>
+                <Label>Email Content (HTML)</Label>
+                <Textarea
+                  value={formData.content_en}
+                  onChange={(e) => setFormData({...formData, content_en: e.target.value})}
+                  placeholder="HTML email content..."
+                  className="min-h-[200px] font-mono text-sm text-left"
+                  dir="ltr"
+                />
+                <p className="text-xs text-gray-500 mt-1 text-left">
+                  Available variables: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="flex-1"
+            >
+              ביטול
+            </Button>
+            <Button
+              type="submit"
+              className="flex-1 bg-blue-600 hover:bg-blue-700"
+            >
+              שמור תבנית
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+      </Dialog>
+      );
+      }
