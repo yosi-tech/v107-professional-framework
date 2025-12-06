@@ -1081,31 +1081,33 @@ export default function AdminReports() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowPreview(!showPreview)}
+                className="flex items-center gap-2 flex-row-reverse"
               >
-                <Eye className="w-4 h-4 ml-2" />
-                {showPreview ? 'סגור תצוגה' : 'תצוגה מקדימה'}
+                <span>{showPreview ? 'סגור תצוגה' : 'תצוגה מקדימה'}</span>
+                <Eye className="w-4 h-4" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={onEdit}
+                className="flex items-center gap-2 flex-row-reverse"
               >
-                <FileText className="w-4 h-4 ml-2" />
-                ערוך
+                <span>ערוך</span>
+                <FileText className="w-4 h-4" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={onDelete}
                 disabled={isDeleting}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 flex items-center gap-2 flex-row-reverse"
               >
+                <span>מחק</span>
                 {isDeleting ? (
-                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <Trash2 className="w-4 h-4 ml-2" />
+                  <Trash2 className="w-4 h-4" />
                 )}
-                מחק
               </Button>
             </div>
           </div>
@@ -1168,17 +1170,17 @@ export default function AdminReports() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="text-right order-1 sm:order-2 w-full sm:w-auto">
+          <Button
+            onClick={() => setSimulationDialog(true)}
+            className="bg-purple-600 hover:bg-purple-700 w-full sm:w-auto text-sm flex items-center gap-2 flex-row-reverse"
+          >
+            <span>דמה רכישת מוצר</span>
+            <DollarSign className="w-4 h-4" />
+          </Button>
+          <div className="text-right w-full sm:w-auto">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">ניהול V107</h1>
             <p className="text-sm sm:text-base text-gray-600">ניהול שאלונים, דו"חות ומשתמשים</p>
           </div>
-          <Button
-            onClick={() => setSimulationDialog(true)}
-            className="bg-purple-600 hover:bg-purple-700 order-2 sm:order-1 w-full sm:w-auto text-sm"
-          >
-            <DollarSign className="w-4 h-4 ml-2" />
-            דמה רכישת מוצר
-          </Button>
         </div>
 
         <Tabs defaultValue="reports" className="w-full">
@@ -1200,9 +1202,9 @@ export default function AdminReports() {
           <TabsContent value="reports">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
               <Card>
-                <CardHeader className="flex flex-row-reverse items-center justify-between pb-2">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 text-right">שאלונים שהושלמו</CardTitle>
                   <FileText className="w-4 h-4 text-gray-500" />
-                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">שאלונים שהושלמו</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xl sm:text-2xl font-bold text-right">{responses.length}</div>
@@ -1210,9 +1212,9 @@ export default function AdminReports() {
               </Card>
 
               <Card>
-                <CardHeader className="flex flex-row-reverse items-center justify-between pb-2">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 text-right">דו"חות שנוצרו</CardTitle>
                   <CheckCircle className="w-4 h-4 text-green-600" />
-                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">דו"חות שנוצרו</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xl sm:text-2xl font-bold text-green-600 text-right">{reports.length}</div>
@@ -1220,9 +1222,9 @@ export default function AdminReports() {
               </Card>
 
               <Card>
-                <CardHeader className="flex flex-row-reverse items-center justify-between pb-2">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 text-right">ממתינים לדו"ח</CardTitle>
                   <Clock className="w-4 h-4 text-orange-600" />
-                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">ממתינים לדו"ח</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xl sm:text-2xl font-bold text-orange-600 text-right">
@@ -1336,69 +1338,73 @@ export default function AdminReports() {
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="outline" size="sm" disabled={isDeleting || isGenerating} className="flex-1 sm:flex-none text-xs sm:text-sm">
-                                ▼ פעולות
+                                פעולות ▼
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start" className="w-48">
-                              <DropdownMenuItem onClick={() => setViewingResponse(response)}>
-                                <span className="ml-auto">צפה בשאלון</span>
-                                <FileSearch className="w-4 h-4 mr-2" />
+                            <DropdownMenuContent align="end" className="w-48" dir="rtl">
+                              <DropdownMenuItem onClick={() => setViewingResponse(response)} className="flex flex-row-reverse justify-between">
+                                <FileSearch className="w-4 h-4" />
+                                <span>צפה בשאלון</span>
                               </DropdownMenuItem>
 
                               {existingReport ? (
                                 <>
                                   <DropdownMenuItem asChild>
-                                    <Link to={createPageUrl(`ReportView?reportId=${existingReport.id}`)}>
-                                      <span className="ml-auto">צפייה בדו"ח</span>
-                                      <Eye className="w-4 h-4 mr-2" />
+                                    <Link to={createPageUrl(`ReportView?reportId=${existingReport.id}`)} className="flex flex-row-reverse justify-between">
+                                      <Eye className="w-4 h-4" />
+                                      <span>צפייה בדו"ח</span>
                                     </Link>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem asChild>
-                                    <Link to={createPageUrl(`QuestionnaireExport?responseId=${response.id}`)}>
-                                      <span className="ml-auto">שאלון מלא</span>
-                                      <FileText className="w-4 h-4 mr-2" />
+                                    <Link to={createPageUrl(`QuestionnaireExport?responseId=${response.id}`)} className="flex flex-row-reverse justify-between">
+                                      <FileText className="w-4 h-4" />
+                                      <span>שאלון מלא</span>
                                     </Link>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     onClick={() => generateReport(response, true)}
                                     disabled={isGenerating}
+                                    className="flex flex-row-reverse justify-between"
                                   >
-                                    <span className="ml-auto">צור דו"ח מחדש</span>
-                                    <RefreshCw className="w-4 h-4 mr-2" />
+                                    <RefreshCw className="w-4 h-4" />
+                                    <span>צור דו"ח מחדש</span>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     onClick={() => openLanguageDialog(existingReport, response)}
                                     disabled={sendingReportId === existingReport.id || isSendingManualReportReady}
+                                    className="flex flex-row-reverse justify-between"
                                   >
-                                    <span className="ml-auto">שלח דו"ח ללקוח</span>
-                                    <Send className="w-4 h-4 mr-2" />
+                                    <Send className="w-4 h-4" />
+                                    <span>שלח דו"ח ללקוח</span>
                                   </DropdownMenuItem>
                                 </>
                               ) : (
                                 <DropdownMenuItem
                                   onClick={() => generateReport(response, false)}
                                   disabled={isGenerating}
+                                  className="flex flex-row-reverse justify-between"
                                 >
-                                  <span className="ml-auto">{isGenerating ? 'יוצר דו"ח...' : 'צור דו"ח'}</span>
-                                  <FileText className="w-4 h-4 mr-2" />
+                                  <FileText className="w-4 h-4" />
+                                  <span>{isGenerating ? 'יוצר דו"ח...' : 'צור דו"ח'}</span>
                                 </DropdownMenuItem>
                               )}
 
                               <DropdownMenuItem
                                 onClick={() => setTemplateSelectionDialog({ open: true, response })}
                                 disabled={isGenerating || isDeleting || isSendingManualReportReady}
+                                className="flex flex-row-reverse justify-between"
                               >
-                                <span className="ml-auto">שלח מייל מתבנית</span>
-                                <Mail className="w-4 h-4 mr-2" />
+                                <Mail className="w-4 h-4" />
+                                <span>שלח מייל מתבנית</span>
                               </DropdownMenuItem>
 
                               <DropdownMenuItem
                                 onClick={() => deleteResponse(response.id)}
                                 disabled={isDeleting || isGenerating || isSendingManualAbandonment || isSendingManualReportReady}
-                                className="text-red-600"
+                                className="text-red-600 flex flex-row-reverse justify-between"
                               >
-                                <span className="ml-auto">מחק</span>
-                                <Trash2 className="w-4 h-4 mr-2" />
+                                <Trash2 className="w-4 h-4" />
+                                <span>מחק</span>
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -2138,16 +2144,16 @@ export default function AdminReports() {
 
           <TabsContent value="email-templates">
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-end items-center">
                 <Button
                   onClick={() => {
                     setEditingTemplate(null);
                     setTemplateDialog(true);
                   }}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 flex-row-reverse"
                 >
-                  <Mail className="w-4 h-4 ml-2" />
-                  תבנית מייל חדשה
+                  <span>תבנית מייל חדשה</span>
+                  <Mail className="w-4 h-4" />
                 </Button>
               </div>
 
@@ -2179,10 +2185,10 @@ export default function AdminReports() {
                           setEditingTemplate(null);
                           setTemplateDialog(true);
                         }}
-                        className="bg-blue-600 hover:bg-blue-700"
+                        className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 flex-row-reverse"
                       >
-                        <Mail className="w-4 h-4 ml-2" />
-                        צור תבנית ראשונה
+                        <span>צור תבנית ראשונה</span>
+                        <Mail className="w-4 h-4" />
                       </Button>
                     </CardContent>
                   </Card>
@@ -2401,7 +2407,21 @@ export default function AdminReports() {
               </ul>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-4 flex-row-reverse">
+              <Button
+                onClick={handleSimulatePurchase}
+                className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2 justify-center"
+                disabled={isSimulating}
+              >
+                {isSimulating ? (
+                  <>
+                    <span>מדמה...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  </>
+                ) : (
+                  'דמה רכישה'
+                )}
+              </Button>
               <Button
                 onClick={() => setSimulationDialog(false)}
                 variant="outline"
@@ -2409,20 +2429,6 @@ export default function AdminReports() {
                 disabled={isSimulating}
               >
                 ביטול
-              </Button>
-              <Button
-                onClick={handleSimulatePurchase}
-                className="flex-1 bg-purple-600 hover:bg-purple-700"
-                disabled={isSimulating}
-              >
-                {isSimulating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                    מדמה...
-                  </>
-                ) : (
-                  'דמה רכישה'
-                )}
               </Button>
             </div>
           </div>
@@ -2465,25 +2471,7 @@ export default function AdminReports() {
                   return (
                     <Card key={template.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <Button
-                            onClick={() => templateSelectionDialog.response && sendManualEmailFromTemplate(template, templateSelectionDialog.response)}
-                            disabled={isSending || !templateSelectionDialog.response}
-                            className="bg-blue-600 hover:bg-blue-700 flex-shrink-0"
-                            size="sm"
-                          >
-                            {isSending ? (
-                              <>
-                                <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                                שולח...
-                              </>
-                            ) : (
-                              <>
-                                <Send className="w-4 h-4 ml-2" />
-                                שלח
-                              </>
-                            )}
-                          </Button>
+                        <div className="flex items-start justify-between gap-4 flex-row-reverse">
                           <div className="flex-1 text-right">
                             <h4 className="font-semibold text-base mb-1">{template.name_he}</h4>
                             <p className="text-xs text-gray-600 mb-2">{template.description_he}</p>
@@ -2501,6 +2489,24 @@ export default function AdminReports() {
                               )}
                             </div>
                           </div>
+                          <Button
+                            onClick={() => templateSelectionDialog.response && sendManualEmailFromTemplate(template, templateSelectionDialog.response)}
+                            disabled={isSending || !templateSelectionDialog.response}
+                            className="bg-blue-600 hover:bg-blue-700 flex-shrink-0 flex items-center gap-2 flex-row-reverse"
+                            size="sm"
+                          >
+                            {isSending ? (
+                              <>
+                                <span>שולח...</span>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              </>
+                            ) : (
+                              <>
+                                <span>שלח</span>
+                                <Send className="w-4 h-4" />
+                              </>
+                            )}
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -2939,7 +2945,13 @@ export default function AdminReports() {
             </div>
             </div>
 
-            <div className="flex gap-3 pt-4 border-t">
+            <div className="flex gap-3 pt-4 border-t flex-row-reverse">
+            <Button
+              type="submit"
+              className="flex-1 bg-blue-600 hover:bg-blue-700"
+            >
+              שמור תבנית
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -2947,12 +2959,6 @@ export default function AdminReports() {
               className="flex-1"
             >
               ביטול
-            </Button>
-            <Button
-              type="submit"
-              className="flex-1 bg-blue-600 hover:bg-blue-700"
-            >
-              שמור תבנית
             </Button>
             </div>
             </form>
