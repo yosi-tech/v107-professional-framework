@@ -188,7 +188,7 @@ export default function MyAccount() {
                       <p className="text-sm text-gray-600 mb-3">
                         {response.personal_info?.full_name || user?.full_name}
                       </p>
-                      {response.status === 'in_progress' && (
+                      {(response.status === 'in_progress' || response.status === 'abandoned') && (
                         <Link to={createPageUrl('Questionnaire')}>
                           <Button size="sm" variant="outline" className="w-full">
                             {language === 'he' ? 'המשך למלא' : 'Continue'}
