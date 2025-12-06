@@ -976,7 +976,12 @@ export default function AdminReports() {
 
     // סינון לפי סטטוס שאלון
     if (filters.questionnaireStatus !== 'all') {
-      if (r.status !== filters.questionnaireStatus) return false;
+      if (filters.questionnaireStatus === 'abandoned') {
+        // נטש שאלון = in_progress או abandoned
+        if (r.status !== 'in_progress' && r.status !== 'abandoned') return false;
+      } else if (r.status !== filters.questionnaireStatus) {
+        return false;
+      }
     }
 
     return true;
@@ -1326,7 +1331,6 @@ export default function AdminReports() {
                   >
                     <option value="all">הכל</option>
                     <option value="completed">שאלון מלא</option>
-                    <option value="in_progress">בתהליך</option>
                     <option value="abandoned">נטש שאלון</option>
                   </select>
                 </div>
@@ -1425,15 +1429,10 @@ export default function AdminReports() {
                                 שאלון מלא
                                 <CheckCircle className="w-3 h-3" />
                               </Badge>
-                            ) : response.status === 'abandoned' ? (
+                            ) : (
                               <Badge className="bg-red-100 text-red-800 flex items-center gap-1 flex-row-reverse text-xs">
                                 נטש שאלון
                                 <AlertCircle className="w-3 h-3" />
-                              </Badge>
-                            ) : (
-                              <Badge className="bg-yellow-100 text-yellow-800 flex items-center gap-1 flex-row-reverse text-xs">
-                                בתהליך
-                                <Clock className="w-3 h-3" />
                               </Badge>
                             )}
 
