@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Mail } from "lucide-react";
 import { useTranslation } from "@/components/i18n/useTranslation";
@@ -6,6 +6,10 @@ import { useTranslation } from "@/components/i18n/useTranslation";
 export default function TermsOfService() {
   const { language } = useTranslation();
   const isHebrew = language === 'he';
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   return (
     <div className="min-h-screen bg-slate-50" dir={isHebrew ? 'rtl' : 'ltr'}>
