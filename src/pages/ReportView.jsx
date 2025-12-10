@@ -22,7 +22,8 @@ import {
   TrendingUp,
   CheckCircle,
   Eye,
-  Code
+  Code,
+  Shield
 } from "lucide-react";
 import { format } from "date-fns";
 import ReactMarkdown from 'react-markdown';
