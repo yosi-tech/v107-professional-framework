@@ -33,6 +33,7 @@ import TrafficLightsSection from "@/components/report/TrafficLightsSection";
 import KPIsSection from "@/components/report/KPIsSection";
 import ActionPlanSection from "@/components/report/ActionPlanSection";
 import RecommendationsSection from "@/components/report/RecommendationsSection";
+import BoosterOfferSection from "@/components/report/BoosterOfferSection";
 
 const TEXTS = {
   he: {
@@ -382,6 +383,11 @@ export default function ReportView() {
 
                 <RecommendationsSection 
                   recommendations={report.focused_recommendations} 
+                  language={currentLanguage}
+                />
+
+                <BoosterOfferSection 
+                  recommendedTrack={report.recommended_booster_track}
                   language={currentLanguage}
                 />
               </TabsContent>

@@ -42,40 +42,42 @@ export default function ActionPlanSection({ actionPlan, language }) {
   ];
 
   return (
-    <Card className="mb-8 border-t-4 border-t-indigo-600">
-      <CardHeader>
-        <CardTitle className="text-2xl flex items-center gap-3">
-          <CheckCircle className="w-8 h-8 text-indigo-600" />
-          {isHebrew ? 'תכנית פעולה מפורטת' : 'Detailed Action Plan'}
+    <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-slate-50 to-indigo-50">
+      <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-t-lg">
+        <CardTitle className="text-3xl flex items-center gap-3 font-black">
+          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <CheckCircle className="w-7 h-7" />
+          </div>
+          {isHebrew ? '✅ תכנית פעולה מפורטת' : '✅ Detailed Action Plan'}
         </CardTitle>
-        <p className="text-gray-600 mt-2">
+        <p className="text-white/90 mt-2 text-lg">
           {isHebrew 
             ? 'צעדים ספציפיים ליישום בחודשים הקרובים'
             : 'Specific steps to implement in the coming months'
           }
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="p-8 space-y-8">
         {sections.map((section, sectionIndex) => (
           <div key={section.key}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`w-12 h-12 ${section.iconBg} rounded-lg flex items-center justify-center`}>
-                <section.icon className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-4 mb-6">
+              <div className={`w-16 h-16 ${section.iconBg} rounded-2xl flex items-center justify-center shadow-xl`}>
+                <section.icon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">{section.title}</h3>
+              <h3 className="text-2xl font-black text-gray-900">{section.title}</h3>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {section.items.map((item, index) => (
                 <Card 
                   key={index} 
-                  className={`${section.bgColor} border-2 ${section.borderColor}`}
+                  className="bg-white border-none shadow-lg hover:shadow-xl transition-all hover:scale-[1.01]"
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <Badge className={`${section.iconBg} text-white text-base px-3 py-1 flex-shrink-0`}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className={`w-12 h-12 ${section.iconBg} text-white rounded-xl flex items-center justify-center font-black text-xl shadow-md flex-shrink-0`}>
                         {index + 1}
-                      </Badge>
-                      <p className="text-gray-800 leading-relaxed flex-1">{item}</p>
+                      </div>
+                      <p className="text-gray-800 leading-relaxed flex-1 text-lg">{item}</p>
                     </div>
                   </CardContent>
                 </Card>

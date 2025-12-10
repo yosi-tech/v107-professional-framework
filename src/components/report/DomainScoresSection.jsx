@@ -28,14 +28,19 @@ export default function DomainScoresSection({ domainScores, language }) {
   };
 
   return (
-    <Card className="mb-8 border-t-4 border-t-purple-600">
-      <CardHeader>
-        <CardTitle className="text-2xl flex items-center gap-3">
-          <BarChart3 className="w-8 h-8 text-purple-600" />
-          {isHebrew ? 'ציוני התחומים' : 'Domain Scores'}
+    <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-slate-50 to-purple-50">
+      <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
+        <CardTitle className="text-3xl flex items-center gap-3 font-black">
+          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <BarChart3 className="w-7 h-7" />
+          </div>
+          {isHebrew ? '📊 ציוני התחומים' : '📊 Domain Scores'}
         </CardTitle>
+        <p className="text-white/90 mt-2">
+          {isHebrew ? 'הערכה כמותית של 6 תחומי הליבה' : 'Quantitative Assessment of 6 Core Domains'}
+        </p>
       </CardHeader>
-      <CardContent className="space-y-8">
+      <CardContent className="p-8 space-y-8">
         {/* Radar Chart */}
         <div className="w-full h-96">
           <ResponsiveContainer width="100%" height="100%">
@@ -79,46 +84,46 @@ export default function DomainScoresSection({ domainScores, language }) {
         </div>
 
         {/* Score Cards */}
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-6">
           {chartData.map((domain, index) => (
             <Card 
               key={index} 
-              className={`border-r-4 ${
+              className={`border-none shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02] ${
                 domain.red_flag 
-                  ? 'border-r-red-500 bg-red-50' 
+                  ? 'bg-gradient-to-br from-red-50 to-red-100' 
                   : domain.yellow_flag 
-                  ? 'border-r-amber-500 bg-amber-50'
+                  ? 'bg-gradient-to-br from-amber-50 to-amber-100'
                   : domain.band === 'high'
-                  ? 'border-r-green-500 bg-green-50'
-                  : 'border-r-blue-500 bg-blue-50'
+                  ? 'bg-gradient-to-br from-green-50 to-green-100'
+                  : 'bg-gradient-to-br from-blue-50 to-blue-100'
               }`}
             >
-              <CardContent className="p-4">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h4 className="font-bold text-lg text-gray-900 mb-1">
+                    <h4 className="font-black text-xl text-gray-900 mb-3">
                       {domain.name}
                     </h4>
                     <div className="flex items-center gap-2 flex-wrap">
                       {domain.red_flag && (
-                        <Badge className="bg-red-600 text-white text-xs">
+                        <Badge className="bg-red-600 text-white text-sm px-3 py-1 shadow-md">
                           🔴 {isHebrew ? 'דגל אדום' : 'Red Flag'}
                         </Badge>
                       )}
                       {domain.yellow_flag && !domain.red_flag && (
-                        <Badge className="bg-amber-600 text-white text-xs">
+                        <Badge className="bg-amber-600 text-white text-sm px-3 py-1 shadow-md">
                           🟡 {isHebrew ? 'דגל צהוב' : 'Yellow Flag'}
                         </Badge>
                       )}
                       {!domain.red_flag && !domain.yellow_flag && (
-                        <Badge className="bg-green-600 text-white text-xs">
+                        <Badge className="bg-green-600 text-white text-sm px-3 py-1 shadow-md">
                           🟢 {isHebrew ? 'תקין' : 'Normal'}
                         </Badge>
                       )}
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className={`text-4xl font-black ${
+                    <div className={`text-6xl font-black mb-2 ${
                       domain.red_flag 
                         ? 'text-red-600' 
                         : domain.yellow_flag 
@@ -129,7 +134,7 @@ export default function DomainScoresSection({ domainScores, language }) {
                     }`}>
                       {domain.score}
                     </div>
-                    <div className="text-xs text-gray-600 mt-1">
+                    <div className="text-sm text-gray-600 font-semibold">
                       {isHebrew ? 'מתוך 100' : 'out of 100'}
                     </div>
                   </div>
