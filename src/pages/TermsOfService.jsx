@@ -347,34 +347,57 @@ export default function TermsOfService() {
 
             <Card>
               <CardHeader className="bg-slate-50 border-b">
-                <CardTitle className="text-xl">הצהרת גילוי נאות (AI ואחריות מקצועית)</CardTitle>
+                <CardTitle className="text-xl">{isHebrew ? 'הצהרת גילוי נאות (AI ואחריות מקצועית)' : 'Disclosure Statement (AI and Professional Responsibility)'}</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="text-slate-700 leading-relaxed text-right space-y-4">
-                  <h3 className="font-bold text-lg">גילוי נאות (AI)</h3>
-                  <ol className="list-decimal mr-6 space-y-2">
-                    <li>הדו"ח האישי V107 והמוצר הנלווה V107 Booster נוצרו, עובדו והונפקו באמצעות כלי בינה מלאכותית שונים בליווי ופיקוח צוות מומחים</li>
-                    <li>השימוש בטכנולוגיית AI נועד לספק ניתוח נתונים מהיר ומעמיק.</li>
-                    <li>תוקף מקצועי: הדו"ח אינו מהווה תחליף לייעוץ מקצועי ואישי</li>
-                  </ol>
+                <div className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'} space-y-4`}>
+                  <h3 className="font-bold text-lg">{isHebrew ? 'גילוי נאות (AI)' : 'Proper Disclosure (AI)'}</h3>
+                  {isHebrew ? (
+                    <ol className="list-decimal mr-6 space-y-2">
+                      <li>הדו"ח האישי V107 והמוצר הנלווה V107 Booster נוצרו, עובדו והונפקו באמצעות כלי בינה מלאכותית שונים בליווי ופיקוח צוות מומחים</li>
+                      <li>השימוש בטכנולוגיית AI נועד לספק ניתוח נתונים מהיר ומעמיק.</li>
+                      <li>תוקף מקצועי: הדו"ח אינו מהווה תחליף לייעוץ מקצועי ואישי</li>
+                    </ol>
+                  ) : (
+                    <ol className="list-decimal ml-6 space-y-2">
+                      <li>The V107 personal report and the V107 Booster accompanying product were created, processed and issued using various artificial intelligence tools with the accompaniment and supervision of an expert team</li>
+                      <li>The use of AI technology is intended to provide fast and in-depth data analysis.</li>
+                      <li>Professional validity: The report is not a substitute for professional and personal advice</li>
+                    </ol>
+                  )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
           <div className="mt-8 bg-slate-100 rounded-lg p-6">
-            <h3 className="font-bold text-lg text-slate-800 mb-4 text-right">פרטי התקשרות</h3>
-            <div className="text-slate-700 space-y-2 text-right">
-              <p><strong>שם חברה מלא:</strong> V107</p>
-              <p><strong>מספר עוסק:</strong> 054095377</p>
-              <p><strong>כתובת פיזית:</strong> רחוב הברזל 34 תל אביב יפו</p>
-              <div className="flex items-center justify-end gap-2">
-                <a href="mailto:support@v107.co.il" className="text-blue-600 hover:text-blue-800 underline">
-                  support@v107.co.il
-                </a>
-                <span>:</span>
-                <span className="font-medium">מייל שירות</span>
-                <Mail className="w-5 h-5 text-amber-600" />
+            <h3 className={`font-bold text-lg text-slate-800 mb-4 ${isHebrew ? 'text-right' : 'text-left'}`}>
+              {isHebrew ? 'פרטי התקשרות' : 'Contact Details'}
+            </h3>
+            <div className={`text-slate-700 space-y-2 ${isHebrew ? 'text-right' : 'text-left'}`}>
+              <p><strong>{isHebrew ? 'שם חברה מלא:' : 'Full Company Name:'}</strong> V107</p>
+              <p><strong>{isHebrew ? 'מספר עוסק:' : 'Business Number:'}</strong> 054095377</p>
+              <p><strong>{isHebrew ? 'כתובת פיזית:' : 'Physical Address:'}</strong> {isHebrew ? 'רחוב הברזל 34 תל אביב יפו' : 'HaBarzel Street 34, Tel Aviv-Yafo'}</p>
+              <div className={`flex items-center ${isHebrew ? 'justify-end' : 'justify-start'} gap-2`}>
+                {isHebrew && (
+                  <>
+                    <a href="mailto:support@v107.co.il" className="text-blue-600 hover:text-blue-800 underline">
+                      support@v107.co.il
+                    </a>
+                    <span>:</span>
+                    <span className="font-medium">מייל שירות</span>
+                    <Mail className="w-5 h-5 text-amber-600" />
+                  </>
+                )}
+                {!isHebrew && (
+                  <>
+                    <Mail className="w-5 h-5 text-amber-600" />
+                    <span className="font-medium">Service Email:</span>
+                    <a href="mailto:support@v107.co.il" className="text-blue-600 hover:text-blue-800 underline">
+                      support@v107.co.il
+                    </a>
+                  </>
+                )}
               </div>
             </div>
           </div>
