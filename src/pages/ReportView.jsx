@@ -539,8 +539,6 @@ export default function ReportView() {
                 )}
               </div>
             </div>
-
-            <div className="hidden">
                         <style>{`
                           .report-text-view h1 {
                             background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
