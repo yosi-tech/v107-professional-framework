@@ -271,8 +271,8 @@ function AppLayout({ children }) {
                 className="w-12 h-12 rounded-lg shadow-lg object-cover"
               />
               <div>
-                <h1 className="text-xl font-bold text-slate-800">
-                  V107
+                <h1 className="text-xl font-bold text-[#b8a46e] tracking-wider">
+                  PROFESSIONAL FRAMEWORK
                 </h1>
                 <p className="text-xs text-slate-500">
                   {t('layout.header_subtitle')}
@@ -461,7 +461,7 @@ function AppLayout({ children }) {
                   alt="V107 Logo" 
                   className="w-10 h-10 rounded-lg shadow-lg object-cover"
                 />
-                <h3 className="text-xl font-bold">V107</h3>
+                <h3 className="text-xl font-bold text-[#b8a46e] tracking-wider">PROFESSIONAL FRAMEWORK</h3>
               </div>
               <p className="text-slate-400 text-sm leading-relaxed">
                 {t('layout.footer_subtitle')}
