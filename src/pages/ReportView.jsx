@@ -555,21 +555,21 @@ export default function ReportView() {
                 </p>
               </CardContent>
             </Card>
-            )}
+          )}
 
-            {/* הצעת הבוסטר - סקשן נפרד */}
-            {report.report_markdown && report.recommended_booster_track && (
-              <div className="mt-12 print-break">
-                <BoosterOfferSection 
-                  recommendedTrack={report.recommended_booster_track}
-                  language={currentLanguage}
-                />
-              </div>
-            )}
+          {/* הצעת הבוסטר - סקשן נפרד */}
+          {report.report_markdown && report.recommended_booster_track && (
+            <div className="mt-12 print-break">
+              <BoosterOfferSection 
+                recommendedTrack={report.recommended_booster_track}
+                language={currentLanguage}
+              />
+            </div>
+          )}
 
-            {/* דיסקליימרים משפטיים וטכנולוגיים */}
-            {report.report_markdown && (
-              <div className="mt-12 space-y-6">
+          {/* דיסקליימרים משפטיים וטכנולוגיים */}
+          {report.report_markdown && (
+            <div className="mt-12 space-y-6">
               <Card className="border-2 border-slate-300 bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center gap-2">
@@ -622,8 +622,7 @@ export default function ReportView() {
                 </CardContent>
               </Card>
             </div>
-          )
-        }
+          )}
         </div>
       </div>
     );
