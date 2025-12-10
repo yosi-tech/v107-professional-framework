@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   FileText, 
   User as UserIcon, 
@@ -19,10 +20,19 @@ import {
   BarChart3,
   Target,
   TrendingUp,
-  CheckCircle
+  CheckCircle,
+  Eye,
+  Code
 } from "lucide-react";
 import { format } from "date-fns";
 import ReactMarkdown from 'react-markdown';
+import ExecutiveSummarySection from "@/components/report/ExecutiveSummarySection";
+import DomainScoresSection from "@/components/report/DomainScoresSection";
+import DomainAnalysisSection from "@/components/report/DomainAnalysisSection";
+import TrafficLightsSection from "@/components/report/TrafficLightsSection";
+import KPIsSection from "@/components/report/KPIsSection";
+import ActionPlanSection from "@/components/report/ActionPlanSection";
+import RecommendationsSection from "@/components/report/RecommendationsSection";
 
 const TEXTS = {
   he: {
@@ -310,65 +320,124 @@ export default function ReportView() {
 
         {/* דוח מלא - תצוגה מותאמת */}
         {report.report_markdown ? (
-          <Card className="mb-8">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Rocket className="w-6 h-6 text-blue-600" />
-                  <div>
-                    <CardTitle className="text-2xl">
-                      {report.archetype || (currentLanguage === 'he' ? 'דוח אישי' : 'Personal Report')}
-                    </CardTitle>
-                    {report.recommended_booster_track && (
-                      <Badge className="mt-2 bg-purple-100 text-purple-800">
-                        {currentLanguage === 'he' ? 'מסלול מומלץ:' : 'Recommended Track:'} {report.recommended_booster_track}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-                {isAdmin && !isEditingMarkdown && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={startEditMarkdown}
-                    className="no-print"
-                  >
-                    <Edit2 className="w-4 h-4 ml-2" />
-                    {getText("edit")}
-                  </Button>
+          <div>
+            {/* Archetype Header */}
+            <Card className="mb-8 bg-gradient-to-br from-blue-600 to-purple-600 text-white border-none">
+              <CardContent className="p-8 text-center">
+                <Rocket className="w-16 h-16 mx-auto mb-4 text-white" />
+                <h2 className="text-3xl font-black mb-3">
+                  {report.archetype || (currentLanguage === 'he' ? 'דוח אישי' : 'Personal Report')}
+                </h2>
+                {report.recommended_booster_track && (
+                  <Badge className="bg-white/20 text-white text-lg px-4 py-2 backdrop-blur-sm border border-white/30">
+                    {currentLanguage === 'he' ? 'מסלול מומלץ:' : 'Recommended Track:'} {report.recommended_booster_track.toUpperCase()}
+                  </Badge>
                 )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              {isEditingMarkdown && isAdmin ? (
-                <div className="space-y-4 no-print">
-                  <Textarea
-                    value={editedMarkdown}
-                    onChange={(e) => setEditedMarkdown(e.target.value)}
-                    rows={30}
-                    className="font-mono text-sm"
-                  />
-                  <div className="flex gap-2">
-                    <Button onClick={saveMarkdownEdit}>
-                      <Save className="w-4 h-4 ml-2" />
-                      {getText("save")}
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setIsEditingMarkdown(false)}
-                    >
-                      <X className="w-4 h-4 ml-2" />
-                      {getText("cancel")}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="prose prose-lg max-w-none" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
-                  <ReactMarkdown>{report.report_markdown}</ReactMarkdown>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            <Tabs defaultValue="visual" className="mb-8 no-print">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="visual" className="flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  {currentLanguage === 'he' ? 'תצוגה ויזואלית' : 'Visual View'}
+                </TabsTrigger>
+                <TabsTrigger value="markdown" className="flex items-center gap-2">
+                  <Code className="w-4 h-4" />
+                  {currentLanguage === 'he' ? 'תצוגת טקסט' : 'Text View'}
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="visual" className="mt-6">
+                <ExecutiveSummarySection 
+                  executiveSummary={report.executive_summary} 
+                  language={currentLanguage}
+                />
+
+                <DomainScoresSection 
+                  domainScores={report.domain_scores} 
+                  language={currentLanguage}
+                />
+
+                <DomainAnalysisSection 
+                  domainAnalysis={report.domain_analysis}
+                  domainScores={report.domain_scores}
+                  language={currentLanguage}
+                />
+
+                <TrafficLightsSection 
+                  trafficLights={report.traffic_lights_table} 
+                  language={currentLanguage}
+                />
+
+                <KPIsSection 
+                  kpis={report.kpis} 
+                  language={currentLanguage}
+                />
+
+                <ActionPlanSection 
+                  actionPlan={report.action_plan} 
+                  language={currentLanguage}
+                />
+
+                <RecommendationsSection 
+                  recommendations={report.focused_recommendations} 
+                  language={currentLanguage}
+                />
+              </TabsContent>
+
+              <TabsContent value="markdown" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-xl">
+                        {currentLanguage === 'he' ? 'דוח מלא - פורמט טקסט' : 'Full Report - Text Format'}
+                      </CardTitle>
+                      {isAdmin && !isEditingMarkdown && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={startEditMarkdown}
+                        >
+                          <Edit2 className="w-4 h-4 ml-2" />
+                          {getText("edit")}
+                        </Button>
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {isEditingMarkdown && isAdmin ? (
+                      <div className="space-y-4">
+                        <Textarea
+                          value={editedMarkdown}
+                          onChange={(e) => setEditedMarkdown(e.target.value)}
+                          rows={30}
+                          className="font-mono text-sm"
+                        />
+                        <div className="flex gap-2">
+                          <Button onClick={saveMarkdownEdit}>
+                            <Save className="w-4 h-4 ml-2" />
+                            {getText("save")}
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            onClick={() => setIsEditingMarkdown(false)}
+                          >
+                            <X className="w-4 h-4 ml-2" />
+                            {getText("cancel")}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="prose prose-lg max-w-none" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
+                        <ReactMarkdown>{report.report_markdown}</ReactMarkdown>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
         ) : (
           <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
             <CardContent className="p-8 text-center">
