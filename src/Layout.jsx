@@ -266,7 +266,7 @@ function AppLayout({ children }) {
               to={createPageUrl("Home")}
               className="flex items-center gap-3 hover:opacity-90 transition-opacity">
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/0544f5a69_logo.png" 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/54c8f2801_IMG_8646.jpg" 
                 alt="V107 Logo" 
                 className="w-12 h-12 rounded-lg shadow-lg object-contain"
               />
@@ -457,7 +457,7 @@ function AppLayout({ children }) {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/0544f5a69_logo.png" 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/54c8f2801_IMG_8646.jpg" 
                   alt="V107 Logo" 
                   className="w-10 h-10 rounded-lg shadow-lg object-contain"
                 />
