@@ -227,22 +227,44 @@ export default function TermsOfService() {
                   )}
                   
                   <div>
-                    <h3 className="font-bold text-lg mb-2">א. איסוף נתונים והסכמה</h3>
-                    <p className="mb-3">בעת השימוש באתר ובשירותים שלנו, אנו עשויים לאסוף עליך שני סוגי מידע בהקשר לשירותים הניתנים, סוגי המידע הם מידע אישי ומידע שאינו אישי. איסוף המידע כולל מידע שאתה מסרת על פי החלטתך ומרצונך החופשי.</p>
-                    <p className="mb-3"><strong>"מידע שאינו אישי"</strong> – מתייחס לנתונים שאינם מזהים אותך באופן אישי ואינם מאפשרים ליצור עמך קשר. מדובר לרוב במידע טכני או סטטיסטי, כגון סוג המכשיר שבו השתמשת, מערכת ההפעלה, דפי האתר ו/או האפליקציה שבהם ביקרת, משך השהייה שלך בכל עמוד ועוד'.</p>
-                    <p className="mb-3"><strong>"מידע אישי"</strong> – מתייחס לכל נתון הנוגע לאדם מזוהה או לאדם הניתן לזיהוי, מי שניתן לזהותו במאמץ סביר, במישרין או בעקיפין ובכלל זה באמצעות פרט מזהה, כגון שם, מספר זהות, מזהה ביומטרי, נתוני מיקום, מזהה מקוון, או נתון אחד או יותר הנוגע למצבו הפיזי, הבריאותי, הכלכלי, החברתי או התרבותי.</p>
-                    <div className="mr-6">
-                      <p className="mb-2">מידע זה עשוי להתקבל בהסכמתך, ביודעין כשאתה מקבל את השירותים, וכן בהתאם להנחיותיו של ספק שירותי הבריאות שלך, כדוגמת:</p>
-                      <ul className="list-disc mr-6 space-y-1">
-                        <li>פרטי קשר - למשל, שמך המלא, כתובת פיזית, מספרי טלפון, כתובת דוא"ל.</li>
-                        <li>מידע דמוגרפי - למשל, גיל, מגדר.</li>
-                        <li>נתוני מיקום.</li>
-                        <li>נתוני שימוש - למשל, סוג המכשיר שאתה משתמש בו, כתובת IP, זמני גישה, סוג הדפדפן, ספק שירותי האינטרנט (ISP), דפים שנצפו, כתובת ה-URL של הדף שצפית בו לפני השימוש בשירות.</li>
-                        <li>התכתבויות או כל אינטראקציה שלך עם החברה.</li>
-                      </ul>
-                    </div>
-                    <p className="mt-3">המידע ייאסף על בסיס מידע שמסרת מרצונך החופשי, וכן יתבצע איסוף מידע באמצעות "עוגיות" (cookies). אנו עושים שימוש בקובצי עוגיות ("Cookies") לצורך תפעולו השוטף והתקין של האתר ו/או האפליקציה, וכן על מנת לאפשר את אספקת השירותים עבורך.</p>
-                    <p className="mt-3"><strong>הסכמה מפורשת:</strong> הלקוח חייב לסמן אישור מפורש שהוא מסכים למדיניות הפרטיות ולתנאי השימוש לפני מילוי השאלון. הלקוח רשאי בכל עת להודיע לנציג החברה האמון על הגנת הפרטיות, גב' דורית/אחר כותבת דוא"ל: support@v107.co.il כי הוא מעוניין שפרטיו יימחקו ממאגר החברה.</p>
+                    <h3 className="font-bold text-lg mb-2">{isHebrew ? 'א. איסוף נתונים והסכמה' : 'A. Data Collection and Consent'}</h3>
+                    {isHebrew ? (
+                      <>
+                        <p className="mb-3">בעת השימוש באתר ובשירותים שלנו, אנו עשויים לאסוף עליך שני סוגי מידע בהקשר לשירותים הניתנים, סוגי המידע הם מידע אישי ומידע שאינו אישי. איסוף המידע כולל מידע שאתה מסרת על פי החלטתך ומרצונך החופשי.</p>
+                        <p className="mb-3"><strong>"מידע שאינו אישי"</strong> – מתייחס לנתונים שאינם מזהים אותך באופן אישי ואינם מאפשרים ליצור עמך קשר. מדובר לרוב במידע טכני או סטטיסטי, כגון סוג המכשיר שבו השתמשת, מערכת ההפעלה, דפי האתר ו/או האפליקציה שבהם ביקרת, משך השהייה שלך בכל עמוד ועוד'.</p>
+                        <p className="mb-3"><strong>"מידע אישי"</strong> – מתייחס לכל נתון הנוגע לאדם מזוהה או לאדם הניתן לזיהוי, מי שניתן לזהותו במאמץ סביר, במישרין או בעקיפין ובכלל זה באמצעות פרט מזהה, כגון שם, מספר זהות, מזהה ביומטרי, נתוני מיקום, מזהה מקוון, או נתון אחד או יותר הנוגע למצבו הפיזי, הבריאותי, הכלכלי, החברתי או התרבותי.</p>
+                        <div className="mr-6">
+                          <p className="mb-2">מידע זה עשוי להתקבל בהסכמתך, ביודעין כשאתה מקבל את השירותים, וכן בהתאם להנחיותיו של ספק שירותי הבריאות שלך, כדוגמת:</p>
+                          <ul className="list-disc mr-6 space-y-1">
+                            <li>פרטי קשר - למשל, שמך המלא, כתובת פיזית, מספרי טלפון, כתובת דוא"ל.</li>
+                            <li>מידע דמוגרפי - למשל, גיל, מגדר.</li>
+                            <li>נתוני מיקום.</li>
+                            <li>נתוני שימוש - למשל, סוג המכשיר שאתה משתמש בו, כתובת IP, זמני גישה, סוג הדפדפן, ספק שירותי האינטרנט (ISP), דפים שנצפו, כתובת ה-URL של הדף שצפית בו לפני השימוש בשירות.</li>
+                            <li>התכתבויות או כל אינטראקציה שלך עם החברה.</li>
+                          </ul>
+                        </div>
+                        <p className="mt-3">המידע ייאסף על בסיס מידע שמסרת מרצונך החופשי, וכן יתבצע איסוף מידע באמצעות "עוגיות" (cookies). אנו עושים שימוש בקובצי עוגיות ("Cookies") לצורך תפעולו השוטף והתקין של האתר ו/או האפליקציה, וכן על מנת לאפשר את אספקת השירותים עבורך.</p>
+                        <p className="mt-3"><strong>הסכמה מפורשת:</strong> הלקוח חייב לסמן אישור מפורש שהוא מסכים למדיניות הפרטיות ולתנאי השימוש לפני מילוי השאלון. הלקוח רשאי בכל עת להודיע לנציג החברה האמון על הגנת הפרטיות, גב' דורית/אחר כותבת דוא"ל: support@v107.co.il כי הוא מעוניין שפרטיו יימחקו ממאגר החברה.</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="mb-3">When using our website and services, we may collect two types of information about you in the context of the services provided: personal information and non-personal information. Information collection includes information you provided according to your decision and free will.</p>
+                        <p className="mb-3"><strong>"Non-Personal Information"</strong> – refers to data that does not personally identify you and does not allow contact with you. This is usually technical or statistical information, such as the type of device you used, operating system, website and/or app pages you visited, duration of your stay on each page, etc.</p>
+                        <p className="mb-3"><strong>"Personal Information"</strong> – refers to any data relating to an identified person or an identifiable person, who can be identified with reasonable effort, directly or indirectly, including through an identifier, such as name, ID number, biometric identifier, location data, online identifier, or one or more data relating to their physical, health, economic, social or cultural status.</p>
+                        <div className={isHebrew ? 'mr-6' : 'ml-6'}>
+                          <p className="mb-2">This information may be received with your consent, knowingly when you receive the services, and also according to the instructions of your healthcare provider, such as:</p>
+                          <ul className={`list-disc ${isHebrew ? 'mr-6' : 'ml-6'} space-y-1`}>
+                            <li>Contact details - for example, your full name, physical address, phone numbers, email address.</li>
+                            <li>Demographic information - for example, age, gender.</li>
+                            <li>Location data.</li>
+                            <li>Usage data - for example, the type of device you use, IP address, access times, browser type, Internet Service Provider (ISP), pages viewed, URL address of the page you viewed before using the service.</li>
+                            <li>Correspondence or any interaction you have with the company.</li>
+                          </ul>
+                        </div>
+                        <p className="mt-3">The information will be collected based on information you provided of your own free will, and information will also be collected through "cookies". We use cookies for the regular and proper operation of the website and/or application, and to enable the provision of services for you.</p>
+                        <p className="mt-3"><strong>Explicit Consent:</strong> The customer must mark explicit approval that they agree to the privacy policy and terms of use before filling out the questionnaire. The customer may at any time notify the company's privacy protection representative by email: support@v107.co.il that they wish their details to be deleted from the company's database.</p>
+                      </>
+                    )}
                   </div>
 
                   <div>
