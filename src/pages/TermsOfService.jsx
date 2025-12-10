@@ -1,146 +1,244 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Mail } from "lucide-react";
-import { useTranslation } from "@/components/i18n/useTranslation";
 
 export default function TermsOfService() {
-  const { t, language } = useTranslation();
-
-  const termsHe = [
-    {
-      title: "1. השירות",
-      content: "השירות כולל: (א) מילוי שאלון סגור בן 107 פריטים (סולם 1–7), ו-(ב) קבלת דו״ח מקצועי אישי (עברית או אנגלית). הדוחות נעזרים בבינה מלאכותית במידת הצורך ונבדקים על ידי בני אדם לפני המסירה. יעד אספקה סטנדרטי הוא יום 5 (D+5) לאחר ההגשה; חלון תפעולי של עד 7 ימי עבודה עשוי לחול."
-    },
-    {
-      title: "2. תמחור ותשלום",
-      content: "אנו מציעים את האפשרויות בתשלום הבאות (המחירים מוצגים בקופה ועשויים להשתנות מעת לעת):\n• חבילה מלאה (דו״ח + שאלון) — בדרך כלל ₪299.\n• שאלון + תשובות בלבד — בדרך כלל ₪59; ניתן לשדרג מאוחר יותר לדו״ח מלא באמצעות תוספת מבצעית (למשל, שדרוג ₪240 למשך מוגבל).\n• הצעת שחזור נטישה — במידת האפשר, דו״ח מלא ב-₪269 אם התחלת אך לא השלמת את התהליך.\n• אספקה מואצת — תוספת ₪79 לדו״ח המלא (סה״כ ₪378) לאספקה תוך 3 ימי עבודה.\n\nאנו עשויים לאפשר עד 3 תשלומים חודשיים שווים (בכפוף למעבד התשלומים). תשלומים מעובדים על ידי ספקי צד שלישי (למשל Tranzila או HYP). מסים, עמלות מעבד ותיאום המרת מטבע עשויים לחול."
-    },
-    {
-      title: "3. אספקה וסוגי מוצרים",
-      content: "• שאלון + תשובות בלבד (₪59): תקבל את פלט התשובות שלך מיד לאחר תשלום והגשה מוצלחים.\n• דו״ח מלא מותאם אישית: נמסר בדוא״ל ב-D+5 (לאחר בדיקה ידנית קצרה).\n• אספקה מואצת: דו״ח מלא תוך 3 ימי עבודה (במקום 7).\n\nכאשר שניהם נרכשים, פלט התשובות בלבד עשוי להגיע מוקדם יותר, והדו״ח המלא יגיע אחריו ב-D+5 (או D+3 באספקה מואצת)."
-    },
-    {
-      title: "4. שימוש הוגן",
-      content: "השאלון והדו״ח נועדו לשימוש אישי/עסקי פנימי. אין להעתיק, לפרסם או למסחר תכנים, אלא באישור בכתב."
-    },
-    {
-      title: "5. אחריות מקצועית",
-      content: "הדו״ח מספק ניתוח והמלצות כלליות המבוססות על השאלון ומסגרת מקצועית; אינו מהווה ייעוץ פיננסי/משפטי/מיסויי פרטני. החלטות עסקיות הן באחריות המשתמש/ת בלבד."
-    },
-    {
-      title: "6. ביטולים והחזרים",
-      content: "מדיניות הביטולים מחייבת ומפורטת בדף: מדיניות ביטולים והחזרים. במקרה של סתירה—המדיניות הייעודית תגבר."
-    },
-    {
-      title: "7. פרטיות וקובצי Cookie",
-      content: "איסוף ושימוש במידע כפוף למדיניות הפרטיות. אנו עושים שימוש בעוגיות לצורכי תפעול, אבטחה ומדידה."
-    },
-    {
-      title: "8. מבצעים והצעות",
-      content: "מעת לעת אנו עשויים להציג שדרוגים מבצעיים או הצעות שחזור (למשל, שדרוג ₪240 לדו״ח מלא עבור קוני שאלון בלבד, או מחיר שחזור ₪269 למשתמשים שהתחילו אך לא השלימו). הצעות כאלה הן מוגבלות בזמן וכפופות לזכאות וזמינות. תנאי ההצעה הספציפיים המוצגים בקופה גוברים."
-    },
-    {
-      title: "9. שינויים בשירות",
-      content: "אנו רשאים לעדכן את האתר/התכנים/המחירים/התנאים מעת לעת. עדכונים ייכנסו לתוקף עם פרסומם."
-    },
-    {
-      title: "10. דין וסמכות",
-      content: "על התנאים יחול דין מדינת ישראל וסמכות השיפוט הבלעדית נתונה לבתי המשפט המוסמכים בישראל."
-    }
-  ];
-
-  const termsEn = [
-    {
-      title: "1. The Service",
-      content: "The Service includes: (a) completing a closed 107-item questionnaire (1–7), and (b) receiving a personalized professional report (Hebrew or English). Reports are assisted by AI where useful and human-reviewed before delivery. Standard delivery target is day 5 (D+5) after submission; an operational window of up to 7 business days may apply."
-    },
-    {
-      title: "2. Pricing & Payment",
-      content: "We offer the following paid options (prices shown at checkout and may change from time to time):\n• Full bundle (Report + Questionnaire) — typically ₪299.\n• Questionnaire + answers only — typically ₪59; you may later upgrade to a full report via a promotional add-on (e.g., ₪240 limited-time upgrade).\n• Abandonment recovery offer — where applicable, a full report at ₪269 if you started but did not complete the process.\n• Express delivery — additional ₪79 to the full report (total ₪378) for delivery within 3 business days.\n\nWe may allow up to 3 equal monthly installments (subject to the payment processor). Payments are processed by third-party providers (e.g., Tranzila or HYP). Taxes, processor fees, and currency conversion may apply."
-    },
-    {
-      title: "3. Delivery & Product Types",
-      content: "• Questionnaire + answers only (₪59): you receive your answer output promptly after successful payment and submission.\n• Personalized full report: delivered by email on D+5 (after a brief manual review).\n• Express delivery: full report within 3 business days (instead of 7).\n\nWhere both are purchased, the answers-only output may arrive earlier, and the full report follows on D+5 (or D+3 for express)."
-    },
-    {
-      title: "4. Fair Use",
-      content: "The questionnaire and report are intended for personal/internal business use. Content may not be copied, published, or commercialized without written permission."
-    },
-    {
-      title: "5. Professional Responsibility",
-      content: "The report provides general analysis and recommendations based on the questionnaire and professional framework; it does not constitute personalized financial/legal/tax advice. Business decisions are solely the user's responsibility."
-    },
-    {
-      title: "6. Cancellations and Refunds",
-      content: "The cancellation policy is binding and detailed in the page: Cancellation and Refund Policy. In case of conflict—the dedicated policy prevails."
-    },
-    {
-      title: "7. Privacy and Cookies",
-      content: "Collection and use of information is subject to the Privacy Policy. We use cookies for operational, security, and measurement purposes."
-    },
-    {
-      title: "8. Promotions & Offers",
-      content: "From time to time we may display promotional upgrades or recovery offers (e.g., a ₪240 upgrade to a full report for questionnaire-only buyers, or a ₪269 recovery price for users who started but did not complete). Such offers are time-limited and subject to eligibility and availability. The specific offer terms shown at checkout prevail."
-    },
-    {
-      title: "9. Service Changes",
-      content: "We reserve the right to update the site/content/prices/terms from time to time. Updates take effect upon publication."
-    },
-    {
-      title: "10. Law and Jurisdiction",
-      content: "These terms are governed by the laws of the State of Israel, and exclusive jurisdiction is granted to the competent courts in Israel."
-    }
-  ];
-
-  const terms = language === 'he' ? termsHe : termsEn;
-  const pageTitle = language === 'he' ? 'תנאי שימוש (גרסת B5)' : 'Terms of Service (Version B5)';
-  const lastUpdated = language === 'he' ? 'עדכון אחרון: B5' : 'Last updated: B5';
-  const welcomeText = language === 'he' 
-    ? 'ברוכים הבאים לאתר AVENTURA 107 ("האתר"). השימוש באתר ובשירותים מהווה הסכמה לתנאים אלה.'
-    : 'Welcome to the AVENTURA 107 website ("the Site"). Use of the Site and Services constitutes agreement to these terms.';
-  const contactText = language === 'he' ? 'יצירת קשר:' : 'Contact:';
-
   return (
-    <div className="min-h-screen bg-slate-50" dir={language === 'he' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-slate-50" dir="rtl">
       <header className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
           <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-slate-200">
             <FileText className="w-8 h-8 text-slate-600" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-800">{pageTitle}</h1>
-          <p className="text-md text-slate-500 mt-2">{lastUpdated}</p>
+          <h1 className="text-3xl font-bold text-slate-800">תקנון ותנאי שימוש</h1>
+          <p className="text-md text-slate-500 mt-2">עדכון אחרון: דצמבר 2025</p>
         </div>
       </header>
 
       <main className="py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-            <p className="text-slate-700 leading-relaxed">{welcomeText}</p>
+            <p className="text-slate-700 leading-relaxed text-right">
+              ברוכים הבאים לאתר V107. אנא קרא את התנאים הללו בעיון. השימוש באתר ובשירותים מהווה הסכמה מלאה לתנאים אלה.
+            </p>
           </div>
+
+          <Card className="mb-8">
+            <CardHeader className="bg-slate-50 border-b">
+              <CardTitle className="text-xl">פרטי החברה</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 text-right">
+              <div className="space-y-2 text-slate-700">
+                <p><strong>שם החברה:</strong> V107</p>
+                <p><strong>עוסק מורשה:</strong> 054095376</p>
+                <p><strong>כתובת:</strong> הברזל 34 תל אביב</p>
+                <p><strong>אתר אינטרנט:</strong> <a href="http://www.v107.co.il" className="text-blue-600 hover:underline">www.v107.co.il</a></p>
+              </div>
+            </CardContent>
+          </Card>
 
           <div className="space-y-6">
-            {terms.map((term, index) => (
-              <Card key={index} className="overflow-hidden">
-                <CardHeader className="bg-slate-50 border-b">
-                  <CardTitle className="text-lg flex items-center gap-3">
-                    <FileText className="w-5 h-5 text-amber-600" />
-                    {term.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <p className="text-slate-700 leading-relaxed whitespace-pre-line">{term.content}</p>
-                </CardContent>
-              </Card>
-            ))}
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-amber-600" />
+                  א. כללי
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-slate-700 leading-relaxed text-right space-y-4">
+                  <p>אנא קרא את התנאים הללו בעיון. אם אינך מסכים להם במלואם – הפסק מיד את השימוש בשירות. תנאים אלה יוצרים הסכם משפטי מחייב בינך/כם (להלן: "אתה/אתם", "המשתמש/ים", "שלך/שלכם") לבין החברה.</p>
+                  <p>החברה שומרת לעצמה את הזכות לשנות את התנאים, מעת לעת, על ידי פרסום עדכונים באתר. החברה תעשה מאמצים סבירים לוודא שכל שינוי בתנאים כאמור יובא לידיעתך זמן סביר לפני כניסתם לתוקף. המשך השימוש שלך בשירותים לאחר כניסתם לתוקף של התנאים המעודכנים ייחשב כהסכמה שלך לתנאים אלה. אם אינך מסכים לתנאים המעודכנים, עליך להפסיק מיד כל שימוש בשירותים.</p>
+                  <p>לצורכי נוחות בלבד, תנאי השימוש ומדיניות פרטיות אלו מנוסחים בלשון זכר, אך מתייחסים לכל המגדרים באופן שווה.</p>
+                  <p>תקנון זה מסדיר את תנאי השימוש באתר ואת תנאי רכישת הדו"ח האישי V107 והמוצר הנלווה V107 Booster (להלן: "השירותים והמוצרים"). כל רכישה באתר מהווה הסכמה מלאה לתנאי תקנון זה ולמדיניות הפרטיות.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-amber-600" />
+                  ב. הדו"ח האישי V107 ואחריות
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-slate-700 leading-relaxed text-right space-y-4">
+                  <p><strong>1.</strong> הדו"ח האישי V107 מופק על בסיס 107 התשובות שנמסרו על ידי המשתמש ונוצר באמצעות כלי בינה מלאכותית בשילוב פיקוח אנושי של מומחים. המוצרים מופקים בהתבסס על תשובות אלה, ואין בידי החברה כדי לאמת את נכונותן. לאור האמור, ידוע למשתמש כי הפקת המוצרים מתבססת על תשובותיו וכי אין לחברה כל אחריות על המידע שיימסר על ידו, על המידע אשר יופק בהתבסס על התשובות וכי המוצרים נועדו לספק הכוונה מקצועית כללית בלבד.</p>
+                  <p><strong>2.</strong> תוכן המוצרים אינו מהווה בשום אופן ייעוץ משפטי, פיננסי, רפואי או מקצועי.</p>
+                  <p><strong>3.</strong> השירותים שמציעה החברה אינם מהווים ייעוץ או תחליף לייעוץ משפטי, פיננסי, רפואי או מקצועי, ואינם מהווים המלצה או הצעה לייעוץ כלשהו מטעם החברה. עליך תמיד לפנות לקבלת ייעוץ מקצועי מגורם מוסמך אחר לפני תחילת כל פעולה בעניין המוצרים.</p>
+                  <p><strong>4.</strong> בעוד שהשירות עשוי להציע לך מידע או להקל על קבלת ההחלטות שלך, הוא אינו מהווה תחליף לשיקול דעתו המקצועי של יועץ מטעמך, בכל אחד מהתחומים המנויים לעיל.</p>
+                  <p><strong>5. הגבלת אחריות:</strong> החברה אינה אחראית לכל נזק, הפסד או שינוי עסקי/אישי שיגרם למשתמש כתוצאה מהשימוש או הסתמכות על התוכן שבמוצרים וכל צעד שייעשה בעקבות שימוש במוצרים הוא באחריותו הבלעדית של המשתמש.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-amber-600" />
+                  ג. אספקה ומדיניות ביטול
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-slate-700 leading-relaxed text-right space-y-4">
+                  <p><strong>1. התחייבות אספקה:</strong> החברה מתחייבת לאספקת הדו"ח האישי (V107) בתוך 5 ימי עסקים מרגע השלמת התשלום ומילוי שאלון 107 הנקודות.</p>
+                  <p><strong>2. ביטול עסקה:</strong> מאחר שייצור הדו"ח הוא שירות דיגיטלי הניתן בהתאמה אישית, מרגע שהושלם התשלום והתשובות הועברו לניתוח AI וניתוח אנושי לא יינתן החזר כספי. מדיניות ביטול לפני תחילת עבודת הייצור תפעל בהתאם לחוק הגנת הצרכן.</p>
+                  <p><strong>3. חריג למוצר הנלווה (V107 Booster):</strong> על אף האמור לעיל בדבר אי-החזר כספי בגין שירותי מידע, מובהר כי המודל העסקי של המוצר הנלווה 'V107 Booster' מבוסס על עקרון 'הצלחה מותנית' (מודל 'לא שיפרת – לא שילמת'). לפיכך, החיוב בפועל בגין מוצר זה ו/או זכאות המשתמש להחזר כספי מלא, יהיו כפופים לדיווח המשתמש אודות שביעות רצונו או השיפור שהושג, וזאת בהתאם למנגנון ולתנאים הספציפיים שיוצגו למשתמש במעמד הצעת הרכישה של הבוסטר. במקרה בו המשתמש יפעל בהתאם לתנאי המודל וידווח כי לא חל שיפור, לא יחולו עליו דמי ביטול והוא יהיה זכאי לפטור מתשלום או להחזר מלא, בהתאם למקרה.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-amber-600" />
+                  ד. מנגנון הצעת המבצע – 60 דקות
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-slate-700 leading-relaxed text-right space-y-4">
+                  <p><strong>1.</strong> בסמוך לשליחת הדו"ח הסופי, תוצג למשתמש הצעה לרכישת המוצר הנלווה (V107 Booster) במחיר מבצע.</p>
+                  <p><strong>2. תוקף המבצע:</strong> הצעת המבצע תקפה למשך 60 דקות בלבד מרגע שליחת הדו"ח הסופי. לאחר פקיעת 60 הדקות, מחיר המבצע יבוטל אוטומטית והלקוח יוכל לרכוש את הדו"ח במחיר מלא של 249 ₪</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-amber-600" />
+                  ה. זכויות קניין רוחני; סודיות
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-slate-700 leading-relaxed text-right space-y-4">
+                  <p>כל הזכויות, הבעלות והאינטרסים בשירותים, לרבות כל רכיב גרפי, עיצובי, טקסטואלי, ויזואלי או קולי, לרבות סידורם, בחירתם, עיבודם או הצגתם, וכן כל קוד, תכונה, פונקציונליות או טכנולוגיה הכלולים בהם (למעט תוכן משתמש), שייכים ויישארו בבעלות הבלעדית של החברה.</p>
+                  <p>כל שימוש מסחרי, נגזר או אחר בשירותים או בתוכנם, מחייב קבלת אישור מראש ובכתב מהחברה.</p>
+                  <p>מובהר כי החברה אינה רוכשת כל בעלות על תוכן המשתמש, והוא נותר בבעלותך המלאה. עם זאת, בעצם העלאת תוכן המשתמש לשירות, אתה מעניק לחברה רישיון לא בלעדי, עולמי, ללא תמלוגים, לגשת לתוכן זה, להשתמש בו, לאחסן אותו, לשכפל אותו, להציגו ולנתחו – אך ורק בהתאם לפונקציונליות של השירות, לתנאים אלה ולמדיניות הפרטיות של החברה.</p>
+                  <p>הסימנים המסחריים, הלוגואים, שמות דומיין וכל סימן, סמליל או סמל דומה אחר המוצגים כחלק מהשירות הם סימנים רשומים ולא רשומים של החברה. שום דבר בתנאים אלה אינו מעניק לך זכות לעשות שימוש כלשהו בסימנים אלה.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-amber-600" />
+                  ו. פרטיות ומידע אישי
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-slate-700 leading-relaxed text-right space-y-4">
+                  <p>במסגרת מתן השירותים, החברה עשויה לנטר, לאסוף, להשתמש ולאחסן נתונים אנונימיים וסטטיסטיים מצטברים הנוגעים לשימוש בשירותים ו/או כל אינטראקציה של יחידים או ישויות עם השירות (ביחד, "נתוני שימוש").</p>
+                  <p>על ידי הסכמתך לתנאים אלה, אתה מעניק בזאת לחברה ולחברות הקשורות אליה, רישיון בינלאומי, בלתי מוגבל, בלתי הפיך וללא תמלוגים להשתמש בנתוני השימוש למטרות לגיטימיות כפי שמפורט מטה במדיניות הפרטיות שלנו.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-xl">מדיניות פרטיות</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-slate-700 leading-relaxed text-right space-y-6">
+                  <p>להלן יפורט תהליך איסוף, שמירה ושימוש בנתונים אישיים שנאספים באמצעות שאלון 107 השאלות.</p>
+                  <p>מטרתה של מדיניות פרטית זו ("מדיניות" ו/או "מדיניות הפרטיות") היא להסביר, ליידע ולהבהיר כיצד אנו אוספים, משתמשים, שומרים ומנהלים מידע אישי שאתה מוסר לנו או שנאסף במהלך השימוש שלך בשירותים שלנו דרך האתר של החברה.</p>
+                  
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">א. איסוף נתונים והסכמה</h3>
+                    <p className="mb-3">בעת השימוש באתר ובשירותים שלנו, אנו עשויים לאסוף עליך שני סוגי מידע בהקשר לשירותים הניתנים, סוגי המידע הם מידע אישי ומידע שאינו אישי. איסוף המידע כולל מידע שאתה מסרת על פי החלטתך ומרצונך החופשי.</p>
+                    <p className="mb-3"><strong>"מידע שאינו אישי"</strong> – מתייחס לנתונים שאינם מזהים אותך באופן אישי ואינם מאפשרים ליצור עמך קשר. מדובר לרוב במידע טכני או סטטיסטי, כגון סוג המכשיר שבו השתמשת, מערכת ההפעלה, דפי האתר ו/או האפליקציה שבהם ביקרת, משך השהייה שלך בכל עמוד ועוד'.</p>
+                    <p className="mb-3"><strong>"מידע אישי"</strong> – מתייחס לכל נתון הנוגע לאדם מזוהה או לאדם הניתן לזיהוי, מי שניתן לזהותו במאמץ סביר, במישרין או בעקיפין ובכלל זה באמצעות פרט מזהה, כגון שם, מספר זהות, מזהה ביומטרי, נתוני מיקום, מזהה מקוון, או נתון אחד או יותר הנוגע למצבו הפיזי, הבריאותי, הכלכלי, החברתי או התרבותי.</p>
+                    <div className="mr-6">
+                      <p className="mb-2">מידע זה עשוי להתקבל בהסכמתך, ביודעין כשאתה מקבל את השירותים, וכן בהתאם להנחיותיו של ספק שירותי הבריאות שלך, כדוגמת:</p>
+                      <ul className="list-disc mr-6 space-y-1">
+                        <li>פרטי קשר - למשל, שמך המלא, כתובת פיזית, מספרי טלפון, כתובת דוא"ל.</li>
+                        <li>מידע דמוגרפי - למשל, גיל, מגדר.</li>
+                        <li>נתוני מיקום.</li>
+                        <li>נתוני שימוש - למשל, סוג המכשיר שאתה משתמש בו, כתובת IP, זמני גישה, סוג הדפדפן, ספק שירותי האינטרנט (ISP), דפים שנצפו, כתובת ה-URL של הדף שצפית בו לפני השימוש בשירות.</li>
+                        <li>התכתבויות או כל אינטראקציה שלך עם החברה.</li>
+                      </ul>
+                    </div>
+                    <p className="mt-3">המידע ייאסף על בסיס מידע שמסרת מרצונך החופשי, וכן יתבצע איסוף מידע באמצעות "עוגיות" (cookies). אנו עושים שימוש בקובצי עוגיות ("Cookies") לצורך תפעולו השוטף והתקין של האתר ו/או האפליקציה, וכן על מנת לאפשר את אספקת השירותים עבורך.</p>
+                    <p className="mt-3"><strong>הסכמה מפורשת:</strong> הלקוח חייב לסמן אישור מפורש שהוא מסכים למדיניות הפרטיות ולתנאי השימוש לפני מילוי השאלון. הלקוח רשאי בכל עת להודיע לנציג החברה האמון על הגנת הפרטיות, גב' דורית/אחר כותבת דוא"ל: support@v107.co.il כי הוא מעוניין שפרטיו יימחקו ממאגר החברה.</p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">ב. כיצד אנו משתמשים במידע?</h3>
+                    <p className="mb-3">החברה עשויה להשתמש במידע שנאסף אודותיך כמפורט במסמך מדיניות פרטיות זה למטרה מוגבלת של אספקת השירותים ופונקציות קשורות, או כפי שמתואר באופן ספציפי במדיניות פרטיות זו וכפי שמותר על פי הדין החל. מטרות אלו כוללות מקרים שבהם החברה צריכה לספק או להשלים שירותים שהתבקשו על ידך או עבורך, או כאשר נתת לחברה את הסכמתך המפורשת לכך.</p>
+                    <p>המידע שלך עשוי לשמש למגוון מטרות, כולל:</p>
+                    <ul className="list-disc mr-6 space-y-1">
+                      <li>לספק, לתפעל ולשפר את המוצרים והשירותים.</li>
+                      <li>לאפשר את הגישה והשימוש שלך בשירותים ולזהות אותך, כך שנוכל לספק ולמלא את בקשות השירותים שלך, לעבד ולהשלים עסקאות, ולשלוח לך מידע רלוונטי.</li>
+                      <li>לשלוח לך התראות טכניות, עדכונים, התראות אבטחה, הודעות תמיכה ומנהליות, ולתקשר איתך באופן שוטף בהתאם לתנאים אלה, כולל מענה להערות, שאלות ובקשות שלך, וכן לספק שירותים ותמיכה ללקוחות בנוגע לשירותים, תכונות, סקרים ומידע נוסף.</li>
+                      <li>לנטר ולנתח מגמות, שימוש ופעילויות בקשר לשירותים.</li>
+                      <li>להמשיך לפתח, לשפר ולהתאים אישית את השירותים וחוויית המשתמש.</li>
+                      <li>להתאים את השירותים עבורך באופן אישי ולשפר את חווית השירות שלך.</li>
+                      <li>לקדם את בטיחות ואבטחת המידע והמערכות שלנו.</li>
+                      <li>ניהול תביעות ביטוח ורישום ותיעוד בהתאם לנהלים פנימיים.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">ג. שיתוף המידע שלך עם צדדים שלישיים</h3>
+                    <p className="mb-3">החברה עשויה לשתף את המידע שנאסף אודותיך עם צדדים שלישיים למטרות מוגבלות הקשורות לאספקת השירותים או כפי שמתואר במסמך זה.</p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">ד. זכות עיון במידע</h3>
+                    <p>בהתאם לחוק הגנת הפרטיות התשמ"א-1981, כל אדם זכאי לעיין במידע אודותיו, בין אם באופן אישי, באמצעות נציג משפטי מורשה כדין או באמצעות אפוטרופוס.</p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">ה. זכות תיקון המידע</h3>
+                    <p>אם לאחר עיון במידע האישי שלך תמצא כי הוא שגוי, לא שלם, לא ברור או מיושן, תוכל לבקש מאיתנו לתקן את המידע השגוי, ולעדכנו במידע הנכון.</p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">ו. אבטחת מידע</h3>
+                    <p>ידוע למשתמש כי לא ניתן להבטיח באופן מלא את הסודיות או לאבטח באופן מלא כל תקשורת המועברת אליך או על ידך דרך האינטרנט. עם זאת, במידה ונודע לנו על פרצת אבטחה, נודיע לכל משתמש שנפגע, כדי שיוכל לנקוט בצעדים מונעים מתאימים.</p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-lg mb-2">ז. חוק וסמכות שיפוט</h3>
+                    <p>כל עניין בעל אופי משפטי הנובע מתנאים אלו או הקשור בהם, יידון על פי דין ישראל, ולבתי המשפט בתל אביב יפו, תהא סמכות השיפוט הבלעדית לדון בכל סכסוך כאמור.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-xl">הצהרת גילוי נאות (AI ואחריות מקצועית)</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-slate-700 leading-relaxed text-right space-y-4">
+                  <h3 className="font-bold text-lg">גילוי נאות (AI)</h3>
+                  <ol className="list-decimal mr-6 space-y-2">
+                    <li>הדו"ח האישי V107 והמוצר הנלווה V107 Booster נוצרו, עובדו והונפקו באמצעות כלי בינה מלאכותית שונים בליווי ופיקוח צוות מומחים</li>
+                    <li>השימוש בטכנולוגיית AI נועד לספק ניתוח נתונים מהיר ומעמיק.</li>
+                    <li>תוקף מקצועי: הדו"ח אינו מהווה תחליף לייעוץ מקצועי ואישי</li>
+                  </ol>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="mt-8 bg-slate-100 rounded-lg p-6 text-center">
-            <div className="flex items-center justify-center gap-2 text-slate-700">
-              <Mail className="w-5 h-5 text-amber-600" />
-              <span className="font-medium">{contactText}</span>
-              <a href="mailto:support@aventura107.com" className="text-blue-600 hover:text-blue-800 underline">
-                support@aventura107.com
-              </a>
+          <div className="mt-8 bg-slate-100 rounded-lg p-6">
+            <h3 className="font-bold text-lg text-slate-800 mb-4 text-right">פרטי התקשרות</h3>
+            <div className="text-slate-700 space-y-2 text-right">
+              <p><strong>שם חברה מלא:</strong> V107</p>
+              <p><strong>מספר עוסק:</strong> 054095377</p>
+              <p><strong>כתובת פיזית:</strong> רחוב הברזל 34 תל אביב יפו</p>
+              <div className="flex items-center justify-end gap-2">
+                <a href="mailto:support@v107.co.il" className="text-blue-600 hover:text-blue-800 underline">
+                  support@v107.co.il
+                </a>
+                <span>:</span>
+                <span className="font-medium">מייל שירות</span>
+                <Mail className="w-5 h-5 text-amber-600" />
+              </div>
             </div>
           </div>
         </div>
