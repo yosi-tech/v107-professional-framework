@@ -386,11 +386,7 @@ export default function ReportView() {
                   language={currentLanguage}
                 />
 
-                <BoosterOfferSection 
-                  recommendedTrack={report.recommended_booster_track}
-                  language={currentLanguage}
-                />
-              </TabsContent>
+                </TabsContent>
 
               <TabsContent value="markdown" className="mt-6">
                 <Card>
@@ -436,143 +432,206 @@ export default function ReportView() {
                       </div>
                     ) : (
                       <div 
-                        className="space-y-8" 
+                        className="report-text-view" 
                         dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}
                       >
-                        <ReactMarkdown
-                          components={{
-                            h1: ({children}) => (
-                              <Card className="border-none shadow-2xl overflow-hidden mb-8">
-                                <CardContent className="p-0">
-                                  <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 p-8 relative overflow-hidden">
-                                    <div className="absolute inset-0 opacity-10">
-                                      <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
-                                    </div>
-                                    <h1 className="text-5xl font-black text-white relative z-10 leading-tight">
-                                      {children}
-                                    </h1>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            ),
-                            h2: ({children}) => (
-                              <Card className="border-none shadow-xl mb-6">
-                                <CardContent className="p-6 bg-gradient-to-r from-purple-600 to-pink-600">
-                                  <h2 className="text-4xl font-black text-white flex items-center gap-3">
-                                    <div className="w-3 h-12 bg-white rounded-full"></div>
-                                    {children}
-                                  </h2>
-                                </CardContent>
-                              </Card>
-                            ),
-                            h3: ({children}) => (
-                              <div className="mb-6 mt-8">
-                                <h3 className="text-3xl font-bold text-slate-800 bg-gradient-to-r from-slate-100 to-transparent p-4 rounded-lg border-r-4 border-blue-600">
-                                  {children}
-                                </h3>
-                              </div>
-                            ),
-                            p: ({children}) => (
-                              <Card className="border-none shadow-sm mb-4 bg-white">
-                                <CardContent className="p-6">
-                                  <p className="text-gray-800 leading-relaxed text-xl">
-                                    {children}
-                                  </p>
-                                </CardContent>
-                              </Card>
-                            ),
-                            ul: ({children}) => (
-                              <div className="my-6 space-y-3">
-                                {children}
-                              </div>
-                            ),
-                            ol: ({children}) => (
-                              <div className="my-6 space-y-3">
-                                {children}
-                              </div>
-                            ),
-                            li: ({children}) => (
-                              <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-gradient-to-r from-white to-blue-50">
-                                <CardContent className="p-5">
-                                  <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
-                                      <CheckCircle className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div className="text-gray-800 leading-relaxed text-lg flex-1">
-                                      {children}
-                                    </div>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            ),
-                            strong: ({children}) => (
-                              <span className="font-black text-blue-900 bg-blue-100 px-2 py-1 rounded">
-                                {children}
-                              </span>
-                            ),
-                            em: ({children}) => (
-                              <span className="font-bold text-purple-700 not-italic bg-purple-100 px-2 py-1 rounded">
-                                {children}
-                              </span>
-                            ),
-                            blockquote: ({children}) => (
-                              <Card className="border-none shadow-xl my-8 bg-gradient-to-br from-amber-50 to-orange-50">
-                                <CardContent className="p-8">
-                                  <div className="flex items-start gap-4">
-                                    <div className="text-6xl text-amber-500">💡</div>
-                                    <div className="flex-1">
-                                      <div className="text-2xl font-bold text-amber-900 mb-3">תובנה חשובה</div>
-                                      <div className="text-gray-800 text-xl leading-relaxed">
-                                        {children}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            ),
-                            table: ({children}) => (
-                              <Card className="border-none shadow-xl my-8 overflow-hidden">
-                                <CardContent className="p-0">
-                                  <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                      {children}
-                                    </table>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            ),
-                            thead: ({children}) => (
-                              <thead className="bg-gradient-to-r from-slate-700 to-slate-900">
-                                {children}
-                              </thead>
-                            ),
-                            th: ({children}) => (
-                              <th className="p-4 font-black text-white text-lg border-b-2 border-slate-600">
-                                {children}
-                              </th>
-                            ),
-                            tbody: ({children}) => (
-                              <tbody className="bg-white">
-                                {children}
-                              </tbody>
-                            ),
-                            tr: ({children, ...props}) => (
-                              <tr className="hover:bg-slate-50 transition-colors border-b border-slate-200" {...props}>
-                                {children}
-                              </tr>
-                            ),
-                            td: ({children}) => (
-                              <td className="p-4 text-gray-700 text-lg">
-                                {children}
-                              </td>
-                            ),
-                            hr: () => (
-                              <div className="my-12">
-                                <div className="h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"></div>
-                              </div>
-                            )
-                          }}
-                        >
+                        <style>{`
+                          .report-text-view h1 {
+                            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+                            color: white;
+                            padding: 2rem 2.5rem;
+                            border-radius: 1rem;
+                            font-size: 2.5rem;
+                            font-weight: 900;
+                            margin-bottom: 2rem;
+                            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+                            position: relative;
+                            overflow: hidden;
+                          }
+                          .report-text-view h1::before {
+                            content: '';
+                            position: absolute;
+                            top: -50%;
+                            right: -20%;
+                            width: 200px;
+                            height: 200px;
+                            background: rgba(255, 255, 255, 0.1);
+                            border-radius: 50%;
+                            filter: blur(40px);
+                          }
+
+                          .report-text-view h2 {
+                            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+                            color: white;
+                            padding: 1.5rem 2rem;
+                            border-radius: 1rem;
+                            font-size: 2rem;
+                            font-weight: 900;
+                            margin: 2rem 0 1.5rem 0;
+                            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+                            display: flex;
+                            align-items: center;
+                            gap: 1rem;
+                          }
+                          .report-text-view h2::before {
+                            content: '';
+                            width: 8px;
+                            height: 3rem;
+                            background: white;
+                            border-radius: 999px;
+                          }
+
+                          .report-text-view h3 {
+                            background: linear-gradient(90deg, #f1f5f9 0%, transparent 100%);
+                            padding: 1rem 1.5rem;
+                            border-right: 5px solid #3b82f6;
+                            border-radius: 0.5rem;
+                            font-size: 1.75rem;
+                            font-weight: 700;
+                            color: #334155;
+                            margin: 2rem 0 1rem 0;
+                          }
+
+                          .report-text-view p {
+                            background: white;
+                            padding: 1.5rem 2rem;
+                            border-radius: 1rem;
+                            font-size: 1.25rem;
+                            line-height: 1.8;
+                            color: #374151;
+                            margin-bottom: 1rem;
+                            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+                            border: 1px solid #f3f4f6;
+                          }
+
+                          .report-text-view ul, .report-text-view ol {
+                            margin: 1.5rem 0;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 1rem;
+                          }
+
+                          .report-text-view li {
+                            background: linear-gradient(135deg, white 0%, #eff6ff 100%);
+                            padding: 1.25rem 1.5rem;
+                            padding-right: 4rem;
+                            border-radius: 1rem;
+                            font-size: 1.125rem;
+                            line-height: 1.7;
+                            color: #374151;
+                            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+                            position: relative;
+                            border: 1px solid #dbeafe;
+                            transition: all 0.2s;
+                          }
+                          .report-text-view li:hover {
+                            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+                            transform: translateY(-2px);
+                          }
+                          .report-text-view li::before {
+                            content: '✓';
+                            position: absolute;
+                            right: 1rem;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            width: 2rem;
+                            height: 2rem;
+                            background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
+                            color: white;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 900;
+                            font-size: 1rem;
+                            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
+                          }
+
+                          .report-text-view strong {
+                            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+                            color: #1e3a8a;
+                            padding: 0.25rem 0.5rem;
+                            border-radius: 0.375rem;
+                            font-weight: 900;
+                            border: 1px solid #93c5fd;
+                          }
+
+                          .report-text-view em {
+                            background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+                            color: #581c87;
+                            padding: 0.25rem 0.5rem;
+                            border-radius: 0.375rem;
+                            font-weight: 700;
+                            font-style: normal;
+                            border: 1px solid #c4b5fd;
+                          }
+
+                          .report-text-view blockquote {
+                            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                            border-right: 6px solid #f59e0b;
+                            padding: 2rem;
+                            border-radius: 1rem;
+                            margin: 2rem 0;
+                            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+                            position: relative;
+                          }
+                          .report-text-view blockquote::before {
+                            content: '💡';
+                            position: absolute;
+                            top: 1rem;
+                            right: 1rem;
+                            font-size: 3rem;
+                          }
+                          .report-text-view blockquote p {
+                            background: transparent;
+                            padding: 0;
+                            box-shadow: none;
+                            border: none;
+                            font-size: 1.125rem;
+                            margin: 0;
+                            padding-right: 4rem;
+                            color: #78350f;
+                          }
+
+                          .report-text-view table {
+                            width: 100%;
+                            border-radius: 1rem;
+                            overflow: hidden;
+                            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+                            margin: 2rem 0;
+                            background: white;
+                          }
+                          .report-text-view thead {
+                            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+                          }
+                          .report-text-view th {
+                            padding: 1rem 1.5rem;
+                            color: white;
+                            font-weight: 900;
+                            font-size: 1.125rem;
+                            text-align: right;
+                            border-bottom: 2px solid #475569;
+                          }
+                          .report-text-view td {
+                            padding: 1rem 1.5rem;
+                            color: #374151;
+                            font-size: 1rem;
+                            text-align: right;
+                            border-bottom: 1px solid #e5e7eb;
+                          }
+                          .report-text-view tr:hover {
+                            background: #f9fafb;
+                          }
+
+                          .report-text-view hr {
+                            height: 3px;
+                            background: linear-gradient(90deg, transparent 0%, #3b82f6 50%, transparent 100%);
+                            border: none;
+                            border-radius: 999px;
+                            margin: 3rem 0;
+                          }
+                        `}</style>
+                        <ReactMarkdown>
                           {report.report_markdown}
                         </ReactMarkdown>
                       </div>
@@ -580,10 +639,88 @@ export default function ReportView() {
                   </CardContent>
                 </Card>
               </TabsContent>
-            </Tabs>
-          </div>
-        ) : (
-          <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
+              </Tabs>
+
+              {/* הצעת הבוסטר - סקשן נפרד */}
+              {report.recommended_booster_track && (
+              <div className="mt-12">
+                <Card className="border-4 border-amber-500 shadow-2xl mb-8">
+                  <CardHeader className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                    <CardTitle className="text-3xl font-black flex items-center gap-3">
+                      <Rocket className="w-10 h-10" />
+                      {currentLanguage === 'he' ? '🚀 הצעה מיוחדת - V107 BOOSTER' : '🚀 Special Offer - V107 BOOSTER'}
+                    </CardTitle>
+                    <p className="text-white/90 mt-2 text-lg">
+                      {currentLanguage === 'he' 
+                        ? 'תוכנית ליווי אינטנסיבית מותאמת אישית למסלול המומלץ שלך'
+                        : 'Intensive coaching program tailored to your recommended track'}
+                    </p>
+                  </CardHeader>
+                </Card>
+                <BoosterOfferSection 
+                  recommendedTrack={report.recommended_booster_track}
+                  language={currentLanguage}
+                />
+              </div>
+              )}
+
+              {/* דיסקליימרים משפטיים וטכנולוגיים */}
+              <div className="mt-12 space-y-6">
+              <Card className="border-2 border-slate-300 bg-slate-50">
+                <CardHeader>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <Shield className="w-6 h-6 text-slate-600" />
+                    {currentLanguage === 'he' ? 'הצהרה משפטית' : 'Legal Disclaimer'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-slate-700 leading-relaxed space-y-3">
+                  <p>
+                    {currentLanguage === 'he' 
+                      ? 'דו"ח זה נוצר באמצעות מערכת V107 Professional Framework והוא מבוסס על תשובותיך לשאלון המקצועי. הדו"ח מספק הערכה כללית של פרופיל היזמי שלך ואינו מהווה ייעוץ משפטי, פיננסי או עסקי מקצועי.'
+                      : 'This report was generated using the V107 Professional Framework system and is based on your responses to the professional questionnaire. The report provides a general assessment of your entrepreneurial profile and does not constitute professional legal, financial, or business advice.'}
+                  </p>
+                  <p>
+                    {currentLanguage === 'he'
+                      ? 'המלצות המופיעות בדו"ח הן כלליות במטרתן ועשויות שלא להתאים לכל מצב או נסיבות ספציפיות. אנו ממליצים להיוועץ עם מומחים מקצועיים מתאימים (עורכי דין, רואי חשבון, יועצים עסקיים) לפני קבלת החלטות עסקיות משמעותיות.'
+                      : 'The recommendations in this report are general in nature and may not be suitable for every specific situation or circumstance. We recommend consulting with appropriate professional experts (lawyers, accountants, business consultants) before making significant business decisions.'}
+                  </p>
+                  <p>
+                    {currentLanguage === 'he'
+                      ? 'V107 ו/או מפעיליה אינם אחראים לכל נזק ישיר או עקיף הנובע משימוש בדו"ח זה או מהסתמכות על תוכנו. השימוש בדו"ח ובמידע המופיע בו נעשה על אחריותך הבלעדית.'
+                      : 'V107 and/or its operators are not responsible for any direct or indirect damage resulting from the use of this report or reliance on its content. Use of the report and the information contained therein is at your sole risk.'}
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 border-blue-300 bg-blue-50">
+                <CardHeader>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <AlertCircle className="w-6 h-6 text-blue-600" />
+                    {currentLanguage === 'he' ? 'גילוי טכנולוגי - שימוש בבינה מלאכותית' : 'Technology Disclosure - AI Usage'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-blue-900 leading-relaxed space-y-3">
+                  <p>
+                    {currentLanguage === 'he'
+                      ? 'דו"ח זה הופק בשילוב של טכנולוגיות בינה מלאכותית (AI) מתקדמות ובקרת איכות אנושית מקצועית. המערכת משתמשת במודלי שפה גדולים (LLMs) לניתוח התשובות שלך ולהפקת תובנות מותאמות אישית.'
+                      : 'This report was generated using a combination of advanced artificial intelligence (AI) technologies and professional human quality control. The system uses Large Language Models (LLMs) to analyze your responses and generate personalized insights.'}
+                  </p>
+                  <p>
+                    {currentLanguage === 'he'
+                      ? 'תהליך הפקת הדו"ח כולל: (1) ניתוח כמותי אוטומטי של תשובותיך, (2) יצירת תובנות והמלצות באמצעות AI, (3) בדיקה ואימות על ידי צוות מומחים אנושי מנוסה. גישה היברידית זו מאפשרת לנו לספק ניתוח מעמיק ומדויק תוך שמירה על אמינות וסטנדרטים מקצועיים גבוהים.'
+                      : 'The report generation process includes: (1) Automatic quantitative analysis of your responses, (2) Generation of insights and recommendations using AI, (3) Review and verification by an experienced human expert team. This hybrid approach allows us to provide in-depth and accurate analysis while maintaining reliability and high professional standards.'}
+                  </p>
+                  <p>
+                    {currentLanguage === 'he'
+                      ? 'חשוב לציין: למרות השימוש בטכנולוגיה מתקדמת, הדו"ח עדיין עשוי לכלול אי-דיוקים או פרשנויות שאינן מתאימות באופן מושלם למצבך הספציפי. אנו ממליצים להשתמש בדו"ח כנקודת התחלה לחשיבה ולתכנון, ולא כתחליף לשיקול דעת אישי או ייעוץ מקצועי מותאם.'
+                      : 'Important note: Despite the use of advanced technology, the report may still contain inaccuracies or interpretations that may not perfectly fit your specific situation. We recommend using the report as a starting point for thinking and planning, not as a substitute for personal judgment or tailored professional advice.'}
+                  </p>
+                </CardContent>
+              </Card>
+              </div>
+              </div>
+              ) : (
+              <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
             <CardContent className="p-8 text-center">
               <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
               <p className="text-lg font-semibold text-yellow-900">
