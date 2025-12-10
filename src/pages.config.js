@@ -7,8 +7,6 @@ import EmailTemplates from './pages/EmailTemplates';
 import About from './pages/About';
 import Articles from './pages/Articles';
 import ArticleDetails from './pages/ArticleDetails';
-import CancellationPolicy from './pages/CancellationPolicy';
-import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import AdminReports from './pages/AdminReports';
 import ReportView from './pages/ReportView';
@@ -28,8 +26,6 @@ export const PAGES = {
     "About": About,
     "Articles": Articles,
     "ArticleDetails": ArticleDetails,
-    "CancellationPolicy": CancellationPolicy,
-    "PrivacyPolicy": PrivacyPolicy,
     "TermsOfService": TermsOfService,
     "AdminReports": AdminReports,
     "ReportView": ReportView,
