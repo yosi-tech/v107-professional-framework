@@ -268,44 +268,78 @@ export default function TermsOfService() {
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-lg mb-2">ב. כיצד אנו משתמשים במידע?</h3>
-                    <p className="mb-3">החברה עשויה להשתמש במידע שנאסף אודותיך כמפורט במסמך מדיניות פרטיות זה למטרה מוגבלת של אספקת השירותים ופונקציות קשורות, או כפי שמתואר באופן ספציפי במדיניות פרטיות זו וכפי שמותר על פי הדין החל. מטרות אלו כוללות מקרים שבהם החברה צריכה לספק או להשלים שירותים שהתבקשו על ידך או עבורך, או כאשר נתת לחברה את הסכמתך המפורשת לכך.</p>
-                    <p>המידע שלך עשוי לשמש למגוון מטרות, כולל:</p>
-                    <ul className="list-disc mr-6 space-y-1">
-                      <li>לספק, לתפעל ולשפר את המוצרים והשירותים.</li>
-                      <li>לאפשר את הגישה והשימוש שלך בשירותים ולזהות אותך, כך שנוכל לספק ולמלא את בקשות השירותים שלך, לעבד ולהשלים עסקאות, ולשלוח לך מידע רלוונטי.</li>
-                      <li>לשלוח לך התראות טכניות, עדכונים, התראות אבטחה, הודעות תמיכה ומנהליות, ולתקשר איתך באופן שוטף בהתאם לתנאים אלה, כולל מענה להערות, שאלות ובקשות שלך, וכן לספק שירותים ותמיכה ללקוחות בנוגע לשירותים, תכונות, סקרים ומידע נוסף.</li>
-                      <li>לנטר ולנתח מגמות, שימוש ופעילויות בקשר לשירותים.</li>
-                      <li>להמשיך לפתח, לשפר ולהתאים אישית את השירותים וחוויית המשתמש.</li>
-                      <li>להתאים את השירותים עבורך באופן אישי ולשפר את חווית השירות שלך.</li>
-                      <li>לקדם את בטיחות ואבטחת המידע והמערכות שלנו.</li>
-                      <li>ניהול תביעות ביטוח ורישום ותיעוד בהתאם לנהלים פנימיים.</li>
-                    </ul>
+                    <h3 className="font-bold text-lg mb-2">{isHebrew ? 'ב. כיצד אנו משתמשים במידע?' : 'B. How Do We Use the Information?'}</h3>
+                    {isHebrew ? (
+                      <>
+                        <p className="mb-3">החברה עשויה להשתמש במידע שנאסף אודותיך כמפורט במסמך מדיניות פרטיות זה למטרה מוגבלת של אספקת השירותים ופונקציות קשורות, או כפי שמתואר באופן ספציפי במדיניות פרטיות זו וכפי שמותר על פי הדין החל. מטרות אלו כוללות מקרים שבהם החברה צריכה לספק או להשלים שירותים שהתבקשו על ידך או עבורך, או כאשר נתת לחברה את הסכמתך המפורשת לכך.</p>
+                        <p>המידע שלך עשוי לשמש למגוון מטרות, כולל:</p>
+                        <ul className="list-disc mr-6 space-y-1">
+                          <li>לספק, לתפעל ולשפר את המוצרים והשירותים.</li>
+                          <li>לאפשר את הגישה והשימוש שלך בשירותים ולזהות אותך, כך שנוכל לספק ולמלא את בקשות השירותים שלך, לעבד ולהשלים עסקאות, ולשלוח לך מידע רלוונטי.</li>
+                          <li>לשלוח לך התראות טכניות, עדכונים, התראות אבטחה, הודעות תמיכה ומנהליות, ולתקשר איתך באופן שוטף בהתאם לתנאים אלה, כולל מענה להערות, שאלות ובקשות שלך, וכן לספק שירותים ותמיכה ללקוחות בנוגע לשירותים, תכונות, סקרים ומידע נוסף.</li>
+                          <li>לנטר ולנתח מגמות, שימוש ופעילויות בקשר לשירותים.</li>
+                          <li>להמשיך לפתח, לשפר ולהתאים אישית את השירותים וחוויית המשתמש.</li>
+                          <li>להתאים את השירותים עבורך באופן אישי ולשפר את חווית השירות שלך.</li>
+                          <li>לקדם את בטיחות ואבטחת המידע והמערכות שלנו.</li>
+                          <li>ניהול תביעות ביטוח ורישום ותיעוד בהתאם לנהלים פנימיים.</li>
+                        </ul>
+                      </>
+                    ) : (
+                      <>
+                        <p className="mb-3">The company may use the information collected about you as detailed in this privacy policy document for the limited purpose of providing the services and related functions, or as specifically described in this privacy policy and as permitted by applicable law. These purposes include cases where the company needs to provide or complete services requested by you or for you, or when you have given the company your explicit consent to do so.</p>
+                        <p>Your information may be used for a variety of purposes, including:</p>
+                        <ul className={`list-disc ${isHebrew ? 'mr-6' : 'ml-6'} space-y-1`}>
+                          <li>To provide, operate and improve the products and services.</li>
+                          <li>To enable your access and use of the services and identify you, so we can provide and fulfill your service requests, process and complete transactions, and send you relevant information.</li>
+                          <li>To send you technical notifications, updates, security alerts, support and administrative messages, and communicate with you regularly in accordance with these terms, including responding to your comments, questions and requests, and to provide customer services and support regarding the services, features, surveys and additional information.</li>
+                          <li>To monitor and analyze trends, usage and activities related to the services.</li>
+                          <li>To continue developing, improving and personalizing the services and user experience.</li>
+                          <li>To personalize the services for you and improve your service experience.</li>
+                          <li>To promote the security and safety of our information and systems.</li>
+                          <li>Management of insurance claims and registration and documentation according to internal procedures.</li>
+                        </ul>
+                      </>
+                    )}
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-lg mb-2">ג. שיתוף המידע שלך עם צדדים שלישיים</h3>
-                    <p className="mb-3">החברה עשויה לשתף את המידע שנאסף אודותיך עם צדדים שלישיים למטרות מוגבלות הקשורות לאספקת השירותים או כפי שמתואר במסמך זה.</p>
+                    <h3 className="font-bold text-lg mb-2">{isHebrew ? 'ג. שיתוף המידע שלך עם צדדים שלישיים' : 'C. Sharing Your Information with Third Parties'}</h3>
+                    <p className="mb-3">{isHebrew 
+                      ? 'החברה עשויה לשתף את המידע שנאסף אודותיך עם צדדים שלישיים למטרות מוגבלות הקשורות לאספקת השירותים או כפי שמתואר במסמך זה.'
+                      : 'The company may share the information collected about you with third parties for limited purposes related to providing the services or as described in this document.'
+                    }</p>
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-lg mb-2">ד. זכות עיון במידע</h3>
-                    <p>בהתאם לחוק הגנת הפרטיות התשמ"א-1981, כל אדם זכאי לעיין במידע אודותיו, בין אם באופן אישי, באמצעות נציג משפטי מורשה כדין או באמצעות אפוטרופוס.</p>
+                    <h3 className="font-bold text-lg mb-2">{isHebrew ? 'ד. זכות עיון במידע' : 'D. Right to Access Information'}</h3>
+                    <p>{isHebrew 
+                      ? 'בהתאם לחוק הגנת הפרטיות התשמ"א-1981, כל אדם זכאי לעיין במידע אודותיו, בין אם באופן אישי, באמצעות נציג משפטי מורשה כדין או באמצעות אפוטרופוס.'
+                      : 'In accordance with the Privacy Protection Law 5741-1981, every person is entitled to view information about them, whether personally, through a legally authorized legal representative or through a guardian.'
+                    }</p>
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-lg mb-2">ה. זכות תיקון המידע</h3>
-                    <p>אם לאחר עיון במידע האישי שלך תמצא כי הוא שגוי, לא שלם, לא ברור או מיושן, תוכל לבקש מאיתנו לתקן את המידע השגוי, ולעדכנו במידע הנכון.</p>
+                    <h3 className="font-bold text-lg mb-2">{isHebrew ? 'ה. זכות תיקון המידע' : 'E. Right to Correct Information'}</h3>
+                    <p>{isHebrew 
+                      ? 'אם לאחר עיון במידע האישי שלך תמצא כי הוא שגוי, לא שלם, לא ברור או מיושן, תוכל לבקש מאיתנו לתקן את המידע השגוי, ולעדכנו במידע הנכון.'
+                      : 'If after viewing your personal information you find that it is incorrect, incomplete, unclear or outdated, you can ask us to correct the incorrect information and update it with the correct information.'
+                    }</p>
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-lg mb-2">ו. אבטחת מידע</h3>
-                    <p>ידוע למשתמש כי לא ניתן להבטיח באופן מלא את הסודיות או לאבטח באופן מלא כל תקשורת המועברת אליך או על ידך דרך האינטרנט. עם זאת, במידה ונודע לנו על פרצת אבטחה, נודיע לכל משתמש שנפגע, כדי שיוכל לנקוט בצעדים מונעים מתאימים.</p>
+                    <h3 className="font-bold text-lg mb-2">{isHebrew ? 'ו. אבטחת מידע' : 'F. Information Security'}</h3>
+                    <p>{isHebrew 
+                      ? 'ידוע למשתמש כי לא ניתן להבטיח באופן מלא את הסודיות או לאבטח באופן מלא כל תקשורת המועברת אליך או על ידך דרך האינטרנט. עם זאת, במידה ונודע לנו על פרצת אבטחה, נודיע לכל משתמש שנפגע, כדי שיוכל לנקוט בצעדים מונעים מתאימים.'
+                      : 'It is known to the user that confidentiality cannot be fully guaranteed or any communication transmitted to you or by you over the Internet can be fully secured. However, if we learn of a security breach, we will notify every affected user so they can take appropriate preventive measures.'
+                    }</p>
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-lg mb-2">ז. חוק וסמכות שיפוט</h3>
-                    <p>כל עניין בעל אופי משפטי הנובע מתנאים אלו או הקשור בהם, יידון על פי דין ישראל, ולבתי המשפט בתל אביב יפו, תהא סמכות השיפוט הבלעדית לדון בכל סכסוך כאמור.</p>
+                    <h3 className="font-bold text-lg mb-2">{isHebrew ? 'ז. חוק וסמכות שיפוט' : 'G. Law and Jurisdiction'}</h3>
+                    <p>{isHebrew 
+                      ? 'כל עניין בעל אופי משפטי הנובע מתנאים אלו או הקשור בהם, יידון על פי דין ישראל, ולבתי המשפט בתל אביב יפו, תהא סמכות השיפוט הבלעדית לדון בכל סכסוך כאמור.'
+                      : 'Any matter of a legal nature arising from or related to these terms will be judged according to Israeli law, and the courts in Tel Aviv-Yafo will have exclusive jurisdiction to hear any such dispute.'
+                    }</p>
                   </div>
                 </div>
               </CardContent>
