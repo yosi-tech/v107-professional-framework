@@ -80,16 +80,28 @@ export default function TermsOfService() {
               <CardHeader className="bg-slate-50 border-b">
                 <CardTitle className="text-lg flex items-center gap-3">
                   <FileText className="w-5 h-5 text-amber-600" />
-                  ב. הדו"ח האישי V107 ואחריות
+                  {isHebrew ? 'ב. הדו"ח האישי V107 ואחריות' : 'B. V107 Personal Report and Liability'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="text-slate-700 leading-relaxed text-right space-y-4">
-                  <p><strong>1.</strong> הדו"ח האישי V107 מופק על בסיס 107 התשובות שנמסרו על ידי המשתמש ונוצר באמצעות כלי בינה מלאכותית בשילוב פיקוח אנושי של מומחים. המוצרים מופקים בהתבסס על תשובות אלה, ואין בידי החברה כדי לאמת את נכונותן. לאור האמור, ידוע למשתמש כי הפקת המוצרים מתבססת על תשובותיו וכי אין לחברה כל אחריות על המידע שיימסר על ידו, על המידע אשר יופק בהתבסס על התשובות וכי המוצרים נועדו לספק הכוונה מקצועית כללית בלבד.</p>
-                  <p><strong>2.</strong> תוכן המוצרים אינו מהווה בשום אופן ייעוץ משפטי, פיננסי, רפואי או מקצועי.</p>
-                  <p><strong>3.</strong> השירותים שמציעה החברה אינם מהווים ייעוץ או תחליף לייעוץ משפטי, פיננסי, רפואי או מקצועי, ואינם מהווים המלצה או הצעה לייעוץ כלשהו מטעם החברה. עליך תמיד לפנות לקבלת ייעוץ מקצועי מגורם מוסמך אחר לפני תחילת כל פעולה בעניין המוצרים.</p>
-                  <p><strong>4.</strong> בעוד שהשירות עשוי להציע לך מידע או להקל על קבלת ההחלטות שלך, הוא אינו מהווה תחליף לשיקול דעתו המקצועי של יועץ מטעמך, בכל אחד מהתחומים המנויים לעיל.</p>
-                  <p><strong>5. הגבלת אחריות:</strong> החברה אינה אחראית לכל נזק, הפסד או שינוי עסקי/אישי שיגרם למשתמש כתוצאה מהשימוש או הסתמכות על התוכן שבמוצרים וכל צעד שייעשה בעקבות שימוש במוצרים הוא באחריותו הבלעדית של המשתמש.</p>
+                <div className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'} space-y-4`}>
+                  {isHebrew ? (
+                    <>
+                      <p><strong>1.</strong> הדו"ח האישי V107 מופק על בסיס 107 התשובות שנמסרו על ידי המשתמש ונוצר באמצעות כלי בינה מלאכותית בשילוב פיקוח אנושי של מומחים. המוצרים מופקים בהתבסס על תשובות אלה, ואין בידי החברה כדי לאמת את נכונותן. לאור האמור, ידוע למשתמש כי הפקת המוצרים מתבססת על תשובותיו וכי אין לחברה כל אחריות על המידע שיימסר על ידו, על המידע אשר יופק בהתבסס על התשובות וכי המוצרים נועדו לספק הכוונה מקצועית כללית בלבד.</p>
+                      <p><strong>2.</strong> תוכן המוצרים אינו מהווה בשום אופן ייעוץ משפטי, פיננסי, רפואי או מקצועי.</p>
+                      <p><strong>3.</strong> השירותים שמציעה החברה אינם מהווים ייעוץ או תחליף לייעוץ משפטי, פיננסי, רפואי או מקצועי, ואינם מהווים המלצה או הצעה לייעוץ כלשהו מטעם החברה. עליך תמיד לפנות לקבלת ייעוץ מקצועי מגורם מוסמך אחר לפני תחילת כל פעולה בעניין המוצרים.</p>
+                      <p><strong>4.</strong> בעוד שהשירות עשוי להציע לך מידע או להקל על קבלת ההחלטות שלך, הוא אינו מהווה תחליף לשיקול דעתו המקצועי של יועץ מטעמך, בכל אחד מהתחומים המנויים לעיל.</p>
+                      <p><strong>5. הגבלת אחריות:</strong> החברה אינה אחראית לכל נזק, הפסד או שינוי עסקי/אישי שיגרם למשתמש כתוצאה מהשימוש או הסתמכות על התוכן שבמוצרים וכל צעד שייעשה בעקבות שימוש במוצרים הוא באחריותו הבלעדית של המשתמש.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p><strong>1.</strong> The V107 personal report is generated based on 107 answers provided by the user and created using artificial intelligence tools in combination with expert human supervision. The products are generated based on these answers, and the company has no way to verify their accuracy. In light of this, the user is aware that the production of the products is based on his answers and that the company has no responsibility for the information provided by him, for the information generated based on the answers, and that the products are intended to provide general professional guidance only.</p>
+                      <p><strong>2.</strong> The content of the products does not constitute legal, financial, medical or professional advice in any way.</p>
+                      <p><strong>3.</strong> The services offered by the company do not constitute advice or a substitute for legal, financial, medical or professional advice, and do not constitute a recommendation or offer for any advice on behalf of the company. You should always seek professional advice from another qualified source before starting any action regarding the products.</p>
+                      <p><strong>4.</strong> While the service may offer you information or facilitate your decision-making, it is not a substitute for the professional judgment of an advisor on your behalf, in any of the areas listed above.</p>
+                      <p><strong>5. Limitation of Liability:</strong> The company is not responsible for any damage, loss or business/personal change that may be caused to the user as a result of using or relying on the content in the products and any step taken following the use of the products is the sole responsibility of the user.</p>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -98,14 +110,24 @@ export default function TermsOfService() {
               <CardHeader className="bg-slate-50 border-b">
                 <CardTitle className="text-lg flex items-center gap-3">
                   <FileText className="w-5 h-5 text-amber-600" />
-                  ג. אספקה ומדיניות ביטול
+                  {isHebrew ? 'ג. אספקה ומדיניות ביטול' : 'C. Delivery and Cancellation Policy'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="text-slate-700 leading-relaxed text-right space-y-4">
-                  <p><strong>1. התחייבות אספקה:</strong> החברה מתחייבת לאספקת הדו"ח האישי (V107) בתוך 5 ימי עסקים מרגע השלמת התשלום ומילוי שאלון 107 הנקודות.</p>
-                  <p><strong>2. ביטול עסקה:</strong> מאחר שייצור הדו"ח הוא שירות דיגיטלי הניתן בהתאמה אישית, מרגע שהושלם התשלום והתשובות הועברו לניתוח AI וניתוח אנושי לא יינתן החזר כספי. מדיניות ביטול לפני תחילת עבודת הייצור תפעל בהתאם לחוק הגנת הצרכן.</p>
-                  <p><strong>3. חריג למוצר הנלווה (V107 Booster):</strong> על אף האמור לעיל בדבר אי-החזר כספי בגין שירותי מידע, מובהר כי המודל העסקי של המוצר הנלווה 'V107 Booster' מבוסס על עקרון 'הצלחה מותנית' (מודל 'לא שיפרת – לא שילמת'). לפיכך, החיוב בפועל בגין מוצר זה ו/או זכאות המשתמש להחזר כספי מלא, יהיו כפופים לדיווח המשתמש אודות שביעות רצונו או השיפור שהושג, וזאת בהתאם למנגנון ולתנאים הספציפיים שיוצגו למשתמש במעמד הצעת הרכישה של הבוסטר. במקרה בו המשתמש יפעל בהתאם לתנאי המודל וידווח כי לא חל שיפור, לא יחולו עליו דמי ביטול והוא יהיה זכאי לפטור מתשלום או להחזר מלא, בהתאם למקרה.</p>
+                <div className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'} space-y-4`}>
+                  {isHebrew ? (
+                    <>
+                      <p><strong>1. התחייבות אספקה:</strong> החברה מתחייבת לאספקת הדו"ח האישי (V107) בתוך 5 ימי עסקים מרגע השלמת התשלום ומילוי שאלון 107 הנקודות.</p>
+                      <p><strong>2. ביטול עסקה:</strong> מאחר שייצור הדו"ח הוא שירות דיגיטלי הניתן בהתאמה אישית, מרגע שהושלם התשלום והתשובות הועברו לניתוח AI וניתוח אנושי לא יינתן החזר כספי. מדיניות ביטול לפני תחילת עבודת הייצור תפעל בהתאם לחוק הגנת הצרכן.</p>
+                      <p><strong>3. חריג למוצר הנלווה (V107 Booster):</strong> על אף האמור לעיל בדבר אי-החזר כספי בגין שירותי מידע, מובהר כי המודל העסקי של המוצר הנלווה 'V107 Booster' מבוסס על עקרון 'הצלחה מותנית' (מודל 'לא שיפרת – לא שילמת'). לפיכך, החיוב בפועל בגין מוצר זה ו/או זכאות המשתמש להחזר כספי מלא, יהיו כפופים לדיווח המשתמש אודות שביעות רצונו או השיפור שהושג, וזאת בהתאם למנגנון ולתנאים הספציפיים שיוצגו למשתמש במעמד הצעת הרכישה של הבוסטר. במקרה בו המשתמש יפעל בהתאם לתנאי המודל וידווח כי לא חל שיפור, לא יחולו עליו דמי ביטול והוא יהיה זכאי לפטור מתשלום או להחזר מלא, בהתאם למקרה.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p><strong>1. Delivery Commitment:</strong> The company commits to delivering the personal report (V107) within 5 business days from the moment of payment completion and filling out the 107-point questionnaire.</p>
+                      <p><strong>2. Transaction Cancellation:</strong> Since the production of the report is a digital service provided in a personalized manner, once payment is completed and the answers have been transferred for AI and human analysis, no refund will be given. The cancellation policy before the start of production work will operate in accordance with consumer protection law.</p>
+                      <p><strong>3. Exception for the Accompanying Product (V107 Booster):</strong> Despite the above regarding non-refunds for information services, it is clarified that the business model of the 'V107 Booster' accompanying product is based on the principle of 'conditional success' (the 'no improvement - no payment' model). Therefore, the actual charge for this product and/or the user's eligibility for a full refund will be subject to the user's report on their satisfaction or the improvement achieved, according to the mechanism and specific conditions that will be presented to the user when purchasing the booster. In the event that the user acts in accordance with the terms of the model and reports that no improvement has occurred, no cancellation fees will apply and they will be entitled to a waiver of payment or a full refund, as appropriate.</p>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
