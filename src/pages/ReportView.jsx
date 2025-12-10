@@ -349,11 +349,11 @@ export default function ReportView() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="visual" className="mt-6">
-                <ExecutiveSummarySection 
-                  executiveSummary={report.executive_summary} 
-                  language={currentLanguage}
-                />
+              <TabsContent value="visual" className="mt-6" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
+              <ExecutiveSummarySection 
+              executiveSummary={report.executive_summary} 
+              language={currentLanguage}
+              />
 
                 <DomainScoresSection 
                   domainScores={report.domain_scores} 
@@ -436,80 +436,140 @@ export default function ReportView() {
                       </div>
                     ) : (
                       <div 
-                        className="prose prose-xl max-w-none prose-headings:font-black prose-h1:text-4xl prose-h1:mb-6 prose-h1:text-blue-900 prose-h1:border-b-4 prose-h1:border-blue-600 prose-h1:pb-4 prose-h2:text-3xl prose-h2:mb-4 prose-h2:text-purple-900 prose-h2:mt-8 prose-h3:text-2xl prose-h3:mb-3 prose-h3:text-slate-800 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-ul:my-4 prose-li:my-2 prose-li:text-gray-700 prose-strong:text-gray-900 prose-strong:font-bold prose-em:text-blue-700 prose-blockquote:border-r-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 prose-blockquote:p-4 prose-blockquote:rounded-lg prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-table:border-2 prose-table:border-gray-300 prose-th:bg-slate-100 prose-th:p-3 prose-th:font-bold prose-td:p-3 prose-td:border" 
+                        className="space-y-8" 
                         dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}
                       >
                         <ReactMarkdown
                           components={{
                             h1: ({children}) => (
-                              <h1 className="text-4xl font-black mb-6 text-blue-900 border-b-4 border-blue-600 pb-4">
-                                {children}
-                              </h1>
+                              <Card className="border-none shadow-2xl overflow-hidden mb-8">
+                                <CardContent className="p-0">
+                                  <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 p-8 relative overflow-hidden">
+                                    <div className="absolute inset-0 opacity-10">
+                                      <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+                                    </div>
+                                    <h1 className="text-5xl font-black text-white relative z-10 leading-tight">
+                                      {children}
+                                    </h1>
+                                  </div>
+                                </CardContent>
+                              </Card>
                             ),
                             h2: ({children}) => (
-                              <h2 className="text-3xl font-bold mb-4 text-purple-900 mt-8">
-                                {children}
-                              </h2>
+                              <Card className="border-none shadow-xl mb-6">
+                                <CardContent className="p-6 bg-gradient-to-r from-purple-600 to-pink-600">
+                                  <h2 className="text-4xl font-black text-white flex items-center gap-3">
+                                    <div className="w-3 h-12 bg-white rounded-full"></div>
+                                    {children}
+                                  </h2>
+                                </CardContent>
+                              </Card>
                             ),
                             h3: ({children}) => (
-                              <h3 className="text-2xl font-bold mb-3 text-slate-800">
-                                {children}
-                              </h3>
-                            ),
-                            p: ({children}) => (
-                              <p className="text-gray-700 leading-relaxed mb-4 text-lg">
-                                {children}
-                              </p>
-                            ),
-                            ul: ({children}) => (
-                              <ul className="my-4 space-y-2 list-disc pr-6">
-                                {children}
-                              </ul>
-                            ),
-                            ol: ({children}) => (
-                              <ol className="my-4 space-y-2 list-decimal pr-6">
-                                {children}
-                              </ol>
-                            ),
-                            li: ({children}) => (
-                              <li className="text-gray-700 leading-relaxed">
-                                {children}
-                              </li>
-                            ),
-                            strong: ({children}) => (
-                              <strong className="text-gray-900 font-bold">
-                                {children}
-                              </strong>
-                            ),
-                            em: ({children}) => (
-                              <em className="text-blue-700 font-semibold not-italic">
-                                {children}
-                              </em>
-                            ),
-                            blockquote: ({children}) => (
-                              <blockquote className="border-r-4 border-blue-500 bg-blue-50 p-4 rounded-lg my-6">
-                                {children}
-                              </blockquote>
-                            ),
-                            table: ({children}) => (
-                              <div className="overflow-x-auto my-6">
-                                <table className="min-w-full border-2 border-gray-300 rounded-lg">
+                              <div className="mb-6 mt-8">
+                                <h3 className="text-3xl font-bold text-slate-800 bg-gradient-to-r from-slate-100 to-transparent p-4 rounded-lg border-r-4 border-blue-600">
                                   {children}
-                                </table>
+                                </h3>
                               </div>
                             ),
+                            p: ({children}) => (
+                              <Card className="border-none shadow-sm mb-4 bg-white">
+                                <CardContent className="p-6">
+                                  <p className="text-gray-800 leading-relaxed text-xl">
+                                    {children}
+                                  </p>
+                                </CardContent>
+                              </Card>
+                            ),
+                            ul: ({children}) => (
+                              <div className="my-6 space-y-3">
+                                {children}
+                              </div>
+                            ),
+                            ol: ({children}) => (
+                              <div className="my-6 space-y-3">
+                                {children}
+                              </div>
+                            ),
+                            li: ({children}) => (
+                              <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-gradient-to-r from-white to-blue-50">
+                                <CardContent className="p-5">
+                                  <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                                      <CheckCircle className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div className="text-gray-800 leading-relaxed text-lg flex-1">
+                                      {children}
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ),
+                            strong: ({children}) => (
+                              <span className="font-black text-blue-900 bg-blue-100 px-2 py-1 rounded">
+                                {children}
+                              </span>
+                            ),
+                            em: ({children}) => (
+                              <span className="font-bold text-purple-700 not-italic bg-purple-100 px-2 py-1 rounded">
+                                {children}
+                              </span>
+                            ),
+                            blockquote: ({children}) => (
+                              <Card className="border-none shadow-xl my-8 bg-gradient-to-br from-amber-50 to-orange-50">
+                                <CardContent className="p-8">
+                                  <div className="flex items-start gap-4">
+                                    <div className="text-6xl text-amber-500">💡</div>
+                                    <div className="flex-1">
+                                      <div className="text-2xl font-bold text-amber-900 mb-3">תובנה חשובה</div>
+                                      <div className="text-gray-800 text-xl leading-relaxed">
+                                        {children}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ),
+                            table: ({children}) => (
+                              <Card className="border-none shadow-xl my-8 overflow-hidden">
+                                <CardContent className="p-0">
+                                  <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                      {children}
+                                    </table>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ),
+                            thead: ({children}) => (
+                              <thead className="bg-gradient-to-r from-slate-700 to-slate-900">
+                                {children}
+                              </thead>
+                            ),
                             th: ({children}) => (
-                              <th className="bg-slate-100 p-3 font-bold text-gray-900 border border-gray-300">
+                              <th className="p-4 font-black text-white text-lg border-b-2 border-slate-600">
                                 {children}
                               </th>
                             ),
+                            tbody: ({children}) => (
+                              <tbody className="bg-white">
+                                {children}
+                              </tbody>
+                            ),
+                            tr: ({children, ...props}) => (
+                              <tr className="hover:bg-slate-50 transition-colors border-b border-slate-200" {...props}>
+                                {children}
+                              </tr>
+                            ),
                             td: ({children}) => (
-                              <td className="p-3 border border-gray-300 text-gray-700">
+                              <td className="p-4 text-gray-700 text-lg">
                                 {children}
                               </td>
                             ),
                             hr: () => (
-                              <hr className="my-8 border-t-2 border-gray-200" />
+                              <div className="my-12">
+                                <div className="h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"></div>
+                              </div>
                             )
                           }}
                         >
