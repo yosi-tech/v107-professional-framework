@@ -15,7 +15,11 @@ import {
   Loader2,
   AlertCircle,
   ArrowRight,
-  Rocket
+  Rocket,
+  BarChart3,
+  Target,
+  TrendingUp,
+  CheckCircle
 } from "lucide-react";
 import { format } from "date-fns";
 import ReactMarkdown from 'react-markdown';
