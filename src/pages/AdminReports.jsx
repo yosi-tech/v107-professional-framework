@@ -2622,7 +2622,7 @@ export default function AdminReports() {
 
           <TabsContent value="email-templates">
             <div className="space-y-6">
-              <div className="flex justify-end items-center">
+              <div className="flex justify-end items-center mb-6">
                 <Button
                   onClick={() => {
                     setEditingTemplate(null);
@@ -2635,43 +2635,252 @@ export default function AdminReports() {
                 </Button>
               </div>
 
-              <div className="grid gap-4">
-                {emailTemplates.map(template => (
-                  <EmailTemplateCard
-                    key={template.id}
-                    template={template}
-                    onEdit={() => {
-                      setEditingTemplate(template);
-                      setTemplateDialog(true);
-                    }}
-                    onDelete={() => deleteTemplate(template.id)}
-                  />
-                ))}
+              <Tabs defaultValue="general" className="w-full">
+                <TabsList className="grid w-full grid-cols-7 mb-6">
+                  <TabsTrigger value="general" className="text-xs sm:text-sm">כללי</TabsTrigger>
+                  <TabsTrigger value="execution" className="text-xs sm:text-sm">ביצוע</TabsTrigger>
+                  <TabsTrigger value="digital" className="text-xs sm:text-sm">דיגיטל</TabsTrigger>
+                  <TabsTrigger value="finance" className="text-xs sm:text-sm">פיננסים</TabsTrigger>
+                  <TabsTrigger value="marketing" className="text-xs sm:text-sm">שיווק</TabsTrigger>
+                  <TabsTrigger value="management" className="text-xs sm:text-sm">ניהול</TabsTrigger>
+                  <TabsTrigger value="vision" className="text-xs sm:text-sm">חזון</TabsTrigger>
+                </TabsList>
 
-                {emailTemplates.length === 0 && (
-                  <Card>
-                    <CardContent className="p-12 text-center">
-                      <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        אין תבניות מיילים
-                      </h3>
-                      <p className="text-gray-600 mb-4">
-                        צור תבניות מיילים אוטומטיות למערכת
-                      </p>
-                      <Button
-                        onClick={() => {
-                          setEditingTemplate(null);
+                {/* תבניות כלליות */}
+                <TabsContent value="general">
+                  <div className="grid gap-4">
+                    {emailTemplates.filter(t => !t.booster_track).map(template => (
+                      <EmailTemplateCard
+                        key={template.id}
+                        template={template}
+                        onEdit={() => {
+                          setEditingTemplate(template);
                           setTemplateDialog(true);
                         }}
-                        className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 flex-row-reverse"
-                      >
-                        <span>צור תבנית ראשונה</span>
-                        <Mail className="w-4 h-4" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
+                        onDelete={() => deleteTemplate(template.id)}
+                      />
+                    ))}
+
+                    {emailTemplates.filter(t => !t.booster_track).length === 0 && (
+                      <Card>
+                        <CardContent className="p-12 text-center">
+                          <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            אין תבניות כלליות
+                          </h3>
+                          <p className="text-gray-600">
+                            תבניות מיילים כלליות (לא בוסטר) יופיעו כאן
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* מסלול ביצוע */}
+                <TabsContent value="execution">
+                  <div className="grid gap-4">
+                    {emailTemplates
+                      .filter(t => t.booster_track === 'execution')
+                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
+                      .map(template => (
+                        <EmailTemplateCard
+                          key={template.id}
+                          template={template}
+                          onEdit={() => {
+                            setEditingTemplate(template);
+                            setTemplateDialog(true);
+                          }}
+                          onDelete={() => deleteTemplate(template.id)}
+                        />
+                      ))}
+
+                    {emailTemplates.filter(t => t.booster_track === 'execution').length === 0 && (
+                      <Card>
+                        <CardContent className="p-12 text-center">
+                          <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            אין תבניות במסלול ביצוע
+                          </h3>
+                          <p className="text-gray-600">
+                            תבניות מייל למסלול הביצוע (7 ימים) יופיעו כאן
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* מסלול דיגיטל */}
+                <TabsContent value="digital">
+                  <div className="grid gap-4">
+                    {emailTemplates
+                      .filter(t => t.booster_track === 'digital')
+                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
+                      .map(template => (
+                        <EmailTemplateCard
+                          key={template.id}
+                          template={template}
+                          onEdit={() => {
+                            setEditingTemplate(template);
+                            setTemplateDialog(true);
+                          }}
+                          onDelete={() => deleteTemplate(template.id)}
+                        />
+                      ))}
+
+                    {emailTemplates.filter(t => t.booster_track === 'digital').length === 0 && (
+                      <Card>
+                        <CardContent className="p-12 text-center">
+                          <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            אין תבניות במסלול דיגיטל
+                          </h3>
+                          <p className="text-gray-600">
+                            תבניות מייל למסלול הדיגיטל (7 ימים) יופיעו כאן
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* מסלול פיננסים */}
+                <TabsContent value="finance">
+                  <div className="grid gap-4">
+                    {emailTemplates
+                      .filter(t => t.booster_track === 'finance')
+                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
+                      .map(template => (
+                        <EmailTemplateCard
+                          key={template.id}
+                          template={template}
+                          onEdit={() => {
+                            setEditingTemplate(template);
+                            setTemplateDialog(true);
+                          }}
+                          onDelete={() => deleteTemplate(template.id)}
+                        />
+                      ))}
+
+                    {emailTemplates.filter(t => t.booster_track === 'finance').length === 0 && (
+                      <Card>
+                        <CardContent className="p-12 text-center">
+                          <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            אין תבניות במסלול פיננסים
+                          </h3>
+                          <p className="text-gray-600">
+                            תבניות מייל למסלול הפיננסי (7 ימים) יופיעו כאן
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* מסלול שיווק */}
+                <TabsContent value="marketing">
+                  <div className="grid gap-4">
+                    {emailTemplates
+                      .filter(t => t.booster_track === 'marketing')
+                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
+                      .map(template => (
+                        <EmailTemplateCard
+                          key={template.id}
+                          template={template}
+                          onEdit={() => {
+                            setEditingTemplate(template);
+                            setTemplateDialog(true);
+                          }}
+                          onDelete={() => deleteTemplate(template.id)}
+                        />
+                      ))}
+
+                    {emailTemplates.filter(t => t.booster_track === 'marketing').length === 0 && (
+                      <Card>
+                        <CardContent className="p-12 text-center">
+                          <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            אין תבניות במסלול שיווק
+                          </h3>
+                          <p className="text-gray-600">
+                            תבניות מייל למסלול השיווקי (7 ימים) יופיעו כאן
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* מסלול ניהול */}
+                <TabsContent value="management">
+                  <div className="grid gap-4">
+                    {emailTemplates
+                      .filter(t => t.booster_track === 'management')
+                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
+                      .map(template => (
+                        <EmailTemplateCard
+                          key={template.id}
+                          template={template}
+                          onEdit={() => {
+                            setEditingTemplate(template);
+                            setTemplateDialog(true);
+                          }}
+                          onDelete={() => deleteTemplate(template.id)}
+                        />
+                      ))}
+
+                    {emailTemplates.filter(t => t.booster_track === 'management').length === 0 && (
+                      <Card>
+                        <CardContent className="p-12 text-center">
+                          <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            אין תבניות במסלול ניהול
+                          </h3>
+                          <p className="text-gray-600">
+                            תבניות מייל למסלול הניהולי (7 ימים) יופיעו כאן
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* מסלול חזון */}
+                <TabsContent value="vision">
+                  <div className="grid gap-4">
+                    {emailTemplates
+                      .filter(t => t.booster_track === 'vision')
+                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
+                      .map(template => (
+                        <EmailTemplateCard
+                          key={template.id}
+                          template={template}
+                          onEdit={() => {
+                            setEditingTemplate(template);
+                            setTemplateDialog(true);
+                          }}
+                          onDelete={() => deleteTemplate(template.id)}
+                        />
+                      ))}
+
+                    {emailTemplates.filter(t => t.booster_track === 'vision').length === 0 && (
+                      <Card>
+                        <CardContent className="p-12 text-center">
+                          <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            אין תבניות במסלול חזון
+                          </h3>
+                          <p className="text-gray-600">
+                            תבניות מייל למסלול החזון (7 ימים) יופיעו כאן
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           </TabsContent>
 
