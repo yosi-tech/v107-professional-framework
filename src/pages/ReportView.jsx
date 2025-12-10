@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { 
   FileText, 
   User as UserIcon, 
@@ -21,12 +21,10 @@ import {
   Target,
   TrendingUp,
   CheckCircle,
-  Eye,
-  Code,
   Shield
 } from "lucide-react";
 import { format } from "date-fns";
-import ReactMarkdown from 'react-markdown';
+
 import ExecutiveSummarySection from "@/components/report/ExecutiveSummarySection";
 import DomainScoresSection from "@/components/report/DomainScoresSection";
 import DomainAnalysisSection from "@/components/report/DomainAnalysisSection";
@@ -35,6 +33,12 @@ import KPIsSection from "@/components/report/KPIsSection";
 import ActionPlanSection from "@/components/report/ActionPlanSection";
 import RecommendationsSection from "@/components/report/RecommendationsSection";
 import BoosterOfferSection from "@/components/report/BoosterOfferSection";
+import ExecutiveSummaryEditor from "@/components/report/ExecutiveSummaryEditor";
+import DomainAnalysisEditor from "@/components/report/DomainAnalysisEditor";
+import TrafficLightsEditor from "@/components/report/TrafficLightsEditor";
+import KPIsEditor from "@/components/report/KPIsEditor";
+import ActionPlanEditor from "@/components/report/ActionPlanEditor";
+import RecommendationsEditor from "@/components/report/RecommendationsEditor";
 
 const TEXTS = {
   he: {
@@ -74,10 +78,9 @@ export default function ReportView() {
   const [report, setReport] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditingMarkdown, setIsEditingMarkdown] = useState(false);
-  const [editedMarkdown, setEditedMarkdown] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('he');
+  const [editingSection, setEditingSection] = useState(null);
 
   useEffect(() => {
     loadReport();
@@ -157,24 +160,27 @@ export default function ReportView() {
     window.print();
   };
 
-  const startEditMarkdown = () => {
+  const startEditSection = (sectionName) => {
     if (!isAdmin) return;
-    setEditedMarkdown(report.report_markdown || '');
-    setIsEditingMarkdown(true);
+    setEditingSection(sectionName);
   };
 
-  const saveMarkdownEdit = async () => {
+  const saveSection = async (sectionName, data) => {
     if (!isAdmin) return;
     try {
       await base44.entities.GeneratedReport.update(report.id, {
-        report_markdown: editedMarkdown
+        [sectionName]: data
       });
-      setReport({ ...report, report_markdown: editedMarkdown });
-      setIsEditingMarkdown(false);
+      setReport({ ...report, [sectionName]: data });
+      setEditingSection(null);
     } catch (error) {
       console.error(getText("errorSavingChanges"), error);
       alert(getText("errorSavingChanges"));
     }
+  };
+
+  const cancelEdit = () => {
+    setEditingSection(null);
   };
 
   if (isLoading) {
@@ -338,116 +344,203 @@ export default function ReportView() {
               </CardContent>
             </Card>
 
-            <div className="flex justify-between items-center mb-8 no-print">
-              <Tabs defaultValue="visual" className="flex-1">
-                <TabsList className="grid w-full grid-cols-2 max-w-md">
-                  <TabsTrigger value="visual" className="flex items-center gap-2">
-                    <Eye className="w-4 h-4" />
-                    {currentLanguage === 'he' ? 'תצוגה ויזואלית' : 'Visual View'}
-                  </TabsTrigger>
-                  <TabsTrigger value="markdown" className="flex items-center gap-2">
-                    <Code className="w-4 h-4" />
-                    {currentLanguage === 'he' ? 'תצוגת טקסט' : 'Text View'}
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-
-              {isAdmin && !isEditingMarkdown && (
-                <Button 
-                  variant="outline"
-                  onClick={startEditMarkdown}
-                  className="flex items-center gap-2"
-                >
-                  <Edit2 className="w-4 h-4" />
-                  {currentLanguage === 'he' ? 'ערוך דוח מלא' : 'Edit Full Report'}
-                </Button>
-              )}
-            </div>
-
-            {isEditingMarkdown && isAdmin ? (
-              <Card className="mb-8">
-                <CardHeader>
-                  <CardTitle>{currentLanguage === 'he' ? 'עריכת דוח מלא' : 'Edit Full Report'}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Textarea
-                    value={editedMarkdown}
-                    onChange={(e) => setEditedMarkdown(e.target.value)}
-                    rows={30}
-                    className="font-mono text-sm"
-                  />
-                  <div className="flex gap-2">
-                    <Button onClick={saveMarkdownEdit}>
-                      <Save className="w-4 h-4 ml-2" />
-                      {getText("save")}
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setIsEditingMarkdown(false)}
-                    >
-                      <X className="w-4 h-4 ml-2" />
-                      {getText("cancel")}
-                    </Button>
+            <div className="mt-6" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
+              {/* Executive Summary */}
+              <div className="mb-8">
+                {editingSection === 'executive_summary' && isAdmin ? (
+                  <Card className="p-6">
+                    <ExecutiveSummaryEditor
+                      data={report.executive_summary}
+                      onSave={(data) => saveSection('executive_summary', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <div className="relative">
+                    {isAdmin && (
+                      <Button
+                        onClick={() => startEditSection('executive_summary')}
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-4 left-4 z-10 no-print"
+                      >
+                        <Edit2 className="w-4 h-4 ml-2" />
+                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
+                      </Button>
+                    )}
+                    <ExecutiveSummarySection 
+                      executiveSummary={report.executive_summary} 
+                      language={currentLanguage}
+                    />
                   </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <Tabs defaultValue="visual" className="mb-8 no-print">
-                <TabsList className="hidden">
-                  <TabsTrigger value="visual"></TabsTrigger>
-                  <TabsTrigger value="markdown"></TabsTrigger>
-                </TabsList>
+                )}
+              </div>
 
-              <TabsContent value="visual" className="mt-6" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
-              <ExecutiveSummarySection 
-              executiveSummary={report.executive_summary} 
-              language={currentLanguage}
+              {/* Domain Scores */}
+              <DomainScoresSection 
+                domainScores={report.domain_scores} 
+                language={currentLanguage}
               />
 
-                <DomainScoresSection 
-                  domainScores={report.domain_scores} 
-                  language={currentLanguage}
-                />
-
-                <DomainAnalysisSection 
-                  domainAnalysis={report.domain_analysis}
-                  domainScores={report.domain_scores}
-                  language={currentLanguage}
-                />
-
-                <TrafficLightsSection 
-                  trafficLights={report.traffic_lights_table} 
-                  language={currentLanguage}
-                />
-
-                <KPIsSection 
-                  kpis={report.kpis} 
-                  language={currentLanguage}
-                />
-
-                <ActionPlanSection 
-                  actionPlan={report.action_plan} 
-                  language={currentLanguage}
-                />
-
-                <RecommendationsSection 
-                  recommendations={report.focused_recommendations} 
-                  language={currentLanguage}
-                />
-              </TabsContent>
-
-                <TabsContent value="markdown" className="mt-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-xl">
-                        {currentLanguage === 'he' ? 'דוח מלא - פורמט טקסט' : 'Full Report - Text Format'}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div 
-                        className="report-text-view" 
-                        dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}
+              {/* Domain Analysis */}
+              <div className="mb-8">
+                {editingSection === 'domain_analysis' && isAdmin ? (
+                  <Card className="p-6">
+                    <DomainAnalysisEditor
+                      data={report.domain_analysis}
+                      domainScores={report.domain_scores}
+                      onSave={(data) => saveSection('domain_analysis', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <div className="relative">
+                    {isAdmin && (
+                      <Button
+                        onClick={() => startEditSection('domain_analysis')}
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-4 left-4 z-10 no-print"
                       >
+                        <Edit2 className="w-4 h-4 ml-2" />
+                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
+                      </Button>
+                    )}
+                    <DomainAnalysisSection 
+                      domainAnalysis={report.domain_analysis}
+                      domainScores={report.domain_scores}
+                      language={currentLanguage}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Traffic Lights */}
+              <div className="mb-8">
+                {editingSection === 'traffic_lights_table' && isAdmin ? (
+                  <Card className="p-6">
+                    <TrafficLightsEditor
+                      data={report.traffic_lights_table}
+                      onSave={(data) => saveSection('traffic_lights_table', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <div className="relative">
+                    {isAdmin && (
+                      <Button
+                        onClick={() => startEditSection('traffic_lights_table')}
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-4 left-4 z-10 no-print"
+                      >
+                        <Edit2 className="w-4 h-4 ml-2" />
+                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
+                      </Button>
+                    )}
+                    <TrafficLightsSection 
+                      trafficLights={report.traffic_lights_table} 
+                      language={currentLanguage}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* KPIs */}
+              <div className="mb-8">
+                {editingSection === 'kpis' && isAdmin ? (
+                  <Card className="p-6">
+                    <KPIsEditor
+                      data={report.kpis}
+                      onSave={(data) => saveSection('kpis', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <div className="relative">
+                    {isAdmin && (
+                      <Button
+                        onClick={() => startEditSection('kpis')}
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-4 left-4 z-10 no-print"
+                      >
+                        <Edit2 className="w-4 h-4 ml-2" />
+                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
+                      </Button>
+                    )}
+                    <KPIsSection 
+                      kpis={report.kpis} 
+                      language={currentLanguage}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Action Plan */}
+              <div className="mb-8">
+                {editingSection === 'action_plan' && isAdmin ? (
+                  <Card className="p-6">
+                    <ActionPlanEditor
+                      data={report.action_plan}
+                      onSave={(data) => saveSection('action_plan', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <div className="relative">
+                    {isAdmin && (
+                      <Button
+                        onClick={() => startEditSection('action_plan')}
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-4 left-4 z-10 no-print"
+                      >
+                        <Edit2 className="w-4 h-4 ml-2" />
+                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
+                      </Button>
+                    )}
+                    <ActionPlanSection 
+                      actionPlan={report.action_plan} 
+                      language={currentLanguage}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Recommendations */}
+              <div className="mb-8">
+                {editingSection === 'focused_recommendations' && isAdmin ? (
+                  <Card className="p-6">
+                    <RecommendationsEditor
+                      data={report.focused_recommendations}
+                      onSave={(data) => saveSection('focused_recommendations', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <div className="relative">
+                    {isAdmin && (
+                      <Button
+                        onClick={() => startEditSection('focused_recommendations')}
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-4 left-4 z-10 no-print"
+                      >
+                        <Edit2 className="w-4 h-4 ml-2" />
+                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
+                      </Button>
+                    )}
+                    <RecommendationsSection 
+                      recommendations={report.focused_recommendations} 
+                      language={currentLanguage}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="hidden">
                         <style>{`
                           .report-text-view h1 {
                             background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
@@ -647,12 +740,7 @@ export default function ReportView() {
                         <ReactMarkdown>
                           {report.report_markdown}
                         </ReactMarkdown>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          )}}
+            </div>}
 
           {/* הצעת הבוסטר - סקשן נפרד */}
           {report.recommended_booster_track && (
