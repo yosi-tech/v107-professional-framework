@@ -429,8 +429,86 @@ export default function ReportView() {
                         </div>
                       </div>
                     ) : (
-                      <div className="prose prose-lg max-w-none" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
-                        <ReactMarkdown>{report.report_markdown}</ReactMarkdown>
+                      <div 
+                        className="prose prose-xl max-w-none prose-headings:font-black prose-h1:text-4xl prose-h1:mb-6 prose-h1:text-blue-900 prose-h1:border-b-4 prose-h1:border-blue-600 prose-h1:pb-4 prose-h2:text-3xl prose-h2:mb-4 prose-h2:text-purple-900 prose-h2:mt-8 prose-h3:text-2xl prose-h3:mb-3 prose-h3:text-slate-800 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-ul:my-4 prose-li:my-2 prose-li:text-gray-700 prose-strong:text-gray-900 prose-strong:font-bold prose-em:text-blue-700 prose-blockquote:border-r-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 prose-blockquote:p-4 prose-blockquote:rounded-lg prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-table:border-2 prose-table:border-gray-300 prose-th:bg-slate-100 prose-th:p-3 prose-th:font-bold prose-td:p-3 prose-td:border" 
+                        dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}
+                      >
+                        <ReactMarkdown
+                          components={{
+                            h1: ({children}) => (
+                              <h1 className="text-4xl font-black mb-6 text-blue-900 border-b-4 border-blue-600 pb-4">
+                                {children}
+                              </h1>
+                            ),
+                            h2: ({children}) => (
+                              <h2 className="text-3xl font-bold mb-4 text-purple-900 mt-8">
+                                {children}
+                              </h2>
+                            ),
+                            h3: ({children}) => (
+                              <h3 className="text-2xl font-bold mb-3 text-slate-800">
+                                {children}
+                              </h3>
+                            ),
+                            p: ({children}) => (
+                              <p className="text-gray-700 leading-relaxed mb-4 text-lg">
+                                {children}
+                              </p>
+                            ),
+                            ul: ({children}) => (
+                              <ul className="my-4 space-y-2 list-disc pr-6">
+                                {children}
+                              </ul>
+                            ),
+                            ol: ({children}) => (
+                              <ol className="my-4 space-y-2 list-decimal pr-6">
+                                {children}
+                              </ol>
+                            ),
+                            li: ({children}) => (
+                              <li className="text-gray-700 leading-relaxed">
+                                {children}
+                              </li>
+                            ),
+                            strong: ({children}) => (
+                              <strong className="text-gray-900 font-bold">
+                                {children}
+                              </strong>
+                            ),
+                            em: ({children}) => (
+                              <em className="text-blue-700 font-semibold not-italic">
+                                {children}
+                              </em>
+                            ),
+                            blockquote: ({children}) => (
+                              <blockquote className="border-r-4 border-blue-500 bg-blue-50 p-4 rounded-lg my-6">
+                                {children}
+                              </blockquote>
+                            ),
+                            table: ({children}) => (
+                              <div className="overflow-x-auto my-6">
+                                <table className="min-w-full border-2 border-gray-300 rounded-lg">
+                                  {children}
+                                </table>
+                              </div>
+                            ),
+                            th: ({children}) => (
+                              <th className="bg-slate-100 p-3 font-bold text-gray-900 border border-gray-300">
+                                {children}
+                              </th>
+                            ),
+                            td: ({children}) => (
+                              <td className="p-3 border border-gray-300 text-gray-700">
+                                {children}
+                              </td>
+                            ),
+                            hr: () => (
+                              <hr className="my-8 border-t-2 border-gray-200" />
+                            )
+                          }}
+                        >
+                          {report.report_markdown}
+                        </ReactMarkdown>
                       </div>
                     )}
                   </CardContent>
