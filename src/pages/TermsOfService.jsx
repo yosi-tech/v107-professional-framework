@@ -188,25 +188,43 @@ export default function TermsOfService() {
               <CardHeader className="bg-slate-50 border-b">
                 <CardTitle className="text-lg flex items-center gap-3">
                   <FileText className="w-5 h-5 text-amber-600" />
-                  ו. פרטיות ומידע אישי
+                  {isHebrew ? 'ו. פרטיות ומידע אישי' : 'F. Privacy and Personal Information'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="text-slate-700 leading-relaxed text-right space-y-4">
-                  <p>במסגרת מתן השירותים, החברה עשויה לנטר, לאסוף, להשתמש ולאחסן נתונים אנונימיים וסטטיסטיים מצטברים הנוגעים לשימוש בשירותים ו/או כל אינטראקציה של יחידים או ישויות עם השירות (ביחד, "נתוני שימוש").</p>
-                  <p>על ידי הסכמתך לתנאים אלה, אתה מעניק בזאת לחברה ולחברות הקשורות אליה, רישיון בינלאומי, בלתי מוגבל, בלתי הפיך וללא תמלוגים להשתמש בנתוני השימוש למטרות לגיטימיות כפי שמפורט מטה במדיניות הפרטיות שלנו.</p>
+                <div className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'} space-y-4`}>
+                  {isHebrew ? (
+                    <>
+                      <p>במסגרת מתן השירותים, החברה עשויה לנטר, לאסוף, להשתמש ולאחסן נתונים אנונימיים וסטטיסטיים מצטברים הנוגעים לשימוש בשירותים ו/או כל אינטראקציה של יחידים או ישויות עם השירות (ביחד, "נתוני שימוש").</p>
+                      <p>על ידי הסכמתך לתנאים אלה, אתה מעניק בזאת לחברה ולחברות הקשורות אליה, רישיון בינלאומי, בלתי מוגבל, בלתי הפיך וללא תמלוגים להשתמש בנתוני השימוש למטרות לגיטימיות כפי שמפורט מטה במדיניות הפרטיות שלנו.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>As part of providing the services, the company may monitor, collect, use and store anonymous and cumulative statistical data relating to the use of the services and/or any interaction of individuals or entities with the service (together, "usage data").</p>
+                      <p>By agreeing to these terms, you hereby grant the company and its affiliated companies an international, unlimited, irrevocable and royalty-free license to use the usage data for legitimate purposes as detailed below in our privacy policy.</p>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="bg-slate-50 border-b">
-                <CardTitle className="text-xl">מדיניות פרטיות</CardTitle>
+                <CardTitle className="text-xl">{isHebrew ? 'מדיניות פרטיות' : 'Privacy Policy'}</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="text-slate-700 leading-relaxed text-right space-y-6">
-                  <p>להלן יפורט תהליך איסוף, שמירה ושימוש בנתונים אישיים שנאספים באמצעות שאלון 107 השאלות.</p>
-                  <p>מטרתה של מדיניות פרטית זו ("מדיניות" ו/או "מדיניות הפרטיות") היא להסביר, ליידע ולהבהיר כיצד אנו אוספים, משתמשים, שומרים ומנהלים מידע אישי שאתה מוסר לנו או שנאסף במהלך השימוש שלך בשירותים שלנו דרך האתר של החברה.</p>
+                <div className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'} space-y-6`}>
+                  {isHebrew ? (
+                    <>
+                      <p>להלן יפורט תהליך איסוף, שמירה ושימוש בנתונים אישיים שנאספים באמצעות שאלון 107 השאלות.</p>
+                      <p>מטרתה של מדיניות פרטית זו ("מדיניות" ו/או "מדיניות הפרטיות") היא להסביר, ליידע ולהבהיר כיצד אנו אוספים, משתמשים, שומרים ומנהלים מידע אישי שאתה מוסר לנו או שנאסף במהלך השימוש שלך בשירותים שלנו דרך האתר של החברה.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>Below is the process of collecting, storing and using personal data collected through the 107-question questionnaire.</p>
+                      <p>The purpose of this privacy policy ("Policy" and/or "Privacy Policy") is to explain, inform and clarify how we collect, use, store and manage personal information you provide to us or that is collected during your use of our services through the company's website.</p>
+                    </>
+                  )}
                   
                   <div>
                     <h3 className="font-bold text-lg mb-2">א. איסוף נתונים והסכמה</h3>
