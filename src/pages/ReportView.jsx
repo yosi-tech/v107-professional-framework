@@ -308,66 +308,84 @@ export default function ReportView() {
           </CardContent>
         </Card>
 
-        {/* דוח מלא */}
-        <Card className="mb-8">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Rocket className="w-6 h-6 text-blue-600" />
-                <div>
-                  <CardTitle className="text-2xl">
-                    {report.archetype || (currentLanguage === 'he' ? 'דוח אישי' : 'Personal Report')}
-                  </CardTitle>
-                  {report.recommended_booster_track && (
-                    <Badge className="mt-2 bg-purple-100 text-purple-800">
-                      {currentLanguage === 'he' ? 'מסלול מומלץ:' : 'Recommended Track:'} {report.recommended_booster_track}
-                    </Badge>
-                  )}
+        {/* דוח מלא - תצוגה מותאמת */}
+        {report.report_markdown ? (
+          <Card className="mb-8">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Rocket className="w-6 h-6 text-blue-600" />
+                  <div>
+                    <CardTitle className="text-2xl">
+                      {report.archetype || (currentLanguage === 'he' ? 'דוח אישי' : 'Personal Report')}
+                    </CardTitle>
+                    {report.recommended_booster_track && (
+                      <Badge className="mt-2 bg-purple-100 text-purple-800">
+                        {currentLanguage === 'he' ? 'מסלול מומלץ:' : 'Recommended Track:'} {report.recommended_booster_track}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-              </div>
-              {isAdmin && !isEditingMarkdown && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={startEditMarkdown}
-                  className="no-print"
-                >
-                  <Edit2 className="w-4 h-4 ml-2" />
-                  {getText("edit")}
-                </Button>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            {isEditingMarkdown && isAdmin ? (
-              <div className="space-y-4 no-print">
-                <Textarea
-                  value={editedMarkdown}
-                  onChange={(e) => setEditedMarkdown(e.target.value)}
-                  rows={30}
-                  className="font-mono text-sm"
-                />
-                <div className="flex gap-2">
-                  <Button onClick={saveMarkdownEdit}>
-                    <Save className="w-4 h-4 ml-2" />
-                    {getText("save")}
-                  </Button>
+                {isAdmin && !isEditingMarkdown && (
                   <Button 
                     variant="outline" 
-                    onClick={() => setIsEditingMarkdown(false)}
+                    size="sm"
+                    onClick={startEditMarkdown}
+                    className="no-print"
                   >
-                    <X className="w-4 h-4 ml-2" />
-                    {getText("cancel")}
+                    <Edit2 className="w-4 h-4 ml-2" />
+                    {getText("edit")}
                   </Button>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isEditingMarkdown && isAdmin ? (
+                <div className="space-y-4 no-print">
+                  <Textarea
+                    value={editedMarkdown}
+                    onChange={(e) => setEditedMarkdown(e.target.value)}
+                    rows={30}
+                    className="font-mono text-sm"
+                  />
+                  <div className="flex gap-2">
+                    <Button onClick={saveMarkdownEdit}>
+                      <Save className="w-4 h-4 ml-2" />
+                      {getText("save")}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsEditingMarkdown(false)}
+                    >
+                      <X className="w-4 h-4 ml-2" />
+                      {getText("cancel")}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="prose prose-lg max-w-none">
-                <ReactMarkdown>{report.report_markdown || ''}</ReactMarkdown>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              ) : (
+                <div className="prose prose-lg max-w-none" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
+                  <ReactMarkdown>{report.report_markdown}</ReactMarkdown>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
+            <CardContent className="p-8 text-center">
+              <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
+              <p className="text-lg font-semibold text-yellow-900">
+                {currentLanguage === 'he' 
+                  ? 'הדוח הזה נוצר בפורמט ישן ולא כולל את התוכן המעודכן'
+                  : 'This report was created in the old format and does not include updated content'}
+              </p>
+              <p className="text-sm text-yellow-700 mt-2">
+                {currentLanguage === 'he'
+                  ? 'אנא צור דוח חדש או פנה לצוות התמיכה'
+                  : 'Please create a new report or contact support'}
+              </p>
+            </CardContent>
+          </Card>
+        )}
         </div>
         </div>
         );
