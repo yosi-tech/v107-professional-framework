@@ -136,13 +136,22 @@ export default function TermsOfService() {
               <CardHeader className="bg-slate-50 border-b">
                 <CardTitle className="text-lg flex items-center gap-3">
                   <FileText className="w-5 h-5 text-amber-600" />
-                  ד. מנגנון הצעת המבצע – 60 דקות
+                  {isHebrew ? 'ד. מנגנון הצעת המבצע – 60 דקות' : 'D. 60-Minute Promotional Offer Mechanism'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="text-slate-700 leading-relaxed text-right space-y-4">
-                  <p><strong>1.</strong> בסמוך לשליחת הדו"ח הסופי, תוצג למשתמש הצעה לרכישת המוצר הנלווה (V107 Booster) במחיר מבצע.</p>
-                  <p><strong>2. תוקף המבצע:</strong> הצעת המבצע תקפה למשך 60 דקות בלבד מרגע שליחת הדו"ח הסופי. לאחר פקיעת 60 הדקות, מחיר המבצע יבוטל אוטומטית והלקוח יוכל לרכוש את הדו"ח במחיר מלא של 249 ₪</p>
+                <div className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'} space-y-4`}>
+                  {isHebrew ? (
+                    <>
+                      <p><strong>1.</strong> בסמוך לשליחת הדו"ח הסופי, תוצג למשתמש הצעה לרכישת המוצר הנלווה (V107 Booster) במחיר מבצע.</p>
+                      <p><strong>2. תוקף המבצע:</strong> הצעת המבצע תקפה למשך 60 דקות בלבד מרגע שליחת הדו"ח הסופי. לאחר פקיעת 60 הדקות, מחיר המבצע יבוטל אוטומטית והלקוח יוכל לרכוש את הדו"ח במחיר מלא של 249 ₪</p>
+                    </>
+                  ) : (
+                    <>
+                      <p><strong>1.</strong> Shortly after sending the final report, the user will be presented with an offer to purchase the accompanying product (V107 Booster) at a promotional price.</p>
+                      <p><strong>2. Promotion Validity:</strong> The promotional offer is valid for 60 minutes only from the moment the final report is sent. After 60 minutes expire, the promotional price will be automatically canceled and the customer can purchase the report at the full price of 249 NIS.</p>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -151,15 +160,26 @@ export default function TermsOfService() {
               <CardHeader className="bg-slate-50 border-b">
                 <CardTitle className="text-lg flex items-center gap-3">
                   <FileText className="w-5 h-5 text-amber-600" />
-                  ה. זכויות קניין רוחני; סודיות
+                  {isHebrew ? 'ה. זכויות קניין רוחני; סודיות' : 'E. Intellectual Property Rights; Confidentiality'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="text-slate-700 leading-relaxed text-right space-y-4">
-                  <p>כל הזכויות, הבעלות והאינטרסים בשירותים, לרבות כל רכיב גרפי, עיצובי, טקסטואלי, ויזואלי או קולי, לרבות סידורם, בחירתם, עיבודם או הצגתם, וכן כל קוד, תכונה, פונקציונליות או טכנולוגיה הכלולים בהם (למעט תוכן משתמש), שייכים ויישארו בבעלות הבלעדית של החברה.</p>
-                  <p>כל שימוש מסחרי, נגזר או אחר בשירותים או בתוכנם, מחייב קבלת אישור מראש ובכתב מהחברה.</p>
-                  <p>מובהר כי החברה אינה רוכשת כל בעלות על תוכן המשתמש, והוא נותר בבעלותך המלאה. עם זאת, בעצם העלאת תוכן המשתמש לשירות, אתה מעניק לחברה רישיון לא בלעדי, עולמי, ללא תמלוגים, לגשת לתוכן זה, להשתמש בו, לאחסן אותו, לשכפל אותו, להציגו ולנתחו – אך ורק בהתאם לפונקציונליות של השירות, לתנאים אלה ולמדיניות הפרטיות של החברה.</p>
-                  <p>הסימנים המסחריים, הלוגואים, שמות דומיין וכל סימן, סמליל או סמל דומה אחר המוצגים כחלק מהשירות הם סימנים רשומים ולא רשומים של החברה. שום דבר בתנאים אלה אינו מעניק לך זכות לעשות שימוש כלשהו בסימנים אלה.</p>
+                <div className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'} space-y-4`}>
+                  {isHebrew ? (
+                    <>
+                      <p>כל הזכויות, הבעלות והאינטרסים בשירותים, לרבות כל רכיב גרפי, עיצובי, טקסטואלי, ויזואלי או קולי, לרבות סידורם, בחירתם, עיבודם או הצגתם, וכן כל קוד, תכונה, פונקציונליות או טכנולוגיה הכלולים בהם (למעט תוכן משתמש), שייכים ויישארו בבעלות הבלעדית של החברה.</p>
+                      <p>כל שימוש מסחרי, נגזר או אחר בשירותים או בתוכנם, מחייב קבלת אישור מראש ובכתב מהחברה.</p>
+                      <p>מובהר כי החברה אינה רוכשת כל בעלות על תוכן המשתמש, והוא נותר בבעלותך המלאה. עם זאת, בעצם העלאת תוכן המשתמש לשירות, אתה מעניק לחברה רישיון לא בלעדי, עולמי, ללא תמלוגים, לגשת לתוכן זה, להשתמש בו, לאחסן אותו, לשכפל אותו, להציגו ולנתחו – אך ורק בהתאם לפונקציונליות של השירות, לתנאים אלה ולמדיניות הפרטיות של החברה.</p>
+                      <p>הסימנים המסחריים, הלוגואים, שמות דומיין וכל סימן, סמליל או סמל דומה אחר המוצגים כחלק מהשירות הם סימנים רשומים ולא רשומים של החברה. שום דבר בתנאים אלה אינו מעניק לך זכות לעשות שימוש כלשהו בסימנים אלה.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>All rights, ownership and interests in the services, including any graphic, design, textual, visual or audio component, including their arrangement, selection, processing or presentation, as well as any code, feature, functionality or technology included in them (except user content), belong and will remain the exclusive property of the company.</p>
+                      <p>Any commercial, derivative or other use of the services or their content requires prior written approval from the company.</p>
+                      <p>It is clarified that the company does not acquire any ownership of user content, and it remains your full property. However, by uploading user content to the service, you grant the company a non-exclusive, worldwide, royalty-free license to access, use, store, reproduce, display and analyze this content - but only in accordance with the functionality of the service, these terms and the company's privacy policy.</p>
+                      <p>The trademarks, logos, domain names and any other similar sign, symbol or emblem displayed as part of the service are registered and unregistered marks of the company. Nothing in these terms grants you the right to make any use of these marks.</p>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
