@@ -434,8 +434,7 @@ export default function ReportView() {
                   recommendations={report.focused_recommendations} 
                   language={currentLanguage}
                 />
-
-                </TabsContent>
+              </TabsContent>
 
                 <TabsContent value="markdown" className="mt-6">
                   <Card>
@@ -648,38 +647,25 @@ export default function ReportView() {
                         <ReactMarkdown>
                           {report.report_markdown}
                         </ReactMarkdown>
-                      </div>
-                      </CardContent>
-                      </Card>
-                      </TabsContent>
-                      </Tabs>
-                      )}
-
-              {/* הצעת הבוסטר - סקשן נפרד */}
-              {report.recommended_booster_track && (
-              <div className="mt-12">
-                <Card className="border-4 border-amber-500 shadow-2xl mb-8">
-                  <CardHeader className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                    <CardTitle className="text-3xl font-black flex items-center gap-3">
-                      <Rocket className="w-10 h-10" />
-                      {currentLanguage === 'he' ? '🚀 הצעה מיוחדת - V107 BOOSTER' : '🚀 Special Offer - V107 BOOSTER'}
-                    </CardTitle>
-                    <p className="text-white/90 mt-2 text-lg">
-                      {currentLanguage === 'he' 
-                        ? 'תוכנית ליווי אינטנסיבית מותאמת אישית למסלול המומלץ שלך'
-                        : 'Intensive coaching program tailored to your recommended track'}
-                    </p>
-                  </CardHeader>
+                    </div>
+                  </CardContent>
                 </Card>
-                <BoosterOfferSection 
-                  recommendedTrack={report.recommended_booster_track}
-                  language={currentLanguage}
-                />
-              </div>
-              )}
+              </TabsContent>
+            </Tabs>
+          )}}
 
-              {/* דיסקליימרים משפטיים וטכנולוגיים */}
-              <div className="mt-12 space-y-6">
+          {/* הצעת הבוסטר - סקשן נפרד */}
+          {report.recommended_booster_track && (
+            <div className="mt-12 print-break">
+              <BoosterOfferSection 
+                recommendedTrack={report.recommended_booster_track}
+                language={currentLanguage}
+              />
+            </div>
+          )}
+
+          {/* דיסקליימרים משפטיים וטכנולוגיים */}
+          <div className="mt-12 space-y-6">
               <Card className="border-2 border-slate-300 bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center gap-2">
@@ -730,11 +716,11 @@ export default function ReportView() {
                       : 'Important note: Despite the use of advanced technology, the report may still contain inaccuracies or interpretations that may not perfectly fit your specific situation. We recommend using the report as a starting point for thinking and planning, not as a substitute for personal judgment or tailored professional advice.'}
                   </p>
                 </CardContent>
-              </Card>
-              </div>
-              </div>
-              ) : (
-              <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
+            </Card>
+          </div>
+        </div>
+      ) : (
+        <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
             <CardContent className="p-8 text-center">
               <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
               <p className="text-lg font-semibold text-yellow-900">
