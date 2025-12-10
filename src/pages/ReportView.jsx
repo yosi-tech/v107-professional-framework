@@ -539,8 +539,7 @@ export default function ReportView() {
                 )}
               </div>
             </div>
-                        <style>{`
-                          .report-text-view h1 {
+          ) : (
                             background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
                             color: white;
                             padding: 2rem 2.5rem;
@@ -732,15 +731,25 @@ export default function ReportView() {
                             background: linear-gradient(90deg, transparent 0%, #3b82f6 50%, transparent 100%);
                             border: none;
                             border-radius: 999px;
-                            margin: 3rem 0;
-                          }
-                        `}</style>
-                        <ReactMarkdown>
-                          {report.report_markdown}
-                        </ReactMarkdown>
-            </div>}
+                            <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
+                              <CardContent className="p-8 text-center">
+                                <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
+                                <p className="text-lg font-semibold text-yellow-900">
+                                  {currentLanguage === 'he' 
+                                    ? 'הדוח הזה נוצר בפורמט ישן ולא כולל את התוכן המעודכן'
+                                    : 'This report was created in the old format and does not include updated content'}
+                                </p>
+                                <p className="text-sm text-yellow-700 mt-2">
+                                  {currentLanguage === 'he'
+                                    ? 'אנא צור דוח חדש או פנה לצוות התמיכה'
+                                    : 'Please create a new report or contact support'}
+                                </p>
+                              </CardContent>
+                            </Card>
+                            )}
 
-          {/* הצעת הבוסטר - סקשן נפרד */}
+                            {/* הצעת הבוסטר - סקשן נפרד */}
+                            {report.report_markdown && report.recommended_booster_track && (
           {report.recommended_booster_track && (
             <div className="mt-12 print-break">
               <BoosterOfferSection 
@@ -802,27 +811,10 @@ export default function ReportView() {
                       : 'Important note: Despite the use of advanced technology, the report may still contain inaccuracies or interpretations that may not perfectly fit your specific situation. We recommend using the report as a starting point for thinking and planning, not as a substitute for personal judgment or tailored professional advice.'}
                   </p>
                 </CardContent>
-            </Card>
-          </div>
+              </Card>
+            </div>
+          )}
         </div>
-      ) : (
-        <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
-            <CardContent className="p-8 text-center">
-              <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
-              <p className="text-lg font-semibold text-yellow-900">
-                {currentLanguage === 'he' 
-                  ? 'הדוח הזה נוצר בפורמט ישן ולא כולל את התוכן המעודכן'
-                  : 'This report was created in the old format and does not include updated content'}
-              </p>
-              <p className="text-sm text-yellow-700 mt-2">
-                {currentLanguage === 'he'
-                  ? 'אנא צור דוח חדש או פנה לצוות התמיכה'
-                  : 'Please create a new report or contact support'}
-              </p>
-            </CardContent>
-          </Card>
-        )}
-        </div>
-        </div>
-        );
+      </div>
+    );
 }
