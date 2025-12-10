@@ -338,17 +338,65 @@ export default function ReportView() {
               </CardContent>
             </Card>
 
-            <Tabs defaultValue="visual" className="mb-8 no-print">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="visual" className="flex items-center gap-2">
-                  <Eye className="w-4 h-4" />
-                  {currentLanguage === 'he' ? 'תצוגה ויזואלית' : 'Visual View'}
-                </TabsTrigger>
-                <TabsTrigger value="markdown" className="flex items-center gap-2">
-                  <Code className="w-4 h-4" />
-                  {currentLanguage === 'he' ? 'תצוגת טקסט' : 'Text View'}
-                </TabsTrigger>
-              </TabsList>
+            <div className="flex justify-between items-center mb-8 no-print">
+              <Tabs defaultValue="visual" className="flex-1">
+                <TabsList className="grid w-full grid-cols-2 max-w-md">
+                  <TabsTrigger value="visual" className="flex items-center gap-2">
+                    <Eye className="w-4 h-4" />
+                    {currentLanguage === 'he' ? 'תצוגה ויזואלית' : 'Visual View'}
+                  </TabsTrigger>
+                  <TabsTrigger value="markdown" className="flex items-center gap-2">
+                    <Code className="w-4 h-4" />
+                    {currentLanguage === 'he' ? 'תצוגת טקסט' : 'Text View'}
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              {isAdmin && !isEditingMarkdown && (
+                <Button 
+                  variant="outline"
+                  onClick={startEditMarkdown}
+                  className="flex items-center gap-2"
+                >
+                  <Edit2 className="w-4 h-4" />
+                  {currentLanguage === 'he' ? 'ערוך דוח מלא' : 'Edit Full Report'}
+                </Button>
+              )}
+            </div>
+
+            {isEditingMarkdown && isAdmin ? (
+              <Card className="mb-8">
+                <CardHeader>
+                  <CardTitle>{currentLanguage === 'he' ? 'עריכת דוח מלא' : 'Edit Full Report'}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Textarea
+                    value={editedMarkdown}
+                    onChange={(e) => setEditedMarkdown(e.target.value)}
+                    rows={30}
+                    className="font-mono text-sm"
+                  />
+                  <div className="flex gap-2">
+                    <Button onClick={saveMarkdownEdit}>
+                      <Save className="w-4 h-4 ml-2" />
+                      {getText("save")}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsEditingMarkdown(false)}
+                    >
+                      <X className="w-4 h-4 ml-2" />
+                      {getText("cancel")}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Tabs defaultValue="visual" className="mb-8 no-print">
+                <TabsList className="hidden">
+                  <TabsTrigger value="visual"></TabsTrigger>
+                  <TabsTrigger value="markdown"></TabsTrigger>
+                </TabsList>
 
               <TabsContent value="visual" className="mt-6" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
               <ExecutiveSummarySection 
@@ -389,49 +437,14 @@ export default function ReportView() {
 
                 </TabsContent>
 
-              <TabsContent value="markdown" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
+                <TabsContent value="markdown" className="mt-6">
+                  <Card>
+                    <CardHeader>
                       <CardTitle className="text-xl">
                         {currentLanguage === 'he' ? 'דוח מלא - פורמט טקסט' : 'Full Report - Text Format'}
                       </CardTitle>
-                      {isAdmin && !isEditingMarkdown && (
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={startEditMarkdown}
-                        >
-                          <Edit2 className="w-4 h-4 ml-2" />
-                          {getText("edit")}
-                        </Button>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {isEditingMarkdown && isAdmin ? (
-                      <div className="space-y-4">
-                        <Textarea
-                          value={editedMarkdown}
-                          onChange={(e) => setEditedMarkdown(e.target.value)}
-                          rows={30}
-                          className="font-mono text-sm"
-                        />
-                        <div className="flex gap-2">
-                          <Button onClick={saveMarkdownEdit}>
-                            <Save className="w-4 h-4 ml-2" />
-                            {getText("save")}
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            onClick={() => setIsEditingMarkdown(false)}
-                          >
-                            <X className="w-4 h-4 ml-2" />
-                            {getText("cancel")}
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
+                    </CardHeader>
+                    <CardContent>
                       <div 
                         className="report-text-view" 
                         dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}
@@ -636,11 +649,11 @@ export default function ReportView() {
                           {report.report_markdown}
                         </ReactMarkdown>
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              </Tabs>
+                      </CardContent>
+                      </Card>
+                      </TabsContent>
+                      </Tabs>
+                      )}
 
               {/* הצעת הבוסטר - סקשן נפרד */}
               {report.recommended_booster_track && (

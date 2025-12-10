@@ -146,34 +146,71 @@ export default function BoosterOfferSection({ recommendedTrack, language }) {
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5">
-            <h4 className="text-lg font-bold mb-3 flex items-center gap-2">
-              <Target className="w-5 h-5" />
-              {isHebrew ? '💎 ההצעה המיוחדת שלנו: "לא שיפרת - לא שילמת"' : '💎 Our Special Offer: "No Improvement - No Payment"'}
-            </h4>
-            <div className="space-y-2 text-white/90">
-              <p className="flex items-start gap-2">
-                <span className="text-2xl">1️⃣</span>
-                <span>{isHebrew ? 'תקבל 7 ימים של ליווי מקצועי אינטנסיבי' : 'Receive 7 days of intensive professional coaching'}</span>
-              </p>
-              <p className="flex items-start gap-2">
-                <span className="text-2xl">2️⃣</span>
-                <span>{isHebrew ? 'בסוף התהליך - אתה מחליט אם הפקת ערך אמיתי' : 'At the end - you decide if you gained real value'}</span>
-              </p>
-              <p className="flex items-start gap-2">
-                <span className="text-2xl">3️⃣</span>
-                <span className="font-bold text-amber-300">
-                  {isHebrew 
-                    ? 'רק אם תצהיר שהשתפרת ושהפקת ערך → תשלם 199₪ ותקבל ערכת הטמעה שווה 497₪ במתנה!'
-                    : 'Only if you declare improvement and gained value → Pay 199₪ and get implementation kit worth 497₪ as a gift!'}
-                </span>
-              </p>
-              <p className="flex items-start gap-2">
-                <span className="text-2xl">4️⃣</span>
-                <span>{isHebrew ? 'לא שיפרת? לא משלם! ללא שאלות, ללא התחייבות.' : 'No improvement? No payment! No questions, no commitment.'}</span>
-              </p>
-            </div>
-          </div>
+          <Card className="bg-white/10 backdrop-blur-md border-2 border-white/30 shadow-xl">
+            <CardContent className="p-8">
+              <h4 className="text-2xl font-black mb-6 flex items-center gap-3 text-white">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <Target className="w-6 h-6" />
+                </div>
+                {isHebrew ? '💎 ההצעה המיוחדת שלנו: "לא שיפרת - לא שילמת"' : '💎 Our Special Offer: "No Improvement - No Payment"'}
+              </h4>
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card className="bg-white/95 border-none shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg flex-shrink-0">
+                        1
+                      </div>
+                      <p className="text-gray-800 font-medium text-lg leading-relaxed">
+                        {isHebrew ? 'תקבל 7 ימים של ליווי מקצועי אינטנסיבי' : 'Receive 7 days of intensive professional coaching'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-white/95 border-none shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg flex-shrink-0">
+                        2
+                      </div>
+                      <p className="text-gray-800 font-medium text-lg leading-relaxed">
+                        {isHebrew ? 'בסוף התהליך - אתה מחליט אם הפקת ערך אמיתי' : 'At the end - you decide if you gained real value'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-gradient-to-br from-amber-400 to-orange-500 border-none shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg flex-shrink-0">
+                        3
+                      </div>
+                      <p className="text-white font-bold text-lg leading-relaxed">
+                        {isHebrew 
+                          ? 'רק אם תצהיר שהשתפרת ושהפקת ערך → תשלם 199₪ ותקבל ערכת הטמעה שווה 497₪ במתנה!'
+                          : 'Only if you declare improvement and gained value → Pay 199₪ and get implementation kit worth 497₪ as a gift!'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-white/95 border-none shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg flex-shrink-0">
+                        4
+                      </div>
+                      <p className="text-gray-800 font-medium text-lg leading-relaxed">
+                        {isHebrew ? 'לא שיפרת? לא משלם! ללא שאלות, ללא התחייבות.' : 'No improvement? No payment! No questions, no commitment.'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="text-center">
