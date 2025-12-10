@@ -1,38 +1,48 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Mail } from "lucide-react";
+import { useTranslation } from "@/components/i18n/useTranslation";
 
 export default function TermsOfService() {
+  const { language } = useTranslation();
+  const isHebrew = language === 'he';
+  
   return (
-    <div className="min-h-screen bg-slate-50" dir="rtl">
+    <div className="min-h-screen bg-slate-50" dir={isHebrew ? 'rtl' : 'ltr'}>
       <header className="bg-white shadow-sm">
         <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
           <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-slate-200">
             <FileText className="w-8 h-8 text-slate-600" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-800">תקנון ותנאי שימוש</h1>
-          <p className="text-md text-slate-500 mt-2">עדכון אחרון: דצמבר 2025</p>
+          <h1 className="text-3xl font-bold text-slate-800">
+            {isHebrew ? 'תקנון ותנאי שימוש' : 'Terms of Service'}
+          </h1>
+          <p className="text-md text-slate-500 mt-2">
+            {isHebrew ? 'עדכון אחרון: דצמבר 2025' : 'Last updated: December 2025'}
+          </p>
         </div>
       </header>
 
       <main className="py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-            <p className="text-slate-700 leading-relaxed text-right">
-              ברוכים הבאים לאתר V107. אנא קרא את התנאים הללו בעיון. השימוש באתר ובשירותים מהווה הסכמה מלאה לתנאים אלה.
+            <p className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'}`}>
+              {isHebrew 
+                ? 'ברוכים הבאים לאתר V107. אנא קרא את התנאים הללו בעיון. השימוש באתר ובשירותים מהווה הסכמה מלאה לתנאים אלה.'
+                : 'Welcome to the V107 website. Please read these terms carefully. Use of the site and services constitutes full agreement to these terms.'}
             </p>
           </div>
 
           <Card className="mb-8">
             <CardHeader className="bg-slate-50 border-b">
-              <CardTitle className="text-xl">פרטי החברה</CardTitle>
+              <CardTitle className="text-xl">{isHebrew ? 'פרטי החברה' : 'Company Details'}</CardTitle>
             </CardHeader>
-            <CardContent className="p-6 text-right">
+            <CardContent className={`p-6 ${isHebrew ? 'text-right' : 'text-left'}`}>
               <div className="space-y-2 text-slate-700">
-                <p><strong>שם החברה:</strong> V107</p>
-                <p><strong>עוסק מורשה:</strong> 054095376</p>
-                <p><strong>כתובת:</strong> הברזל 34 תל אביב</p>
-                <p><strong>אתר אינטרנט:</strong> <a href="http://www.v107.co.il" className="text-blue-600 hover:underline">www.v107.co.il</a></p>
+                <p><strong>{isHebrew ? 'שם החברה:' : 'Company Name:'}</strong> V107</p>
+                <p><strong>{isHebrew ? 'עוסק מורשה:' : 'Licensed Business:'}</strong> 054095376</p>
+                <p><strong>{isHebrew ? 'כתובת:' : 'Address:'}</strong> {isHebrew ? 'הברזל 34 תל אביב' : 'HaBarzel 34, Tel Aviv'}</p>
+                <p><strong>{isHebrew ? 'אתר אינטרנט:' : 'Website:'}</strong> <a href="http://www.v107.co.il" className="text-blue-600 hover:underline">www.v107.co.il</a></p>
               </div>
             </CardContent>
           </Card>
@@ -42,15 +52,26 @@ export default function TermsOfService() {
               <CardHeader className="bg-slate-50 border-b">
                 <CardTitle className="text-lg flex items-center gap-3">
                   <FileText className="w-5 h-5 text-amber-600" />
-                  א. כללי
+                  {isHebrew ? 'א. כללי' : 'A. General'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="text-slate-700 leading-relaxed text-right space-y-4">
-                  <p>אנא קרא את התנאים הללו בעיון. אם אינך מסכים להם במלואם – הפסק מיד את השימוש בשירות. תנאים אלה יוצרים הסכם משפטי מחייב בינך/כם (להלן: "אתה/אתם", "המשתמש/ים", "שלך/שלכם") לבין החברה.</p>
-                  <p>החברה שומרת לעצמה את הזכות לשנות את התנאים, מעת לעת, על ידי פרסום עדכונים באתר. החברה תעשה מאמצים סבירים לוודא שכל שינוי בתנאים כאמור יובא לידיעתך זמן סביר לפני כניסתם לתוקף. המשך השימוש שלך בשירותים לאחר כניסתם לתוקף של התנאים המעודכנים ייחשב כהסכמה שלך לתנאים אלה. אם אינך מסכים לתנאים המעודכנים, עליך להפסיק מיד כל שימוש בשירותים.</p>
-                  <p>לצורכי נוחות בלבד, תנאי השימוש ומדיניות פרטיות אלו מנוסחים בלשון זכר, אך מתייחסים לכל המגדרים באופן שווה.</p>
-                  <p>תקנון זה מסדיר את תנאי השימוש באתר ואת תנאי רכישת הדו"ח האישי V107 והמוצר הנלווה V107 Booster (להלן: "השירותים והמוצרים"). כל רכישה באתר מהווה הסכמה מלאה לתנאי תקנון זה ולמדיניות הפרטיות.</p>
+                <div className={`text-slate-700 leading-relaxed ${isHebrew ? 'text-right' : 'text-left'} space-y-4`}>
+                  {isHebrew ? (
+                    <>
+                      <p>אנא קרא את התנאים הללו בעיון. אם אינך מסכים להם במלואם – הפסק מיד את השימוש בשירות. תנאים אלה יוצרים הסכם משפטי מחייב בינך/כם (להלן: "אתה/אתם", "המשתמש/ים", "שלך/שלכם") לבין החברה.</p>
+                      <p>החברה שומרת לעצמה את הזכות לשנות את התנאים, מעת לעת, על ידי פרסום עדכונים באתר. החברה תעשה מאמצים סבירים לוודא שכל שינוי בתנאים כאמור יובא לידיעתך זמן סביר לפני כניסתם לתוקף. המשך השימוש שלך בשירותים לאחר כניסתם לתוקף של התנאים המעודכנים ייחשב כהסכמה שלך לתנאים אלה. אם אינך מסכים לתנאים המעודכנים, עליך להפסיק מיד כל שימוש בשירותים.</p>
+                      <p>לצורכי נוחות בלבד, תנאי השימוש ומדיניות פרטיות אלו מנוסחים בלשון זכר, אך מתייחסים לכל המגדרים באופן שווה.</p>
+                      <p>תקנון זה מסדיר את תנאי השימוש באתר ואת תנאי רכישת הדו"ח האישי V107 והמוצר הנלווה V107 Booster (להלן: "השירותים והמוצרים"). כל רכישה באתר מהווה הסכמה מלאה לתנאי תקנון זה ולמדיניות הפרטיות.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>Please read these terms carefully. If you do not agree to them in full - immediately stop using the service. These terms create a binding legal agreement between you (hereinafter: "you", "the user", "your") and the company.</p>
+                      <p>The company reserves the right to change the terms from time to time by posting updates on the site. The company will make reasonable efforts to ensure that any change in the terms is brought to your attention a reasonable time before they take effect. Your continued use of the services after the updated terms take effect will be considered your agreement to these terms. If you do not agree to the updated terms, you must immediately stop all use of the services.</p>
+                      <p>For convenience only, these terms of use and privacy policy are written in masculine language, but refer to all genders equally.</p>
+                      <p>This regulation governs the terms of use of the site and the terms of purchase of the V107 personal report and the V107 Booster accompanying product (hereinafter: "the services and products"). Any purchase on the site constitutes full agreement to the terms of this regulation and the privacy policy.</p>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
