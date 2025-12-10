@@ -1,21 +1,34 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
-// Domain mapping from reportCalculations
-const DOMAIN_MAPPING = {
-  domain1: { name: 'הערכה עצמית ויכולת קבלת החלטות', questions: [91, 92, 93, 94, 95, 96, 97], criticalQuestions: [91, 96, 97] },
-  domain2: { name: 'התמודדות עם סיכונים ואי-ודאות', questions: [64, 65, 66, 25, 21], criticalQuestions: [64, 66] },
-  domain3: { name: 'מוטיבציה והתמדה', questions: [86, 87, 88, 89, 105, 106], criticalQuestions: [88, 105, 106] },
-  domain4: { name: 'חזון ותכנון אסטרטגי', questions: [98, 99, 100, 101, 48, 49, 52, 53], criticalQuestions: [98, 52, 53] },
-  domain5: { name: 'נטוורקינג ומינוף משאבים', questions: [41, 42, 43, 45, 83], criticalQuestions: [41, 83] }
+// 6 Booster Track Domains
+const BOOSTER_DOMAINS = {
+  vision: { nameHe: 'חזון', nameEn: 'Vision', questions: [98, 99, 100, 101, 48, 49, 52, 53, 81, 82, 83, 84], criticalQuestions: [98, 52, 53], priority: 6 },
+  finance: { nameHe: 'פיננסים', nameEn: 'Finance', questions: [7, 38, 39, 44, 50, 68, 69, 70], criticalQuestions: [7, 50], priority: 3 },
+  management: { nameHe: 'ניהול', nameEn: 'Management', questions: [25, 73, 74, 75, 76, 77, 85, 86, 87], criticalQuestions: [74, 85], priority: 5 },
+  marketing: { nameHe: 'שיווק', nameEn: 'Marketing', questions: [18, 67, 80, 81, 90, 95], criticalQuestions: [18, 90], priority: 4 },
+  digital: { nameHe: 'דיגיטל', nameEn: 'Digital', questions: [13, 47, 68, 69, 70, 71], criticalQuestions: [68, 70], priority: 2 },
+  execution: { nameHe: 'ביצוע', nameEn: 'Execution', questions: [61, 62, 63, 65, 88, 89, 105, 106], criticalQuestions: [88, 105, 106], priority: 1 }
 };
 
-const HEBREW_TO_ENGLISH_DOMAIN_NAMES = {
-  'הערכה עצמית ויכולת קבלת החלטות': 'Self-Assessment and Decision-Making Ability',
-  'התמודדות עם סיכונים ואי-ודאות': 'Coping with Risks and Uncertainty',
-  'מוטיבציה והתמדה': 'Motivation and Perseverance',
-  'חזון ותכנון אסטרטגי': 'Vision and Strategic Planning',
-  'נטוורקינג ומינוף משאבים': 'Networking and Resource Leveraging',
-};
+function selectBoosterTrack(boosterScores) {
+  const sortedDomains = Object.entries(boosterScores)
+    .filter(([_, data]) => data && data.score !== undefined)
+    .sort((a, b) => {
+      if (a[1].score !== b[1].score) {
+        return a[1].score - b[1].score;
+      }
+      return BOOSTER_DOMAINS[a[0]].priority - BOOSTER_DOMAINS[b[0]].priority;
+    });
+  
+  if (sortedDomains.length === 0) return 'execution';
+  
+  const lowestScore = sortedDomains[0][1].score;
+  if (lowestScore > 75) {
+    return sortedDomains[0][0];
+  }
+  
+  return sortedDomains[0][0];
+}
 
 const BAND_DESCRIPTIONS_MAP = {
   'he': {
@@ -69,9 +82,9 @@ function determineBand(domainScore, redFlag) {
   return 'low';
 }
 
-function calculateAllDomains(responses) {
+function calculateBoosterDomains(responses) {
   const result = {};
-  for (const [key, config] of Object.entries(DOMAIN_MAPPING)) {
+  for (const [key, config] of Object.entries(BOOSTER_DOMAINS)) {
     const scoreData = calculateDomainScore(responses, config);
     if (!scoreData) continue;
 
@@ -79,7 +92,8 @@ function calculateAllDomains(responses) {
     const band = determineBand(scoreData, flags.red_flag);
 
     result[key] = {
-      name: config.name,
+      nameHe: config.nameHe,
+      nameEn: config.nameEn,
       score: scoreData.score,
       stdDev: scoreData.stdDev,
       band,
@@ -112,175 +126,165 @@ const getLocalizedBandDescription = (band, language) => {
   return map[band] || band;
 };
 
-const getLocalizedPromptContent = (language, userName, userAge, userOccupation, optionalComment, validDomainScores, strengths, weaknesses) => {
-  const texts = {
-    he: {
-      intro: `אתה מומחה בניתוח פרופילים יזמיים. קיבלת את הנתונים הבאים מתוך שאלון V107 (גרסה B6):`,
-      personalDetails: `פרטים אישיים:`,
-      name: `שם`,
-      age: `גיל`,
-      field: `תחום`,
-      importantScale: `**חשוב: סולם התשובות בשאלון**`,
-      scaleUniform: `- השאלון משתמש בסולם אחיד: 1 = במידה מועטה מאוד (גרוע), 7 = במידה רבה מאוד (טוב)`,
-      scalePositive: `- כל השאלות מנוסחות בצורה חיובית - אין שאלות "הפוכות"`,
-      normalizedScores: `- הציונים שאתה רואה כבר עברו נרמול ל-0-100:`,
-      highScore: `  * ציון גבוה (קרוב ל-100) = חיובי/חזק ביותר - המשתמש השיב 6-7`,
-      midScore: `  * ציון בינוני (50-65) = בינוני - המשתמש השיב 4-5`,
-      lowScore: `  * ציון נמוך (קרוב ל-0) = שלילי/חלש - המשתמש השיב 1-3`,
-      domainScoresHeader: `ציוני דומיינים (0-100):`,
-      identifiedStrengths: `חוזקות מזוהות (דומיינים חזקים):`,
-      noStrengths: `לא זוהו חוזקות בולטות במיוחד`,
-      identifiedWeaknesses: `חולשות מזוהות (דומיינים חלשים):`,
-      noWeaknesses: `לא זוהו חולשות בולטות`,
-      userComment: `הערת המשתמש:`,
-      createReport: `צור דו"ח מקצועי, אמפתי ומעשי בעברית הכולל:`,
-      execSummary: `תקציר מנהלים`,
-      execSummaryIncludes: `- כולל:`,
-      coreStrengths: `   - 3 חוזקות מרכזיות (היו ספציפיים ומעשיים)`,
-      improvementAreas: `   - 3 מוקדי שיפור דחופים (עם הסבר למה זה חשוב)`,
-      conclusion: `   - פסקת מסקנה מעודדת אך ריאליסטית (2-3 שורות)`,
-      domainAnalysis: `ניתוח טקסטואלי לכל דומיין (2-3 משפטים לדומיין):`,
-      highScoreAnalysis: `   - ציון גבוה (>70): חיזוק, הכרה בהצלחה, המלצה איך לנצל את החוזקה הזו`,
-      midScoreAnalysis: `   - ציון בינוני (50-70): הכרה במאמץ, הסבר מדוע חשוב לשפר, כיוון ראשוני`,
-      lowScoreAnalysis: `   - ציון נמוך (<50): הסבר מדוע זה קריטי, השפעה על העסק, קריאה לפעולה`,
-      trafficLightsTable: `טבלת רמזורים - 7-10 פריטים ממוקדים עם:`,
-      tableDomain: `   - domain: שם הדומיין`,
-      tableItem: `   - item: פריט ספציפי (למשל: "ניהול תזרים מזומנים")`,
-      tableStatus: `   - status: green/yellow/orange/red`,
-      tableNote: `   - note: הערה קצרה (1-2 שורות) מדוע זה חשוב`,
-      kpis: `KPIs מוצעים - 8-10 מדדים מדידים:`,
-      kpiMetric: `   - metric: שם המדד (למשל: "שיעור המרה משיחת מכירה לעסקה")`,
-      kpiTarget: `   - target: יעד ריאליסטי לשנה הקרובה`,
-      actionPlan: `תכנית פעולה מפורטת:`,
-      quickWins: `   - Quick Wins (0-30 יום): 4-5 פעולות קטנות, מיידיות, בעלות השפעה`,
-      months1_3: `   - 1-3 חודשים: 4-5 פעולות אסטרטגיות וממוקדות`,
-      months4_6: `   - 4-6 חודשים: 4-5 פעולות לטווח ארוך שמחזקות את התשתית`,
-      focusedRecommendations: `המלצות ממוקדות - 5-7 המלצות פרקטיות שמתמקדות בפערים הקריטיים ביותר`,
-      analysisPrinciples: `**עקרונות לניתוח:**`,
-      principlesScores: `- התייחס לציונים כפי שהם: גבוה=חזק, נמוך=חלש`,
-      redFlag: `- דגל אדום = בעיה קריטית שדורשת פעולה מיידית`,
-      yellowFlag: `- דגל צהוב = נושא שדורש תשומת לב אך לא דחוף`,
-      optimisticRealistic: `- היה אופטימי אך ריאליסטי`,
-      practicalRecommendations: `- תן המלצות מעשיות ולא תיאורטיות`,
-      businessImpact: `- התמקד בהשפעה על העסק, לא רק על המשתמש`,
-      jsonFormat: `החזר תשובה במבנה JSON בלבד, ללא טקסט נוסף.`
-    },
-    en: {
-      intro: `You are an expert in entrepreneurial profile analysis. You have received the following data from the V107 questionnaire (Version B6):`,
-      personalDetails: `Personal Details:`,
-      name: `Name`,
-      age: `Age`,
-      field: `Field`,
-      importantScale: `**Important: Questionnaire Response Scale**`,
-      scaleUniform: `- The questionnaire uses a uniform scale: 1 = Very slightly (Poor), 7 = Very largely (Good)`,
-      scalePositive: `- All questions are phrased positively - there are no "reverse" questions.`,
-      normalizedScores: `- The scores you see have already been normalized to 0-100:`,
-      highScore: `  * High score (close to 100) = Very positive/strong - User responded 6-7`,
-      midScore: `  * Medium score (50-65) = Medium - User responded 4-5`,
-      lowScore: `  * Low score (close to 0) = Negative/weak - User responded 1-3`,
-      domainScoresHeader: `Domain Scores (0-100):`,
-      identifiedStrengths: `Identified Strengths (Strong Domains):`,
-      noStrengths: `No particularly prominent strengths identified`,
-      identifiedWeaknesses: `Identified Weaknesses (Weak Domains):`,
-      noWeaknesses: `No prominent weaknesses identified`,
-      userComment: `User Comment:`,
-      createReport: `Create a professional, empathetic, and practical report in English, including:`,
-      execSummary: `Executive Summary`,
-      execSummaryIncludes: `- includes:`,
-      coreStrengths: `   - 3 core strengths (be specific and practical)`,
-      improvementAreas: `   - 3 urgent areas for improvement (with explanation why it's important)`,
-      conclusion: `   - An encouraging but realistic concluding paragraph (2-3 lines)`,
-      domainAnalysis: `Textual Analysis for each Domain (2-3 sentences per domain):`,
-      highScoreAnalysis: `   - High score (>70): Reinforce, acknowledge success, recommend how to leverage this strength.`,
-      midScoreAnalysis: `   - Medium score (50-70): Acknowledge effort, explain why improvement is important, initial direction.`,
-      lowScoreAnalysis: `   - Low score (<50): Explain why it's critical, impact on the business, call to action.`,
-      trafficLightsTable: `Traffic Light Table - 7-10 focused items with:`,
-      tableDomain: `   - domain: Domain name`,
-      tableItem: `   - item: Specific item (e.g., "Cash flow management")`,
-      tableStatus: `   - status: green/yellow/orange/red`,
-      tableNote: `   - note: Short note (1-2 lines) why it's important`,
-      kpis: `Proposed KPIs - 8-10 measurable metrics:`,
-      kpiMetric: `   - metric: Metric name (e.g., "Conversion rate from sales call to deal")`,
-      kpiTarget: `   - target: Realistic target for the coming year`,
-      actionPlan: `Detailed Action Plan:`,
-      quickWins: `   - Quick Wins (0-30 days): 4-5 small, immediate actions with impact.`,
-      months1_3: `   - 1-3 Months: 4-5 strategic and focused actions.`,
-      months4_6: `   - 4-6 Months: 4-5 long-term actions that strengthen the infrastructure.`,
-      focusedRecommendations: `Focused Recommendations - 5-7 practical recommendations focusing on the most critical gaps.`,
-      analysisPrinciples: `**Analysis Principles:**`,
-      principlesScores: `- Treat scores as they are: High=strong, Low=weak.`,
-      redFlag: `- Red flag = Critical issue requiring immediate action.`,
-      yellowFlag: `- Yellow flag = Issue requiring attention but not urgent.`,
-      optimisticRealistic: `- Be optimistic but realistic.`,
-      practicalRecommendations: `- Provide practical, not theoretical, recommendations.`,
-      businessImpact: `- Focus on business impact, not just the user.`,
-      jsonFormat: `Return the response in JSON format only, without additional text.`
-    }
-  };
+function detectGender(fullName) {
+  const maleNames = ['יוסי', 'דוד', 'משה', 'אברהם', 'יצחק', 'יעקב', 'דניאל', 'מיכאל', 'רון', 'עומר', 'תומר', 'נועם', 'איתי', 'אלון', 'גיא'];
+  const femaleNames = ['שרה', 'רחל', 'לאה', 'מרים', 'דבורה', 'רות', 'שירה', 'נועה', 'מיכל', 'תמר', 'יעל', 'דנה', 'מאיה', 'עדי', 'רוני'];
+  
+  const firstName = fullName.split(' ')[0];
+  if (femaleNames.some(name => firstName.includes(name))) return 'female';
+  if (maleNames.some(name => firstName.includes(name))) return 'male';
+  return 'male';
+}
 
-  const t = texts[language] || texts['he'];
+const getMasterPrompt = (language, userName, userGender, boosterScores, selectedTrack, optionalComment) => {
+  const scoresText = Object.entries(boosterScores)
+    .map(([key, data]) => `- ${language === 'he' ? data.nameHe : data.nameEn}: ${data.score.toFixed(1)}`)
+    .join('\n');
+  
+  const selectedTrackName = language === 'he' ? BOOSTER_DOMAINS[selectedTrack].nameHe : BOOSTER_DOMAINS[selectedTrack].nameEn;
+  
+  if (language === 'he') {
+    const genderSuffix = userGender === 'female' ? 'ה' : '';
+    return `🎯 תפקיד ומטרה
+אתה "המוח האנליטי" של V107 Professional Framework™.
+משימתך: ניתוח אסטרטגי והפקת דוח מקצועי ללקוח.
 
-  return `${t.intro}
+⚠️ הנחיות קריטיות
+- שפה: עברית בלבד (למעט ה-JSON)
+- מגדר: ${userGender === 'female' ? 'נקבה' : 'זכר'} - התאם את כל הפניות (למשל: "את מצטיינת" / "אתה מצטיין")
+- טון: מעצים, מקצועי, מניע לפעולה
+- אסור להשתמש במילים: "כישלון", "גרוע"
 
-${t.personalDetails}
-- ${t.name}: ${userName}
-- ${t.age}: ${userAge}
-- ${t.field}: ${userOccupation}
+📊 נתוני הלקוח
+שם: ${userName}
+מגדר: ${userGender === 'female' ? 'נקבה' : 'זכר'}
+${optionalComment ? `הערה אישית: ${optionalComment}` : ''}
 
-${t.importantScale}
-${t.scaleUniform}
-${t.scalePositive}
-${t.normalizedScores}
-${t.highScore}
-${t.midScore}
-${t.lowScore}
+ציוני 6 התחומים (0-100):
+${scoresText}
 
-${t.domainScoresHeader}
-${validDomainScores}
+🎯 מסלול הבוסטר שנבחר: ${selectedTrackName}
 
-${t.identifiedStrengths} ${strengths.length > 0 ? strengths.join(', ') : t.noStrengths}
-${t.identifiedWeaknesses} ${weaknesses.length > 0 ? weaknesses.join(', ') : t.noWeaknesses}
+📝 מבנה הפלט (4 עמודים)
 
-${optionalComment ? `${t.userComment} ${optionalComment}` : ''}
+**עמוד 1: תמונת על**
+- דיסקליימר: "הבהרה משפטית: מסמך זה הינו כלי אבחון וייעוץ אסטרטגי המבוסס על תשובות שמילא${genderSuffix} המשתמש/ת בשאלון V107. הדוח נוצר באמצעות בינה מלאכותית בשילוב פיקוח מומחים. השימוש במידע באחריות המשתמש/ת בלבד. אין בדוח זה תחליף לייעוץ מקצועי אישי."
+- פתיח: שם הלקוח + ארכיטיפ יזמי (כותרת מקצועית) + תקציר מנהלים (3-4 שורות)
 
-${t.createReport}
+**עמוד 2: ה-DNA היזמי**
+- Excellence Zone: 3 חוזקות בולטות (פסקה לכל אחת)
+- Growth Zone: 3 אתגרים מרכזיים (פסקה לכל אחד)
 
-1. **${t.execSummary}** ${t.execSummaryIncludes}
-${t.coreStrengths}
-${t.improvementAreas}
-${t.conclusion}
+**עמוד 3: טבלת מוכנות**
+רשימה של 6 התחומים עם דירוג מילולי:
+- Vision: [מעולה/ממוצע/טעון שיפור]
+- Finance: [מעולה/ממוצע/טעון שיפור]
+- Management: [מעולה/ממוצע/טעון שיפור]
+- Marketing: [מעולה/ממוצע/טעון שיפור]
+- Digital: [מעולה/ממוצע/טעון שיפור]
+- Execution: [מעולה/ממוצע/טעון שיפור]
 
-2. **${t.domainAnalysis}**:
-${t.highScoreAnalysis}
-${t.midScoreAnalysis}
-${t.lowScoreAnalysis}
+**עמוד 4: תוכנית פעולה + הצעת V107 BOOSTER**
 
-3. **${t.trafficLightsTable}**:
-${t.tableDomain}
-${t.tableItem}
-${t.tableStatus}
-${t.tableNote}
+A. 3 המלצות אסטרטגיות (צעדים ליישום מיידי)
 
-4. **${t.kpis}**:
-${t.kpiMetric}
-${t.kpiTarget}
+B. הצעת הבוסטר (חובה לכתוב טקסט מכירה מותאם):
+   
+   "💡 **הצעד הבא שלך: מסלול הבוסטר ב-${selectedTrackName}**
+   
+   מהניתוח עולה כי ${selectedTrackName} הוא התחום שדורש תשומת לב מיוחדת כרגע.
+   
+   כדי לפרוץ את החסם הזה, פתחנו עבורך את **מסלול הבוסטר ב-${selectedTrackName}**:
+   
+   📧 7 מיילים יומיים עם משימות ממוקדות
+   🎯 תוכנית פעולה צעד-אחר-צעד
+   🎁 בונוס למסיימים: ערכת ההטמעה המקצועית
+   
+   ⭐ **המודל שלנו: לא שיפרת – לא שילמת**
+   - הגישה לבוסטר: חינם לחלוטין
+   - ביום ה-7 נבדוק שיפור
+   - רק אם תצהיר${genderSuffix} שהפקת${genderSuffix} ערך → חיוב של 199 ₪ + קבלת ערכת ההטמעה
+   - אם לא → אין חיוב, אבל הגישה לערכה נשארת נעולה
+   
+   📌 התחל${genderSuffix} את המסלול מהאזור האישי שלך."
 
-5. **${t.actionPlan}**:
-${t.quickWins}
-${t.months1_3}
-${t.months4_6}
+החזר JSON בלבד עם המבנה הבא:
+{
+  "report_markdown": "הדוח המלא בפורמט Markdown (4 עמודים)",
+  "selected_booster_track": "${selectedTrack}",
+  "archetype": "כותרת מקצועית קצרה שמתארת את הלקוח"
+}`;
+  } else {
+    return `🎯 Role & Objective
+You are the "Analytical Brain" of V107 Professional Framework™.
+Your task: Strategic analysis and professional report generation.
 
-6. **${t.focusedRecommendations}**
+⚠️ Critical Guidelines
+- Language: English only (except JSON)
+- Gender: ${userGender}
+- Tone: Empowering, professional, action-driven
+- Never use words: "failure", "bad"
 
-${t.analysisPrinciples}
-${t.principlesScores}
-${t.redFlag}
-${t.yellowFlag}
-${t.optimisticRealistic}
-${t.practicalRecommendations}
-${t.businessImpact}
+📊 Client Data
+Name: ${userName}
+Gender: ${userGender}
+${optionalComment ? `Personal Note: ${optionalComment}` : ''}
 
-${t.jsonFormat}`;
+6 Domain Scores (0-100):
+${scoresText}
+
+🎯 Selected Booster Track: ${selectedTrackName}
+
+📝 Output Structure (4 Pages)
+
+**Page 1: Overview**
+- Disclaimer: "Legal Notice: This document is a diagnostic and strategic consulting tool based on answers provided by the user in the V107 questionnaire. The report is generated using artificial intelligence combined with expert oversight. Use of the information is at the user's sole responsibility. This report is not a substitute for personal professional advice."
+- Opening: Client name + entrepreneurial archetype (professional headline) + executive summary (3-4 lines)
+
+**Page 2: Entrepreneurial DNA**
+- Excellence Zone: 3 prominent strengths (paragraph for each)
+- Growth Zone: 3 main challenges (paragraph for each)
+
+**Page 3: Readiness Table**
+List of 6 domains with verbal rating:
+- Vision: [Excellent/Average/Needs Improvement]
+- Finance: [Excellent/Average/Needs Improvement]
+- Management: [Excellent/Average/Needs Improvement]
+- Marketing: [Excellent/Average/Needs Improvement]
+- Digital: [Excellent/Average/Needs Improvement]
+- Execution: [Excellent/Average/Needs Improvement]
+
+**Page 4: Action Plan + V107 BOOSTER Offer**
+
+A. 3 Strategic Recommendations (immediate implementation steps)
+
+B. Booster Offer (must write tailored sales text):
+   
+   "💡 **Your Next Step: ${selectedTrackName} Booster Track**
+   
+   The analysis shows that ${selectedTrackName} is the domain requiring special attention right now.
+   
+   To break through this barrier, we've opened the **${selectedTrackName} Booster Track** for you:
+   
+   📧 7 daily emails with focused tasks
+   🎯 Step-by-step action plan
+   🎁 Bonus for completers: Professional Implementation Kit
+   
+   ⭐ **Our Model: No Improvement – No Payment**
+   - Booster access: Completely free
+   - On day 7 we'll check improvement
+   - Only if you declare you gained value → charge of 199 NIS + receive Implementation Kit
+   - If not → no charge, but access to kit remains locked
+   
+   📌 Start the track from your personal area."
+
+Return JSON only with this structure:
+{
+  "report_markdown": "Full report in Markdown format (4 pages)",
+  "selected_booster_track": "${selectedTrack}",
+  "archetype": "Short professional headline describing the client"
+}`;
+  }
 };
 
 const generateReportId = () => {
@@ -324,105 +328,34 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Calculate scores
-    const domainScores = calculateAllDomains(response.responses);
-    const { strengths, weaknesses } = identifyStrengthsAndWeaknesses(domainScores);
+    // Calculate Booster domain scores
+    const boosterScores = calculateBoosterDomains(response.responses);
+    const selectedTrack = selectBoosterTrack(boosterScores);
 
     const userName = response.personal_info?.full_name || (reportLanguage === 'en' ? 'User' : 'משתמש');
-    const userAge = response.personal_info?.age || (reportLanguage === 'en' ? 'Not specified' : 'לא צוין');
-    const userOccupation = response.personal_info?.occupation || (reportLanguage === 'en' ? 'Not specified' : 'לא צוין');
+    const userGender = detectGender(userName);
     const optionalComment = response.optional_comment || '';
 
-    const localizedValidDomainScores = Object.entries(domainScores)
-      .filter(([key, data]) => data && data.score !== undefined && data.score !== null)
-      .map(([key, data]) => {
-        const localizedDomain = getLocalizedDomainName(data.name, reportLanguage);
-        const localizedBand = getLocalizedBandDescription(data.band, reportLanguage);
-        let flagText = '';
-        if (data.red_flag) {
-          flagText = reportLanguage === 'en' ? ' 🔴 Red Flag - Critical issue requiring urgent attention' : ' 🔴 דגל אדום - בעיה קריטית שדורשת טיפול דחוף';
-        } else if (data.yellow_flag) {
-          flagText = reportLanguage === 'en' ? ' 🟡 Yellow Flag - Issue requiring attention' : ' 🟡 דגל צהוב - נושא שדורש תשומת לב';
-        } else {
-          flagText = reportLanguage === 'en' ? ' 🟢 Normal status' : ' 🟢 מצב תקין';
-        }
-        return `- ${localizedDomain}: ${data.score.toFixed(1)} (${localizedBand})${flagText}`;
-      })
-      .join('\n');
-
-    if (localizedValidDomainScores.length === 0) {
-      return Response.json({ 
-        error: reportLanguage === 'en' ? "Cannot calculate scores from responses." : "לא ניתן לחשב ציונים מהתשובות." 
-      }, { status: 400 });
-    }
-
-    const localizedStrengths = strengths.map(s => getLocalizedDomainName(s, reportLanguage));
-    const localizedWeaknesses = weaknesses.map(w => getLocalizedDomainName(w, reportLanguage));
-
-    const prompt = getLocalizedPromptContent(
+    const masterPrompt = getMasterPrompt(
       reportLanguage,
       userName,
-      userAge,
-      userOccupation,
-      optionalComment,
-      localizedValidDomainScores,
-      localizedStrengths,
-      localizedWeaknesses
+      userGender,
+      boosterScores,
+      selectedTrack,
+      optionalComment
     );
 
     // Generate report with LLM
     const llmResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
+      prompt: masterPrompt,
       response_json_schema: {
         type: "object",
         properties: {
-          executive_summary: {
-            type: "object",
-            properties: {
-              top_strengths: { type: "array", items: { type: "string" } },
-              improvement_areas: { type: "array", items: { type: "string" } },
-              conclusion: { type: "string" }
-            }
-          },
-          domain_analysis: {
-            type: "object",
-            additionalProperties: { type: "string" }
-          },
-          traffic_lights_table: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                domain: { type: "string" },
-                item: { type: "string" },
-                status: { type: "string" },
-                note: { type: "string" }
-              }
-            }
-          },
-          kpis: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                metric: { type: "string" },
-                target: { type: "string" }
-              }
-            }
-          },
-          action_plan: {
-            type: "object",
-            properties: {
-              quick_wins: { type: "array", items: { type: "string" } },
-              months_1_3: { type: "array", items: { type: "string" } },
-              months_4_6: { type: "array", items: { type: "string" } }
-            }
-          },
-          focused_recommendations: {
-            type: "array",
-            items: { type: "string" }
-          }
-        }
+          report_markdown: { type: "string" },
+          selected_booster_track: { type: "string" },
+          archetype: { type: "string" }
+        },
+        required: ["report_markdown", "selected_booster_track", "archetype"]
       }
     });
 
@@ -432,13 +365,10 @@ Deno.serve(async (req) => {
       user_name: userName,
       user_email: response.personal_info?.email || (reportLanguage === 'en' ? 'Not specified' : 'לא צוין'),
       report_id: generateReportId(),
-      executive_summary: llmResponse.executive_summary,
-      domain_scores: domainScores,
-      domain_analysis: llmResponse.domain_analysis,
-      traffic_lights_table: llmResponse.traffic_lights_table,
-      kpis: llmResponse.kpis,
-      action_plan: llmResponse.action_plan,
-      focused_recommendations: llmResponse.focused_recommendations,
+      report_markdown: llmResponse.report_markdown,
+      archetype: llmResponse.archetype,
+      recommended_booster_track: llmResponse.selected_booster_track,
+      domain_scores: boosterScores,
       language: reportLanguage,
       status: 'completed'
     });
