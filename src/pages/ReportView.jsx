@@ -540,227 +540,36 @@ export default function ReportView() {
               </div>
             </div>
           ) : (
-                            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
-                            color: white;
-                            padding: 2rem 2.5rem;
-                            border-radius: 1rem;
-                            font-size: 2.5rem;
-                            font-weight: 900;
-                            margin-bottom: 2rem;
-                            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-                            position: relative;
-                            overflow: hidden;
-                          }
-                          .report-text-view h1::before {
-                            content: '';
-                            position: absolute;
-                            top: -50%;
-                            right: -20%;
-                            width: 200px;
-                            height: 200px;
-                            background: rgba(255, 255, 255, 0.1);
-                            border-radius: 50%;
-                            filter: blur(40px);
-                          }
+            <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
+              <CardContent className="p-8 text-center">
+                <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
+                <p className="text-lg font-semibold text-yellow-900">
+                  {currentLanguage === 'he' 
+                    ? 'הדוח הזה נוצר בפורמט ישן ולא כולל את התוכן המעודכן'
+                    : 'This report was created in the old format and does not include updated content'}
+                </p>
+                <p className="text-sm text-yellow-700 mt-2">
+                  {currentLanguage === 'he'
+                    ? 'אנא צור דוח חדש או פנה לצוות התמיכה'
+                    : 'Please create a new report or contact support'}
+                </p>
+              </CardContent>
+            </Card>
+            )}
 
-                          .report-text-view h2 {
-                            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
-                            color: white;
-                            padding: 1.5rem 2rem;
-                            border-radius: 1rem;
-                            font-size: 2rem;
-                            font-weight: 900;
-                            margin: 2rem 0 1.5rem 0;
-                            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-                            display: flex;
-                            align-items: center;
-                            gap: 1rem;
-                          }
-                          .report-text-view h2::before {
-                            content: '';
-                            width: 8px;
-                            height: 3rem;
-                            background: white;
-                            border-radius: 999px;
-                          }
+            {/* הצעת הבוסטר - סקשן נפרד */}
+            {report.report_markdown && report.recommended_booster_track && (
+              <div className="mt-12 print-break">
+                <BoosterOfferSection 
+                  recommendedTrack={report.recommended_booster_track}
+                  language={currentLanguage}
+                />
+              </div>
+            )}
 
-                          .report-text-view h3 {
-                            background: linear-gradient(90deg, #f1f5f9 0%, transparent 100%);
-                            padding: 1rem 1.5rem;
-                            border-right: 5px solid #3b82f6;
-                            border-radius: 0.5rem;
-                            font-size: 1.75rem;
-                            font-weight: 700;
-                            color: #334155;
-                            margin: 2rem 0 1rem 0;
-                          }
-
-                          .report-text-view p {
-                            background: white;
-                            padding: 1.5rem 2rem;
-                            border-radius: 1rem;
-                            font-size: 1.25rem;
-                            line-height: 1.8;
-                            color: #374151;
-                            margin-bottom: 1rem;
-                            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
-                            border: 1px solid #f3f4f6;
-                          }
-
-                          .report-text-view ul, .report-text-view ol {
-                            margin: 1.5rem 0;
-                            display: flex;
-                            flex-direction: column;
-                            gap: 1rem;
-                          }
-
-                          .report-text-view li {
-                            background: linear-gradient(135deg, white 0%, #eff6ff 100%);
-                            padding: 1.25rem 1.5rem;
-                            padding-right: 4rem;
-                            border-radius: 1rem;
-                            font-size: 1.125rem;
-                            line-height: 1.7;
-                            color: #374151;
-                            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
-                            position: relative;
-                            border: 1px solid #dbeafe;
-                            transition: all 0.2s;
-                          }
-                          .report-text-view li:hover {
-                            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-                            transform: translateY(-2px);
-                          }
-                          .report-text-view li::before {
-                            content: '✓';
-                            position: absolute;
-                            right: 1rem;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            width: 2rem;
-                            height: 2rem;
-                            background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
-                            color: white;
-                            border-radius: 50%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-weight: 900;
-                            font-size: 1rem;
-                            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
-                          }
-
-                          .report-text-view strong {
-                            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-                            color: #1e3a8a;
-                            padding: 0.25rem 0.5rem;
-                            border-radius: 0.375rem;
-                            font-weight: 900;
-                            border: 1px solid #93c5fd;
-                          }
-
-                          .report-text-view em {
-                            background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
-                            color: #581c87;
-                            padding: 0.25rem 0.5rem;
-                            border-radius: 0.375rem;
-                            font-weight: 700;
-                            font-style: normal;
-                            border: 1px solid #c4b5fd;
-                          }
-
-                          .report-text-view blockquote {
-                            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                            border-right: 6px solid #f59e0b;
-                            padding: 2rem;
-                            border-radius: 1rem;
-                            margin: 2rem 0;
-                            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-                            position: relative;
-                          }
-                          .report-text-view blockquote::before {
-                            content: '💡';
-                            position: absolute;
-                            top: 1rem;
-                            right: 1rem;
-                            font-size: 3rem;
-                          }
-                          .report-text-view blockquote p {
-                            background: transparent;
-                            padding: 0;
-                            box-shadow: none;
-                            border: none;
-                            font-size: 1.125rem;
-                            margin: 0;
-                            padding-right: 4rem;
-                            color: #78350f;
-                          }
-
-                          .report-text-view table {
-                            width: 100%;
-                            border-radius: 1rem;
-                            overflow: hidden;
-                            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-                            margin: 2rem 0;
-                            background: white;
-                          }
-                          .report-text-view thead {
-                            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
-                          }
-                          .report-text-view th {
-                            padding: 1rem 1.5rem;
-                            color: white;
-                            font-weight: 900;
-                            font-size: 1.125rem;
-                            text-align: right;
-                            border-bottom: 2px solid #475569;
-                          }
-                          .report-text-view td {
-                            padding: 1rem 1.5rem;
-                            color: #374151;
-                            font-size: 1rem;
-                            text-align: right;
-                            border-bottom: 1px solid #e5e7eb;
-                          }
-                          .report-text-view tr:hover {
-                            background: #f9fafb;
-                          }
-
-                          .report-text-view hr {
-                            height: 3px;
-                            background: linear-gradient(90deg, transparent 0%, #3b82f6 50%, transparent 100%);
-                            border: none;
-                            border-radius: 999px;
-                            <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
-                              <CardContent className="p-8 text-center">
-                                <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
-                                <p className="text-lg font-semibold text-yellow-900">
-                                  {currentLanguage === 'he' 
-                                    ? 'הדוח הזה נוצר בפורמט ישן ולא כולל את התוכן המעודכן'
-                                    : 'This report was created in the old format and does not include updated content'}
-                                </p>
-                                <p className="text-sm text-yellow-700 mt-2">
-                                  {currentLanguage === 'he'
-                                    ? 'אנא צור דוח חדש או פנה לצוות התמיכה'
-                                    : 'Please create a new report or contact support'}
-                                </p>
-                              </CardContent>
-                            </Card>
-                            )}
-
-                            {/* הצעת הבוסטר - סקשן נפרד */}
-                            {report.report_markdown && report.recommended_booster_track && (
-          {report.recommended_booster_track && (
-            <div className="mt-12 print-break">
-              <BoosterOfferSection 
-                recommendedTrack={report.recommended_booster_track}
-                language={currentLanguage}
-              />
-            </div>
-          )}
-
-          {/* דיסקליימרים משפטיים וטכנולוגיים */}
-          <div className="mt-12 space-y-6">
+            {/* דיסקליימרים משפטיים וטכנולוגיים */}
+            {report.report_markdown && (
+              <div className="mt-12 space-y-6">
               <Card className="border-2 border-slate-300 bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center gap-2">
@@ -813,7 +622,8 @@ export default function ReportView() {
                 </CardContent>
               </Card>
             </div>
-          )}
+          )
+        }
         </div>
       </div>
     );
