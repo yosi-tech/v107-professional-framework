@@ -33,12 +33,14 @@ import KPIsSection from "@/components/report/KPIsSection";
 import ActionPlanSection from "@/components/report/ActionPlanSection";
 import RecommendationsSection from "@/components/report/RecommendationsSection";
 import BoosterOfferSection from "@/components/report/BoosterOfferSection";
+import FullReportSection from "@/components/report/FullReportSection";
 import ExecutiveSummaryEditor from "@/components/report/ExecutiveSummaryEditor";
 import DomainAnalysisEditor from "@/components/report/DomainAnalysisEditor";
 import TrafficLightsEditor from "@/components/report/TrafficLightsEditor";
 import KPIsEditor from "@/components/report/KPIsEditor";
 import ActionPlanEditor from "@/components/report/ActionPlanEditor";
 import RecommendationsEditor from "@/components/report/RecommendationsEditor";
+import FullReportEditor from "@/components/report/FullReportEditor";
 
 const TEXTS = {
   he: {
@@ -346,6 +348,37 @@ export default function ReportView() {
             </Card>
 
             <div className="mt-6" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
+              {/* Full Report - Markdown */}
+              <div className="mb-8">
+                {editingSection === 'report_markdown' && isAdmin ? (
+                  <Card className="p-6">
+                    <FullReportEditor
+                      data={report.report_markdown}
+                      onSave={(data) => saveSection('report_markdown', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <div className="relative">
+                    {isAdmin && (
+                      <Button
+                        onClick={() => startEditSection('report_markdown')}
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-4 left-4 z-10 no-print"
+                      >
+                        <Edit2 className="w-4 h-4 ml-2" />
+                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
+                      </Button>
+                    )}
+                    <FullReportSection 
+                      reportMarkdown={report.report_markdown} 
+                      language={currentLanguage}
+                    />
+                  </div>
+                )}
+              </div>
+
               {/* Executive Summary */}
               <div className="mb-8">
                 {editingSection === 'executive_summary' && isAdmin ? (
