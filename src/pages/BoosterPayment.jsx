@@ -20,6 +20,7 @@ export default function BoosterPayment() {
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState('');
+  const [showPaymentFrame, setShowPaymentFrame] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -91,8 +92,9 @@ export default function BoosterPayment() {
         
         const tranzilaUrl = `https://direct.tranzila.com/${supplier}/iframenew.php?sum=199&currency=1&thtk=${thtk}&success_url_address=${encodeURIComponent(successUrl)}&fail_url_address=${encodeURIComponent(cancelUrl)}&trButtonColor=blue`;
         
-        console.log('Redirecting to:', tranzilaUrl);
-        window.location.href = tranzilaUrl;
+        console.log('Opening payment frame:', tranzilaUrl);
+        setPaymentUrl(tranzilaUrl);
+        setShowPaymentFrame(true);
       } else {
         console.error('Invalid response structure:', response);
         alert('שגיאה ביצירת תשלום. אנא נסה שוב.');
@@ -122,9 +124,55 @@ export default function BoosterPayment() {
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     );
-  }
+    }
 
-  return (
+    // מסך תשלום
+    if (showPaymentFrame && paymentUrl) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 py-12 px-4" dir="rtl">
+        <div className="max-w-5xl mx-auto">
+          <Card className="border-none shadow-2xl mb-6">
+            <CardHeader className="border-b bg-gray-50">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl">תשלום מאובטח - Tranzila</CardTitle>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowPaymentFrame(false);
+                    setPaymentUrl('');
+                    setIsProcessing(false);
+                  }}
+                >
+                  ביטול ← חזרה
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <iframe
+                src={paymentUrl}
+                className="w-full h-[700px] border-0"
+                title="Tranzila Payment"
+                sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation"
+              />
+            </CardContent>
+          </Card>
+
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-1">
+              <Shield className="w-4 h-4 text-green-600" />
+              <span>תשלום מאובטח SSL</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <CreditCard className="w-4 h-4 text-blue-600" />
+              <span>מוגן על ידי Tranzila</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+    }
+
+    return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 py-12 px-4" dir="rtl">
       <div className="max-w-4xl mx-auto">
         <Card className={`border-none shadow-2xl bg-gradient-to-br ${track.color} text-white overflow-hidden relative mb-6`}>
