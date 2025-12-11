@@ -1,13 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Rocket, CheckCircle, Gift, TrendingUp, Award, Target, ShoppingCart } from "lucide-react";
+import { Rocket, CheckCircle, Gift, TrendingUp, Award, Target, ShoppingCart, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
-export default function BoosterOfferSection({ recommendedTrack, language }) {
+export default function BoosterOfferSection({ recommendedTrack, language, reportId }) {
   if (!recommendedTrack) return null;
 
   const isHebrew = language === 'he';
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleSubscribe = async () => {
+    setIsSubscribing(true);
+    try {
+      const result = await base44.functions.invoke('subscribeToBooster', { reportId });
+      alert(result.data.message);
+    } catch (error) {
+      console.error('Error subscribing:', error);
+      alert(isHebrew 
+        ? 'שגיאה בהרשמה לתוכנית. נסה שוב מאוחר יותר.'
+        : 'Error subscribing to program. Please try again later.');
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   const trackInfo = {
     execution: {
@@ -101,18 +118,25 @@ export default function BoosterOfferSection({ recommendedTrack, language }) {
 
         <div className="text-center mt-8">
           <Button 
-            onClick={() => {
-              // Redirect to purchase page or open payment dialog
-              window.location.href = '/payment?product=online_coaching_7days';
-            }}
-            className="bg-white text-purple-600 hover:bg-gray-100 text-xl px-12 py-6 rounded-xl font-black shadow-2xl hover:shadow-3xl transition-all hover:scale-105"
+            onClick={handleSubscribe}
+            disabled={isSubscribing}
+            className="bg-white text-purple-600 hover:bg-gray-100 text-xl px-12 py-6 rounded-xl font-black shadow-2xl hover:shadow-3xl transition-all hover:scale-105 disabled:opacity-50"
           >
-            {isHebrew ? '🚀 אני רוצה להצטרף למסלול הבוסטר!' : '🚀 I want to join the Booster Track!'}
+            {isSubscribing ? (
+              <>
+                <Loader2 className="w-6 h-6 ml-3 animate-spin" />
+                {isHebrew ? 'רושם...' : 'Subscribing...'}
+              </>
+            ) : (
+              <>
+                {isHebrew ? '🚀 אני רוצה להצטרף למסלול הבוסטר!' : '🚀 I want to join the Booster Track!'}
+              </>
+            )}
           </Button>
           <p className="text-white/90 text-sm font-medium mt-4">
             {isHebrew 
-              ? '✨ פרטים נוספים יישלחו אליך במייל לאחר ההרשמה ✨'
-              : '✨ More details will be sent to you by email after registration ✨'}
+              ? '✨ חינם! תקבל 7 מיילים יומיים עם תוכן מותאם אישית ✨'
+              : '✨ Free! You will receive 7 daily emails with personalized content ✨'}
           </p>
         </div>
         </CardContent>
