@@ -348,7 +348,7 @@ export default function ReportView() {
             </Card>
 
             <div className="mt-6" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
-              {/* Full Report - Markdown */}
+              {/* Full Report - Markdown with integrated sections */}
               <div className="mb-8">
                 {editingSection === 'report_markdown' && isAdmin ? (
                   <Card className="p-6">
@@ -372,49 +372,20 @@ export default function ReportView() {
                       </Button>
                     )}
                     <FullReportSection 
-                      reportMarkdown={report.report_markdown} 
+                      reportMarkdown={report.report_markdown}
+                      trafficLights={report.traffic_lights_table}
+                      domainScores={report.domain_scores}
+                      recommendedTrack={report.recommended_booster_track}
                       language={currentLanguage}
+                      isAdmin={isAdmin}
+                      onEditTrafficLights={() => startEditSection('traffic_lights_table')}
+                      editingTrafficLights={editingSection === 'traffic_lights_table'}
+                      onSaveTrafficLights={(data) => saveSection('traffic_lights_table', data)}
+                      onCancelTrafficLights={cancelEdit}
                     />
                   </div>
                 )}
               </div>
-
-              {/* Traffic Lights */}
-              <div className="mb-8">
-                {editingSection === 'traffic_lights_table' && isAdmin ? (
-                  <Card className="p-6">
-                    <TrafficLightsEditor
-                      data={report.traffic_lights_table}
-                      onSave={(data) => saveSection('traffic_lights_table', data)}
-                      onCancel={cancelEdit}
-                    />
-                  </Card>
-                ) : (
-                  <div className="relative">
-                    {isAdmin && (
-                      <Button
-                        onClick={() => startEditSection('traffic_lights_table')}
-                        size="sm"
-                        variant="outline"
-                        className="absolute top-4 left-4 z-10 no-print"
-                      >
-                        <Edit2 className="w-4 h-4 ml-2" />
-                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
-                      </Button>
-                    )}
-                    <TrafficLightsSection 
-                      trafficLights={report.traffic_lights_table} 
-                      language={currentLanguage}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Domain Scores */}
-              <DomainScoresSection 
-                domainScores={report.domain_scores} 
-                language={currentLanguage}
-              />
             </div>
           </div>
           ) : (

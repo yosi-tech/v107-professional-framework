@@ -3,8 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Sparkles, ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ReactMarkdown from 'react-markdown';
+import TrafficLightsSection from "./TrafficLightsSection";
+import TrafficLightsEditor from "./TrafficLightsEditor";
+import DomainScoresSection from "./DomainScoresSection";
+import BoosterOfferSection from "./BoosterOfferSection";
 
-export default function FullReportSection({ reportMarkdown, language }) {
+export default function FullReportSection({ 
+  reportMarkdown, 
+  language, 
+  trafficLights, 
+  domainScores,
+  recommendedTrack,
+  isAdmin,
+  onEditTrafficLights,
+  editingTrafficLights,
+  onSaveTrafficLights,
+  onCancelTrafficLights
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   
   if (!reportMarkdown) return null;
@@ -94,9 +109,11 @@ export default function FullReportSection({ reportMarkdown, language }) {
         </div>
       </CardHeader>
       <CardContent className="p-8 min-h-[600px]">
-        <Card className="border-2 shadow-lg bg-white overflow-hidden border-indigo-300">
-          <CardContent className="p-8">
-            <ReactMarkdown
+        {/* Pages 1-2: Markdown content */}
+        {currentPage <= 2 && (
+          <Card className="border-2 shadow-lg bg-white overflow-hidden border-indigo-300">
+            <CardContent className="p-8">
+              <ReactMarkdown
               className="prose prose-lg max-w-none"
               components={{
                 h1: ({ children }) => (
@@ -196,11 +213,110 @@ export default function FullReportSection({ reportMarkdown, language }) {
                   </td>
                 ),
               }}
-            >
-              {pages[currentPage - 1] || ''}
-            </ReactMarkdown>
-          </CardContent>
-        </Card>
+              >
+                {pages[currentPage - 1] || ''}
+              </ReactMarkdown>
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* Page 3: Traffic Lights Table + Domain Scores */}
+        {currentPage === 3 && (
+          <div className="space-y-8">
+            {editingTrafficLights && isAdmin ? (
+              <Card className="p-6">
+                <TrafficLightsEditor
+                  data={trafficLights}
+                  onSave={onSaveTrafficLights}
+                  onCancel={onCancelTrafficLights}
+                />
+              </Card>
+            ) : (
+              <div className="relative">
+                {isAdmin && (
+                  <Button
+                    onClick={onEditTrafficLights}
+                    size="sm"
+                    variant="outline"
+                    className="absolute top-4 left-4 z-10 no-print"
+                  >
+                    ערוך טבלת מוכנות
+                  </Button>
+                )}
+                <TrafficLightsSection 
+                  trafficLights={trafficLights} 
+                  language={language}
+                />
+              </div>
+            )}
+            
+            <DomainScoresSection 
+              domainScores={domainScores} 
+              language={language}
+            />
+          </div>
+        )}
+        
+        {/* Page 4: Action Plan (from markdown) + Booster Offer */}
+        {currentPage === 4 && (
+          <div className="space-y-8">
+            <Card className="border-2 shadow-lg bg-white overflow-hidden border-indigo-300">
+              <CardContent className="p-8">
+                <ReactMarkdown
+                  className="prose prose-lg max-w-none"
+                  components={{
+                    h1: ({ children }) => (
+                      <h1 className="text-4xl font-black mb-6 text-indigo-900 border-b-4 border-indigo-400 pb-4">
+                        {children}
+                      </h1>
+                    ),
+                    h2: ({ children }) => (
+                      <h2 className="text-3xl font-black mb-5 text-purple-900 flex items-center gap-3">
+                        <div className="w-2 h-8 bg-purple-500 rounded"></div>
+                        {children}
+                      </h2>
+                    ),
+                    h3: ({ children }) => (
+                      <h3 className="text-2xl font-bold mb-4 text-gray-900">
+                        {children}
+                      </h3>
+                    ),
+                    p: ({ children }) => (
+                      <p className="text-gray-700 leading-relaxed mb-4 text-lg">
+                        {children}
+                      </p>
+                    ),
+                    ul: ({ children }) => (
+                      <ul className="space-y-3 mb-4 mr-6">
+                        {children}
+                      </ul>
+                    ),
+                    li: ({ children }) => (
+                      <li className="text-gray-700 text-lg leading-relaxed flex items-start gap-3">
+                        <span className="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></span>
+                        <span className="flex-1">{children}</span>
+                      </li>
+                    ),
+                    strong: ({ children }) => (
+                      <strong className="font-black text-indigo-900">
+                        {children}
+                      </strong>
+                    ),
+                  }}
+                >
+                  {pages[3] || ''}
+                </ReactMarkdown>
+              </CardContent>
+            </Card>
+            
+            {recommendedTrack && (
+              <BoosterOfferSection 
+                recommendedTrack={recommendedTrack}
+                language={language}
+              />
+            )}
+          </div>
+        )}
         
         {/* Page Navigation - Bottom */}
         <div className="flex items-center justify-between mt-6">
