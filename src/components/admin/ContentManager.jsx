@@ -597,7 +597,294 @@ export default function ContentManager({ contentItems, onUpdate }) {
             </div>
           </TabsContent>
         ))}
+
+        <TabsContent value="articles-content">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold text-right">מאמרים</h3>
+              <Button
+                onClick={() => setIsCreatingArticle(true)}
+                className="bg-purple-600 hover:bg-purple-700 flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>הוסף מאמר חדש</span>
+              </Button>
+            </div>
+
+            {isLoadingArticles ? (
+              <Card>
+                <CardContent className="p-12 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400" />
+                </CardContent>
+              </Card>
+            ) : articles.length === 0 ? (
+              <Card>
+                <CardContent className="p-12 text-center">
+                  <p className="text-gray-500">אין מאמרים</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {articles.map(article => (
+                  <Card key={article.id}>
+                    <CardContent className="p-6">
+                      {editingArticle?.id === article.id ? (
+                        <div className="space-y-4">
+                          <div>
+                            <Label className="text-right block mb-2">כותרת *</Label>
+                            <Input
+                              value={editingArticle.title}
+                              onChange={(e) => setEditingArticle({...editingArticle, title: e.target.value})}
+                              className="text-right"
+                              dir="rtl"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">Slug *</Label>
+                            <Input
+                              value={editingArticle.slug}
+                              onChange={(e) => setEditingArticle({...editingArticle, slug: e.target.value})}
+                              className="text-left"
+                              dir="ltr"
+                              placeholder="article-title-in-english"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">תוכן (Markdown) *</Label>
+                            <Textarea
+                              value={editingArticle.content}
+                              onChange={(e) => setEditingArticle({...editingArticle, content: e.target.value})}
+                              className="min-h-[300px] text-right font-mono text-sm"
+                              dir="rtl"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">URL תמונה</Label>
+                            <Input
+                              value={editingArticle.image_url}
+                              onChange={(e) => setEditingArticle({...editingArticle, image_url: e.target.value})}
+                              className="text-left"
+                              dir="ltr"
+                              placeholder="https://..."
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">מילות מפתח (מופרדות בפסיקים)</Label>
+                            <Input
+                              value={editingArticle.keywords?.join(', ')}
+                              onChange={(e) => setEditingArticle({
+                                ...editingArticle, 
+                                keywords: e.target.value.split(',').map(k => k.trim()).filter(k => k)
+                              })}
+                              className="text-right"
+                              dir="rtl"
+                              placeholder="יזמות, עסקים, הצלחה"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">סטטוס</Label>
+                            <select
+                              value={editingArticle.status}
+                              onChange={(e) => setEditingArticle({...editingArticle, status: e.target.value})}
+                              className="w-full border rounded-md p-2 text-right"
+                              dir="rtl"
+                            >
+                              <option value="draft">טיוטה</option>
+                              <option value="published">פורסם</option>
+                            </select>
+                          </div>
+
+                          <div className="flex gap-3 flex-row-reverse pt-4 border-t">
+                            <Button
+                              onClick={() => handleSaveArticle(editingArticle)}
+                              disabled={isSaving}
+                              className="bg-blue-600 hover:bg-blue-700"
+                            >
+                              {isSaving ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                                  שומר...
+                                </>
+                              ) : (
+                                <>
+                                  <Save className="w-4 h-4 ml-2" />
+                                  שמור שינויים
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => setEditingArticle(null)}
+                              disabled={isSaving}
+                            >
+                              ביטול
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 text-right">
+                            <h4 className="text-lg font-bold mb-2">{article.title}</h4>
+                            <p className="text-sm text-gray-600 mb-2">Slug: {article.slug}</p>
+                            {article.keywords?.length > 0 && (
+                              <div className="flex gap-2 mb-3 flex-wrap flex-row-reverse">
+                                {article.keywords.map((keyword, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {keyword}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+                            <Badge className={article.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                              {article.status === 'published' ? 'פורסם' : 'טיוטה'}
+                            </Badge>
+                            <div className="bg-gray-50 rounded-lg p-3 mt-3">
+                              <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                                {article.content?.substring(0, 200)}
+                                {article.content?.length > 200 && '...'}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setEditingArticle({...article})}
+                            >
+                              ערוך
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteArticle(article.id)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </TabsContent>
       </Tabs>
+
+      {isCreatingArticle && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <CardHeader className="bg-purple-100">
+              <CardTitle className="text-right">הוספת מאמר חדש</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div>
+                <Label className="text-right block mb-2">כותרת *</Label>
+                <Input
+                  value={newArticle.title}
+                  onChange={(e) => setNewArticle({...newArticle, title: e.target.value})}
+                  className="text-right"
+                  dir="rtl"
+                  placeholder="כותרת המאמר"
+                />
+              </div>
+
+              <div>
+                <Label className="text-right block mb-2">Slug * (באנגלית, ללא רווחים)</Label>
+                <Input
+                  value={newArticle.slug}
+                  onChange={(e) => setNewArticle({...newArticle, slug: e.target.value.toLowerCase().replace(/\s+/g, '-')})}
+                  className="text-left"
+                  dir="ltr"
+                  placeholder="article-title-in-english"
+                />
+              </div>
+
+              <div>
+                <Label className="text-right block mb-2">תוכן (Markdown) *</Label>
+                <Textarea
+                  value={newArticle.content}
+                  onChange={(e) => setNewArticle({...newArticle, content: e.target.value})}
+                  className="min-h-[300px] text-right font-mono text-sm"
+                  dir="rtl"
+                  placeholder="תוכן המאמר בפורמט Markdown..."
+                />
+              </div>
+
+              <div>
+                <Label className="text-right block mb-2">URL תמונה</Label>
+                <Input
+                  value={newArticle.image_url}
+                  onChange={(e) => setNewArticle({...newArticle, image_url: e.target.value})}
+                  className="text-left"
+                  dir="ltr"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <div>
+                <Label className="text-right block mb-2">מילות מפתח (מופרדות בפסיקים)</Label>
+                <Input
+                  value={newArticle.keywords?.join(', ')}
+                  onChange={(e) => setNewArticle({
+                    ...newArticle, 
+                    keywords: e.target.value.split(',').map(k => k.trim()).filter(k => k)
+                  })}
+                  className="text-right"
+                  dir="rtl"
+                  placeholder="יזמות, עסקים, הצלחה"
+                />
+              </div>
+
+              <div>
+                <Label className="text-right block mb-2">סטטוס</Label>
+                <select
+                  value={newArticle.status}
+                  onChange={(e) => setNewArticle({...newArticle, status: e.target.value})}
+                  className="w-full border rounded-md p-2 text-right"
+                  dir="rtl"
+                >
+                  <option value="draft">טיוטה</option>
+                  <option value="published">פורסם</option>
+                </select>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t flex-row-reverse">
+                <Button
+                  onClick={handleCreateArticle}
+                  disabled={isSaving}
+                  className="flex-1 bg-purple-600 hover:bg-purple-700"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                      שומר...
+                    </>
+                  ) : (
+                    'צור מאמר'
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsCreatingArticle(false)}
+                  disabled={isSaving}
+                  className="flex-1"
+                >
+                  ביטול
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {isCreating && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
