@@ -435,15 +435,13 @@ export default function ReportView() {
               </div>
             )}
 
-            {/* Page 3: Readiness Table + Traffic Lights + Domain Scores */}
+            {/* Page 3: Readiness Table + Domain Scores */}
             {currentPage === 3 && (
               <div className="space-y-8">
-                {report.traffic_lights_table && report.traffic_lights_table.length > 0 && (
-                  <ReadinessTableSection
-                    readinessData={report.traffic_lights_table}
-                    language={currentLanguage}
-                  />
-                )}
+                <ReadinessTableSection
+                  domainScores={report.domain_scores}
+                  language={currentLanguage}
+                />
                 <DomainScoresSection
                   domainScores={report.domain_scores}
                   language={currentLanguage}
