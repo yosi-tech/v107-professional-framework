@@ -13,8 +13,6 @@ import ReportView from './pages/ReportView';
 import QuestionnaireExport from './pages/QuestionnaireExport';
 import Survey from './pages/Survey';
 import MyAccount from './pages/MyAccount';
-import BoosterFeedback from './pages/BoosterFeedback';
-import BoosterSurvey from './pages/BoosterSurvey';
 import __Layout from './Layout.jsx';
 
 
@@ -34,8 +32,6 @@ export const PAGES = {
     "QuestionnaireExport": QuestionnaireExport,
     "Survey": Survey,
     "MyAccount": MyAccount,
-    "BoosterFeedback": BoosterFeedback,
-    "BoosterSurvey": BoosterSurvey,
 }
 
 export const pagesConfig = {

@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X, Rocket } from "lucide-react";
+import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X } from "lucide-react";
 import { useTranslation } from "@/components/i18n/useTranslation";
 
 const ReportInfoModal = ({ isOpen, onClose }) => {
@@ -299,16 +299,6 @@ export default function Payment() {
           title: language === 'he' ? "הורדת תשובות השאלון" : "Download Questionnaire Answers",
           icon: FileText,
           deliveryText: language === 'he' ? "הורדה מיידית" : "Immediate download"
-      },
-      booster_upgrade: {
-          title: language === 'he' ? "V107 BOOSTER - המשך המסע" : "V107 BOOSTER - Continue the Journey",
-          icon: Star,
-          deliveryText: language === 'he' ? "מיידי" : "Immediate"
-      },
-      online_coaching_7days: {
-          title: language === 'he' ? "ליווי און-ליין 7 ימים" : "7-Day Online Coaching",
-          icon: Star,
-          deliveryText: language === 'he' ? "מיידי" : "Immediate"
       }
   }
   const CurrentProductIcon = productDetails[product]?.icon || Star;
@@ -445,16 +435,11 @@ export default function Payment() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center text-lg">
-                 <span className="font-medium flex items-center gap-2">
-                   <CurrentProductIcon className="w-5 h-5" />
-                   {productDetails[product]?.title}
-                 </span>
-                 <span>
-                   {product === 'full_report' && (language === 'he' ? '299₪' : '$79')}
-                   {product === 'answers_download' && (language === 'he' ? '59₪' : '$15')}
-                   {product === 'booster_upgrade' && '199₪'}
-                   {product === 'online_coaching_7days' && '497₪'}
-                 </span>
+                  <span className="font-medium flex items-center gap-2">
+                    <CurrentProductIcon className="w-5 h-5" />
+                    {productDetails[product]?.title}
+                  </span>
+                  <span>{product === 'full_report' ? (language === 'he' ? '299₪' : '$79') : (language === 'he' ? '59₪' : '$15')}</span>
                 </div>
                 
                 {isExpress && (
