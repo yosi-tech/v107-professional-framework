@@ -981,41 +981,34 @@ export default function AdminReports() {
         </div>
 
         <Tabs defaultValue="reports" className="w-full" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-7 mb-8 gap-1">
-            <TabsTrigger value="reports" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
-              <span className="hidden sm:inline">שאלונים ודו"חות</span>
-              <span className="sm:hidden">שאלונים</span>
-              <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+          <TabsList className="flex flex-wrap w-full justify-center mb-8 gap-1 h-auto p-2">
+            <TabsTrigger value="reports" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>שאלונים</span>
+              <FileText className="w-3 h-3" />
             </TabsTrigger>
-            <TabsTrigger value="abandoned" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
-              <span className="hidden sm:inline">משתמשים שנטשו ({inProgressUsers.length + abandonedUsers.length})</span>
-              <span className="sm:hidden">נטשו ({inProgressUsers.length + abandonedUsers.length})</span>
-              <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4" />
+            <TabsTrigger value="abandoned" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>נטשו ({inProgressUsers.length + abandonedUsers.length})</span>
+              <AlertTriangle className="w-3 h-3" />
             </TabsTrigger>
-            <TabsTrigger value="survey-results" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
-              <span className="hidden sm:inline">תוצאות הסקר ({surveyResponses.length})</span>
-              <span className="sm:hidden">סקר ({surveyResponses.length})</span>
-              <FileSearch className="w-3 h-3 sm:w-4 sm:h-4" />
+            <TabsTrigger value="survey-results" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>סקר ({surveyResponses.length})</span>
+              <FileSearch className="w-3 h-3" />
             </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
-              <span className="hidden sm:inline">כל המשתמשים ({users.length})</span>
-              <span className="sm:hidden">משתמשים ({users.length})</span>
-              <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+            <TabsTrigger value="users" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>משתמשים ({users.length})</span>
+              <Users className="w-3 h-3" />
             </TabsTrigger>
-            <TabsTrigger value="email-templates" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
-              <span className="hidden sm:inline">תבניות מיילים</span>
-              <span className="sm:hidden">תבניות</span>
-              <Mail className="w-3 h-3 sm:w-4 sm:h-4" />
+            <TabsTrigger value="email-templates" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>תבניות</span>
+              <Mail className="w-3 h-3" />
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
-              <span className="hidden sm:inline">ניתוח רכישות</span>
-              <span className="sm:hidden">ניתוח</span>
-              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+            <TabsTrigger value="analytics" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>ניתוח</span>
+              <BarChart3 className="w-3 h-3" />
             </TabsTrigger>
-            <TabsTrigger value="seo-settings" className="flex items-center gap-1 sm:gap-2 flex-row-reverse text-xs sm:text-sm px-2 sm:px-3">
-              <span className="hidden sm:inline">הגדרות SEO</span>
-              <span className="sm:hidden">SEO</span>
-              <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
+            <TabsTrigger value="seo-settings" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>SEO</span>
+              <Settings className="w-3 h-3" />
             </TabsTrigger>
           </TabsList>
 
