@@ -54,7 +54,7 @@ export default function BoosterPayment() {
     setIsProcessing(true);
     try {
       const response = await tranzilaCreateHandshake({
-        sum: 1997,
+        sum: 199,
         currency: 1,
         user_email: user.email,
         user_name: user.full_name,
@@ -148,8 +148,8 @@ export default function BoosterPayment() {
                     </ul>
                   </div>
                   <div className="text-left">
-                    <p className="text-3xl font-black text-gray-900">1,997 ₪</p>
-                    <p className="text-sm text-gray-500 line-through">2,997 ₪</p>
+                    <p className="text-3xl font-black text-gray-900">199 ₪</p>
+                    <p className="text-sm text-gray-500 line-through">399 ₪</p>
                   </div>
                 </div>
               </div>
@@ -157,7 +157,7 @@ export default function BoosterPayment() {
               {/* סה"כ */}
               <div className="flex items-center justify-between py-4 border-t-2 border-gray-300">
                 <span className="text-2xl font-black text-gray-900">סה"כ לתשלום</span>
-                <span className="text-3xl font-black text-purple-600">1,997 ₪</span>
+                <span className="text-3xl font-black text-purple-600">199 ₪</span>
               </div>
 
               {/* כפתור תשלום */}

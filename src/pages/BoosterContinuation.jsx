@@ -273,12 +273,12 @@ export default function BoosterContinuation() {
                 <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 mb-8">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <p className="text-sm text-gray-600 line-through">מחיר רגיל: 2,997 ₪</p>
-                      <p className="text-4xl font-black text-gray-900">1,997 ₪</p>
+                      <p className="text-sm text-gray-600 line-through">מחיר רגיל: 399 ₪</p>
+                      <p className="text-4xl font-black text-gray-900">199 ₪</p>
                       <p className="text-sm text-gray-600">לכל התוכנית (3 חודשים)</p>
                     </div>
                     <Badge className="bg-red-600 text-white text-lg px-4 py-2">
-                      חסכון של 1,000 ₪!
+                      חסכון של 200 ₪!
                     </Badge>
                   </div>
                   <p className="text-sm text-amber-800 text-center font-semibold">
