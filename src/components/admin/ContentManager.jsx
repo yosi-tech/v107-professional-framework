@@ -31,12 +31,31 @@ export default function ContentManager({ contentItems, onUpdate }) {
     { value: 'terms', label: 'תנאי שימוש', icon: File }
   ];
 
+  const sectionOrder = {
+    home: ['hero', 'stats', 'how_it_works', 'benefits', 'testimonials', 'final_cta', 'trust_badges'],
+    about: ['hero', 'yossi', 'categories', 'portfolio'],
+    terms: ['header', 'company_info', 'contact'],
+    articles: ['header']
+  };
+
   const groupedContent = contentItems.reduce((acc, item) => {
     if (!acc[item.page]) acc[item.page] = {};
     if (!acc[item.page][item.section]) acc[item.page][item.section] = [];
     acc[item.page][item.section].push(item);
     return acc;
   }, {});
+
+  const sortSections = (sections, page) => {
+    const order = sectionOrder[page] || [];
+    return sections.sort((a, b) => {
+      const indexA = order.indexOf(a);
+      const indexB = order.indexOf(b);
+      if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+  };
 
   const handleSave = async (item) => {
     setIsSaving(true);
@@ -256,7 +275,9 @@ export default function ContentManager({ contentItems, onUpdate }) {
                   </CardContent>
                 </Card>
               ) : (
-                Object.entries(groupedContent[page.value] || {}).map(([section, items]) => (
+                sortSections(Object.keys(groupedContent[page.value] || {}), page.value).map(section => {
+                  const items = groupedContent[page.value][section];
+                  return (
                   <Card key={section}>
                     <CardHeader className="bg-slate-50">
                       <div className="flex items-center justify-between">
@@ -465,7 +486,8 @@ export default function ContentManager({ contentItems, onUpdate }) {
                         ))}
                     </CardContent>
                   </Card>
-                ))
+                  );
+                })
               )}
             </div>
           </TabsContent>
