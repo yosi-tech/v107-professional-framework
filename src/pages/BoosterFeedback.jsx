@@ -89,7 +89,7 @@ export default function BoosterFeedback() {
             <p className="text-lg text-gray-700 mb-8 leading-relaxed">
               {isHebrew 
                 ? 'נשמח לשמוע על החוויה שלך! האם ההדרכה והתוכן שקיבלת עזרו לך להתקדם ולהשתפר?'
-                : 'We'd love to hear about your experience! Did the guidance and content you received help you progress and improve?'}
+                : "We'd love to hear about your experience! Did the guidance and content you received help you progress and improve?"}
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">

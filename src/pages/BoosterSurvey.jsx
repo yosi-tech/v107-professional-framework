@@ -163,13 +163,13 @@ export default function BoosterSurvey() {
                     <Label htmlFor="r1" className="cursor-pointer">
                       {isHebrew ? 'התוכן לא היה רלוונטי לצרכים שלי' : 'Content wasn\'t relevant to my needs'}
                     </Label>
-                    <RadioGroupItem value={isHebrew ? 'התוכן לא היה רלוונטי לצרכים שלי' : 'Content wasn\'t relevant to my needs'} id="r1" />
+                    <RadioGroupItem value={isHebrew ? 'התוכן לא היה רלוונטי לצרכים שלי' : "Content wasn't relevant to my needs"} id="r1" />
                   </div>
                   <div className="flex items-center gap-3 flex-row-reverse">
                     <Label htmlFor="r2" className="cursor-pointer">
-                      {isHebrew ? 'לא הספקתי ליישם את המידע' : 'Didn\'t have time to implement the information'}
+                      {isHebrew ? 'לא הספקתי ליישם את המידע' : "Didn't have time to implement the information"}
                     </Label>
-                    <RadioGroupItem value={isHebrew ? 'לא הספקתי ליישם את המידע' : 'Didn\'t have time to implement the information'} id="r2" />
+                    <RadioGroupItem value={isHebrew ? 'לא הספקתי ליישם את המידע' : "Didn't have time to implement the information"} id="r2" />
                   </div>
                   <div className="flex items-center gap-3 flex-row-reverse">
                     <Label htmlFor="r3" className="cursor-pointer">
