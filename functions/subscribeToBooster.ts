@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
         // Get the email template for day 1
         const emailTemplates = await base44.asServiceRole.entities.EmailTemplate.filter({
             template_type: 'booster_email',
-            booster_track: recommended_booster_track,
+            booster_track: trackToUse,
             booster_day: 1,
             active: true
         });
