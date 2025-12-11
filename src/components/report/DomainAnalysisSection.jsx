@@ -21,6 +21,15 @@ export default function DomainAnalysisSection({ domainAnalysis, domainScores, la
       yellow_flag: scoreData?.yellow_flag || false
     };
   });
+  
+  // Sort by priority: red flags first, then yellow flags, then by score
+  analysisEntries.sort((a, b) => {
+    if (a.red_flag && !b.red_flag) return -1;
+    if (!a.red_flag && b.red_flag) return 1;
+    if (a.yellow_flag && !b.yellow_flag) return -1;
+    if (!a.yellow_flag && b.yellow_flag) return 1;
+    return b.score - a.score;
+  });
 
   const getDomainIcon = (entry) => {
     if (entry.red_flag) return <AlertTriangle className="w-7 h-7" />;
