@@ -10,37 +10,24 @@ import {
   User as UserIcon, 
   Calendar,
   Edit2,
-  Save,
-  X,
   Download,
   Loader2,
   AlertCircle,
   ArrowRight,
   Rocket,
   BarChart3,
-  Target,
-  TrendingUp,
-  CheckCircle,
-  Shield
+  Shield,
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 import { format } from "date-fns";
 
-import ExecutiveSummarySection from "@/components/report/ExecutiveSummarySection";
 import DomainScoresSection from "@/components/report/DomainScoresSection";
-import DomainAnalysisSection from "@/components/report/DomainAnalysisSection";
 import TrafficLightsSection from "@/components/report/TrafficLightsSection";
-import KPIsSection from "@/components/report/KPIsSection";
-import ActionPlanSection from "@/components/report/ActionPlanSection";
-import RecommendationsSection from "@/components/report/RecommendationsSection";
 import BoosterOfferSection from "@/components/report/BoosterOfferSection";
 import FullReportSection from "@/components/report/FullReportSection";
-import ExecutiveSummaryEditor from "@/components/report/ExecutiveSummaryEditor";
-import DomainAnalysisEditor from "@/components/report/DomainAnalysisEditor";
-import TrafficLightsEditor from "@/components/report/TrafficLightsEditor";
-import KPIsEditor from "@/components/report/KPIsEditor";
-import ActionPlanEditor from "@/components/report/ActionPlanEditor";
-import RecommendationsEditor from "@/components/report/RecommendationsEditor";
 import FullReportEditor from "@/components/report/FullReportEditor";
+import TrafficLightsEditor from "@/components/report/TrafficLightsEditor";
 
 const TEXTS = {
   he: {
@@ -52,11 +39,13 @@ const TEXTS = {
     status: "סטטוס",
     completed: "הושלם",
     edit: "ערוך",
-    save: "שמור",
-    cancel: "ביטול",
     reportNotFoundCardTitle: "דו\"ח לא נמצא",
     reportNotFoundCardMessage: "לא ניתן למצוא את הדו\"ח המבוקש",
-    errorSavingChanges: "שגיאה בשמירת השינויים"
+    errorSavingChanges: "שגיאה בשמירת השינויים",
+    page: "עמוד",
+    of: "מתוך",
+    previousPage: "עמוד קודם",
+    nextPage: "עמוד הבא"
   },
   en: {
     reportTitle: "V107 Report",
@@ -67,11 +56,13 @@ const TEXTS = {
     status: "Status",
     completed: "Completed",
     edit: "Edit",
-    save: "Save",
-    cancel: "Cancel",
     reportNotFoundCardTitle: "Report Not Found",
     reportNotFoundCardMessage: "The requested report could not be found",
-    errorSavingChanges: "Error saving changes"
+    errorSavingChanges: "Error saving changes",
+    page: "Page",
+    of: "of",
+    previousPage: "Previous Page",
+    nextPage: "Next Page"
   }
 };
 
@@ -83,6 +74,9 @@ export default function ReportView() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('he');
   const [editingSection, setEditingSection] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  const totalPages = 4;
 
   useEffect(() => {
     loadReport();
@@ -185,6 +179,14 @@ export default function ReportView() {
     setEditingSection(null);
   };
 
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -205,6 +207,28 @@ export default function ReportView() {
         </Card>
       </div>
     );
+  }
+
+  // Split markdown into 4 pages
+  let pageContents = ['', '', '', ''];
+  if (report.report_markdown) {
+    const sections = report.report_markdown.split(/(?=^# )/m).filter(s => s.trim());
+    if (sections.length >= 4) {
+      pageContents = [sections[0], sections[1], '', sections.slice(2).join('\n\n')];
+    } else if (sections.length === 3) {
+      pageContents = [sections[0], sections[1], '', sections[2]];
+    } else if (sections.length === 2) {
+      pageContents = [sections[0], sections[1], '', ''];
+    } else if (sections.length === 1) {
+      const lines = sections[0].split('\n');
+      const quarter = Math.ceil(lines.length / 4);
+      pageContents = [
+        lines.slice(0, quarter).join('\n'),
+        lines.slice(quarter, quarter * 2).join('\n'),
+        '',
+        lines.slice(quarter * 2).join('\n')
+      ];
+    }
   }
 
   return (
@@ -328,29 +352,76 @@ export default function ReportView() {
           </CardContent>
         </Card>
 
-        {/* דוח מלא - תצוגה מותאמת */}
-        <div>
-          {report.report_markdown ? (
-            <div>
-            {/* Archetype Header */}
-            <Card className="mb-8 bg-gradient-to-br from-blue-600 to-purple-600 text-white border-none">
-              <CardContent className="p-8 text-center">
-                <Rocket className="w-16 h-16 mx-auto mb-4 text-white" />
-                <h2 className="text-3xl font-black mb-3">
-                  {report.archetype || (currentLanguage === 'he' ? 'דוח אישי' : 'Personal Report')}
-                </h2>
-                {report.recommended_booster_track && (
-                  <Badge className="bg-white/20 text-white text-lg px-4 py-2 backdrop-blur-sm border border-white/30">
-                    {currentLanguage === 'he' ? 'מסלול מומלץ:' : 'Recommended Track:'} {report.recommended_booster_track.toUpperCase()}
-                  </Badge>
-                )}
-              </CardContent>
-            </Card>
+        {/* Archetype Header */}
+        <Card className="mb-8 bg-gradient-to-br from-blue-600 to-purple-600 text-white border-none">
+          <CardContent className="p-8 text-center">
+            <Rocket className="w-16 h-16 mx-auto mb-4 text-white" />
+            <h2 className="text-3xl font-black mb-3">
+              {report.archetype || (currentLanguage === 'he' ? 'דוח אישי' : 'Personal Report')}
+            </h2>
+            {report.recommended_booster_track && (
+              <Badge className="bg-white/20 text-white text-lg px-4 py-2 backdrop-blur-sm border border-white/30">
+                {currentLanguage === 'he' ? 'מסלול מומלץ:' : 'Recommended Track:'} {report.recommended_booster_track.toUpperCase()}
+              </Badge>
+            )}
+          </CardContent>
+        </Card>
 
-            <div className="mt-6" dir={currentLanguage === 'he' ? 'rtl' : 'ltr'}>
-              {/* Full Report - Markdown with integrated sections */}
-              <div className="mb-8">
-                {editingSection === 'report_markdown' && isAdmin ? (
+        {/* Main Report with Page Navigation */}
+        <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-indigo-50 to-purple-50">
+          <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-t-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                  <FileText className="w-7 h-7" />
+                </div>
+                <div>
+                  <CardTitle className="text-3xl font-black">
+                    {currentLanguage === 'he' ? 'דוח V107 מקצועי' : 'V107 Professional Report'}
+                  </CardTitle>
+                  <p className="text-white/90 text-sm mt-1">
+                    {getText('page')} {currentPage} {getText('of')} {totalPages}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2 no-print">
+                <Button
+                  onClick={prevPage}
+                  disabled={currentPage === 1}
+                  variant="outline"
+                  size="sm"
+                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 disabled:opacity-50"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </Button>
+                <Button
+                  onClick={nextPage}
+                  disabled={currentPage === totalPages}
+                  variant="outline"
+                  size="sm"
+                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 disabled:opacity-50"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-8 min-h-[600px]">
+            {/* Page 1-2: Markdown Content */}
+            {(currentPage === 1 || currentPage === 2) && (
+              <div className="relative">
+                {isAdmin && (
+                  <Button
+                    onClick={() => startEditSection('report_markdown')}
+                    size="sm"
+                    variant="outline"
+                    className="absolute top-4 left-4 z-10 no-print"
+                  >
+                    <Edit2 className="w-4 h-4 ml-2" />
+                    {getText('edit')}
+                  </Button>
+                )}
+                {editingSection === 'report_markdown' ? (
                   <Card className="p-6">
                     <FullReportEditor
                       data={report.report_markdown}
@@ -359,37 +430,106 @@ export default function ReportView() {
                     />
                   </Card>
                 ) : (
-                  <div className="relative">
-                    {isAdmin && (
-                      <Button
-                        onClick={() => startEditSection('report_markdown')}
-                        size="sm"
-                        variant="outline"
-                        className="absolute top-4 left-4 z-10 no-print"
-                      >
-                        <Edit2 className="w-4 h-4 ml-2" />
-                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
-                      </Button>
-                    )}
-                    <FullReportSection 
-                      reportMarkdown={report.report_markdown}
-                      trafficLights={report.traffic_lights_table}
-                      domainScores={report.domain_scores}
-                      recommendedTrack={report.recommended_booster_track}
-                      language={currentLanguage}
-                      isAdmin={isAdmin}
-                      onEditTrafficLights={() => startEditSection('traffic_lights_table')}
-                      editingTrafficLights={editingSection === 'traffic_lights_table'}
-                      onSaveTrafficLights={(data) => saveSection('traffic_lights_table', data)}
-                      onCancelTrafficLights={cancelEdit}
-                    />
-                  </div>
+                  <FullReportSection markdownContent={pageContents[currentPage - 1]} />
                 )}
               </div>
+            )}
+
+            {/* Page 3: Traffic Lights + Domain Scores */}
+            {currentPage === 3 && (
+              <div className="space-y-8">
+                <div className="relative">
+                  {isAdmin && (
+                    <Button
+                      onClick={() => startEditSection('traffic_lights_table')}
+                      size="sm"
+                      variant="outline"
+                      className="absolute top-4 left-4 z-10 no-print"
+                    >
+                      <Edit2 className="w-4 h-4 ml-2" />
+                      {getText('edit')}
+                    </Button>
+                  )}
+                  {editingSection === 'traffic_lights_table' ? (
+                    <Card className="p-6">
+                      <TrafficLightsEditor
+                        data={report.traffic_lights_table}
+                        onSave={(data) => saveSection('traffic_lights_table', data)}
+                        onCancel={cancelEdit}
+                      />
+                    </Card>
+                  ) : (
+                    <TrafficLightsSection
+                      trafficLights={report.traffic_lights_table}
+                      language={currentLanguage}
+                    />
+                  )}
+                </div>
+                <DomainScoresSection
+                  domainScores={report.domain_scores}
+                  language={currentLanguage}
+                />
+              </div>
+            )}
+
+            {/* Page 4: Action Plan + Booster */}
+            {currentPage === 4 && (
+              <div className="space-y-8">
+                {pageContents[3] && (
+                  <FullReportSection markdownContent={pageContents[3]} />
+                )}
+                {report.recommended_booster_track && (
+                  <BoosterOfferSection
+                    recommendedTrack={report.recommended_booster_track}
+                    language={currentLanguage}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Page Navigation - Bottom */}
+            <div className="flex items-center justify-between mt-8 no-print">
+              <Button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                variant="outline"
+                className="disabled:opacity-50"
+              >
+                <ChevronRight className="w-5 h-5 ml-2" />
+                {getText('previousPage')}
+              </Button>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4].map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-10 h-10 rounded-full font-bold transition-all ${
+                      currentPage === page
+                        ? 'bg-indigo-600 text-white shadow-lg scale-110'
+                        : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+              <Button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                variant="outline"
+                className="disabled:opacity-50"
+              >
+                {getText('nextPage')}
+                <ChevronLeft className="w-5 h-5 mr-2" />
+              </Button>
             </div>
-          </div>
+          </CardContent>
+        </Card>
+
+        {/* Legal Disclaimers */}
+        <div>
+          {report.report_markdown && (
           ) : (
-            <div>
             <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
@@ -405,22 +545,11 @@ export default function ReportView() {
                 </p>
               </CardContent>
             </Card>
-            </div>
           )}
+        </div>
 
-          {/* הצעת הבוסטר - סקשן נפרד */}
-          {report.report_markdown && report.recommended_booster_track && (
-            <div className="mt-12 print-break">
-              <BoosterOfferSection 
-                recommendedTrack={report.recommended_booster_track}
-                language={currentLanguage}
-              />
-            </div>
-          )}
-
-          {/* דיסקליימרים משפטיים וטכנולוגיים */}
-          {report.report_markdown && (
-            <div className="mt-12 space-y-6">
+        {report.report_markdown && (
+          <div className="mt-12 space-y-6">
               <Card className="border-2 border-slate-300 bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center gap-2">
