@@ -327,8 +327,9 @@ export default function ReportView() {
         </Card>
 
         {/* דוח מלא - תצוגה מותאמת */}
-        {report.report_markdown ? (
-          <div>
+        <div>
+          {report.report_markdown ? (
+            <div>
             {/* Archetype Header */}
             <Card className="mb-8 bg-gradient-to-br from-blue-600 to-purple-600 text-white border-none">
               <CardContent className="p-8 text-center">
@@ -539,7 +540,9 @@ export default function ReportView() {
                 )}
               </div>
             </div>
+          </div>
           ) : (
+            <div>
             <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
@@ -555,6 +558,7 @@ export default function ReportView() {
                 </p>
               </CardContent>
             </Card>
+            </div>
           )}
 
           {/* הצעת הבוסטר - סקשן נפרד */}
@@ -625,5 +629,6 @@ export default function ReportView() {
           )}
         </div>
       </div>
+    </div>
     );
 }
