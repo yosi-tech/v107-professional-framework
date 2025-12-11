@@ -67,6 +67,18 @@ export default function BoosterContinuation() {
         status: answer ? 'completed' : 'completed'
       });
 
+      // שמור סקר משוב בוסטר
+      await base44.entities.SurveyResponse.create({
+        survey_type: 'booster_feedback',
+        responses: {
+          experienced_improvement: answer,
+          feedback_text: feedbackText,
+          booster_track: subscription.recommended_booster_track,
+          user_name: subscription.user_name,
+          user_email: subscription.user_email
+        }
+      });
+
       if (!answer) {
         alert('תודה רבה על המשוב! נשמח לראות אותך שוב בעתיד.');
         navigate(createPageUrl('Home'));
