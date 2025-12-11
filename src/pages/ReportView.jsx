@@ -28,6 +28,7 @@ import FullReportSection from "@/components/report/FullReportSection";
 import FullReportEditor from "@/components/report/FullReportEditor";
 import TrafficLightsEditor from "@/components/report/TrafficLightsEditor";
 import ReadinessTableSection from "@/components/report/ReadinessTableSection";
+import ReadinessTableEditor from "@/components/report/ReadinessTableEditor";
 
 const TEXTS = {
   he: {
@@ -441,28 +442,76 @@ export default function ReportView() {
             {/* Page 3: Readiness Table + Domain Scores */}
             {currentPage === 3 && (
               <div className="space-y-8">
-                <ReadinessTableSection
-                  domainScores={report.domain_scores}
-                  language={currentLanguage}
-                />
-                <DomainScoresSection
-                  domainScores={report.domain_scores}
-                  language={currentLanguage}
-                />
+                <div className="relative">
+                  {isAdmin && (
+                    <Button
+                      onClick={() => startEditSection('domain_scores')}
+                      size="sm"
+                      variant="outline"
+                      className="absolute top-4 left-4 z-10 no-print"
+                    >
+                      <Edit2 className="w-4 h-4 ml-2" />
+                      {getText('edit')}
+                    </Button>
+                  )}
+                  {editingSection === 'domain_scores' ? (
+                    <Card className="p-6">
+                      <ReadinessTableEditor
+                        data={report.domain_scores}
+                        onSave={(data) => saveSection('domain_scores', data)}
+                        onCancel={cancelEdit}
+                      />
+                    </Card>
+                  ) : (
+                    <>
+                      <ReadinessTableSection
+                        domainScores={report.domain_scores}
+                        language={currentLanguage}
+                      />
+                      <DomainScoresSection
+                        domainScores={report.domain_scores}
+                        language={currentLanguage}
+                      />
+                    </>
+                  )}
+                </div>
               </div>
             )}
 
             {/* Page 4: Action Plan + Booster */}
             {currentPage === 4 && (
-              <div className="space-y-8">
-                {pageContents[3] && (
-                  <FullReportSection markdownContent={pageContents[3]} />
+              <div className="relative space-y-8">
+                {isAdmin && (
+                  <Button
+                    onClick={() => startEditSection('page4_content')}
+                    size="sm"
+                    variant="outline"
+                    className="absolute top-4 left-4 z-10 no-print"
+                  >
+                    <Edit2 className="w-4 h-4 ml-2" />
+                    {getText('edit')}
+                  </Button>
                 )}
-                {report.recommended_booster_track && (
-                  <BoosterOfferSection
-                    recommendedTrack={report.recommended_booster_track}
-                    language={currentLanguage}
-                  />
+                {editingSection === 'page4_content' ? (
+                  <Card className="p-6">
+                    <FullReportEditor
+                      data={report.report_markdown}
+                      onSave={(data) => saveSection('report_markdown', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <>
+                    {pageContents[3] && (
+                      <FullReportSection markdownContent={pageContents[3]} />
+                    )}
+                    {report.recommended_booster_track && (
+                      <BoosterOfferSection
+                        recommendedTrack={report.recommended_booster_track}
+                        language={currentLanguage}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             )}
