@@ -49,29 +49,39 @@ export default function BoosterPayment() {
   }, [subscriptionId, navigate]);
 
   const handlePayment = async () => {
-    if (!user || !subscription) return;
+    if (!user || !subscription) {
+      console.log('Missing user or subscription');
+      return;
+    }
 
     setIsProcessing(true);
+    console.log('Starting payment process...');
+    
     try {
-      const { data } = await tranzilaCreateHandshake({
+      console.log('Calling tranzilaCreateHandshake...');
+      const response = await tranzilaCreateHandshake({
         sum: 199
       });
+      
+      console.log('Response:', response);
 
-      if (data && data.thtk && data.supplier) {
-        const { thtk, supplier } = data;
+      if (response && response.data && response.data.thtk && response.data.supplier) {
+        const { thtk, supplier } = response.data;
         const successUrl = `${window.location.origin}${createPageUrl('BoosterThankYou')}`;
         const cancelUrl = `${window.location.origin}${createPageUrl('BoosterPayment')}?subscriptionId=${subscription.id}`;
         
         const tranzilaUrl = `https://direct.tranzila.com/${supplier}/iframenew.php?sum=199&currency=1&thtk=${thtk}&success_url_address=${encodeURIComponent(successUrl)}&fail_url_address=${encodeURIComponent(cancelUrl)}&trButtonColor=blue&lang=he`;
         
+        console.log('Redirecting to:', tranzilaUrl);
         window.location.href = tranzilaUrl;
       } else {
+        console.error('Invalid response structure:', response);
         alert('שגיאה ביצירת תשלום. אנא נסה שוב.');
         setIsProcessing(false);
       }
     } catch (error) {
       console.error('Payment error:', error);
-      alert('אירעה שגיאה בתהליך התשלום. אנא נסה שוב.');
+      alert('אירעה שגיאה בתהליך התשלום: ' + error.message);
       setIsProcessing(false);
     }
   };
