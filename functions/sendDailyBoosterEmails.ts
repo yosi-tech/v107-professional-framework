@@ -16,17 +16,17 @@ Deno.serve(async (req) => {
 
     for (const subscription of activeSubscriptions) {
       try {
-        // בדוק אם כבר נשלח מייל היום
-        if (subscription.last_email_sent_date) {
-          const lastSent = new Date(subscription.last_email_sent_date);
-          const hoursSinceLastEmail = (now - lastSent) / (1000 * 60 * 60);
-          
-          // אם נשלח מייל בפחות מ-20 שעות, דלג
-          if (hoursSinceLastEmail < 20) {
-            console.log(`Skipping ${subscription.user_email} - email sent recently`);
-            continue;
-          }
-        }
+        // בדוק אם כבר נשלח מייל היום - DISABLED FOR TESTING
+        // if (subscription.last_email_sent_date) {
+        //   const lastSent = new Date(subscription.last_email_sent_date);
+        //   const hoursSinceLastEmail = (now - lastSent) / (1000 * 60 * 60);
+        //   
+        //   // אם נשלח מייל בפחות מ-20 שעות, דלג
+        //   if (hoursSinceLastEmail < 20) {
+        //     console.log(`Skipping ${subscription.user_email} - email sent recently`);
+        //     continue;
+        //   }
+        // }
 
         const currentDay = subscription.current_day || 1;
         const track = subscription.recommended_booster_track;
