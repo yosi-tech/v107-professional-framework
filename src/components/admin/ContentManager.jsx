@@ -151,6 +151,75 @@ export default function ContentManager({ contentItems, onUpdate }) {
     }
   };
 
+  // Article handlers
+  const handleCreateArticle = async () => {
+    if (!newArticle.title || !newArticle.slug || !newArticle.content) {
+      alert('יש למלא כותרת, slug ותוכן');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await base44.entities.Article.create(newArticle);
+      const data = await base44.entities.Article.list('-created_date');
+      setArticles(data);
+      setIsCreatingArticle(false);
+      setNewArticle({
+        title: '',
+        slug: '',
+        content: '',
+        image_url: '',
+        keywords: [],
+        status: 'published'
+      });
+      alert('המאמר נוצר בהצלחה!');
+    } catch (error) {
+      console.error('Error creating article:', error);
+      alert('שגיאה ביצירת המאמר');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveArticle = async (article) => {
+    setIsSaving(true);
+    try {
+      await base44.entities.Article.update(article.id, {
+        title: article.title,
+        slug: article.slug,
+        content: article.content,
+        image_url: article.image_url,
+        keywords: article.keywords,
+        status: article.status
+      });
+      const data = await base44.entities.Article.list('-created_date');
+      setArticles(data);
+      setEditingArticle(null);
+      alert('המאמר עודכן בהצלחה!');
+    } catch (error) {
+      console.error('Error saving article:', error);
+      alert('שגיאה בשמירת המאמר');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteArticle = async (articleId) => {
+    if (!window.confirm('האם אתה בטוח שברצונך למחוק מאמר זה?')) {
+      return;
+    }
+
+    try {
+      await base44.entities.Article.delete(articleId);
+      const data = await base44.entities.Article.list('-created_date');
+      setArticles(data);
+      alert('המאמר נמחק בהצלחה');
+    } catch (error) {
+      console.error('Error deleting article:', error);
+      alert('שגיאה במחיקת המאמר');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
