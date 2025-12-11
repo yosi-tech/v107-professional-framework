@@ -229,6 +229,9 @@ export default function ReportView() {
         lines.slice(quarter * 2).join('\n')
       ];
     }
+    
+    // Remove readiness table from page 4 (it's shown separately in page 3)
+    pageContents[3] = pageContents[3].replace(/^##?\s*עמוד 3:?\s*טבלת מוכנות[\s\S]*?\n\n(?=##|$)/m, '');
   }
 
   return (
