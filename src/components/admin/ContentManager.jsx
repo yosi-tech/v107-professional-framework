@@ -41,7 +41,6 @@ export default function ContentManager({ contentItems, onUpdate }) {
   const pages = [
     { value: 'home', label: 'דף הבית', icon: Home },
     { value: 'about', label: 'אודות', icon: Info },
-    { value: 'articles', label: 'מאמרים', icon: FileText },
     { value: 'terms', label: 'תנאי שימוש', icon: File }
   ];
 
