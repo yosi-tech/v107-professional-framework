@@ -89,7 +89,7 @@ export default function BoosterPayment() {
         const successUrl = `${window.location.origin}${createPageUrl('BoosterThankYou')}`;
         const cancelUrl = `${window.location.origin}${createPageUrl('BoosterPayment')}?subscriptionId=${subscription.id}`;
         
-        const tranzilaUrl = `https://direct.tranzila.com/${supplier}/iframenew.php?sum=199&currency=1&thtk=${thtk}&success_url_address=${encodeURIComponent(successUrl)}&fail_url_address=${encodeURIComponent(cancelUrl)}&trButtonColor=blue&lang=he`;
+        const tranzilaUrl = `https://direct.tranzila.com/${supplier}/iframenew.php?sum=199&currency=1&thtk=${thtk}&success_url_address=${encodeURIComponent(successUrl)}&fail_url_address=${encodeURIComponent(cancelUrl)}&trButtonColor=blue`;
         
         console.log('Redirecting to:', tranzilaUrl);
         window.location.href = tranzilaUrl;
