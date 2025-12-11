@@ -361,6 +361,13 @@ export default function ContentManager({ contentItems, onUpdate }) {
               <page.icon className="w-4 h-4" />
             </TabsTrigger>
           ))}
+          <TabsTrigger 
+            value="articles-content"
+            className="flex items-center gap-2 flex-row-reverse"
+          >
+            <span>ניהול מאמרים</span>
+            <BookOpen className="w-4 h-4" />
+          </TabsTrigger>
         </TabsList>
 
         {pages.map(page => (
