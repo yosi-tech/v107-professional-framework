@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X } from "lucide-react";
+import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X, Rocket } from "lucide-react";
 import { useTranslation } from "@/components/i18n/useTranslation";
 
 const ReportInfoModal = ({ isOpen, onClose }) => {
