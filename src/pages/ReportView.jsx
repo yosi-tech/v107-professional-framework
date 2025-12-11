@@ -527,26 +527,23 @@ export default function ReportView() {
         </Card>
 
         {/* Legal Disclaimers */}
-        <div>
-          {report.report_markdown && (
-          ) : (
-            <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
-              <CardContent className="p-8 text-center">
-                <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
-                <p className="text-lg font-semibold text-yellow-900">
-                  {currentLanguage === 'he' 
-                    ? 'הדוח הזה נוצר בפורמט ישן ולא כולל את התוכן המעודכן'
-                    : 'This report was created in the old format and does not include updated content'}
-                </p>
-                <p className="text-sm text-yellow-700 mt-2">
-                  {currentLanguage === 'he'
-                    ? 'אנא צור דוח חדש או פנה לצוות התמיכה'
-                    : 'Please create a new report or contact support'}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+        {!report.report_markdown && (
+          <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
+            <CardContent className="p-8 text-center">
+              <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
+              <p className="text-lg font-semibold text-yellow-900">
+                {currentLanguage === 'he' 
+                  ? 'הדוח הזה נוצר בפורמט ישן ולא כולל את התוכן המעודכן'
+                  : 'This report was created in the old format and does not include updated content'}
+              </p>
+              <p className="text-sm text-yellow-700 mt-2">
+                {currentLanguage === 'he'
+                  ? 'אנא צור דוח חדש או פנה לצוות התמיכה'
+                  : 'Please create a new report or contact support'}
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {report.report_markdown && (
           <div className="mt-12 space-y-6">
@@ -601,10 +598,9 @@ export default function ReportView() {
                   </p>
                 </CardContent>
               </Card>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
-    );
+  );
 }
