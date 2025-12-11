@@ -30,13 +30,15 @@ import {
   Settings,
   TrendingUp,
   Rocket,
-  MessageSquare
+  MessageSquare,
+  Edit3
 } from "lucide-react";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 import UnifiedSurveyChart from "@/components/admin/UnifiedSurveyChart";
+import ContentManager from "@/components/admin/ContentManager";
 import {
   Dialog,
   DialogContent,
@@ -74,6 +76,7 @@ export default function AdminReports() {
   const [surveyResponses, setSurveyResponses] = useState([]);
   const [siteSettings, setSiteSettings] = useState([]);
   const [boosterSubscriptions, setBoosterSubscriptions] = useState([]);
+  const [contentItems, setContentItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingTemplate, setEditingTemplate] = useState(null);
   const [templateDialog, setTemplateDialog] = useState(false);
@@ -125,7 +128,7 @@ export default function AdminReports() {
 
   const loadData = async () => {
     try {
-      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses, allSiteSettings, allBoosterSubscriptions] = await Promise.all([
+      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses, allSiteSettings, allBoosterSubscriptions, allContentItems] = await Promise.all([
         base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date'),
         base44.entities.QuestionnaireResponse.filter({ status: 'in_progress' }, '-created_date'),
         base44.entities.GeneratedReport.list('-created_date'),
@@ -134,7 +137,8 @@ export default function AdminReports() {
         base44.entities.EmailTemplate.list('-created_date'),
         base44.entities.SurveyResponse.list('-created_date'),
         base44.entities.SiteSettings.list().catch(() => []),
-        base44.entities.OnlineCoachingSubscription.list('-created_date').catch(() => [])
+        base44.entities.OnlineCoachingSubscription.list('-created_date').catch(() => []),
+        base44.entities.ContentItem.list().catch(() => [])
       ]);
       setResponses([...completedResponses, ...inProgressResponses]);
       setReports(allReports);
@@ -144,6 +148,7 @@ export default function AdminReports() {
       setSurveyResponses(allSurveyResponses);
       setSiteSettings(allSiteSettings);
       setBoosterSubscriptions(allBoosterSubscriptions);
+      setContentItems(allContentItems);
     } catch (error) {
       console.error("Error loading data:", error);
     }
@@ -997,6 +1002,10 @@ export default function AdminReports() {
             <TabsTrigger value="users" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
               <span>משתמשים ({users.length})</span>
               <Users className="w-3 h-3" />
+            </TabsTrigger>
+            <TabsTrigger value="content-management" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>ניהול תוכן</span>
+              <Edit3 className="w-3 h-3" />
             </TabsTrigger>
             <TabsTrigger value="email-templates" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
               <span>תבניות</span>
@@ -2303,6 +2312,13 @@ export default function AdminReports() {
                 </div>
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          <TabsContent value="content-management">
+            <ContentManager 
+              contentItems={contentItems}
+              onUpdate={loadData}
+            />
           </TabsContent>
 
           <TabsContent value="users">
