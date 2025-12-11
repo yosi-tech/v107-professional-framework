@@ -11,9 +11,40 @@ export default function FullReportSection({ reportMarkdown, language }) {
 
   const isHebrew = language === 'he';
 
-  // Split by [PAGE X] markers
-  const pages = reportMarkdown.split(/\[PAGE \d+\]/i).filter(p => p.trim());
-  const totalPages = Math.min(pages.length, 4);
+  // Split by [PAGE X] markers OR by main headings if markers don't exist
+  let pages = reportMarkdown.split(/\[PAGE \d+\]/i).filter(p => p.trim());
+  
+  // If no page markers found, split by main headings (H1)
+  if (pages.length === 1) {
+    // Split by # heading but keep the heading with the content
+    const sections = reportMarkdown.split(/(?=^# )/m).filter(s => s.trim());
+    
+    // Group sections into 4 pages
+    if (sections.length >= 4) {
+      pages = [
+        sections[0] || '', // Page 1
+        sections[1] || '', // Page 2
+        sections[2] || '', // Page 3
+        sections.slice(3).join('\n\n') // Page 4 - rest
+      ];
+    } else if (sections.length === 3) {
+      pages = sections;
+      pages.push(''); // Add empty 4th page
+    } else if (sections.length === 2) {
+      pages = [sections[0], sections[1], '', ''];
+    } else {
+      // Last resort: split by character count into 4 equal parts
+      const chunkSize = Math.ceil(reportMarkdown.length / 4);
+      pages = [
+        reportMarkdown.substring(0, chunkSize),
+        reportMarkdown.substring(chunkSize, chunkSize * 2),
+        reportMarkdown.substring(chunkSize * 2, chunkSize * 3),
+        reportMarkdown.substring(chunkSize * 3)
+      ];
+    }
+  }
+  
+  const totalPages = 4;
 
   const nextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
