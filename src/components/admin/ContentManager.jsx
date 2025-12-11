@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Home, FileText, Info, File, Loader2, Save, Plus, Trash2, Image } from "lucide-react";
+import { Home, FileText, Info, File, Loader2, Save, Plus, Trash2, Image, BookOpen } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function ContentManager({ contentItems, onUpdate }) {
@@ -22,6 +22,20 @@ export default function ContentManager({ contentItems, onUpdate }) {
     content_en: '',
     description: '',
     order: 0
+  });
+
+  // Articles management state
+  const [articles, setArticles] = useState([]);
+  const [isLoadingArticles, setIsLoadingArticles] = useState(true);
+  const [editingArticle, setEditingArticle] = useState(null);
+  const [isCreatingArticle, setIsCreatingArticle] = useState(false);
+  const [newArticle, setNewArticle] = useState({
+    title: '',
+    slug: '',
+    content: '',
+    image_url: '',
+    keywords: [],
+    status: 'published'
   });
 
   const pages = [
