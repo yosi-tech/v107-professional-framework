@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -100,15 +102,13 @@ export default function BoosterOfferSection({ recommendedTrack, language }) {
         </Card>
 
         <div className="text-center mt-8">
-          <Button 
-            onClick={() => {
-              // Redirect to purchase page or open payment dialog
-              window.location.href = '/payment?product=online_coaching_7days';
-            }}
-            className="bg-white text-purple-600 hover:bg-gray-100 text-xl px-12 py-6 rounded-xl font-black shadow-2xl hover:shadow-3xl transition-all hover:scale-105"
-          >
-            {isHebrew ? '🚀 אני רוצה להצטרף למסלול הבוסטר!' : '🚀 I want to join the Booster Track!'}
-          </Button>
+          <Link to={`${createPageUrl('BoosterRegistration')}?track=${recommendedTrack}&lang=${language}`}>
+            <Button 
+              className="bg-white text-purple-600 hover:bg-gray-100 text-xl px-12 py-6 rounded-xl font-black shadow-2xl hover:shadow-3xl transition-all hover:scale-105"
+            >
+              {isHebrew ? '🚀 אני רוצה להצטרף למסלול הבוסטר!' : '🚀 I want to join the Booster Track!'}
+            </Button>
+          </Link>
           <p className="text-white/90 text-sm font-medium mt-4">
             {isHebrew 
               ? '✨ פרטים נוספים יישלחו אליך במייל לאחר ההרשמה ✨'
