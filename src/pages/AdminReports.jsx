@@ -2136,69 +2136,6 @@ export default function AdminReports() {
                   {/* Unified Survey Chart with Selector */}
                   <UnifiedSurveyChart surveyResponses={surveyResponses.filter(s => s.survey_type === 'abandonment')} />
 
-          <TabsContent value="survey-results">
-            <Tabs defaultValue="abandonment" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="abandonment">סקר נטישת שאלון ({surveyResponses.filter(s => s.survey_type === 'abandonment').length})</TabsTrigger>
-                <TabsTrigger value="booster_feedback">משוב בוסטר ({surveyResponses.filter(s => s.survey_type === 'booster_feedback').length})</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="abandonment">
-                <div className="space-y-6">
-                  {/* ניתוח כללי */}
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <Card>
-                      <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-600 text-right">סה"כ סקרי נטישה</CardTitle>
-                        <FileSearch className="w-4 h-4 text-purple-600" />
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-2xl font-bold text-right text-purple-600">{surveyResponses.filter(s => s.survey_type === 'abandonment').length}</div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-600 text-right">סיבת נטישה מובילה</CardTitle>
-                        <AlertCircle className="w-4 h-4 text-orange-600" />
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-sm font-semibold text-right">
-                          {(() => {
-                            const q1Responses = surveyResponses.filter(s => s.survey_type === 'abandonment').map(s => s.responses?.q1).filter(Boolean);
-                            if (q1Responses.length === 0) return 'אין נתונים';
-                            const counts = {};
-                            q1Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
-                            const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-                            return top ? `${top[0]} (${top[1]})` : 'אין נתונים';
-                          })()}
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-600 text-right">טווח מחיר מועדף</CardTitle>
-                        <DollarSign className="w-4 h-4 text-green-600" />
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-sm font-semibold text-right">
-                          {(() => {
-                            const q2Responses = surveyResponses.filter(s => s.survey_type === 'abandonment').map(s => s.responses?.q2).filter(Boolean);
-                            if (q2Responses.length === 0) return 'אין נתונים';
-                            const counts = {};
-                            q2Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
-                            const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-                            return top ? `${top[0]} (${top[1]})` : 'אין נתונים';
-                          })()}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Unified Survey Chart with Selector */}
-                  <UnifiedSurveyChart surveyResponses={surveyResponses.filter(s => s.survey_type === 'abandonment')} />
-
                   {/* הערות והצעות */}
                   <Card>
                     <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
