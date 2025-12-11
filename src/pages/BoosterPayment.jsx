@@ -24,16 +24,35 @@ export default function BoosterPayment() {
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.log('Loading data... subscriptionId:', subscriptionId);
         const currentUser = await base44.auth.me();
+        console.log('Current user:', currentUser);
         setUser(currentUser);
 
         if (subscriptionId) {
           const sub = await base44.entities.OnlineCoachingSubscription.filter(
             { id: subscriptionId }
           );
+          console.log('Subscription found:', sub);
           if (sub.length > 0 && sub[0].user_email === currentUser.email) {
             setSubscription(sub[0]);
           } else {
+            console.log('No matching subscription or wrong user');
+            navigate(createPageUrl('Home'));
+          }
+        } else {
+          console.log('No subscriptionId in URL');
+          // אם אין subscriptionId, נחפש מנוי פעיל של המשתמש
+          const activeSubs = await base44.entities.OnlineCoachingSubscription.filter(
+            { user_email: currentUser.email, status: 'active' },
+            '-created_date'
+          );
+          console.log('Active subscriptions:', activeSubs);
+          if (activeSubs.length > 0) {
+            setSubscription(activeSubs[0]);
+          } else {
+            console.log('No active subscription found');
+            alert('לא נמצא מנוי פעיל. אנא הירשם תחילה למסלול הבוסטר.');
             navigate(createPageUrl('Home'));
           }
         }
