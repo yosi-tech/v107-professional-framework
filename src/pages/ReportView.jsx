@@ -509,6 +509,7 @@ export default function ReportView() {
                       <BoosterOfferSection
                         recommendedTrack={report.recommended_booster_track}
                         language={currentLanguage}
+                        reportId={report.id}
                       />
                     )}
                   </>

@@ -2060,15 +2060,31 @@ export default function AdminReports() {
 
           <TabsContent value="survey-results">
             <div className="space-y-6">
+              {/* טאבים לסוגי סקרים */}
+              <Tabs defaultValue="abandonment" className="w-full" dir="rtl">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="abandonment" className="flex items-center gap-2 flex-row-reverse">
+                    <span>סקרי נטישה ({surveyResponses.filter(s => s.survey_type === 'abandonment' || !s.survey_type).length})</span>
+                    <FileSearch className="w-4 h-4" />
+                  </TabsTrigger>
+                  <TabsTrigger value="booster" className="flex items-center gap-2 flex-row-reverse">
+                    <span>סקרי בוסטר ({surveyResponses.filter(s => s.survey_type === 'booster_feedback').length})</span>
+                    <Rocket className="w-4 h-4" />
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* סקרי נטישה */}
+                <TabsContent value="abandonment">
+            <div className="space-y-6">
               {/* ניתוח כללי */}
               <div className="grid md:grid-cols-3 gap-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600 text-right">סה"כ סקרים</CardTitle>
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">סה"כ סקרי נטישה</CardTitle>
                     <FileSearch className="w-4 h-4 text-purple-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-right text-purple-600">{surveyResponses.length}</div>
+                    <div className="text-2xl font-bold text-right text-purple-600">{surveyResponses.filter(s => s.survey_type === 'abandonment' || !s.survey_type).length}</div>
                   </CardContent>
                 </Card>
 
@@ -2080,7 +2096,7 @@ export default function AdminReports() {
                   <CardContent>
                     <div className="text-sm font-semibold text-right">
                       {(() => {
-                        const q1Responses = surveyResponses.map(s => s.responses?.q1).filter(Boolean);
+                        const q1Responses = surveyResponses.filter(s => s.survey_type === 'abandonment' || !s.survey_type).map(s => s.responses?.q1).filter(Boolean);
                         if (q1Responses.length === 0) return 'אין נתונים';
                         const counts = {};
                         q1Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
@@ -2099,7 +2115,7 @@ export default function AdminReports() {
                   <CardContent>
                     <div className="text-sm font-semibold text-right">
                       {(() => {
-                        const q2Responses = surveyResponses.map(s => s.responses?.q2).filter(Boolean);
+                        const q2Responses = surveyResponses.filter(s => s.survey_type === 'abandonment' || !s.survey_type).map(s => s.responses?.q2).filter(Boolean);
                         if (q2Responses.length === 0) return 'אין נתונים';
                         const counts = {};
                         q2Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
@@ -2112,7 +2128,7 @@ export default function AdminReports() {
               </div>
 
               {/* Unified Survey Chart with Selector */}
-              <UnifiedSurveyChart surveyResponses={surveyResponses} />
+              <UnifiedSurveyChart surveyResponses={surveyResponses.filter(s => s.survey_type === 'abandonment' || !s.survey_type)} />
 
               {/* הערות והצעות */}
               <Card>
@@ -2122,7 +2138,7 @@ export default function AdminReports() {
                 <CardContent className="p-6">
                   <div className="space-y-3">
                     {surveyResponses
-                      .filter(s => s.responses?.q4)
+                      .filter(s => (s.survey_type === 'abandonment' || !s.survey_type) && s.responses?.q4)
                       .map((survey) => (
                         <div key={survey.id} className="bg-white p-4 rounded-lg border-r-4 border-blue-500 shadow-sm hover:shadow-md transition-shadow">
                           <p className="text-sm text-gray-900 mb-2 text-right">{survey.responses.q4}</p>
@@ -2131,7 +2147,7 @@ export default function AdminReports() {
                           </p>
                         </div>
                       ))}
-                    {surveyResponses.filter(s => s.responses?.q4).length === 0 && (
+                    {surveyResponses.filter(s => (s.survey_type === 'abandonment' || !s.survey_type) && s.responses?.q4).length === 0 && (
                       <div className="text-center py-8">
                         <p className="text-gray-500 text-sm">אין הערות נוספות</p>
                       </div>
@@ -2143,17 +2159,17 @@ export default function AdminReports() {
               {/* רשימת תגובות מפורטת */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-right">תשובות בודדות ({surveyResponses.length})</CardTitle>
+                  <CardTitle className="text-right">תשובות בודדות ({surveyResponses.filter(s => s.survey_type === 'abandonment' || !s.survey_type).length})</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {surveyResponses.length === 0 ? (
+                  {surveyResponses.filter(s => s.survey_type === 'abandonment' || !s.survey_type).length === 0 ? (
                     <div className="text-center py-12">
                       <FileSearch className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                       <p className="text-gray-500 text-lg">אין עדיין תוצאות סקר</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {surveyResponses.map((survey) => (
+                      {surveyResponses.filter(s => s.survey_type === 'abandonment' || !s.survey_type).map((survey) => (
                         <Card key={survey.id} className="border-r-4 border-r-purple-500">
                           <CardContent className="p-6">
                             <div className="flex items-start justify-between mb-4 flex-row-reverse">
@@ -2222,6 +2238,155 @@ export default function AdminReports() {
                   )}
                 </CardContent>
               </Card>
+            </div>
+                </TabsContent>
+
+                {/* סקרי בוסטר */}
+                <TabsContent value="booster">
+                  <div className="space-y-6">
+                    {/* ניתוח כללי */}
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                          <CardTitle className="text-sm font-medium text-gray-600 text-right">סה"כ סקרי בוסטר</CardTitle>
+                          <Rocket className="w-4 h-4 text-purple-600" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold text-right text-purple-600">
+                            {surveyResponses.filter(s => s.survey_type === 'booster_feedback').length}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                          <CardTitle className="text-sm font-medium text-gray-600 text-right">סיבה מובילה</CardTitle>
+                          <AlertCircle className="w-4 h-4 text-orange-600" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-sm font-semibold text-right">
+                            {(() => {
+                              const q1Responses = surveyResponses.filter(s => s.survey_type === 'booster_feedback').map(s => s.responses?.q1).filter(Boolean);
+                              if (q1Responses.length === 0) return 'אין נתונים';
+                              const counts = {};
+                              q1Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
+                              const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+                              return top ? `${top[0]} (${top[1]})` : 'אין נתונים';
+                            })()}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                          <CardTitle className="text-sm font-medium text-gray-600 text-right">שיפורים מוצעים</CardTitle>
+                          <TrendingUp className="w-4 h-4 text-blue-600" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-sm font-semibold text-right">
+                            {surveyResponses.filter(s => s.survey_type === 'booster_feedback' && s.responses?.q2).length} הצעות
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* הערות והצעות לשיפור */}
+                    <Card>
+                      <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50">
+                        <CardTitle className="text-right">מה היה יכול להיות טוב יותר?</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-6">
+                        <div className="space-y-3">
+                          {surveyResponses
+                            .filter(s => s.survey_type === 'booster_feedback' && s.responses?.q2)
+                            .map((survey) => (
+                              <div key={survey.id} className="bg-white p-4 rounded-lg border-r-4 border-purple-500 shadow-sm hover:shadow-md transition-shadow">
+                                <p className="text-sm text-gray-900 mb-2 text-right">{survey.responses.q2}</p>
+                                <p className="text-xs text-gray-500 text-right">
+                                  {survey.user_email || survey.created_by} • {new Date(survey.created_date).toLocaleDateString('he-IL')}
+                                </p>
+                              </div>
+                            ))}
+                          {surveyResponses.filter(s => s.survey_type === 'booster_feedback' && s.responses?.q2).length === 0 && (
+                            <div className="text-center py-8">
+                              <p className="text-gray-500 text-sm">אין הערות</p>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* רשימת תגובות מפורטת */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-right">תשובות בודדות ({surveyResponses.filter(s => s.survey_type === 'booster_feedback').length})</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {surveyResponses.filter(s => s.survey_type === 'booster_feedback').length === 0 ? (
+                          <div className="text-center py-12">
+                            <FileSearch className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                            <p className="text-gray-500 text-lg">אין עדיין תוצאות סקר בוסטר</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {surveyResponses.filter(s => s.survey_type === 'booster_feedback').map((survey) => (
+                              <Card key={survey.id} className="border-r-4 border-r-purple-500">
+                                <CardContent className="p-6">
+                                  <div className="flex items-start justify-between mb-4 flex-row-reverse">
+                                    <div className="text-right flex-1">
+                                      <p className="font-semibold text-gray-900">
+                                        {survey.user_email || survey.created_by || 'משתמש'}
+                                      </p>
+                                      <p className="text-sm text-gray-500">
+                                        {new Date(survey.created_date).toLocaleDateString('he-IL', {
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                          hour: '2-digit',
+                                          minute: '2-digit'
+                                        })}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="space-y-4 text-right" dir="rtl">
+                                    {survey.responses.q1 && (
+                                      <div className="bg-gray-50 p-4 rounded-lg">
+                                        <p className="text-sm font-semibold text-gray-700 mb-2">
+                                          למה הבוסטר לא עזר?
+                                        </p>
+                                        <p className="text-gray-900">{survey.responses.q1}</p>
+                                      </div>
+                                    )}
+                                    
+                                    {survey.responses.q2 && (
+                                      <div className="bg-gray-50 p-4 rounded-lg">
+                                        <p className="text-sm font-semibold text-gray-700 mb-2">
+                                          מה היה יכול להיות טוב יותר?
+                                        </p>
+                                        <p className="text-gray-900">{survey.responses.q2}</p>
+                                      </div>
+                                    )}
+                                    
+                                    {survey.responses.q3 && (
+                                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                        <p className="text-sm font-semibold text-blue-900 mb-2">
+                                          הערות נוספות:
+                                        </p>
+                                        <p className="text-blue-900">{survey.responses.q3}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           </TabsContent>
 
