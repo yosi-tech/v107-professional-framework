@@ -14,6 +14,9 @@ import QuestionnaireExport from './pages/QuestionnaireExport';
 import Survey from './pages/Survey';
 import MyAccount from './pages/MyAccount';
 import BoosterRegistration from './pages/BoosterRegistration';
+import BoosterContinuation from './pages/BoosterContinuation';
+import BoosterPayment from './pages/BoosterPayment';
+import BoosterThankYou from './pages/BoosterThankYou';
 import __Layout from './Layout.jsx';
 
 
@@ -34,6 +37,9 @@ export const PAGES = {
     "Survey": Survey,
     "MyAccount": MyAccount,
     "BoosterRegistration": BoosterRegistration,
+    "BoosterContinuation": BoosterContinuation,
+    "BoosterPayment": BoosterPayment,
+    "BoosterThankYou": BoosterThankYou,
 }
 
 export const pagesConfig = {
