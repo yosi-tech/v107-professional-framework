@@ -53,12 +53,12 @@ export default function BoosterPayment() {
 
     setIsProcessing(true);
     try {
-      const response = await tranzilaCreateHandshake({
+      const { data } = await tranzilaCreateHandshake({
         sum: 199
       });
 
-      if (response.data && response.data.thtk && response.data.supplier) {
-        const { thtk, supplier } = response.data;
+      if (data && data.thtk && data.supplier) {
+        const { thtk, supplier } = data;
         const successUrl = `${window.location.origin}${createPageUrl('BoosterThankYou')}`;
         const cancelUrl = `${window.location.origin}${createPageUrl('BoosterPayment')}?subscriptionId=${subscription.id}`;
         
