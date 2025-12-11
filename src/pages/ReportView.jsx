@@ -27,6 +27,7 @@ import BoosterOfferSection from "@/components/report/BoosterOfferSection";
 import FullReportSection from "@/components/report/FullReportSection";
 import FullReportEditor from "@/components/report/FullReportEditor";
 import TrafficLightsEditor from "@/components/report/TrafficLightsEditor";
+import ReadinessTableSection from "@/components/report/ReadinessTableSection";
 
 const TEXTS = {
   he: {
@@ -434,36 +435,15 @@ export default function ReportView() {
               </div>
             )}
 
-            {/* Page 3: Traffic Lights + Domain Scores */}
+            {/* Page 3: Readiness Table + Traffic Lights + Domain Scores */}
             {currentPage === 3 && (
               <div className="space-y-8">
-                <div className="relative">
-                  {isAdmin && (
-                    <Button
-                      onClick={() => startEditSection('traffic_lights_table')}
-                      size="sm"
-                      variant="outline"
-                      className="absolute top-4 left-4 z-10 no-print"
-                    >
-                      <Edit2 className="w-4 h-4 ml-2" />
-                      {getText('edit')}
-                    </Button>
-                  )}
-                  {editingSection === 'traffic_lights_table' ? (
-                    <Card className="p-6">
-                      <TrafficLightsEditor
-                        data={report.traffic_lights_table}
-                        onSave={(data) => saveSection('traffic_lights_table', data)}
-                        onCancel={cancelEdit}
-                      />
-                    </Card>
-                  ) : (
-                    <TrafficLightsSection
-                      trafficLights={report.traffic_lights_table}
-                      language={currentLanguage}
-                    />
-                  )}
-                </div>
+                {report.traffic_lights_table && report.traffic_lights_table.length > 0 && (
+                  <ReadinessTableSection
+                    readinessData={report.traffic_lights_table}
+                    language={currentLanguage}
+                  />
+                )}
                 <DomainScoresSection
                   domainScores={report.domain_scores}
                   language={currentLanguage}
