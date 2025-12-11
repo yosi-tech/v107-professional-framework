@@ -78,8 +78,35 @@ Deno.serve(async (req) => {
 
         if (emailTemplates.length > 0) {
             const template = emailTemplates[0];
-            const subject = language === 'he' ? template.subject_he : template.subject_en;
-            const content = language === 'he' ? template.content_he : template.content_en;
+            let subject = language === 'he' ? template.subject_he : template.subject_en;
+            let content = language === 'he' ? template.content_he : template.content_en;
+
+            // החלף פלייסהולדרים
+            const trackNames = {
+                execution: language === 'he' ? 'ביצוע' : 'Execution',
+                digital: language === 'he' ? 'דיגיטל' : 'Digital',
+                finance: language === 'he' ? 'פיננסים' : 'Finance',
+                marketing: language === 'he' ? 'שיווק' : 'Marketing',
+                management: language === 'he' ? 'ניהול' : 'Management',
+                vision: language === 'he' ? 'חזון' : 'Vision'
+            };
+
+            const replacements = {
+                '{userName}': user.full_name,
+                '{trackName}': trackNames[trackToUse] || trackToUse,
+                '{day}': '1',
+                '{currentDay}': '1'
+            };
+
+            for (const [placeholder, value] of Object.entries(replacements)) {
+                subject = subject.replace(new RegExp(placeholder, 'g'), value);
+                content = content.replace(new RegExp(placeholder, 'g'), value);
+            }
+
+            // עטוף בתבנית RTL אם עברית
+            if (language === 'he') {
+                content = `<div dir="rtl" style="text-align: right;">${content}</div>`;
+            }
 
             // Send the first email
             await base44.asServiceRole.integrations.Core.SendEmail({
