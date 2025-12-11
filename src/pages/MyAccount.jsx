@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, FileText, Award, ShoppingCart, Gift, CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle, Lock } from 'lucide-react';
+import { Loader2, FileText, Award, ShoppingCart, Gift, CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle, Lock, Rocket } from 'lucide-react';
 import { useTranslation } from '@/components/i18n/useTranslation';
 
 export default function MyAccount() {
@@ -16,6 +16,7 @@ export default function MyAccount() {
   const [reports, setReports] = useState([]);
   const [surveyResponses, setSurveyResponses] = useState([]);
   const [coupons, setCoupons] = useState([]);
+  const [boosterSubscription, setBoosterSubscription] = useState(null);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -61,6 +62,19 @@ export default function MyAccount() {
           setCoupons(userCoupons);
         } catch (e) {
           console.log('No coupons found');
+        }
+
+        // טען מנוי בוסטר
+        try {
+          const subscriptions = await base44.entities.OnlineCoachingSubscription.filter(
+            { user_email: currentUser.email, status: 'active' },
+            '-created_date'
+          );
+          if (subscriptions.length > 0) {
+            setBoosterSubscription(subscriptions[0]);
+          }
+        } catch (e) {
+          console.log('No booster subscription found');
         }
 
       } catch (error) {
@@ -142,6 +156,49 @@ export default function MyAccount() {
             {language === 'he' ? 'התנתק' : 'Logout'}
           </Button>
         </div>
+
+        {/* מנוי בוסטר פעיל */}
+        {boosterSubscription && (
+          <Card className="shadow-lg mb-6 border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Rocket className="w-6 h-6 text-purple-600" />
+                {language === 'he' ? '🚀 מסלול הבוסטר שלך פעיל!' : '🚀 Your Booster Track is Active!'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">
+                    {language === 'he' ? 'מסלול:' : 'Track:'}
+                  </span>
+                  <Badge className="bg-purple-600 text-white">
+                    {boosterSubscription.recommended_booster_track}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">
+                    {language === 'he' ? 'יום נוכחי:' : 'Current Day:'}
+                  </span>
+                  <span className="font-bold text-lg text-purple-700">
+                    {boosterSubscription.current_day} / 7
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 h-3 rounded-full transition-all"
+                    style={{ width: `${(boosterSubscription.current_day / 7) * 100}%` }}
+                  />
+                </div>
+                <p className="text-xs text-gray-600 text-center mt-2">
+                  {language === 'he' 
+                    ? 'המיילים היומיים נשלחים אוטומטית למייל שלך'
+                    : 'Daily emails are sent automatically to your email'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* פעולות מהירות */}
         <Card className="shadow-lg mb-6">

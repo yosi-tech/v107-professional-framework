@@ -28,7 +28,8 @@ import {
   LogOut,
   BarChart3,
   Settings,
-  TrendingUp
+  TrendingUp,
+  Rocket
 } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
@@ -70,6 +71,7 @@ export default function AdminReports() {
   const [emailTemplates, setEmailTemplates] = useState([]);
   const [surveyResponses, setSurveyResponses] = useState([]);
   const [siteSettings, setSiteSettings] = useState([]);
+  const [boosterSubscriptions, setBoosterSubscriptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingTemplate, setEditingTemplate] = useState(null);
   const [templateDialog, setTemplateDialog] = useState(false);
@@ -121,7 +123,7 @@ export default function AdminReports() {
 
   const loadData = async () => {
     try {
-      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses, allSiteSettings] = await Promise.all([
+      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses, allSiteSettings, allBoosterSubscriptions] = await Promise.all([
         base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date'),
         base44.entities.QuestionnaireResponse.filter({ status: 'in_progress' }, '-created_date'),
         base44.entities.GeneratedReport.list('-created_date'),
@@ -129,7 +131,8 @@ export default function AdminReports() {
         base44.entities.EmailLog.list('-created_date'),
         base44.entities.EmailTemplate.list('-created_date'),
         base44.entities.SurveyResponse.list('-created_date'),
-        base44.entities.SiteSettings.list().catch(() => [])
+        base44.entities.SiteSettings.list().catch(() => []),
+        base44.entities.OnlineCoachingSubscription.list('-created_date').catch(() => [])
       ]);
       setResponses([...completedResponses, ...inProgressResponses]);
       setReports(allReports);
@@ -138,6 +141,7 @@ export default function AdminReports() {
       setEmailTemplates(allEmailTemplates);
       setSurveyResponses(allSurveyResponses);
       setSiteSettings(allSiteSettings);
+      setBoosterSubscriptions(allBoosterSubscriptions);
     } catch (error) {
       console.error("Error loading data:", error);
     }
@@ -2248,6 +2252,9 @@ export default function AdminReports() {
                       const userReports = reports.filter(r => r.user_email === user.email);
                       const hasPurchasedFullReport = (user.has_purchased_full_report ?? false);
                       const hasPurchasedAnswersDownload = (user.has_purchased_answers_download ?? false);
+                      const activeBoosterSubscription = boosterSubscriptions.find(s => 
+                        s.user_email === user.email && s.status === 'active'
+                      );
 
                       return (
                         <Card key={user.id} className="border">
@@ -2259,6 +2266,12 @@ export default function AdminReports() {
                                   {user.role === 'admin' && (
                                     <Badge className="bg-purple-600 text-white text-xs">
                                       Admin
+                                    </Badge>
+                                  )}
+                                  {activeBoosterSubscription && (
+                                    <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs flex items-center gap-1">
+                                      <Rocket className="w-3 h-3" />
+                                      בוסטר יום {activeBoosterSubscription.current_day}/7
                                     </Badge>
                                   )}
                                 </div>
