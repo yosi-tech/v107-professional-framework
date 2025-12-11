@@ -45,6 +45,21 @@ export default function ContentManager({ contentItems, onUpdate }) {
     { value: 'terms', label: 'תנאי שימוש', icon: File }
   ];
 
+  // Fetch articles on component mount
+  React.useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const data = await base44.entities.Article.list('-created_date');
+        setArticles(data);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      } finally {
+        setIsLoadingArticles(false);
+      }
+    };
+    fetchArticles();
+  }, []);
+
   const sectionOrder = {
     home: ['hero', 'stats', 'how_it_works', 'benefits', 'testimonials', 'final_cta', 'trust_badges'],
     about: ['hero', 'yossi', 'categories', 'portfolio'],
