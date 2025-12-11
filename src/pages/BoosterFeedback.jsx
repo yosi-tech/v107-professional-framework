@@ -121,7 +121,7 @@ export default function BoosterFeedback() {
                 <p className="text-lg text-gray-700 leading-relaxed">
                   {isHebrew 
                     ? 'אם חווית שיפור ורוצה להמשיך לצמוח, נשמח להמשיך ללוות אותך במסע היזמי שלך! הצטרף למסלול המתקדם שלנו בהשקעה סמלית של 199 ₪ בלבד.'
-                    : 'If you experienced improvement and want to continue growing, we'd love to continue guiding you on your entrepreneurial journey! Join our advanced track for a symbolic investment of only 199 ₪.'}
+                    : "If you experienced improvement and want to continue growing, we'd love to continue guiding you on your entrepreneurial journey! Join our advanced track for a symbolic investment of only 199 ₪."}
                 </p>
               </CardContent>
             </Card>
