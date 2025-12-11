@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Rocket, CheckCircle, Gift, TrendingUp, Award, Target } from "lucide-react";
+import { Rocket, CheckCircle, Gift, TrendingUp, Award, Target, ShoppingCart } from "lucide-react";
 
 export default function BoosterOfferSection({ recommendedTrack, language }) {
   if (!recommendedTrack) return null;
@@ -219,14 +219,23 @@ export default function BoosterOfferSection({ recommendedTrack, language }) {
           </CardContent>
         </Card>
 
-        <div className="text-center mt-6">
-          <p className="text-white/90 text-base font-medium">
+        <div className="text-center mt-8">
+          <Button 
+            onClick={() => {
+              // Redirect to purchase page or open payment dialog
+              window.location.href = '/payment?product=online_coaching_7days';
+            }}
+            className="bg-white text-purple-600 hover:bg-gray-100 text-xl px-12 py-6 rounded-xl font-black shadow-2xl hover:shadow-3xl transition-all hover:scale-105"
+          >
+            {isHebrew ? '🚀 אני רוצה להצטרף למסלול הבוסטר!' : '🚀 I want to join the Booster Track!'}
+          </Button>
+          <p className="text-white/90 text-sm font-medium mt-4">
             {isHebrew 
-              ? '✨ פרטים נוספים יישלחו אליך במייל נפרד ✨'
-              : '✨ More details will be sent to you in a separate email ✨'}
+              ? '✨ פרטים נוספים יישלחו אליך במייל לאחר ההרשמה ✨'
+              : '✨ More details will be sent to you by email after registration ✨'}
           </p>
         </div>
-      </CardContent>
-    </Card>
-  );
-}
+        </CardContent>
+        </Card>
+        );
+        }

@@ -410,6 +410,37 @@ export default function ReportView() {
                 )}
               </div>
 
+              {/* Traffic Lights */}
+              <div className="mb-8">
+                {editingSection === 'traffic_lights_table' && isAdmin ? (
+                  <Card className="p-6">
+                    <TrafficLightsEditor
+                      data={report.traffic_lights_table}
+                      onSave={(data) => saveSection('traffic_lights_table', data)}
+                      onCancel={cancelEdit}
+                    />
+                  </Card>
+                ) : (
+                  <div className="relative">
+                    {isAdmin && (
+                      <Button
+                        onClick={() => startEditSection('traffic_lights_table')}
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-4 left-4 z-10 no-print"
+                      >
+                        <Edit2 className="w-4 h-4 ml-2" />
+                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
+                      </Button>
+                    )}
+                    <TrafficLightsSection 
+                      trafficLights={report.traffic_lights_table} 
+                      language={currentLanguage}
+                    />
+                  </div>
+                )}
+              </div>
+
               {/* Domain Scores */}
               <DomainScoresSection 
                 domainScores={report.domain_scores} 
@@ -443,37 +474,6 @@ export default function ReportView() {
                     <DomainAnalysisSection 
                       domainAnalysis={report.domain_analysis}
                       domainScores={report.domain_scores}
-                      language={currentLanguage}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Traffic Lights */}
-              <div className="mb-8">
-                {editingSection === 'traffic_lights_table' && isAdmin ? (
-                  <Card className="p-6">
-                    <TrafficLightsEditor
-                      data={report.traffic_lights_table}
-                      onSave={(data) => saveSection('traffic_lights_table', data)}
-                      onCancel={cancelEdit}
-                    />
-                  </Card>
-                ) : (
-                  <div className="relative">
-                    {isAdmin && (
-                      <Button
-                        onClick={() => startEditSection('traffic_lights_table')}
-                        size="sm"
-                        variant="outline"
-                        className="absolute top-4 left-4 z-10 no-print"
-                      >
-                        <Edit2 className="w-4 h-4 ml-2" />
-                        {currentLanguage === 'he' ? 'ערוך' : 'Edit'}
-                      </Button>
-                    )}
-                    <TrafficLightsSection 
-                      trafficLights={report.traffic_lights_table} 
                       language={currentLanguage}
                     />
                   </div>
