@@ -33,12 +33,32 @@ export default function Home() {
   const [testimonials, setTestimonials] = useState([]);
   const [isLoadingTestimonials, setIsLoadingTestimonials] = useState(true);
   const [scrollY, setScrollY] = useState(0);
+  const [content, setContent] = useState({});
+  const [isLoadingContent, setIsLoadingContent] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const items = await base44.entities.ContentItem.filter({ page: 'home' });
+        const contentMap = {};
+        items.forEach(item => {
+          contentMap[item.content_key] = language === 'he' ? item.content_he : item.content_en;
+        });
+        setContent(contentMap);
+      } catch (error) {
+        console.error("Failed to fetch content:", error);
+      } finally {
+        setIsLoadingContent(false);
+      }
+    };
+    fetchContent();
+  }, [language]);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -73,6 +93,8 @@ export default function Home() {
   };
 
   const currentArrowIcon = language === 'he' ? ArrowLeft : ArrowRight;
+
+  const getContent = (key, fallback = '') => content[key] || fallback;
 
   const stepsData = language === 'he' ? [
     {
@@ -170,6 +192,14 @@ export default function Home() {
     { number: "7", label: "Days to Report" }
   ];
 
+  if (isLoadingContent) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-gray-400">{language === 'he' ? 'טוען...' : 'Loading...'}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white overflow-hidden">
       {/* Hero Section - Modern & Dynamic */}
@@ -177,7 +207,7 @@ export default function Home() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img 
-            src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2574&auto=format&fit=crop"
+            src={getContent('hero_background_image', 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2574&auto=format&fit=crop')}
             alt="Entrepreneurs collaborating"
             className="w-full h-full object-cover"
           />
@@ -227,25 +257,25 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-white/20">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="text-sm text-white/90 font-medium">
-                {language === 'he' ? 'מבוסס על 5 שנות מחקר ופיתוח' : 'Based on 5 Years of Research'}
+                {getContent('hero_badge_text', language === 'he' ? 'מבוסס על 5 שנות מחקר ופיתוח' : 'Based on 5 Years of Research')}
               </span>
             </div>
 
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
               <span className="text-white">
-                {language === 'he' ? 'פתח את מלוא' : 'Unlock Your Full'}
+                {getContent('hero_title_part1', language === 'he' ? 'פתח את מלוא' : 'Unlock Your Full')}
               </span>
               <br />
               <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-                {language === 'he' ? 'הפוטנציאל היזמי שלך' : 'Entrepreneurial Potential'}
+                {getContent('hero_title_part2', language === 'he' ? 'הפוטנציאל היזמי שלך' : 'Entrepreneurial Potential')}
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {language === 'he' 
+              {getContent('hero_subtitle', language === 'he' 
                 ? 'קבל דוח אישי מבוסס AI שיגלה את החוזקות שלך, יזהה מוקדי שיפור, ויספק לך תוכנית פעולה מדויקת להצלחה עסקית.'
                 : 'Get an AI-powered personal report that reveals your strengths, identifies improvement areas, and provides a precise action plan for business success.'
-              }
+              )}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-12">
@@ -256,7 +286,7 @@ export default function Home() {
                 >
                   <span className="relative z-10 flex items-center gap-3">
                     <Rocket className="w-6 h-6" />
-                    {language === 'he' ? 'התחל את השאלון עכשיו!' : 'Start Questionnaire Now!'}
+                    {getContent('hero_cta_button', language === 'he' ? 'התחל את השאלון עכשיו!' : 'Start Questionnaire Now!')}
                     {React.createElement(currentArrowIcon, { className: "w-6 h-6 group-hover:translate-x-1 transition-transform" })}
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -266,7 +296,7 @@ export default function Home() {
 
             <div className="inline-flex items-center gap-2 text-sm text-white/80">
               <CheckCircle className="w-4 h-4 text-green-400" />
-              <span>{language === 'he' ? 'חינם לחלוטין · ללא התחייבות · 10 דקות בלבד' : 'Completely Free · No Commitment · Just 10 Minutes'}</span>
+              <span>{getContent('hero_trust_text', language === 'he' ? 'חינם לחלוטין · ללא התחייבות · 10 דקות בלבד' : 'Completely Free · No Commitment · Just 10 Minutes')}</span>
             </div>
           </motion.div>
 
@@ -277,12 +307,22 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6"
           >
-            {statsData.map((stat, index) => (
-              <div key={index} className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                <div className="text-4xl font-black text-amber-400 mb-2">{stat.number}</div>
-                <div className="text-sm text-gray-300">{stat.label}</div>
-              </div>
-            ))}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat1_number', '5,000+')}</div>
+              <div className="text-sm text-gray-300">{getContent('stat1_label', language === 'he' ? 'יזמים השתמשו בשאלון' : 'Entrepreneurs Used')}</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat2_number', '107')}</div>
+              <div className="text-sm text-gray-300">{getContent('stat2_label', language === 'he' ? 'נקודות מידה' : 'Data Points')}</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat3_number', '11')}</div>
+              <div className="text-sm text-gray-300">{getContent('stat3_label', language === 'he' ? 'ממדים קריטיים' : 'Critical Dimensions')}</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+              <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat4_number', '7')}</div>
+              <div className="text-sm text-gray-300">{getContent('stat4_label', language === 'he' ? 'ימים לקבלת דוח' : 'Days to Report')}</div>
+            </div>
           </motion.div>
         </div>
 
@@ -320,13 +360,13 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'איך זה עובד?' : 'How Does It Work?'}
+                {getContent('section_title', language === 'he' ? 'איך זה עובד?' : 'How Does It Work?')}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {language === 'he' 
+                {getContent('section_subtitle', language === 'he' 
                   ? '3 שלבים פשוטים לקבלת הדוח המקצועי שלך'
                   : '3 Simple Steps to Your Professional Report'
-                }
+                )}
               </p>
             </motion.div>
           </div>
@@ -409,19 +449,24 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'למה דווקא V107?' : 'Why V107?'}
+                {getContent('section_title', language === 'he' ? 'למה דווקא V107?' : 'Why V107?')}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {language === 'he' 
+                {getContent('section_subtitle', language === 'he' 
                   ? 'הכלי המקצועי ביותר לאבחון יזמי בישראל'
                   : 'The Most Professional Entrepreneurial Assessment Tool in Israel'
-                }
+                )}
               </p>
             </motion.div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {benefitsData.map((benefit, index) => (
+            {[
+              { icon: Target, titleKey: 'benefit1_title', descKey: 'benefit1_description' },
+              { icon: TrendingUp, titleKey: 'benefit2_title', descKey: 'benefit2_description' },
+              { icon: Zap, titleKey: 'benefit3_title', descKey: 'benefit3_description' },
+              { icon: Award, titleKey: 'benefit4_title', descKey: 'benefit4_description' }
+            ].map((benefit, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
@@ -436,8 +481,8 @@ export default function Home() {
                         <benefit.icon className="w-7 h-7 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-3 text-gray-900">{benefit.title}</h3>
-                        <p className="text-gray-600 leading-relaxed">{benefit.desc}</p>
+                        <h3 className="text-xl font-bold mb-3 text-gray-900">{getContent(benefit.titleKey, benefitsData[index]?.title || '')}</h3>
+                        <p className="text-gray-600 leading-relaxed">{getContent(benefit.descKey, benefitsData[index]?.desc || '')}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -563,19 +608,19 @@ export default function Home() {
           >
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-2xl">
               <Sparkles className="w-16 h-16 text-amber-400 mx-auto mb-6" />
-              
+
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-white leading-tight">
-                {language === 'he' 
+                {getContent('section_title', language === 'he' 
                   ? 'מוכן לקחת את הצעד הבא?'
                   : 'Ready to Take the Next Step?'
-                }
+                )}
               </h2>
-              
+
               <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-                {language === 'he'
+                {getContent('section_description', language === 'he'
                   ? 'השקעה של 10 דקות עכשיו יכולה לחסוך לך שנים של ניסוי וטעייה. קבל את הדוח האישי שלך והתחל לבנות את העסק המצליח שלך.'
                   : '10 minutes now can save you years of trial and error. Get your personal report and start building your successful business.'
-                }
+                )}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
@@ -586,7 +631,7 @@ export default function Home() {
                   >
                     <span className="flex items-center gap-3">
                       <Play className="w-7 h-7" />
-                      {language === 'he' ? 'התחל עכשיו - חינם!' : 'Start Now - Free!'}
+                      {getContent('cta_button_text', language === 'he' ? 'התחל עכשיו - חינם!' : 'Start Now - Free!')}
                     </span>
                   </Button>
                 </Link>
@@ -609,20 +654,20 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
               <Users className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">5,000+</h3>
-              <p className="text-gray-600">{language === 'he' ? 'יזמים השתמשו בשאלון' : 'Entrepreneurs Used'}</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{getContent('badge1_number', '5,000+')}</h3>
+              <p className="text-gray-600">{getContent('badge1_text', language === 'he' ? 'יזמים השתמשו בשאלון' : 'Entrepreneurs Used')}</p>
             </div>
             <div>
               <Award className="w-12 h-12 text-amber-600 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                {language === 'he' ? '5 שנים' : '5 Years'}
+                {getContent('badge2_number', language === 'he' ? '5 שנים' : '5 Years')}
               </h3>
-              <p className="text-gray-600">{language === 'he' ? 'של מחקר ופיתוח' : 'Research & Development'}</p>
+              <p className="text-gray-600">{getContent('badge2_text', language === 'he' ? 'של מחקר ופיתוח' : 'Research & Development')}</p>
             </div>
             <div>
               <Target className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">107</h3>
-              <p className="text-gray-600">{language === 'he' ? 'נקודות מידה קריטיות' : 'Critical Data Points'}</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{getContent('badge3_number', '107')}</h3>
+              <p className="text-gray-600">{getContent('badge3_text', language === 'he' ? 'נקודות מידה קריטיות' : 'Critical Data Points')}</p>
             </div>
           </div>
         </div>
