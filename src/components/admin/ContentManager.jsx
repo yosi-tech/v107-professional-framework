@@ -259,9 +259,32 @@ export default function ContentManager({ contentItems, onUpdate }) {
                 Object.entries(groupedContent[page.value] || {}).map(([section, items]) => (
                   <Card key={section}>
                     <CardHeader className="bg-slate-50">
-                      <CardTitle className="text-right text-lg">
-                        סקשן: {section}
-                      </CardTitle>
+                      <div className="flex items-center justify-between">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setNewItem({
+                              page: page.value,
+                              section: section,
+                              content_key: '',
+                              content_type: 'text',
+                              content_he: '',
+                              content_en: '',
+                              description: '',
+                              order: Math.max(...items.map(i => i.order || 0), 0) + 1
+                            });
+                            setIsCreating(true);
+                          }}
+                          className="flex items-center gap-2"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>הוסף פריט</span>
+                        </Button>
+                        <CardTitle className="text-right text-lg">
+                          סקשן: {section}
+                        </CardTitle>
+                      </div>
                     </CardHeader>
                     <CardContent className="p-6 space-y-4">
                       {items
