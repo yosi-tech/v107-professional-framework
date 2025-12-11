@@ -16,13 +16,6 @@ Deno.serve(async (req) => {
         const body = await req.json();
         const { recommended_booster_track, language = 'he' } = body;
 
-        if (!recommended_booster_track) {
-            return Response.json({ 
-                success: false, 
-                message: 'Missing required field: recommended_booster_track' 
-            }, { status: 400 });
-        }
-
         // Check if user already has an active subscription
         const existingSubscriptions = await base44.entities.OnlineCoachingSubscription.filter({
             user_email: user.email,
@@ -35,6 +28,26 @@ Deno.serve(async (req) => {
                 message: language === 'he' 
                     ? 'כבר קיים מנוי פעיל עבורך'
                     : 'You already have an active subscription'
+            }, { status: 400 });
+        }
+
+        // מצא את הדוח האחרון של המשתמש כדי לקבל את ה-recommended_booster_track
+        const userReports = await base44.asServiceRole.entities.GeneratedReport.filter(
+            { user_email: user.email },
+            '-created_date',
+            1
+        );
+
+        // אם יש דוח עם המלצה, השתמש בה; אחרת השתמש במה שנשלח בבקשה
+        let trackToUse = recommended_booster_track;
+        if (userReports.length > 0 && userReports[0].recommended_booster_track) {
+            trackToUse = userReports[0].recommended_booster_track;
+        }
+
+        if (!trackToUse) {
+            return Response.json({ 
+                success: false, 
+                message: 'Missing required field: recommended_booster_track' 
             }, { status: 400 });
         }
 
@@ -52,7 +65,7 @@ Deno.serve(async (req) => {
             last_email_sent_date: startDate.toISOString(),
             status: 'active',
             language: language,
-            recommended_booster_track: recommended_booster_track
+            recommended_booster_track: trackToUse
         });
 
         // Get the email template for day 1
