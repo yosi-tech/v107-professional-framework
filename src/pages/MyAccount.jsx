@@ -4,6 +4,7 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Loader2, FileText, Award, ShoppingCart, Gift, CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle, Lock, Rocket } from 'lucide-react';
 import { useTranslation } from '@/components/i18n/useTranslation';
 
