@@ -22,22 +22,11 @@ export default function BoosterRegistration() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const [formData, setFormData] = useState({
-    full_name: '',
-    email: '',
-    phone: ''
-  });
-
   useEffect(() => {
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        setFormData({
-          full_name: currentUser.full_name || '',
-          email: currentUser.email || '',
-          phone: ''
-        });
       } catch (error) {
         setUser(null);
       } finally {
@@ -89,28 +78,28 @@ export default function BoosterRegistration() {
   const currentTrack = trackInfo[track] || trackInfo.execution;
   const isHebrew = language === 'he';
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubscribe = async () => {
+    if (!user) {
+      setError(isHebrew ? 'יש להתחבר למערכת' : 'Please login first');
+      return;
+    }
+
     setError('');
     setIsSubmitting(true);
 
     try {
-      // Call the backend function to subscribe to booster
-      const response = await base44.functions.invoke('subscribeToBooster', {
-        user_email: formData.email,
-        user_name: formData.full_name,
-        phone: formData.phone,
+      const { data } = await base44.functions.invoke('subscribeToBooster', {
         recommended_booster_track: track,
         language: language
       });
 
-      if (response.data.success) {
+      if (data.success) {
         setSuccess(true);
         setTimeout(() => {
           navigate('/');
         }, 3000);
       } else {
-        setError(response.data.message || 'אירעה שגיאה בהרשמה');
+        setError(data.message || (isHebrew ? 'אירעה שגיאה בהרשמה' : 'Registration error'));
       }
     } catch (error) {
       console.error('Subscription error:', error);
@@ -220,87 +209,58 @@ export default function BoosterRegistration() {
               </ul>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Label htmlFor="full_name" className="text-lg font-semibold text-gray-900 mb-2 block">
-                  {isHebrew ? 'שם מלא' : 'Full Name'} *
-                </Label>
-                <div className="relative">
-                  <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    id="full_name"
-                    type="text"
-                    required
-                    value={formData.full_name}
-                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    className="pr-10 text-lg h-12"
-                    placeholder={isHebrew ? 'הכנס שם מלא' : 'Enter full name'}
-                  />
+            {!user && (
+              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-4 rounded-lg mb-6">
+                <p className="text-center">
+                  {isHebrew 
+                    ? 'יש להתחבר למערכת על מנת להירשם למסלול'
+                    : 'Please login to register for the track'}
+                </p>
+              </div>
+            )}
+
+            {user && (
+              <div className="bg-blue-50 border border-blue-200 px-6 py-4 rounded-lg mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <User className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-900">{user.full_name}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Mail className="w-5 h-5 text-blue-600" />
+                  <span className="text-gray-700">{user.email}</span>
                 </div>
               </div>
+            )}
 
-              <div>
-                <Label htmlFor="email" className="text-lg font-semibold text-gray-900 mb-2 block">
-                  {isHebrew ? 'כתובת מייל' : 'Email Address'} *
-                </Label>
-                <div className="relative">
-                  <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="pr-10 text-lg h-12"
-                    placeholder={isHebrew ? 'הכנס כתובת מייל' : 'Enter email address'}
-                  />
-                </div>
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
+                {error}
               </div>
+            )}
 
-              <div>
-                <Label htmlFor="phone" className="text-lg font-semibold text-gray-900 mb-2 block">
-                  {isHebrew ? 'מספר טלפון (אופציונלי)' : 'Phone Number (Optional)'}
-                </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="text-lg h-12"
-                  placeholder={isHebrew ? 'הכנס מספר טלפון' : 'Enter phone number'}
-                />
-              </div>
-
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-                  {error}
-                </div>
+            <Button
+              onClick={handleSubscribe}
+              disabled={isSubmitting || !user}
+              className={`w-full bg-gradient-to-r ${currentTrack.color} text-white text-xl py-6 rounded-xl font-black shadow-xl hover:shadow-2xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-6 h-6 animate-spin ml-2" />
+                  {isHebrew ? 'מבצע הרשמה...' : 'Registering...'}
+                </>
+              ) : (
+                <>
+                  <Rocket className="w-6 h-6 ml-2" />
+                  {isHebrew ? 'הרשם למסלול הבוסטר - חינם!' : 'Register for Booster Track - Free!'}
+                </>
               )}
+            </Button>
 
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full bg-gradient-to-r ${currentTrack.color} text-white text-xl py-6 rounded-xl font-black shadow-xl hover:shadow-2xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-6 h-6 animate-spin ml-2" />
-                    {isHebrew ? 'מבצע הרשמה...' : 'Registering...'}
-                  </>
-                ) : (
-                  <>
-                    <Rocket className="w-6 h-6 ml-2" />
-                    {isHebrew ? 'הרשם למסלול הבוסטר - חינם!' : 'Register for Booster Track - Free!'}
-                  </>
-                )}
-              </Button>
-
-              <p className="text-sm text-gray-500 text-center">
-                {isHebrew 
-                  ? '* המסלול הראשוני ל-7 ימים ניתן ללא עלות. בסוף המסלול תוכל לבחור להמשיך בתשלום.'
-                  : '* The initial 7-day track is provided at no cost. At the end, you can choose to continue with payment.'}
-              </p>
-            </form>
+            <p className="text-sm text-gray-500 text-center mt-4">
+              {isHebrew 
+                ? '* המסלול הראשוני ל-7 ימים ניתן ללא עלות. בסוף המסלול תוכל לבחור להמשיך בתשלום.'
+                : '* The initial 7-day track is provided at no cost. At the end, you can choose to continue with payment.'}
+            </p>
           </CardContent>
         </Card>
       </div>
