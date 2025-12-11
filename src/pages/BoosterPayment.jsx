@@ -54,22 +54,17 @@ export default function BoosterPayment() {
     setIsProcessing(true);
     try {
       const response = await tranzilaCreateHandshake({
-        sum: 199,
-        currency: 1,
-        user_email: user.email,
-        user_name: user.full_name,
-        product_name: `V107 Booster Extended - ${subscription.recommended_booster_track}`,
-        product_type: 'booster_extended',
-        express_delivery: false,
-        language: subscription.language || 'he',
-        metadata: {
-          subscription_id: subscription.id,
-          track: subscription.recommended_booster_track
-        }
+        sum: 199
       });
 
-      if (response.data && response.data.url) {
-        window.location.href = response.data.url;
+      if (response.data && response.data.thtk && response.data.supplier) {
+        const { thtk, supplier } = response.data;
+        const successUrl = `${window.location.origin}${createPageUrl('BoosterThankYou')}`;
+        const cancelUrl = `${window.location.origin}${createPageUrl('BoosterPayment')}?subscriptionId=${subscription.id}`;
+        
+        const tranzilaUrl = `https://direct.tranzila.com/${supplier}/iframenew.php?sum=199&currency=1&thtk=${thtk}&success_url_address=${encodeURIComponent(successUrl)}&fail_url_address=${encodeURIComponent(cancelUrl)}&trButtonColor=blue&lang=he`;
+        
+        window.location.href = tranzilaUrl;
       } else {
         alert('שגיאה ביצירת תשלום. אנא נסה שוב.');
         setIsProcessing(false);
