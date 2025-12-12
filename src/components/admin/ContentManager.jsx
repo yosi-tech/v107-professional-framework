@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Home, FileText, Info, File, Loader2, Save, Plus, Trash2, Image, BookOpen } from "lucide-react";
+import { Home, FileText, Info, File, Loader2, Save, Plus, Trash2, Image, BookOpen, ShoppingCart, Rocket } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function ContentManager({ contentItems, onUpdate }) {
@@ -41,6 +41,8 @@ export default function ContentManager({ contentItems, onUpdate }) {
   const pages = [
     { value: 'home', label: 'דף הבית', icon: Home },
     { value: 'about', label: 'אודות', icon: Info },
+    { value: 'completion', label: 'עמוד רכישה', icon: ShoppingCart },
+    { value: 'booster', label: 'עמוד בוסטר', icon: Rocket },
     { value: 'terms', label: 'תנאי שימוש', icon: File }
   ];
 
@@ -62,6 +64,8 @@ export default function ContentManager({ contentItems, onUpdate }) {
   const sectionOrder = {
     home: ['hero', 'stats', 'how_it_works', 'benefits', 'testimonials', 'final_cta', 'trust_badges'],
     about: ['hero', 'yossi', 'categories', 'portfolio'],
+    completion: ['hero', 'products', 'cta'],
+    booster: ['hero', 'benefits', 'tracks', 'cta'],
     terms: ['header', 'company_info', 'contact'],
     articles: ['header']
   };
