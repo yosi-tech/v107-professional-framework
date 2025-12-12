@@ -226,14 +226,14 @@ export default function ContentManager({ contentItems, onUpdate }) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-right">ניהול תוכן האתר</h2>
         <Button
           onClick={() => setIsCreating(true)}
-          className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+          className="bg-green-600 hover:bg-green-700 flex items-center gap-2 flex-row-reverse"
         >
-          <Plus className="w-4 h-4" />
           <span>הוסף תוכן חדש</span>
+          <Plus className="w-4 h-4" />
         </Button>
+        <h2 className="text-2xl font-bold text-right">ניהול תוכן האתר</h2>
       </div>
 
       {isCreating && (
@@ -354,23 +354,23 @@ export default function ContentManager({ contentItems, onUpdate }) {
 
       <Tabs defaultValue="home" className="w-full">
         <TabsList className="flex flex-wrap w-full justify-center gap-2 h-auto p-2">
-          {pages.map(page => (
-            <TabsTrigger 
-              key={page.value} 
-              value={page.value}
-              className="flex items-center gap-2 flex-row-reverse"
-            >
-              <span>{page.label}</span>
-              <page.icon className="w-4 h-4" />
-            </TabsTrigger>
-          ))}
+        <TabsTrigger 
+          value="articles-content"
+          className="flex items-center gap-2 flex-row-reverse"
+        >
+          <span>ניהול מאמרים</span>
+          <BookOpen className="w-4 h-4" />
+        </TabsTrigger>
+        {pages.slice().reverse().map(page => (
           <TabsTrigger 
-            value="articles-content"
+            key={page.value} 
+            value={page.value}
             className="flex items-center gap-2 flex-row-reverse"
           >
-            <span>ניהול מאמרים</span>
-            <BookOpen className="w-4 h-4" />
+            <span>{page.label}</span>
+            <page.icon className="w-4 h-4" />
           </TabsTrigger>
+        ))}
         </TabsList>
 
         {pages.map(page => (
