@@ -1020,7 +1020,7 @@ export default function AdminReports() {
               <Settings className="w-3 h-3" />
             </TabsTrigger>
             <TabsTrigger value="boosters" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
-              <span>בוסטרים ({boosterSubscriptions.filter(s => s.status === 'active').length})</span>
+              <span>בוסטרים ({boosterSubscriptions.length})</span>
               <Rocket className="w-3 h-3" />
             </TabsTrigger>
           </TabsList>
