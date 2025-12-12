@@ -3136,6 +3136,26 @@ export default function AdminReports() {
                                         {subscription.feedback_text}
                                       </div>
                                     )}
+                                    
+                                    {(() => {
+                                      const boosterEmails = emailLogs.filter(log => 
+                                        log.email_type === 'booster_email' && 
+                                        log.to_email === subscription.user_email
+                                      );
+                                      return boosterEmails.length > 0 && (
+                                        <div className="mt-2">
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setViewingEmails(boosterEmails)}
+                                            className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2"
+                                          >
+                                            <Mail className="w-3 h-3" />
+                                            {boosterEmails.length} מיילי בוסטר נשלחו
+                                          </Button>
+                                        </div>
+                                      );
+                                    })()}
                                   </div>
                                 </div>
                                 
