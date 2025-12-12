@@ -96,43 +96,24 @@ export default function Home() {
 
   const getContent = (key, fallback = '') => content[key] || fallback;
 
-  const stepsData = language === 'he' ? [
+  const stepsData = [
     {
       icon: FileText,
-      title: "ענה על 107 שאלות חכמות",
-      desc: "שאלון מבוסס מחקר שנבנה במשך 5 שנים. 10-15 דקות בלבד.",
-      time: "10 דקות"
+      title: getContent('step1_title', language === 'he' ? "ענה על 107 שאלות חכמות" : "Answer 107 Smart Questions"),
+      desc: getContent('step1_desc', language === 'he' ? "שאלון מבוסס מחקר שנבנה במשך 5 שנים. 10-15 דקות בלבד." : "Research-based questionnaire built over 5 years. Just 10-15 minutes."),
+      time: getContent('step1_time', language === 'he' ? "10 דקות" : "10 minutes")
     },
     {
       icon: BarChart3,
-      title: "קבל ניתוח מקיף ומדויק",
-      desc: "בינה מלאכותית + בקרה אנושית של מומחים בינלאומיים.",
-      time: "עד 7 ימים"
+      title: getContent('step2_title', language === 'he' ? "קבל ניתוח מקיף ומדויק" : "Get Comprehensive Analysis"),
+      desc: getContent('step2_desc', language === 'he' ? "בינה מלאכותית + בקרה אנושית של מומחים בינלאומיים." : "AI + human oversight by international experts."),
+      time: getContent('step2_time', language === 'he' ? "עד 7 ימים" : "Up to 7 days")
     },
     {
       icon: Rocket,
-      title: "צא לדרך עם תוכנית פעולה",
-      desc: "תובנות מותאמות אישית, KPIs ברורים, ותכנית פעולה ל-6 חודשים.",
-      time: "מיידי"
-    }
-  ] : [
-    {
-      icon: FileText,
-      title: "Answer 107 Smart Questions",
-      desc: "Research-based questionnaire built over 5 years. Just 10-15 minutes.",
-      time: "10 minutes"
-    },
-    {
-      icon: BarChart3,
-      title: "Get Comprehensive Analysis",
-      desc: "AI + human oversight by international experts.",
-      time: "Up to 7 days"
-    },
-    {
-      icon: Rocket,
-      title: "Launch with Action Plan",
-      desc: "Personalized insights, clear KPIs, and 6-month action plan.",
-      time: "Immediate"
+      title: getContent('step3_title', language === 'he' ? "צא לדרך עם תוכנית פעולה" : "Launch with Action Plan"),
+      desc: getContent('step3_desc', language === 'he' ? "תובנות מותאמות אישית, KPIs ברורים, ותכנית פעולה ל-6 חודשים." : "Personalized insights, clear KPIs, and 6-month action plan."),
+      time: getContent('step3_time', language === 'he' ? "מיידי" : "Immediate")
     }
   ];
 
@@ -360,10 +341,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {getContent('section_title', language === 'he' ? 'איך זה עובד?' : 'How Does It Work?')}
+                {getContent('how_it_works_title', language === 'he' ? 'איך זה עובד?' : 'How Does It Work?')}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {getContent('section_subtitle', language === 'he' 
+                {getContent('how_it_works_subtitle', language === 'he' 
                   ? '3 שלבים פשוטים לקבלת הדוח המקצועי שלך'
                   : '3 Simple Steps to Your Professional Report'
                 )}
