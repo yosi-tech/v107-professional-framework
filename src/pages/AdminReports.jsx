@@ -2433,13 +2433,13 @@ export default function AdminReports() {
 
               <Tabs defaultValue="general" className="w-full">
                 <TabsList className="grid w-full grid-cols-7 mb-6">
-                  <TabsTrigger value="general" className="text-xs sm:text-sm">כללי</TabsTrigger>
-                  <TabsTrigger value="execution" className="text-xs sm:text-sm">ביצוע</TabsTrigger>
-                  <TabsTrigger value="digital" className="text-xs sm:text-sm">דיגיטל</TabsTrigger>
-                  <TabsTrigger value="finance" className="text-xs sm:text-sm">פיננסים</TabsTrigger>
-                  <TabsTrigger value="marketing" className="text-xs sm:text-sm">שיווק</TabsTrigger>
-                  <TabsTrigger value="management" className="text-xs sm:text-sm">ניהול</TabsTrigger>
                   <TabsTrigger value="vision" className="text-xs sm:text-sm">חזון</TabsTrigger>
+                  <TabsTrigger value="management" className="text-xs sm:text-sm">ניהול</TabsTrigger>
+                  <TabsTrigger value="marketing" className="text-xs sm:text-sm">שיווק</TabsTrigger>
+                  <TabsTrigger value="finance" className="text-xs sm:text-sm">פיננסים</TabsTrigger>
+                  <TabsTrigger value="digital" className="text-xs sm:text-sm">דיגיטל</TabsTrigger>
+                  <TabsTrigger value="execution" className="text-xs sm:text-sm">ביצוע</TabsTrigger>
+                  <TabsTrigger value="general" className="text-xs sm:text-sm">כללי</TabsTrigger>
                 </TabsList>
 
                 {/* תבניות כלליות */}
