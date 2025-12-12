@@ -963,7 +963,11 @@ export default function AdminReports() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex gap-2 flex-wrap w-full sm:w-auto">
+          <div className="text-right w-full sm:w-auto order-2 sm:order-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">ניהול V107</h1>
+            <p className="text-sm sm:text-base text-gray-600">ניהול שאלונים, דו"חות ומשתמשים</p>
+          </div>
+          <div className="flex gap-2 flex-wrap w-full sm:w-auto order-1 sm:order-2">
             <Button
               onClick={() => setSimulationDialog(true)}
               className="bg-purple-600 hover:bg-purple-700 flex-1 sm:flex-initial text-sm flex items-center gap-2 flex-row-reverse"
@@ -978,10 +982,6 @@ export default function AdminReports() {
               <span>עמוד מוצר בוסטר</span>
               <Rocket className="w-4 h-4" />
             </Button>
-          </div>
-          <div className="text-right w-full sm:w-auto">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">ניהול V107</h1>
-            <p className="text-sm sm:text-base text-gray-600">ניהול שאלונים, דו"חות ומשתמשים</p>
           </div>
         </div>
 
