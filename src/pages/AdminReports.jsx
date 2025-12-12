@@ -1019,6 +1019,10 @@ export default function AdminReports() {
               <span>SEO</span>
               <Settings className="w-3 h-3" />
             </TabsTrigger>
+            <TabsTrigger value="boosters" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>בוסטרים ({boosterSubscriptions.filter(s => s.status === 'active').length})</span>
+              <Rocket className="w-3 h-3" />
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="reports">
@@ -3031,6 +3035,188 @@ export default function AdminReports() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="boosters">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-right">מנויי בוסטר</CardTitle>
+                <p className="text-gray-600 text-sm mt-1 text-right">
+                  ניהול הרשמות לתוכניות הבוסטר ל-7 ימים
+                </p>
+              </CardHeader>
+              <CardContent>
+                {boosterSubscriptions.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Rocket className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">אין מנויי בוסטר עדיין</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {boosterSubscriptions
+                      .sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime())
+                      .map(subscription => {
+                        const trackInfo = {
+                          execution: { name: 'ביצוע', icon: '⚡', color: 'blue' },
+                          digital: { name: 'דיגיטל', icon: '💻', color: 'purple' },
+                          finance: { name: 'פיננסים', icon: '💰', color: 'green' },
+                          marketing: { name: 'שיווק', icon: '📢', color: 'orange' },
+                          management: { name: 'ניהול', icon: '👥', color: 'indigo' },
+                          vision: { name: 'חזון', icon: '🎯', color: 'pink' }
+                        };
+                        const track = trackInfo[subscription.recommended_booster_track] || trackInfo.execution;
+                        
+                        const daysLeft = Math.max(0, 7 - subscription.current_day + 1);
+                        
+                        return (
+                          <Card key={subscription.id} className={`border-2 ${
+                            subscription.status === 'active' ? `border-${track.color}-300 bg-${track.color}-50` :
+                            subscription.status === 'completed' ? 'border-green-300 bg-green-50' :
+                            subscription.status === 'cancelled' ? 'border-red-300 bg-red-50' :
+                            'border-gray-300 bg-gray-50'
+                          }`}>
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between gap-4 flex-row-reverse">
+                                <div className="flex-1 text-right">
+                                  <div className="flex items-center gap-2 mb-2 flex-row-reverse">
+                                    <h4 className="font-bold text-base">{subscription.user_name}</h4>
+                                    <span className="text-2xl">{track.icon}</span>
+                                  </div>
+                                  
+                                  <p className="text-sm text-gray-600 mb-2">{subscription.user_email}</p>
+                                  
+                                  <div className="flex gap-2 flex-wrap justify-end mb-3">
+                                    <Badge className={`bg-${track.color}-100 text-${track.color}-800 text-xs`}>
+                                      מסלול {track.name}
+                                    </Badge>
+                                    
+                                    {subscription.status === 'active' && (
+                                      <Badge className="bg-green-100 text-green-800 text-xs">
+                                        יום {subscription.current_day}/7
+                                      </Badge>
+                                    )}
+                                    
+                                    <Badge variant="outline" className={`text-xs ${
+                                      subscription.status === 'active' ? 'bg-green-50 text-green-700 border-green-300' :
+                                      subscription.status === 'completed' ? 'bg-blue-50 text-blue-700 border-blue-300' :
+                                      subscription.status === 'cancelled' ? 'bg-red-50 text-red-700 border-red-300' :
+                                      subscription.status === 'upgraded' ? 'bg-purple-50 text-purple-700 border-purple-300' :
+                                      'bg-gray-50 text-gray-700 border-gray-300'
+                                    }`}>
+                                      {subscription.status === 'active' && '✓ פעיל'}
+                                      {subscription.status === 'completed' && '✓ הושלם'}
+                                      {subscription.status === 'cancelled' && '✗ בוטל'}
+                                      {subscription.status === 'upgraded' && '⬆ שודרג'}
+                                    </Badge>
+                                    
+                                    <Badge variant="outline" className="text-xs">
+                                      {subscription.language === 'he' ? '🇮🇱 עברית' : '🇬🇧 English'}
+                                    </Badge>
+                                  </div>
+                                  
+                                  <div className="text-xs text-gray-600 space-y-1">
+                                    <div>התחלה: {format(new Date(subscription.start_date), 'dd/MM/yyyy')}</div>
+                                    <div>סיום: {format(new Date(subscription.end_date), 'dd/MM/yyyy')}</div>
+                                    {subscription.last_email_sent_date && (
+                                      <div>מייל אחרון: {format(new Date(subscription.last_email_sent_date), 'dd/MM/yyyy HH:mm')}</div>
+                                    )}
+                                    {subscription.status === 'active' && (
+                                      <div className="font-semibold text-orange-600">
+                                        נותרו {daysLeft} ימים
+                                      </div>
+                                    )}
+                                    {subscription.experienced_improvement !== undefined && (
+                                      <div className={subscription.experienced_improvement ? 'text-green-700 font-semibold' : 'text-red-700'}>
+                                        {subscription.experienced_improvement ? '✓ חש שיפור' : '✗ לא חש שיפור'}
+                                      </div>
+                                    )}
+                                    {subscription.feedback_text && (
+                                      <div className="bg-white p-2 rounded mt-2 border">
+                                        <span className="font-semibold">משוב: </span>
+                                        {subscription.feedback_text}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                <div className="flex flex-col gap-2">
+                                  {subscription.status === 'active' && (
+                                    <>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={async () => {
+                                          if (window.confirm('האם לבטל את המנוי?')) {
+                                            try {
+                                              await base44.entities.OnlineCoachingSubscription.update(subscription.id, {
+                                                status: 'cancelled'
+                                              });
+                                              await loadData();
+                                              alert('המנוי בוטל בהצלחה');
+                                            } catch (error) {
+                                              console.error('Error cancelling subscription:', error);
+                                              alert('שגיאה בביטול המנוי');
+                                            }
+                                          }
+                                        }}
+                                        className="text-orange-600 hover:text-orange-700"
+                                      >
+                                        ביטול
+                                      </Button>
+                                      
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={async () => {
+                                          if (window.confirm('האם לסמן כהושלם?')) {
+                                            try {
+                                              await base44.entities.OnlineCoachingSubscription.update(subscription.id, {
+                                                status: 'completed'
+                                              });
+                                              await loadData();
+                                              alert('המנוי סומן כהושלם');
+                                            } catch (error) {
+                                              console.error('Error completing subscription:', error);
+                                              alert('שגיאה בעדכון המנוי');
+                                            }
+                                          }
+                                        }}
+                                        className="text-green-600 hover:text-green-700"
+                                      >
+                                        סמן הושלם
+                                      </Button>
+                                    </>
+                                  )}
+                                  
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={async () => {
+                                      if (window.confirm('האם למחוק את המנוי? פעולה זו בלתי הפיכה.')) {
+                                        try {
+                                          await base44.entities.OnlineCoachingSubscription.delete(subscription.id);
+                                          await loadData();
+                                          alert('המנוי נמחק בהצלחה');
+                                        } catch (error) {
+                                          console.error('Error deleting subscription:', error);
+                                          alert('שגיאה במחיקת המנוי');
+                                        }
+                                      }
+                                    }}
+                                    className="text-red-600 hover:text-red-700"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
           </Tabs>
           </div>
