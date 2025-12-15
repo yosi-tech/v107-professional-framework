@@ -44,6 +44,7 @@ export default function About() {
         setContent(contentMap);
       } catch (error) {
         console.error("Failed to fetch content:", error);
+        // Continue with empty content on error
       } finally {
         setIsLoadingContent(false);
       }
