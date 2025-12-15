@@ -6,13 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Home, FileText, Info, File, Loader2, Save, Plus, Trash2, Image, BookOpen, ShoppingCart, Rocket } from "lucide-react";
+import { Home, FileText, Info, File, Loader2, Save, Plus, Trash2, Image, BookOpen, ShoppingCart, Rocket, Languages } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function ContentManager({ contentItems, onUpdate }) {
   const [editingItem, setEditingItem] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
   const [newItem, setNewItem] = useState({
     page: 'home',
     section: '',
@@ -153,6 +154,28 @@ export default function ContentManager({ contentItems, onUpdate }) {
     } catch (error) {
       console.error('Error deleting item:', error);
       alert('שגיאה במחיקת הפריט');
+    }
+  };
+
+  const handleAutoTranslate = async () => {
+    if (!editingItem?.content_he) {
+      alert('אין תוכן עברי לתרגום');
+      return;
+    }
+
+    setIsTranslating(true);
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Translate the following Hebrew text to English. Provide ONLY the translation, nothing else:\n\n${editingItem.content_he}`,
+        add_context_from_internet: false
+      });
+      
+      setEditingItem({...editingItem, content_en: result});
+    } catch (error) {
+      console.error('Translation error:', error);
+      alert('שגיאה בתרגום אוטומטי');
+    } finally {
+      setIsTranslating(false);
     }
   };
 
@@ -468,7 +491,29 @@ export default function ContentManager({ contentItems, onUpdate }) {
                                 </div>
 
                                 <div>
-                                  <Label className="text-right block mb-2">תוכן אנגלית</Label>
+                                  <div className="flex items-center justify-between mb-2">
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={handleAutoTranslate}
+                                      disabled={isTranslating || !editingItem.content_he}
+                                      className="flex items-center gap-2"
+                                    >
+                                      {isTranslating ? (
+                                        <>
+                                          <Loader2 className="w-4 h-4 animate-spin" />
+                                          <span>מתרגם...</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Languages className="w-4 h-4" />
+                                          <span>תרגום אוטומטי</span>
+                                        </>
+                                      )}
+                                    </Button>
+                                    <Label className="text-right">תוכן אנגלית</Label>
+                                  </div>
                                   {item.content_type === 'html' ? (
                                     <Textarea
                                       value={editingItem.content_en}
