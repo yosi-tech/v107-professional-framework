@@ -35,18 +35,22 @@ export default function About() {
 
   useEffect(() => {
     const fetchContent = async () => {
+      console.log('[About Page] Starting to fetch content for page: about');
       try {
         const items = await base44.entities.ContentItem.filter({ page: 'about' });
+        console.log('[About Page] Fetched content items:', items.length);
         const contentMap = {};
         items.forEach(item => {
           contentMap[item.content_key] = language === 'he' ? item.content_he : item.content_en;
         });
         setContent(contentMap);
+        console.log('[About Page] Content map created:', Object.keys(contentMap));
       } catch (error) {
-        console.error("Failed to fetch content:", error);
+        console.error("[About Page] Failed to fetch content:", error);
         // Continue with empty content on error
       } finally {
         setIsLoadingContent(false);
+        console.log('[About Page] Loading finished, isLoadingContent set to false');
       }
     };
     fetchContent();
@@ -153,15 +157,13 @@ export default function About() {
   const categories = language === 'he' ? categoriesHe : categoriesEn;
   const portfolio = language === 'he' ? portfolioHe : portfolioEn;
 
-  const getContent = (key, fallback = '') => content[key] || fallback;
+  const getContent = (key, fallback = '') => {
+    const value = content[key] || fallback;
+    console.log(`[About Page] getContent('${key}'):`, value ? 'Found' : 'Using fallback');
+    return value;
+  };
 
-  if (isLoadingContent) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-gray-400">{language === 'he' ? 'טוען...' : 'Loading...'}</div>
-      </div>
-    );
-  }
+  console.log('[About Page] Render - isLoadingContent:', isLoadingContent, 'content keys:', Object.keys(content).length);
 
   return (
     <div className="min-h-screen bg-background">
