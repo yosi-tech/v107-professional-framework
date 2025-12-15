@@ -25,10 +25,31 @@ import {
   ShoppingCart
 } from "lucide-react";
 import { useTranslation } from "@/components/i18n/useTranslation";
+import { base44 } from "@/api/base44Client";
 
 export default function About() {
   const { t, language } = useTranslation();
   const [visibleSections, setVisibleSections] = useState(new Set());
+  const [content, setContent] = useState({});
+  const [isLoadingContent, setIsLoadingContent] = useState(true);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const items = await base44.entities.ContentItem.filter({ page: 'about' });
+        const contentMap = {};
+        items.forEach(item => {
+          contentMap[item.content_key] = language === 'he' ? item.content_he : item.content_en;
+        });
+        setContent(contentMap);
+      } catch (error) {
+        console.error("Failed to fetch content:", error);
+      } finally {
+        setIsLoadingContent(false);
+      }
+    };
+    fetchContent();
+  }, [language]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -131,6 +152,16 @@ export default function About() {
   const categories = language === 'he' ? categoriesHe : categoriesEn;
   const portfolio = language === 'he' ? portfolioHe : portfolioEn;
 
+  const getContent = (key, fallback = '') => content[key] || fallback;
+
+  if (isLoadingContent) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-gray-400">{language === 'he' ? 'טוען...' : 'Loading...'}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -140,13 +171,13 @@ export default function About() {
             <Building2 className="w-10 h-10" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            {language === 'he' ? 'עלית – יזום עסקים' : 'Elit – Business Initiatives'}
+            {getContent('hero_title', language === 'he' ? 'עלית – יזום עסקים' : 'Elit – Business Initiatives')}
           </h1>
           <p className="text-xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
-            {language === 'he' 
+            {getContent('hero_subtitle', language === 'he' 
               ? 'פעילות בוטיק המסייעת ליזמים ולבעלי עסקים קיימים לבנות החלטות נכונות וליישם אותן בפועל. גישה ממוקדת תוצאות עם סטנדרט מקצועי גבוה.'
               : 'A boutique consultancy helping entrepreneurs and business owners make sound decisions and implement them effectively. Results-oriented approach with high professional standards.'
-            }
+            )}
           </p>
         </div>
       </section>
@@ -157,39 +188,39 @@ export default function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <img 
-                src="https://media.licdn.com/dms/image/v2/D4D03AQHcuwPxFsiqCA/profile-displayphoto-shrink_400_400/B4DZUzDB6UHYAg-/0/1740318187648?e=1766620800&v=beta&t=171NXEbdlQ6Zgs9XeWW5K7HpXdL2ThSc5sjGAAPRZgU"
-                alt={language === 'he' ? 'יוסי אלון – יועץ ליזמים (AVENTURA 107)' : 'Yossi Alon – Business Consultant (AVENTURA 107)'}
+                src={getContent('yossi_image', 'https://media.licdn.com/dms/image/v2/D4D03AQHcuwPxFsiqCA/profile-displayphoto-shrink_400_400/B4DZUzDB6UHYAg-/0/1740318187648?e=1766620800&v=beta&t=171NXEbdlQ6Zgs9XeWW5K7HpXdL2ThSc5sjGAAPRZgU')}
+                alt={getContent('yossi_image_alt', language === 'he' ? 'יוסי אלון – יועץ ליזמים (AVENTURA 107)' : 'Yossi Alon – Business Consultant (AVENTURA 107)')}
                 className="w-48 h-48 rounded-full mx-auto object-cover shadow-2xl border-4 border-amber-500"
               />
             </div>
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-                {language === 'he' ? 'יוסי אלון' : 'Yossi Alon'}
+                {getContent('yossi_name', language === 'he' ? 'יוסי אלון' : 'Yossi Alon')}
               </h2>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
-                {language === 'he'
+                {getContent('yossi_bio_paragraph1', language === 'he'
                   ? 'יועץ ומלווה יזמים ובעלי עסקים קטנים ובינוניים מאז 2006. תואר ראשון בכלכלה, התמחות במימון, ידע נרחב ביזמות.'
                   : 'Business consultant and entrepreneur mentor since 2006. Bachelor\'s degree in Economics, specialization in Finance, extensive knowledge in entrepreneurship.'
-                }
+                )}
               </p>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
-                {language === 'he'
+                {getContent('yossi_bio_paragraph2', language === 'he'
                   ? 'עבדתי עם עשרות יזמים כמעט בכל קטגוריה בישראל—קמעונאות, B2B, מסעדות וחנויות נישה, שירותים מקצועיים, סטארט-אפים, שירותים טכנולוגים.'
                   : 'I have worked with dozens of entrepreneurs across nearly every category in Israel—retail, B2B, restaurants and niche stores, professional services, startups, and tech services.'
-                }
+                )}
               </p>
               <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
                 <p className="text-gray-800 font-semibold">
-                  {language === 'he' ? 'הגישה שלי:' : 'My Approach:'}
+                  {getContent('yossi_approach_title', language === 'he' ? 'הגישה שלי:' : 'My Approach:')}
                 </p>
                 <p className="text-gray-700 mt-2">
-                  {language === 'he' ? 'פשוט. מדיד. אנושי.' : 'Simple. Measurable. Human.'}
+                  {getContent('yossi_approach_subtitle', language === 'he' ? 'פשוט. מדיד. אנושי.' : 'Simple. Measurable. Human.')}
                 </p>
                 <p className="text-gray-600 mt-3 text-sm">
-                  {language === 'he'
+                  {getContent('yossi_approach_description', language === 'he'
                     ? 'ב-AVENTURA 107 אנו משלבים שיטה סדורה, ניסיון שטח, וביקורת אנושית לפני כל דו״ח.'
                     : 'At AVENTURA 107, we combine structured methodology, field experience, and human review before every report.'
-                  }
+                  )}
                 </p>
               </div>
             </div>
@@ -202,13 +233,13 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-              {language === 'he' ? 'ליווינו יזמים ועסקים בקטגוריות רבות' : 'We Have Guided Entrepreneurs in Various Categories'}
+              {getContent('categories_title', language === 'he' ? 'ליווינו יזמים ועסקים בקטגוריות רבות' : 'We Have Guided Entrepreneurs in Various Categories')}
             </h2>
             <p className="text-lg text-gray-600">
-              {language === 'he'
+              {getContent('categories_subtitle', language === 'he'
                 ? 'ניסיון עשיר בליווי עסקים בכל התחומים'
                 : 'Rich experience in guiding businesses across all sectors'
-              }
+              )}
             </p>
           </div>
 
@@ -234,13 +265,13 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-              {language === 'he' ? 'דוגמאות ליווי' : 'Mentorship Examples'}
+              {getContent('portfolio_title', language === 'he' ? 'דוגמאות ליווי' : 'Mentorship Examples')}
             </h2>
             <p className="text-lg text-gray-600">
-              {language === 'he'
+              {getContent('portfolio_subtitle', language === 'he'
                 ? 'מקרי מבחן וסיפורי הצלחה מהשטח'
                 : 'Case studies and success stories from the field'
-              }
+              )}
             </p>
           </div>
 
