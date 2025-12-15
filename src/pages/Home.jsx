@@ -509,9 +509,9 @@ export default function Home() {
                       <Card className="mx-auto max-w-4xl border-2 border-gray-100 shadow-2xl rounded-3xl">
                         <CardContent className="p-12 text-center">
                           <Quote className="w-16 h-16 text-amber-500 mx-auto mb-6 opacity-20" />
-                          
+
                           <p className="text-2xl text-gray-700 mb-8 leading-relaxed font-medium">
-                            "{testimonial.quote}"
+                            "{language === 'he' ? testimonial.quote_he : (testimonial.quote_en || testimonial.quote_he)}"
                           </p>
 
                           <div className="flex items-center justify-center gap-1 mb-6">
@@ -526,7 +526,7 @@ export default function Home() {
                             </div>
                             <div className={language === 'he' ? 'text-right' : 'text-left'}>
                               <p className="font-bold text-gray-900 text-xl">{testimonial.name}</p>
-                              <p className="text-gray-600">{testimonial.title}</p>
+                              <p className="text-gray-600">{language === 'he' ? testimonial.title_he : (testimonial.title_en || testimonial.title_he)}</p>
                             </div>
                           </div>
                         </CardContent>
