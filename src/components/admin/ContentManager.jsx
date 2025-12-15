@@ -89,14 +89,16 @@ export default function ContentManager({ contentItems, onUpdate }) {
     });
   };
 
-  const handleSave = async (item) => {
+  const handleSave = async () => {
+    if (!editingItem) return;
+    
     setIsSaving(true);
     try {
-      await base44.entities.ContentItem.update(item.id, {
-        content_he: item.content_he,
-        content_en: item.content_en,
-        description: item.description,
-        order: item.order
+      await base44.entities.ContentItem.update(editingItem.id, {
+        content_he: editingItem.content_he,
+        content_en: editingItem.content_en,
+        description: editingItem.description,
+        order: editingItem.order
       });
       await onUpdate();
       setEditingItem(null);
@@ -496,7 +498,7 @@ export default function ContentManager({ contentItems, onUpdate }) {
 
                                 <div className="flex gap-3 flex-row-reverse">
                                   <Button
-                                    onClick={() => handleSave(editingItem)}
+                                    onClick={handleSave}
                                     disabled={isSaving}
                                     className="bg-blue-600 hover:bg-blue-700"
                                   >
