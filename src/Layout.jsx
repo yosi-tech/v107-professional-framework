@@ -542,6 +542,12 @@ function AppLayout({ children }) {
                   {t('layout.footer_newsletter_button')}
                 </Button>
               </form>
+              <p className="text-slate-400 text-sm mt-4">
+                {language === 'he' ? 'צריך עזרה? ' : 'Need help? '}
+                <a href="mailto:support@v107.co.il" className="text-amber-400 hover:text-amber-300">
+                  support@v107.co.il
+                </a>
+              </p>
             </div>
           </div>
 

@@ -214,6 +214,12 @@ export default function About() {
                     : 'At AVENTURA 107, we combine structured methodology, field experience, and human review before every report.'
                   )}
                 </p>
+                <p className="text-gray-800 font-semibold mt-4">
+                  {language === 'he' ? 'צור קשר:' : 'Contact:'}
+                </p>
+                <a href="mailto:support@v107.co.il" className="text-amber-600 hover:text-amber-700 font-medium">
+                  support@v107.co.il
+                </a>
               </div>
             </div>
           </div>
