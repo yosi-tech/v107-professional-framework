@@ -489,8 +489,13 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-6 text-white">
-              אודות דו"ח V107 - גלה את מפת היכולות האמיתית שלך
+            <div className="inline-block mb-4">
+              <span className="bg-amber-500/20 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold">
+                אודות V107
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-6 text-white leading-tight">
+              גלה את מפת היכולות האמיתית שלך
             </h2>
             <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
               בעולם המקצועי המודרני, ידע הוא כוח, אך דיוק הוא ההבדל בין דריכה במקום לפריצת דרך.
