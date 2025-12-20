@@ -167,48 +167,40 @@ ${scoresText}
 
 🎯 מסלול הבוסטר שנבחר: ${selectedTrackName}
 
-📝 מבנה הפלט (4 עמודים)
+📝 מבנה הפלט (5 עמודים)
 
-**עמוד 1: תמונת על**
-- דיסקליימר: "הבהרה משפטית: מסמך זה הינו כלי אבחון וייעוץ אסטרטגי המבוסס על תשובות שמילא${genderSuffix} המשתמש/ת בשאלון V107. הדוח נוצר באמצעות בינה מלאכותית בשילוב פיקוח מומחים. השימוש במידע באחריות המשתמש/ת בלבד. אין בדוח זה תחליף לייעוץ מקצועי אישי."
-- פתיח: שם הלקוח + ארכיטיפ יזמי (כותרת מקצועית) + תקציר מנהלים (3-4 שורות)
+**עמוד 1: ניתוח פרופיל יכולות ניהולי**
+- כותרת: "דו"ח אבחון ומיפוי חוזקות מקצועיות – V107"
+- תקציר מנהלים: פסקה המנתחת את "התמהיל המקצועי" של ${userName}. הצג תמונה מאוזנת המשלבת חוזקות בולטות לצד חסמים אסטרטגיים שזוהו
+- הבהרה משפטית: "מסמך זה הינו כלי אבחון אסטרטגי המבוסס על תשובותייך. הדוח נוצר באמצעות בינה מלאכותית. השימוש במידע באחריות המשתמש/ת. ההמלצות ללמידה חיצונית ניתנות כשירות בלבד ואין ל-V107 אחריות על תכנים אלו."
 
-**עמוד 2: ה-DNA היזמי**
-- Excellence Zone: 3 חוזקות בולטות (פסקה לכל אחת)
-- Growth Zone: 3 אתגרים מרכזיים (פסקה לכל אחד)
+**עמוד 2: מיפוי ליבה מקצועית (ניתוח מפורט)**
+- מוקד העוצמה (Excellence Zone): ניתוח שתי החוזקות המובילות (ציונים גבוהים). הסבר כיצד תכונות אלו מהוות נכס אסטרטגי עבור ${userName}
+- מוקד הצמיחה (Developmental Focus): ניתוח מקצועי וישיר של שני התחומים הטעונים שיפור (ציונים נמוכים). הסבר כיצד פערים אלו מעכבים את מימוש הפוטנציאל המקצועי המלא
 
-**עמוד 3: טבלת מוכנות**
-רשימה של 6 התחומים עם דירוג מילולי:
-- Vision: [מעולה/ממוצע/טעון שיפור]
-- Finance: [מעולה/ממוצע/טעון שיפור]
-- Management: [מעולה/ממוצע/טעון שיפור]
-- Marketing: [מעולה/ממוצע/טעון שיפור]
-- Digital: [מעולה/ממוצע/טעון שיפור]
-- Execution: [מעולה/ממוצע/טעון שיפור]
+**עמוד 3: מפת יכולות ויזואלית (Competency Map)**
+- מפרט גרפי: תיאור גרף עמודות אופקי עם קצוות מעוגלים בצבעי פסטל (#B2AC88, #FDFD96, #FFD1DC)
+- חוקיות תצוגה: אסור להציג מספרים או אחוזים. הצג הגדרה מילולית בלבד ליד כל עמודה:
+  * Vision: [דירוג מילולי]
+  * Finance: [דירוג מילולי]
+  * Management: [דירוג מילולי]
+  * Marketing: [דירוג מילולי]
+  * Digital: [דירוג מילולי]
+  * Execution: [דירוג מילולי]
+  השתמש בביטויים כגון: "מיומנות עילית", "יציבות מקצועית", "אזור לפיתוח ממוקד"
 
-**עמוד 4: תוכנית פעולה + הצעת V107 BOOSTER**
+**עמוד 4: תוכנית עבודה אסטרטגית (הערך היישומי)**
+- ניתוח פערים (Gap Analysis): פסקה המנתחת את הקשר בין החוזקה לחולשה (איך יכולת רתימה גבוהה ללא בהירות פיננסית מעכבת תוצאות)
+- פרוטוקול פעולה (The Action Plan): עבור כל אחד משלושת המוקדים (עוצמה, נסיקה, פריצה), הגדר: פעולה קונקרטית לביצוע מיידי ותוצאה מצופה
+- סל כלים והכשרה (Executive Resources): הפניות פרימיום איכותיות: קורסים אקדמיים (Stanford, Coursera), ספרות ניהול קלאסית וכלים טכנולוגיים (Notion, Monday וכו')
+- מעבר שיווקי ל-V107-BOOSTER: "כפי שאת${genderSuffix} רואה ${userName}, בסיס היכולות שלך מבטיח ואינו מנוצל דיו לדעתנו. למען הצלחתך, פיתחנו עבורך כלים ייחודיים בתוך ה-V107-BOOSTER, שמטרתם חיזוק ושיפור יכולות אמיתי במוקדים שזיהינו. אנו מזמינים אותך לעבור לעמוד מספר 5 כדי להתחיל בחיזוק היכולות כבר עכשיו."
 
-A. 3 המלצות אסטרטגיות (צעדים ליישום מיידי)
-
-B. הצעת הבוסטר (חובה לכתוב טקסט מכירה מותאם):
-   
-   "💡 **הצעד הבא שלך: מסלול הבוסטר ב-${selectedTrackName}**
-   
-   מהניתוח עולה כי ${selectedTrackName} הוא התחום שדורש תשומת לב מיוחדת כרגע.
-   
-   כדי לפרוץ את החסם הזה, פתחנו עבורך את **מסלול הבוסטר ב-${selectedTrackName}**:
-   
-   📧 7 מיילים יומיים עם משימות ממוקדות
-   🎯 תוכנית פעולה צעד-אחר-צעד
-   🎁 בונוס למסיימים: ערכת ההטמעה המקצועית
-   
-   ⭐ **המודל שלנו: לא שיפרת – לא שילמת**
-   - הגישה לבוסטר: חינם לחלוטין
-   - ביום ה-7 נבדוק שיפור
-   - רק אם תצהיר${genderSuffix} שהפקת${genderSuffix} ערך → חיוב של 199 ₪ + קבלת ערכת ההטמעה
-   - אם לא → אין חיוב, אבל הגישה לערכה נשארת נעולה
-   
-   📌 התחל${genderSuffix} את המסלול מהאזור האישי שלך."
+**עמוד 5: תת מותג V107-BOOSTER (הופכים תובנות למציאות)**
+- פתיח פסיכולוגי: הסבר כי רבים הסתפקו בקריאת הדוח (ידיעה), אך אלו שעברו ליישום (פעולה) הם אלו שהשיגו יעדים טובים יותר
+- הגדרת הכלי: ה-V107-BOOSTER נועד להפוך מסקנות לדרך חיים ניהולית
+- מבנה המסלול: "ליווי של 7 ימים עם משימה יומית קצרה (10-15 דקות) המתמקדת ב${selectedTrackName} - התחום שקיבל את הציון הנמוך ביותר בדוח שלך"
+- מודל רכישה מותנה: הצגת המודל שבו הגישה ל-V107-BOOSTER היא ללא עלות, ורק ביום השביעי, במידה והמשתמש/ת מרוצה מהשיפור, תוצע לו/ה תוכנית עבודה שנתית מפורטת בתשלום
+- קריאה לפעולה: "התחלת מסלול V107-BOOSTER (ללא עלות)"
 
 החזר JSON בלבד עם המבנה הבא:
 {
@@ -239,48 +231,40 @@ ${scoresText}
 
 🎯 Selected Booster Track: ${selectedTrackName}
 
-📝 Output Structure (4 Pages)
+📝 Output Structure (5 Pages)
 
-**Page 1: Overview**
-- Disclaimer: "Legal Notice: This document is a diagnostic and strategic consulting tool based on answers provided by the user in the V107 questionnaire. The report is generated using artificial intelligence combined with expert oversight. Use of the information is at the user's sole responsibility. This report is not a substitute for personal professional advice."
-- Opening: Client name + entrepreneurial archetype (professional headline) + executive summary (3-4 lines)
+**Page 1: Professional Competency Profile Analysis**
+- Title: "Professional Strengths Assessment & Mapping Report – V107"
+- Executive Summary: Paragraph analyzing ${userName}'s "professional mix". Present balanced picture combining prominent strengths alongside identified strategic barriers
+- Legal Notice: "This document is a strategic diagnostic tool based on your responses. The report is generated using artificial intelligence. Use of information is at user's responsibility. External learning recommendations are provided as service only and V107 has no responsibility for this content."
 
-**Page 2: Entrepreneurial DNA**
-- Excellence Zone: 3 prominent strengths (paragraph for each)
-- Growth Zone: 3 main challenges (paragraph for each)
+**Page 2: Core Professional Mapping (Detailed Analysis)**
+- Excellence Zone: Analysis of two leading strengths (high scores). Explain how these qualities constitute strategic asset for ${userName}
+- Developmental Focus: Professional and direct analysis of two areas needing improvement (low scores). Explain how these gaps inhibit full professional potential realization
 
-**Page 3: Readiness Table**
-List of 6 domains with verbal rating:
-- Vision: [Excellent/Average/Needs Improvement]
-- Finance: [Excellent/Average/Needs Improvement]
-- Management: [Excellent/Average/Needs Improvement]
-- Marketing: [Excellent/Average/Needs Improvement]
-- Digital: [Excellent/Average/Needs Improvement]
-- Execution: [Excellent/Average/Needs Improvement]
+**Page 3: Visual Competency Map**
+- Graphic Specification: Description of horizontal bar chart with rounded edges in pastel colors (#B2AC88, #FDFD96, #FFD1DC)
+- Display Rules: Forbidden to show numbers or percentages. Display only verbal definition next to each bar:
+  * Vision: [Verbal rating]
+  * Finance: [Verbal rating]
+  * Management: [Verbal rating]
+  * Marketing: [Verbal rating]
+  * Digital: [Verbal rating]
+  * Execution: [Verbal rating]
+  Use expressions such as: "Elite Proficiency", "Professional Stability", "Focused Development Area"
 
-**Page 4: Action Plan + V107 BOOSTER Offer**
+**Page 4: Strategic Work Plan (Applied Value)**
+- Gap Analysis: Paragraph analyzing relationship between strength and weakness (how high mobilization ability without financial clarity inhibits results)
+- Action Protocol (The Action Plan): For each of three focuses (strength, ascent, breakthrough), define: concrete action for immediate execution and expected outcome
+- Executive Resources: Premium quality references: academic courses (Stanford, Coursera), classic management literature and technological tools (Notion, Monday, etc.)
+- Marketing Transition to V107-BOOSTER: "As you can see ${userName}, your competency foundation is promising and underutilized in our opinion. For your success, we've developed unique tools within V107-BOOSTER, aimed at real strengthening and improvement in the focuses we identified. We invite you to proceed to page 5 to start strengthening capabilities right now."
 
-A. 3 Strategic Recommendations (immediate implementation steps)
-
-B. Booster Offer (must write tailored sales text):
-   
-   "💡 **Your Next Step: ${selectedTrackName} Booster Track**
-   
-   The analysis shows that ${selectedTrackName} is the domain requiring special attention right now.
-   
-   To break through this barrier, we've opened the **${selectedTrackName} Booster Track** for you:
-   
-   📧 7 daily emails with focused tasks
-   🎯 Step-by-step action plan
-   🎁 Bonus for completers: Professional Implementation Kit
-   
-   ⭐ **Our Model: No Improvement – No Payment**
-   - Booster access: Completely free
-   - On day 7 we'll check improvement
-   - Only if you declare you gained value → charge of 199 NIS + receive Implementation Kit
-   - If not → no charge, but access to kit remains locked
-   
-   📌 Start the track from your personal area."
+**Page 5: V107-BOOSTER Sub-Brand (Turning Insights into Reality)**
+- Psychological Opening: Explain that many settled for reading the report (knowledge), but those who moved to implementation (action) are those who achieved better goals
+- Tool Definition: V107-BOOSTER is designed to turn conclusions into managerial way of life
+- Track Structure: "7-day accompaniment with short daily task (10-15 minutes) focusing on ${selectedTrackName} - the domain that received the lowest score in your report"
+- Conditional Purchase Model: Present model where access to V107-BOOSTER is free, and only on seventh day, if user is satisfied with improvement, a detailed annual work plan will be offered for payment
+- Call to Action: "Start V107-BOOSTER Track (No Cost)"
 
 Return JSON only with this structure:
 {
