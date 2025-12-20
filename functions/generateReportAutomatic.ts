@@ -169,6 +169,11 @@ ${scoresText}
 
 📝 מבנה הפלט (5 עמודים)
 
+⚠️ חשוב: הפרד בין כל עמוד לעמוד באמצעות:
+---
+# עמוד [מספר]
+---
+
 **עמוד 1: ניתוח פרופיל יכולות ניהולי**
 - כותרת: "דו"ח אבחון ומיפוי חוזקות מקצועיות – V107"
 - תקציר מנהלים: פסקה המנתחת את "התמהיל המקצועי" של ${userName}. הצג תמונה מאוזנת המשלבת חוזקות בולטות לצד חסמים אסטרטגיים שזוהו
@@ -195,7 +200,12 @@ ${scoresText}
 - סל כלים והכשרה (Executive Resources): הפניות פרימיום איכותיות: קורסים אקדמיים (Stanford, Coursera), ספרות ניהול קלאסית וכלים טכנולוגיים (Notion, Monday וכו')
 - מעבר שיווקי ל-V107-BOOSTER: "כפי שאת${genderSuffix} רואה ${userName}, בסיס היכולות שלך מבטיח ואינו מנוצל דיו לדעתנו. למען הצלחתך, פיתחנו עבורך כלים ייחודיים בתוך ה-V107-BOOSTER, שמטרתם חיזוק ושיפור יכולות אמיתי במוקדים שזיהינו. אנו מזמינים אותך לעבור לעמוד מספר 5 כדי להתחיל בחיזוק היכולות כבר עכשיו."
 
+---
+**⚠️ סיום עמוד 4 - התחל עמוד חדש (5) עכשיו**
+---
+
 **עמוד 5: תת מותג V107-BOOSTER (הופכים תובנות למציאות)**
+**זהו עמוד נפרד ונקי לחלוטין שמוקדש לטקסט השיווקי של הבוסטר**
 - פתיח פסיכולוגי: הסבר כי רבים הסתפקו בקריאת הדוח (ידיעה), אך אלו שעברו ליישום (פעולה) הם אלו שהשיגו יעדים טובים יותר
 - הגדרת הכלי: ה-V107-BOOSTER נועד להפוך מסקנות לדרך חיים ניהולית
 - מבנה המסלול: "ליווי של 7 ימים עם משימה יומית קצרה (10-15 דקות) המתמקדת ב${selectedTrackName} - התחום שקיבל את הציון הנמוך ביותר בדוח שלך"
@@ -233,6 +243,11 @@ ${scoresText}
 
 📝 Output Structure (5 Pages)
 
+⚠️ Important: Separate each page using:
+---
+# Page [number]
+---
+
 **Page 1: Professional Competency Profile Analysis**
 - Title: "Professional Strengths Assessment & Mapping Report – V107"
 - Executive Summary: Paragraph analyzing ${userName}'s "professional mix". Present balanced picture combining prominent strengths alongside identified strategic barriers
@@ -259,7 +274,12 @@ ${scoresText}
 - Executive Resources: Premium quality references: academic courses (Stanford, Coursera), classic management literature and technological tools (Notion, Monday, etc.)
 - Marketing Transition to V107-BOOSTER: "As you can see ${userName}, your competency foundation is promising and underutilized in our opinion. For your success, we've developed unique tools within V107-BOOSTER, aimed at real strengthening and improvement in the focuses we identified. We invite you to proceed to page 5 to start strengthening capabilities right now."
 
+---
+**⚠️ End of Page 4 - Start new page (5) now**
+---
+
 **Page 5: V107-BOOSTER Sub-Brand (Turning Insights into Reality)**
+**This is a completely separate and clean page dedicated to the Booster sales text**
 - Psychological Opening: Explain that many settled for reading the report (knowledge), but those who moved to implementation (action) are those who achieved better goals
 - Tool Definition: V107-BOOSTER is designed to turn conclusions into managerial way of life
 - Track Structure: "7-day accompaniment with short daily task (10-15 minutes) focusing on ${selectedTrackName} - the domain that received the lowest score in your report"
