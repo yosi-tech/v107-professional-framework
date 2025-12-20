@@ -204,7 +204,7 @@ ${scoresText}
 
 החזר JSON בלבד עם המבנה הבא:
 {
-  "report_markdown": "הדוח המלא בפורמט Markdown (4 עמודים)",
+  "report_markdown": "הדוח המלא בפורמט Markdown (5 עמודים נפרדים)",
   "selected_booster_track": "${selectedTrack}",
   "archetype": "כותרת מקצועית קצרה שמתארת את הלקוח"
 }`;
@@ -268,7 +268,7 @@ ${scoresText}
 
 Return JSON only with this structure:
 {
-  "report_markdown": "Full report in Markdown format (4 pages)",
+  "report_markdown": "Full report in Markdown format (5 separate pages)",
   "selected_booster_track": "${selectedTrack}",
   "archetype": "Short professional headline describing the client"
 }`;
