@@ -3,25 +3,26 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { 
-  ArrowLeft, 
-  ArrowRight, 
-  CheckCircle, 
-  FileText, 
-  BarChart3, 
-  Target, 
-  Zap,
-  TrendingUp,
-  Users,
-  Clock,
-  Award,
-  Sparkles,
-  Rocket,
-  Star,
-  Play,
-  ChevronLeft,
-  ChevronRight,
-  Quote
-} from "lucide-react";
+        ArrowLeft, 
+        ArrowRight, 
+        CheckCircle, 
+        FileText, 
+        BarChart3, 
+        Target, 
+        Zap,
+        TrendingUp,
+        Users,
+        Clock,
+        Award,
+        Sparkles,
+        Rocket,
+        Star,
+        Play,
+        ChevronLeft,
+        ChevronRight,
+        Quote,
+        BookOpen
+      } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTranslation } from "@/components/i18n/useTranslation";
@@ -471,6 +472,161 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* About V107 Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-black mb-6 text-white">
+              אודות דו"ח V107 - גלה את מפת היכולות האמיתית שלך
+            </h2>
+            <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
+              בעולם המקצועי המודרני, ידע הוא כוח, אך דיוק הוא ההבדל בין דריכה במקום לפריצת דרך.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 border border-white/20 mb-12"
+          >
+            <p className="text-lg text-gray-200 leading-relaxed mb-8">
+              דו"ח V107 הינו פיתוח משולב וייחודי של צוות מומחים בתחומי האסטרטגיה והניהול, הפועל לצד אלגוריתם AI חדשני שפיתחנו במיוחד למטרה זו. השילוב בין ניסיון מקצועי עתיר שנים לבין בינה מלאכותית מתקדמת, מאפשר לנו להפיק עבורך אבחון אסטרטגי שאין שני לו בשוק.
+            </p>
+
+            <h3 className="text-2xl md:text-3xl font-bold mb-6 text-amber-400">
+              מה כולל הדו"ח האישי שלך?
+            </h3>
+            <p className="text-gray-300 mb-6">
+              עם סיום השאלון, המערכת תייצר ותעביר לידיעתך ניתוח פרימיום בתוך עד 5 ימי עסקים.
+            </p>
+
+            <div className="space-y-4 mb-12">
+              {[
+                { 
+                  icon: Target, 
+                  title: 'אבחון חוזקות וחסמים', 
+                  desc: 'זיהוי מוקדי העוצמה שלך לצד החסמים המבניים המעכבים את צמיחתך המקצועית.' 
+                },
+                { 
+                  icon: BarChart3, 
+                  title: 'מפת יכולות ויזואלית', 
+                  desc: 'תמונת מצב גרפית נקייה ומקצועית המציגה את רמת המיומנות שלך ב-6 צירי כוח מרכזיים: ניהול, פיננסים, שיווק, דיגיטל, ביצוע וחזון.' 
+                },
+                { 
+                  icon: TrendingUp, 
+                  title: 'ניתוח פערים אסטרטגי (Gap Analysis)', 
+                  desc: 'הבנה עמוקה של הקשר בין היכולות שלך – כיצד חיזוק חולשה ספציפית ימנף את החוזקות הקיימות שלך ויכפיל את האימפקט המקצועי שלך.' 
+                },
+                { 
+                  icon: CheckCircle, 
+                  title: 'פרוטוקול פעולה (The Action Matrix)', 
+                  desc: 'צעדים מעשיים לביצוע מיידי (Quick Wins) לצד "מרשם" עבודה המותאמת אישית לפרופיל שלך.' 
+                },
+                { 
+                  icon: BookOpen, 
+                  title: 'ספריית משאבי פרימיום', 
+                  desc: 'הפניות ממוקדות למקורות ידע מהשורה הראשונה בעולם – קורסים אקדמיים, ספרות ניהול מתקדמת וכלים טכנולוגיים מובילים.' 
+                }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="flex gap-4 items-start bg-white/5 p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all"
+                >
+                  <div className="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <item.icon className="w-6 h-6 text-amber-400" />
+                  </div>
+                  <div className="text-right">
+                    <h4 className="font-bold text-white mb-2">{item.title}</h4>
+                    <p className="text-gray-300 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <h3 className="text-2xl md:text-3xl font-bold mb-6 text-amber-400">
+              התרומות המקצועיות של V107 עבורך:
+            </h3>
+            <div className="grid md:grid-cols-3 gap-6 mb-12">
+              {[
+                { title: 'בהירות ניהולית', desc: 'הפסקת ה"רעש" והתמקדות במוקדים שבאמת מייצרים צמיחה בקריירה או בעסק שלך.' },
+                { title: 'שפה אסטרטגית', desc: 'שיפור היכולת לקבל החלטות מבוססות נתונים וגיבוש חזון מקצועי חד וממוקד.' },
+                { title: 'ייעול מערכתי', desc: 'קבלת כלים להפחתת עומס תפעולי ומעבר לניהול אסטרטגי חכם.' }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.15 }}
+                  className="bg-white/5 p-6 rounded-2xl border border-white/10 text-right"
+                >
+                  <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center mb-4 mr-auto">
+                    <span className="text-white font-bold">{index + 1}</span>
+                  </div>
+                  <h4 className="font-bold text-white mb-3">{item.title}</h4>
+                  <p className="text-gray-300 text-sm leading-relaxed">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-2xl p-8 border border-amber-400/30">
+              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-amber-400">
+                מעבר מידיעה לפעולה: אודות מוצר העל שלנו "V107-BOOSTER"
+              </h3>
+              <p className="text-gray-200 leading-relaxed mb-4">
+                ניסיוננו מראה כי רבים מסתפקים בקריאת הדו"ח (שלב הידיעה), אך אלו שעברו ליישום בפועל של המסקנות, הם אלו שהשיגו יעדים טובים יותר.
+              </p>
+              <p className="text-gray-200 leading-relaxed mb-6">
+                בדיוק עבורכם פיתחנו את מוצר העל שלנו: <span className="font-bold text-amber-300">V107-BOOSTER</span>. זהו כלי עבודה יומי עוצמתי המלווה אותך במשך 7 ימים עם משימות יומיות-קצרות וממוקדות, במטרה להפוך את מסקנות הדו"ח לדרך חיים ניהולית ולתוצאות מוחשיות בשטח.
+              </p>
+              <div className="flex items-center gap-2 text-white">
+                <Rocket className="w-6 h-6 text-amber-400" />
+                <p className="font-bold text-lg">
+                  לכן, אל תסתפק בידיעה של מי שאתה – גלה מה אתה באמת יכול להיות.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-center"
+          >
+            <Link to={createPageUrl("Questionnaire")}>
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xl px-12 py-7 rounded-2xl shadow-2xl shadow-amber-500/50 font-bold"
+              >
+                <span className="flex items-center gap-3">
+                  <Sparkles className="w-6 h-6" />
+                  מלא את השאלון עכשיו והתחל את מסע הצמיחה שלך!
+                  <ArrowLeft className="w-6 h-6" />
+                </span>
+              </Button>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
