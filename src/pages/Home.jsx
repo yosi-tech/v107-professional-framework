@@ -361,24 +361,27 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
+                className="flex"
               >
-                <div className="relative group">
+                <div className="relative group flex-1 flex">
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl transform group-hover:scale-105 transition-transform duration-300 opacity-0 group-hover:opacity-10"></div>
-                  
-                  <Card className="relative border-2 border-gray-100 hover:border-amber-400 transition-all duration-300 rounded-3xl shadow-lg hover:shadow-2xl h-full">
-                    <CardContent className="p-8 text-center">
-                      <div className="relative mb-6">
-                        <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                          <step.icon className="w-10 h-10 text-white" />
+
+                  <Card className="relative border-2 border-gray-100 hover:border-amber-400 transition-all duration-300 rounded-3xl shadow-lg hover:shadow-2xl flex-1 flex flex-col">
+                    <CardContent className="p-8 text-center flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="relative mb-6">
+                          <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                            <step.icon className="w-10 h-10 text-white" />
+                          </div>
+                          <div className="absolute -top-3 -right-3 bg-slate-900 text-white text-sm font-bold px-3 py-1 rounded-full">
+                            {index + 1}
+                          </div>
                         </div>
-                        <div className="absolute -top-3 -right-3 bg-slate-900 text-white text-sm font-bold px-3 py-1 rounded-full">
-                          {index + 1}
-                        </div>
+
+                        <h3 className="text-2xl font-bold mb-4 text-gray-900">{step.title}</h3>
+                        <p className="text-gray-600 leading-relaxed mb-4">{step.desc}</p>
                       </div>
-                      
-                      <h3 className="text-2xl font-bold mb-4 text-gray-900">{step.title}</h3>
-                      <p className="text-gray-600 leading-relaxed mb-4">{step.desc}</p>
-                      
+
                       <div className="inline-flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-full">
                         <Clock className="w-4 h-4 text-amber-600" />
                         <span className="text-sm font-semibold text-amber-900">{step.time}</span>
