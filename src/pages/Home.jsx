@@ -649,7 +649,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'מה יזמים אומרים עלינו' : 'What Entrepreneurs Say'}
+                {language === 'he' ? 'מה אומרים עלינו' : 'What People Say'}
               </h2>
               <p className="text-xl text-gray-600">
                 {language === 'he' ? 'סיפורי הצלחה מהשטח' : 'Success Stories from the Field'}
@@ -669,28 +669,28 @@ export default function Home() {
                   style={{ transform: language === 'he' ? `translateX(${currentSlide * 100}%)` : `translateX(-${currentSlide * 100}%)` }}
                 >
                   {testimonials.map((testimonial, index) => (
-                    <div key={testimonial.id || index} className="w-full flex-shrink-0 px-4">
+                    <div key={testimonial.id || index} className="w-full flex-shrink-0 px-2 sm:px-4">
                       <Card className="mx-auto max-w-4xl border-2 border-gray-100 shadow-2xl rounded-3xl">
-                        <CardContent className="p-12 text-center">
-                          <Quote className="w-16 h-16 text-amber-500 mx-auto mb-6 opacity-20" />
+                        <CardContent className="p-6 sm:p-12 text-center">
+                          <Quote className="w-10 h-10 sm:w-16 sm:h-16 text-amber-500 mx-auto mb-4 sm:mb-6 opacity-20" />
 
-                          <p className="text-2xl text-gray-700 mb-8 leading-relaxed font-medium">
+                          <p className="text-base sm:text-2xl text-gray-700 mb-4 sm:mb-8 leading-relaxed font-medium">
                             "{language === 'he' ? testimonial.quote_he : (testimonial.quote_en || testimonial.quote_he)}"
                           </p>
 
-                          <div className="flex items-center justify-center gap-1 mb-6">
+                          <div className="flex items-center justify-center gap-1 mb-4 sm:mb-6">
                             {[...Array(testimonial.stars)].map((_, i) => (
-                              <Star key={i} className="w-6 h-6 text-amber-500 fill-current" />
+                              <Star key={i} className="w-4 h-4 sm:w-6 sm:h-6 text-amber-500 fill-current" />
                             ))}
                           </div>
 
-                          <div className="flex items-center justify-center gap-4">
-                            <div className="w-16 h-16 bg-gradient-to-br from-slate-700 to-slate-900 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+                          <div className="flex items-center justify-center gap-3 sm:gap-4">
+                            <div className="w-10 h-10 sm:w-16 sm:h-16 bg-gradient-to-br from-slate-700 to-slate-900 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-2xl shadow-lg">
                               {testimonial.name.charAt(0)}
                             </div>
                             <div className={language === 'he' ? 'text-right' : 'text-left'}>
-                              <p className="font-bold text-gray-900 text-xl">{testimonial.name}</p>
-                              <p className="text-gray-600">{language === 'he' ? testimonial.title_he : (testimonial.title_en || testimonial.title_he)}</p>
+                              <p className="font-bold text-gray-900 text-sm sm:text-xl">{testimonial.name}</p>
+                              <p className="text-gray-600 text-xs sm:text-base">{language === 'he' ? testimonial.title_he : (testimonial.title_en || testimonial.title_he)}</p>
                             </div>
                           </div>
                         </CardContent>
@@ -704,15 +704,15 @@ export default function Home() {
                 <>
                   <button
                     onClick={prevSlide}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 w-14 h-14 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-amber-500 hover:text-white transition-all duration-300 shadow-xl z-10"
+                    className="absolute right-0 sm:right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-14 sm:h-14 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-amber-500 hover:text-white transition-all duration-300 shadow-xl z-10"
                   >
-                    <ChevronRight className="w-7 h-7" />
+                    <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
                   </button>
                   <button
                     onClick={nextSlide}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-14 h-14 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-amber-500 hover:text-white transition-all duration-300 shadow-xl z-10"
+                    className="absolute left-0 sm:left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-14 sm:h-14 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-amber-500 hover:text-white transition-all duration-300 shadow-xl z-10"
                   >
-                    <ChevronLeft className="w-7 h-7" />
+                    <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
                   </button>
 
                   <div className="flex justify-center mt-8 gap-3">
