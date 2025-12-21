@@ -274,9 +274,6 @@ function AppLayout({ children }) {
                 <h1 className="text-sm font-bold text-[#b8a46e] tracking-wider">
                   PROFESSIONAL FRAMEWORK
                 </h1>
-                <p className="text-xs text-slate-500">
-                  {t('layout.header_subtitle')}
-                </p>
               </div>
             </Link>
 
