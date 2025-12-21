@@ -264,12 +264,12 @@ export default function Home() {
               <Link to={createPageUrl("Questionnaire")}>
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xl px-12 py-7 rounded-2xl shadow-2xl shadow-amber-500/50 font-bold group relative overflow-hidden">
+                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-base sm:text-xl px-6 py-4 sm:px-12 sm:py-7 rounded-2xl shadow-2xl shadow-amber-500/50 font-bold group relative overflow-hidden">
 
-                  <span className="relative z-10 flex items-center gap-3">
-                    <Rocket className="w-6 h-6" />
-                    {getContent('hero_cta_button', language === 'he' ? 'התחל את השאלון עכשיו!' : 'Start Questionnaire Now!')}
-                    {React.createElement(currentArrowIcon, { className: "w-6 h-6 group-hover:translate-x-1 transition-transform" })}
+                  <span className="relative z-10 flex items-center gap-2 sm:gap-3">
+                    <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <span className="text-sm sm:text-xl">{getContent('hero_cta_button', language === 'he' ? 'התחל את השאלון עכשיו!' : 'Start Questionnaire Now!')}</span>
+                    {React.createElement(currentArrowIcon, { className: "w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform" })}
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </Button>
