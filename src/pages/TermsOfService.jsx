@@ -382,26 +382,29 @@ export default function TermsOfService() {
               <p><strong>{isHebrew ? 'שם חברה מלא:' : 'Full Company Name:'}</strong> V107</p>
               <p><strong>{isHebrew ? 'מספר עוסק:' : 'Business Number:'}</strong> 054095377</p>
               <p><strong>{isHebrew ? 'כתובת פיזית:' : 'Physical Address:'}</strong> {isHebrew ? 'רחוב הברזל 34 תל אביב יפו' : 'HaBarzel Street 34, Tel Aviv-Yafo'}</p>
-              <div className={`flex items-center ${isHebrew ? 'justify-end' : 'justify-start'} gap-2`}>
-                {isHebrew && (
-                  <>
-                    <a href="mailto:support@v107.co.il" className="text-blue-600 hover:text-blue-800 underline">
-                      support@v107.co.il
-                    </a>
-                    <span>:</span>
-                    <span className="font-medium">מייל שירות</span>
-                    <Mail className="w-5 h-5 text-amber-600" />
-                  </>
-                )}
-                {!isHebrew && (
-                  <>
-                    <Mail className="w-5 h-5 text-amber-600" />
-                    <span className="font-medium">Service Email:</span>
-                    <a href="mailto:support@v107.co.il" className="text-blue-600 hover:text-blue-800 underline">
-                      support@v107.co.il
-                    </a>
-                  </>
-                )}
+              <div className="space-y-2">
+                <div className={`flex items-center ${isHebrew ? 'justify-end' : 'justify-start'} gap-2`}>
+                  {isHebrew && (
+                    <>
+                      <a href="mailto:support@v107.co.il" className="text-blue-600 hover:text-blue-800 underline">
+                        support@v107.co.il
+                      </a>
+                      <span>:</span>
+                      <span className="font-medium">מייל שירות</span>
+                      <Mail className="w-5 h-5 text-amber-600" />
+                    </>
+                  )}
+                  {!isHebrew && (
+                    <>
+                      <Mail className="w-5 h-5 text-amber-600" />
+                      <span className="font-medium">Service Email:</span>
+                      <a href="mailto:support@v107.co.il" className="text-blue-600 hover:text-blue-800 underline">
+                        support@v107.co.il
+                      </a>
+                    </>
+                  )}
+                </div>
+                <p><strong>{isHebrew ? 'טלפון:' : 'Phone:'}</strong> <a href="tel:0552134848" className="text-blue-600 hover:text-blue-800 underline">055-2134848</a></p>
               </div>
             </div>
           </div>
