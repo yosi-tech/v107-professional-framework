@@ -44,36 +44,28 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const fetchContent = async () => {
+    const fetchAllData = async () => {
       try {
-        const items = await base44.entities.ContentItem.filter({ page: 'home' });
+        const [items, data] = await Promise.all([
+          base44.entities.ContentItem.filter({ page: 'home' }),
+          base44.entities.Testimonial.list('-created_date')
+        ]);
+        
         const contentMap = {};
         items.forEach((item) => {
           contentMap[item.content_key] = language === 'he' ? item.content_he : item.content_en;
         });
         setContent(contentMap);
-      } catch (error) {
-        console.error("Failed to fetch content:", error);
-      } finally {
-        setIsLoadingContent(false);
-      }
-    };
-    fetchContent();
-  }, [language]);
-
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        const data = await base44.entities.Testimonial.list('-created_date');
         setTestimonials(data);
       } catch (error) {
-        console.error("Failed to fetch testimonials:", error);
+        console.error("Failed to fetch data:", error);
       } finally {
+        setIsLoadingContent(false);
         setIsLoadingTestimonials(false);
       }
     };
-    fetchTestimonials();
-  }, []);
+    fetchAllData();
+  }, [language]);
 
   useEffect(() => {
     if (testimonials.length === 0) return;
