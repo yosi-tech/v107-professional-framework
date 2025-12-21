@@ -624,13 +624,13 @@ export default function Home() {
 
             <Link to={createPageUrl("Questionnaire")}>
               <Button
-                size="lg"
-                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xl px-12 py-7 rounded-2xl shadow-2xl shadow-amber-500/50 font-bold">
+                size="sm"
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-sm px-5 py-3 rounded-lg shadow-lg font-bold">
 
-                <span className="flex items-center gap-3">
-                  <Sparkles className="w-6 h-6" />
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
                   מלא את השאלון עכשיו והתחל את מסע הצמיחה שלך!
-                  <ArrowLeft className="w-6 h-6" />
+                  <ArrowLeft className="w-4 h-4" />
                 </span>
               </Button>
             </Link>
