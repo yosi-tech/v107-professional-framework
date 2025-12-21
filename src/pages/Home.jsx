@@ -629,7 +629,7 @@ export default function Home() {
 
                 <span className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
-                  מלא את השאלון עכשיו והתחל את מסע הצמיחה שלך!
+                  מלא את השאלון עכשיו!
                   <ArrowLeft className="w-4 h-4" />
                 </span>
               </Button>
