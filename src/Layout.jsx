@@ -460,9 +460,6 @@ function AppLayout({ children }) {
                 />
                 <h3 className="text-sm font-bold text-[#b8a46e] tracking-wider">PROFESSIONAL FRAMEWORK</h3>
               </div>
-              <p className="text-slate-400 text-sm leading-relaxed">
-                {t('layout.footer_subtitle')}
-              </p>
             </div>
 
             {/* Quick Links - Company */}
@@ -558,7 +555,7 @@ function AppLayout({ children }) {
           {/* Bottom Bar */}
           <div className="border-t border-slate-700 pt-8 text-center">
             <p className="text-xs text-slate-500">
-              {t('layout.footer_copyright')}
+              {language === 'he' ? 'כל הזכויות שמורות לעלית' : 'All rights reserved to Elit'}
             </p>
           </div>
         </div>

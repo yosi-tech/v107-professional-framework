@@ -191,14 +191,14 @@ export default function About() {
               </h2>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
                 {getContent('yossi_bio_paragraph1', language === 'he'
-                  ? 'יועץ ומלווה יזמים ובעלי עסקים קטנים ובינוניים מאז 2006. תואר ראשון בכלכלה, התמחות במימון, ידע נרחב ביזמות.'
-                  : 'Business consultant and entrepreneur mentor since 2006. Bachelor\'s degree in Economics, specialization in Finance, extensive knowledge in entrepreneurship.'
+                  ? 'יועץ ומלווה בעלי עסקים קטנים ובינוניים מאז 2006. תואר ראשון בכלכלה, התמחות במימון, ידע נרחב בעסקים.'
+                  : 'Business consultant and mentor since 2006. Bachelor\'s degree in Economics, specialization in Finance, extensive knowledge in business.'
                 )}
               </p>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
                 {getContent('yossi_bio_paragraph2', language === 'he'
-                  ? 'עבדתי עם עשרות יזמים כמעט בכל קטגוריה בישראל—קמעונאות, B2B, מסעדות וחנויות נישה, שירותים מקצועיים, סטארט-אפים, שירותים טכנולוגים.'
-                  : 'I have worked with dozens of entrepreneurs across nearly every category in Israel—retail, B2B, restaurants and niche stores, professional services, startups, and tech services.'
+                  ? 'עבדתי עם עשרות בעלי עסקים כמעט בכל קטגוריה בישראל—קמעונאות, B2B, מסעדות וחנויות נישה, שירותים מקצועיים, סטארט-אפים, שירותים טכנולוגים.'
+                  : 'I have worked with dozens of business owners across nearly every category in Israel—retail, B2B, restaurants and niche stores, professional services, startups, and tech services.'
                 )}
               </p>
               <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
@@ -240,7 +240,7 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-              {getContent('categories_title', language === 'he' ? 'ליווינו יזמים ועסקים בקטגוריות רבות' : 'We Have Guided Entrepreneurs in Various Categories')}
+              {getContent('categories_title', language === 'he' ? 'ליווינו עסקים בקטגוריות רבות' : 'We Have Guided Businesses in Various Categories')}
             </h2>
             <p className="text-lg text-gray-600">
               {getContent('categories_subtitle', language === 'he'

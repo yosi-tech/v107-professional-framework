@@ -122,7 +122,7 @@ export default function Home() {
     {
       icon: Target,
       title: "זהה את נקודות החוזקה שלך",
-      desc: "גלה את היכולות היזמיות המובילות שלך וכיצד למנף אותן להצלחה."
+      desc: "גלה את היכולות המקצועיות המובילות שלך וכיצד למנף אותן להצלחה."
     },
     {
       icon: TrendingUp,
@@ -135,15 +135,15 @@ export default function Home() {
       desc: "זיהוי מוקדי סיכון קריטיים והמלצות למניעת כישלונות."
     },
     {
-      icon: Award,
-      title: "דוח מקצועי ברמה בינלאומית",
-      desc: "מבוסס על ניסיון של אלפי יזמים ברחבי העולם."
+    icon: Award,
+    title: "דוח מקצועי ברמה בינלאומית",
+    desc: "מבוסס על ניסיון של אלפי אנשים ברחבי העולם."
     }
   ] : [
     {
       icon: Target,
       title: "Identify Your Strengths",
-      desc: "Discover your leading entrepreneurial abilities and how to leverage them."
+      desc: "Discover your leading professional abilities and how to leverage them."
     },
     {
       icon: TrendingUp,
@@ -158,7 +158,7 @@ export default function Home() {
     {
       icon: Award,
       title: "International-Level Report",
-      desc: "Based on experience from thousands of entrepreneurs worldwide."
+      desc: "Based on experience from thousands of people worldwide."
     }
   ];
 
@@ -249,7 +249,7 @@ export default function Home() {
               </span>
               <br />
               <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-                {getContent('hero_title_part2', language === 'he' ? 'הפוטנציאל היזמי שלך' : 'Entrepreneurial Potential')}
+                {getContent('hero_title_part2', language === 'he' ? 'הפוטנציאל המקצועי שלך' : 'Professional Potential')}
               </span>
             </h1>
 
@@ -291,7 +291,7 @@ export default function Home() {
           >
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
               <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat1_number', '5,000+')}</div>
-              <div className="text-sm text-gray-300">{getContent('stat1_label', language === 'he' ? 'יזמים השתמשו בשאלון' : 'Entrepreneurs Used')}</div>
+              <div className="text-sm text-gray-300">{getContent('stat1_label', language === 'he' ? 'אנשים השתמשו בשאלון' : 'People Used')}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
               <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat2_number', '107')}</div>
