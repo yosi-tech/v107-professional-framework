@@ -217,9 +217,18 @@ export default function About() {
                 <p className="text-gray-800 font-semibold mt-4">
                   {language === 'he' ? 'צור קשר:' : 'Contact:'}
                 </p>
-                <a href="mailto:support@v107.co.il" className="text-amber-600 hover:text-amber-700 font-medium">
-                  support@v107.co.il
-                </a>
+                <div className="space-y-1">
+                  <p>
+                    <a href="mailto:support@v107.co.il" className="text-amber-600 hover:text-amber-700 font-medium">
+                      support@v107.co.il
+                    </a>
+                  </p>
+                  <p>
+                    <a href="tel:0552134848" className="text-amber-600 hover:text-amber-700 font-medium">
+                      055-2134848
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
