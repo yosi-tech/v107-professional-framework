@@ -703,14 +703,14 @@ export default function Home() {
               {testimonials.length > 1 &&
             <>
                   <button
-                onClick={prevSlide}
-                className="absolute right-0 sm:right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-14 sm:h-14 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-amber-500 hover:text-white transition-all duration-300 shadow-xl z-10">
+                    onClick={prevSlide}
+                    className="absolute right-0 sm:right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-14 sm:h-14 bg-amber-500 text-white rounded-full flex items-center justify-center hover:bg-amber-600 transition-all duration-300 shadow-xl z-10">
 
                     <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
                   </button>
                   <button
-                onClick={nextSlide}
-                className="absolute left-0 sm:left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-14 sm:h-14 bg-white text-gray-800 rounded-full flex items-center justify-center hover:bg-amber-500 hover:text-white transition-all duration-300 shadow-xl z-10">
+                    onClick={nextSlide}
+                    className="absolute left-0 sm:left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-14 sm:h-14 bg-amber-500 text-white rounded-full flex items-center justify-center hover:bg-amber-600 transition-all duration-300 shadow-xl z-10">
 
                     <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
                   </button>
