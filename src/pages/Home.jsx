@@ -669,28 +669,28 @@ export default function Home() {
                   style={{ transform: language === 'he' ? `translateX(${currentSlide * 100}%)` : `translateX(-${currentSlide * 100}%)` }}
                 >
                   {testimonials.map((testimonial, index) => (
-                    <div key={testimonial.id || index} className="w-full flex-shrink-0 px-2 sm:px-4">
-                      <Card className="mx-auto max-w-4xl border-2 border-gray-100 shadow-2xl rounded-3xl">
-                        <CardContent className="p-6 sm:p-12 text-center">
-                          <Quote className="w-10 h-10 sm:w-16 sm:h-16 text-amber-500 mx-auto mb-4 sm:mb-6 opacity-20" />
+                    <div key={testimonial.id || index} className="w-full flex-shrink-0 px-3 sm:px-4">
+                      <Card className="mx-auto max-w-4xl border-2 border-gray-100 shadow-2xl rounded-2xl sm:rounded-3xl">
+                        <CardContent className="p-8 sm:p-12 text-center">
+                          <Quote className="w-12 h-12 sm:w-16 sm:h-16 text-amber-500 mx-auto mb-4 sm:mb-6 opacity-20" />
 
-                          <p className="text-base sm:text-2xl text-gray-700 mb-4 sm:mb-8 leading-relaxed font-medium">
+                          <p className="text-lg sm:text-2xl text-gray-700 mb-6 sm:mb-8 leading-relaxed font-medium min-h-[80px] sm:min-h-0">
                             "{language === 'he' ? testimonial.quote_he : (testimonial.quote_en || testimonial.quote_he)}"
                           </p>
 
                           <div className="flex items-center justify-center gap-1 mb-4 sm:mb-6">
                             {[...Array(testimonial.stars)].map((_, i) => (
-                              <Star key={i} className="w-4 h-4 sm:w-6 sm:h-6 text-amber-500 fill-current" />
+                              <Star key={i} className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 fill-current" />
                             ))}
                           </div>
 
                           <div className="flex items-center justify-center gap-3 sm:gap-4">
-                            <div className="w-10 h-10 sm:w-16 sm:h-16 bg-gradient-to-br from-slate-700 to-slate-900 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-2xl shadow-lg">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-slate-700 to-slate-900 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-2xl shadow-lg">
                               {testimonial.name.charAt(0)}
                             </div>
                             <div className={language === 'he' ? 'text-right' : 'text-left'}>
-                              <p className="font-bold text-gray-900 text-sm sm:text-xl">{testimonial.name}</p>
-                              <p className="text-gray-600 text-xs sm:text-base">{language === 'he' ? testimonial.title_he : (testimonial.title_en || testimonial.title_he)}</p>
+                              <p className="font-bold text-gray-900 text-base sm:text-xl">{testimonial.name}</p>
+                              <p className="text-gray-600 text-sm sm:text-base">{language === 'he' ? testimonial.title_he : (testimonial.title_en || testimonial.title_he)}</p>
                             </div>
                           </div>
                         </CardContent>
