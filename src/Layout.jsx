@@ -4,7 +4,7 @@ import { createPageUrl } from "@/utils";
 import { FileText, Shield, User as UserIcon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ChatBot from "@/components/ai/ChatBot";
+
 import { LanguageProvider } from "@/components/i18n/LanguageContext";
 import { useTranslation } from "@/components/i18n/useTranslation";
 import { LanguageContext } from "@/components/i18n/LanguageContext";
@@ -560,9 +560,7 @@ function AppLayout({ children }) {
           </div>
         </div>
       </footer>
-      
-      <ChatBot />
-    </div>);
+      </div>);
 
 }
 
