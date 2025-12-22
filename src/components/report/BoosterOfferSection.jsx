@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Rocket, CheckCircle, Gift, TrendingUp, Award, Target, ShoppingCart } from "lucide-react";
 
-export default function BoosterOfferSection({ recommendedTrack, language }) {
+export default function BoosterOfferSection({ recommendedTrack, language, userName }) {
   if (!recommendedTrack) return null;
 
   const isHebrew = language === 'he';
