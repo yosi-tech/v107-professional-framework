@@ -72,6 +72,7 @@ export default function DomainScoresSection({ domainScores, language }) {
                 dataKey="name" 
                 width={150}
                 tick={{ fill: '#475569', fontSize: 12 }}
+                style={{ direction: 'ltr' }}
               />
               <Tooltip />
               <Bar dataKey="score" radius={[0, 8, 8, 0]}>
