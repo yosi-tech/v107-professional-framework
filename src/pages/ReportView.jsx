@@ -453,9 +453,12 @@ export default function ReportView() {
               </div>
             )}
 
-            {/* Page 3: Readiness Table + Domain Scores */}
+            {/* Page 3: Page 3 Header + Readiness Table + Domain Scores */}
             {currentPage === 3 && (
               <div className="space-y-8">
+                {pageContents[2] && (
+                  <FullReportSection markdownContent={pageContents[2]} />
+                )}
                 <div className="relative">
                   {isAdmin && (
                     <Button
@@ -492,9 +495,9 @@ export default function ReportView() {
               </div>
             )}
 
-            {/* Page 4: Action Plan + Booster */}
+            {/* Page 4: Action Plan */}
             {currentPage === 4 && (
-              <div className="relative space-y-8">
+              <div className="relative">
                 {isAdmin && (
                   <Button
                     onClick={() => startEditSection('page4_content')}
@@ -519,13 +522,22 @@ export default function ReportView() {
                     {pageContents[3] && (
                       <FullReportSection markdownContent={pageContents[3]} />
                     )}
-                    {report.recommended_booster_track && (
-                      <BoosterOfferSection
-                        recommendedTrack={report.recommended_booster_track}
-                        language={currentLanguage}
-                      />
-                    )}
                   </>
+                )}
+              </div>
+            )}
+
+            {/* Page 5: Booster Offer */}
+            {currentPage === 5 && (
+              <div className="relative space-y-8">
+                {pageContents[4] && (
+                  <FullReportSection markdownContent={pageContents[4]} />
+                )}
+                {report.recommended_booster_track && (
+                  <BoosterOfferSection
+                    recommendedTrack={report.recommended_booster_track}
+                    language={currentLanguage}
+                  />
                 )}
               </div>
             )}
