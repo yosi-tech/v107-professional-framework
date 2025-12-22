@@ -210,19 +210,27 @@ export default function ReportView() {
     );
   }
 
-  // Split markdown into 5 pages using string search instead of sections
+  // Split markdown into 5 pages using string search
   let pageContents = ['', '', '', '', ''];
   if (report.report_markdown) {
     const fullText = report.report_markdown;
     
-    // Find markers for page boundaries
-    const page3Marker = fullText.indexOf('עמוד 3');
-    const page4Marker = fullText.indexOf('עמוד 4');
-    const page5Marker = Math.max(
-      fullText.indexOf('עמוד 5'),
-      fullText.indexOf('V107-BOOSTER'),
-      fullText.indexOf('V107 BOOSTER')
-    );
+    // Find markers - look for the line containing the page marker
+    const findLineStart = (text, searchText) => {
+      const index = text.indexOf(searchText);
+      if (index === -1) return -1;
+      // Find the start of the line containing the search text
+      const lineStart = text.lastIndexOf('\n', index);
+      return lineStart === -1 ? 0 : lineStart;
+    };
+    
+    const page3Marker = findLineStart(fullText, 'עמוד 3');
+    const page4Marker = findLineStart(fullText, 'עמוד 4');
+    
+    // For page 5, try multiple markers
+    let page5Marker = findLineStart(fullText, 'עמוד 5');
+    if (page5Marker === -1) page5Marker = findLineStart(fullText, 'V107-BOOSTER');
+    if (page5Marker === -1) page5Marker = findLineStart(fullText, 'V107 BOOSTER');
     
     // Split content based on markers
     if (page3Marker >= 0) {
@@ -234,32 +242,25 @@ export default function ReportView() {
       
       // Page 3 content
       if (page4Marker >= 0) {
-        pageContents[2] = fullText.substring(page3Marker, page4Marker);
+        pageContents[2] = fullText.substring(page3Marker, page4Marker).trim();
       } else if (page5Marker >= 0) {
-        pageContents[2] = fullText.substring(page3Marker, page5Marker);
+        pageContents[2] = fullText.substring(page3Marker, page5Marker).trim();
       } else {
-        pageContents[2] = fullText.substring(page3Marker);
+        pageContents[2] = fullText.substring(page3Marker).trim();
       }
       
       // Page 4 content
       if (page4Marker >= 0) {
         if (page5Marker >= 0) {
-          pageContents[3] = fullText.substring(page4Marker, page5Marker);
+          pageContents[3] = fullText.substring(page4Marker, page5Marker).trim();
         } else {
-          pageContents[3] = fullText.substring(page4Marker);
-        }
-      } else if (page5Marker >= 0 && page3Marker >= 0) {
-        // No explicit page 4 header, but content between page 3 and page 5
-        const afterPage3 = fullText.substring(page3Marker);
-        const page3End = afterPage3.indexOf('\n\n') + 2;
-        if (page3End > 1) {
-          pageContents[3] = fullText.substring(page3Marker + page3End, page5Marker);
+          pageContents[3] = fullText.substring(page4Marker).trim();
         }
       }
       
       // Page 5 content
       if (page5Marker >= 0) {
-        pageContents[4] = fullText.substring(page5Marker);
+        pageContents[4] = fullText.substring(page5Marker).trim();
       }
     } else {
       // No page markers found, split into sections
