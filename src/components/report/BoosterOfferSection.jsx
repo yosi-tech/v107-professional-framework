@@ -93,11 +93,15 @@ export default function BoosterOfferSection({ recommendedTrack, language, userNa
       <CardContent className="relative z-10 space-y-6">
         <Card className="bg-white/95 backdrop-blur-md border-none shadow-2xl">
           <CardContent className="p-8">
+            <p className="text-xl text-gray-800 mb-4 font-semibold leading-relaxed">
+              {isHebrew 
+                ? `${userName || 'משתתף/ת יקר/ה'}, הגיע הזמן לעבור מידיעה לפעולה. הבוסטר ילווה אותך ב-7 הימים הקרובים לחיזוק תחום ה${track.name_he} שלך.`
+                : `${userName || 'Dear participant'}, it's time to move from knowledge to action. The Booster will accompany you for the next 7 days to strengthen your ${track.name_en}.`
+              }
+            </p>
             <p className="text-2xl text-gray-800 mb-6 font-bold leading-relaxed">
               {isHebrew ? track.desc_he : track.desc_en}
             </p>
-
-
           </CardContent>
         </Card>
 
