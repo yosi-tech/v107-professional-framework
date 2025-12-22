@@ -77,7 +77,7 @@ export default function ReportView() {
   const [editingSection, setEditingSection] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   
-  const totalPages = 4;
+  const totalPages = 5;
 
   useEffect(() => {
     loadReport();
