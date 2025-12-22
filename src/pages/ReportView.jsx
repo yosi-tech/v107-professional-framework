@@ -554,7 +554,7 @@ export default function ReportView() {
                 {getText('previousPage')}
               </Button>
               <div className="flex gap-2">
-                {[1, 2, 3, 4].map((page) => (
+                {[1, 2, 3, 4, 5].map((page) => (
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
