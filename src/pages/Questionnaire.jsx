@@ -265,7 +265,7 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           <FileText className="w-10 h-10 text-accent" />
         </div>
         <CardTitle className="text-3xl font-bold text-text-primary mb-2">
-          {language === 'he' ? 'שאלון V107 ליזמים' : 'V107 Entrepreneurial Questionnaire'}
+          {language === 'he' ? 'אודות שאלון V107 ' : 'V107 Entrepreneurial Questionnaire'}
         </CardTitle>
         <CardDescription className="text-lg text-text-secondary">
           {language === 'he' ? 'גרסה B6 · v1.0-LTS' : 'Version B6 · v1.0-LTS'}
