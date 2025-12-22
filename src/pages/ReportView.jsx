@@ -228,14 +228,22 @@ export default function ReportView() {
     if (page3Index >= 0) {
       page3Content = sections[page3Index];
     }
+    
+    // If page 4 header exists, use it. Otherwise, content between page 3 and page 5 is page 4
     if (page4Index >= 0) {
-      // Page 4 content includes page 4 header
       if (page5Index >= 0) {
         page4Content = sections.slice(page4Index, page5Index).join('\n\n');
       } else {
         page4Content = sections.slice(page4Index).join('\n\n');
       }
+    } else if (page3Index >= 0 && page5Index >= 0) {
+      // No explicit page 4, but we have page 3 and 5 - everything in between is page 4
+      page4Content = sections.slice(page3Index + 1, page5Index).join('\n\n');
+    } else if (page3Index >= 0) {
+      // No page 5, everything after page 3 is page 4
+      page4Content = sections.slice(page3Index + 1).join('\n\n');
     }
+    
     if (page5Index >= 0) {
       page5Content = sections[page5Index];
     }
