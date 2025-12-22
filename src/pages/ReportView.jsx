@@ -215,11 +215,12 @@ export default function ReportView() {
   if (report.report_markdown) {
     const sections = report.report_markdown.split(/(?=^# )/m).filter(s => s.trim());
     
-    // Find page 3 and page 5 sections
+    // Find page 3, 4, and 5 sections
     const page3Index = sections.findIndex(s => s.includes('עמוד 3'));
+    const page4Index = sections.findIndex(s => s.includes('עמוד 4'));
     const page5Index = sections.findIndex(s => s.includes('עמוד 5') || s.includes('BOOSTER'));
     
-    // Extract pages 3, 4, 5 content
+    // Extract pages content
     let page3Content = '';
     let page4Content = '';
     let page5Content = '';
@@ -227,15 +228,16 @@ export default function ReportView() {
     if (page3Index >= 0) {
       page3Content = sections[page3Index];
     }
+    if (page4Index >= 0) {
+      // Page 4 content includes page 4 header
+      if (page5Index >= 0) {
+        page4Content = sections.slice(page4Index, page5Index).join('\n\n');
+      } else {
+        page4Content = sections.slice(page4Index).join('\n\n');
+      }
+    }
     if (page5Index >= 0) {
       page5Content = sections[page5Index];
-      // Everything between page 3 and page 5 is page 4
-      if (page3Index >= 0) {
-        page4Content = sections.slice(page3Index + 1, page5Index).join('\n\n');
-      }
-    } else if (page3Index >= 0) {
-      // No page 5 found, everything after page 3 is page 4
-      page4Content = sections.slice(page3Index + 1).join('\n\n');
     }
     
     // Pages 1 and 2 are everything before page 3
