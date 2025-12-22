@@ -316,7 +316,7 @@ export default function ReportView() {
                 </div>
               </div>
               <div className="flex gap-2 no-print">
-                <Button onClick={() => window.history.back()} variant="outline">
+                <Button onClick={() => window.location.href = '/'} variant="outline">
                   <ArrowRight className="w-4 h-4 ml-2" />
                   {currentLanguage === 'he' ? 'חזור' : 'Back'}
                 </Button>
