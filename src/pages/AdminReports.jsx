@@ -173,7 +173,12 @@ export default function AdminReports() {
       if (isRegenerate) {
         const existingReport = getReportForResponse(response.id);
         if (existingReport) {
-          await base44.entities.GeneratedReport.delete(existingReport.id);
+          try {
+            await base44.entities.GeneratedReport.delete(existingReport.id);
+            console.log("Deleted existing report:", existingReport.id);
+          } catch (deleteError) {
+            console.error("Error deleting existing report:", deleteError);
+          }
         }
       }
 
