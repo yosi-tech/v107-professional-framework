@@ -275,7 +275,7 @@ const QuestionnaireIntro = ({ onStart, language }) => {
         <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-text-secondary space-y-4 bg-slate-50 p-4 rounded-lg border`}>
           <p className="whitespace-pre-wrap leading-relaxed">
             {language === 'he' ?
-            'שאלון V107 הוא כלי אבחון מתקדם, שנבנה כדי להפיק עבורך דו״ח אישי ומעמיק ברמה הגבוהה ביותר.\n\nהמערכת פותחה על ידי צוות עלית לפני כחמש שנים, ומאז מולאה בהצלחה על ידי אלפי יזמים ובעלי עסקים ברחבי העולם.\n\nמטרת השאלון היא לספק תמונת מצב מלאה ומדויקת ככל האפשר לגבי יכולותיך, חוזקותיך, מגבלותיך ושאיפותיך — ולתרגם זאת לדו״ח מקצועי, ברור ויישומי שתקבל/י לאחר השלמת השאלון ובתוך עד 7 ימי עבודה.' :
+            'שאלון V107 הוא כלי אבחון מתקדם, שנבנה כדי להפיק עבורך דו״ח אישי ומעמיק ברמה הגבוהה ביותר.\n\nמטרת השאלון היא לספק תמונת מצב מלאה ומדויקת ככל האפשר לגבי יכולותיך, חוזקותיך, מגבלותיך ושאיפותיך — ולתרגם זאת לדו״ח מקצועי, ברור ויישומי שתקבל/י לאחר השלמת השאלון ובתוך עד 5 ימי עבודה.' :
             'The V107 questionnaire is an advanced assessment tool, designed to deliver a highly professional and in-depth personal report.\n\nDeveloped by the Elit team five years ago, it has since been completed by thousands of entrepreneurs and business owners worldwide.\n\nIts purpose is to provide the most accurate possible picture of your abilities, strengths, limitations, and aspirations — translated into a clear, professional, and actionable report delivered within 7 business days.'
             }
           </p>
