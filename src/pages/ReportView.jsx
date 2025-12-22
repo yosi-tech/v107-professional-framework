@@ -539,6 +539,7 @@ export default function ReportView() {
                   <BoosterOfferSection
                     recommendedTrack={report.recommended_booster_track}
                     language={currentLanguage}
+                    userName={report.user_name}
                   />
                 )}
               </div>
