@@ -210,29 +210,43 @@ export default function ReportView() {
     );
   }
 
-  // Split markdown into 4 pages
-  let pageContents = ['', '', '', ''];
+  // Split markdown into 5 pages
+  let pageContents = ['', '', '', '', ''];
   if (report.report_markdown) {
     const sections = report.report_markdown.split(/(?=^# )/m).filter(s => s.trim());
-    if (sections.length >= 4) {
-      pageContents = [sections[0], sections[1], '', sections.slice(2).join('\n\n')];
-    } else if (sections.length === 3) {
-      pageContents = [sections[0], sections[1], '', sections[2]];
-    } else if (sections.length === 2) {
-      pageContents = [sections[0], sections[1], '', ''];
-    } else if (sections.length === 1) {
-      const lines = sections[0].split('\n');
-      const quarter = Math.ceil(lines.length / 4);
-      pageContents = [
-        lines.slice(0, quarter).join('\n'),
-        lines.slice(quarter, quarter * 2).join('\n'),
-        '',
-        lines.slice(quarter * 2).join('\n')
-      ];
+    
+    // Find page 3 and page 5 sections
+    const page3Index = sections.findIndex(s => s.includes('עמוד 3'));
+    const page5Index = sections.findIndex(s => s.includes('עמוד 5') || s.includes('BOOSTER'));
+    
+    // Extract pages 3, 4, 5 content
+    let page3Content = '';
+    let page4Content = '';
+    let page5Content = '';
+    
+    if (page3Index >= 0) {
+      page3Content = sections[page3Index];
+    }
+    if (page5Index >= 0) {
+      page5Content = sections[page5Index];
+      // Everything between page 3 and page 5 is page 4
+      if (page3Index >= 0) {
+        page4Content = sections.slice(page3Index + 1, page5Index).join('\n\n');
+      }
+    } else if (page3Index >= 0) {
+      // No page 5 found, everything after page 3 is page 4
+      page4Content = sections.slice(page3Index + 1).join('\n\n');
     }
     
-    // Remove readiness table from page 4 (it's shown separately in page 3)
-    pageContents[3] = pageContents[3].replace(/^##?\s*עמוד 3:?\s*טבלת מוכנות[\s\S]*?\n\n(?=##|$)/m, '');
+    // Pages 1 and 2 are everything before page 3
+    const beforePage3 = page3Index >= 0 ? sections.slice(0, page3Index) : sections;
+    pageContents = [
+      beforePage3[0] || '',
+      beforePage3.slice(1).join('\n\n') || '',
+      page3Content,
+      page4Content,
+      page5Content
+    ];
   }
 
   return (
