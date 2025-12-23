@@ -39,6 +39,25 @@ export default function ContentManager({ contentItems, onUpdate }) {
     status: 'published'
   });
 
+  // Products management state
+  const [products, setProducts] = useState([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [isCreatingProduct, setIsCreatingProduct] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    name_he: '',
+    name_en: '',
+    description_he: '',
+    description_en: '',
+    price: 0,
+    product_type: 'full_report',
+    active: true,
+    featured: false,
+    discount_eligible: true,
+    allowed_coupon_codes: [],
+    order: 0
+  });
+
   const pages = [
     { value: 'home', label: 'דף הבית', icon: Home },
     { value: 'about', label: 'אודות', icon: Info },
@@ -47,19 +66,24 @@ export default function ContentManager({ contentItems, onUpdate }) {
     { value: 'terms', label: 'תנאי שימוש', icon: File }
   ];
 
-  // Fetch articles on component mount
+  // Fetch articles and products on component mount
   React.useEffect(() => {
-    const fetchArticles = async () => {
+    const fetchData = async () => {
       try {
-        const data = await base44.entities.Article.list('-created_date');
-        setArticles(data);
+        const [articlesData, productsData] = await Promise.all([
+          base44.entities.Article.list('-created_date'),
+          base44.entities.Product.list('order')
+        ]);
+        setArticles(articlesData);
+        setProducts(productsData);
       } catch (error) {
-        console.error('Error fetching articles:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setIsLoadingArticles(false);
+        setIsLoadingProducts(false);
       }
     };
-    fetchArticles();
+    fetchData();
   }, []);
 
   const sectionOrder = {
@@ -248,6 +272,85 @@ export default function ContentManager({ contentItems, onUpdate }) {
     }
   };
 
+  // Product handlers
+  const handleCreateProduct = async () => {
+    if (!newProduct.name_he || !newProduct.name_en || !newProduct.price) {
+      alert('יש למלא שם בעברית, שם באנגלית ומחיר');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await base44.entities.Product.create(newProduct);
+      const data = await base44.entities.Product.list('order');
+      setProducts(data);
+      setIsCreatingProduct(false);
+      setNewProduct({
+        name_he: '',
+        name_en: '',
+        description_he: '',
+        description_en: '',
+        price: 0,
+        product_type: 'full_report',
+        active: true,
+        featured: false,
+        discount_eligible: true,
+        allowed_coupon_codes: [],
+        order: 0
+      });
+      alert('המוצר נוצר בהצלחה!');
+    } catch (error) {
+      console.error('Error creating product:', error);
+      alert('שגיאה ביצירת המוצר');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveProduct = async (product) => {
+    setIsSaving(true);
+    try {
+      await base44.entities.Product.update(product.id, {
+        name_he: product.name_he,
+        name_en: product.name_en,
+        description_he: product.description_he,
+        description_en: product.description_en,
+        price: product.price,
+        product_type: product.product_type,
+        active: product.active,
+        featured: product.featured,
+        discount_eligible: product.discount_eligible,
+        allowed_coupon_codes: product.allowed_coupon_codes,
+        order: product.order
+      });
+      const data = await base44.entities.Product.list('order');
+      setProducts(data);
+      setEditingProduct(null);
+      alert('המוצר עודכן בהצלחה!');
+    } catch (error) {
+      console.error('Error saving product:', error);
+      alert('שגיאה בשמירת המוצר');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    if (!window.confirm('האם אתה בטוח שברצונך למחוק מוצר זה?')) {
+      return;
+    }
+
+    try {
+      await base44.entities.Product.delete(productId);
+      const data = await base44.entities.Product.list('order');
+      setProducts(data);
+      alert('המוצר נמחק בהצלחה');
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert('שגיאה במחיקת המוצר');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -379,6 +482,13 @@ export default function ContentManager({ contentItems, onUpdate }) {
 
       <Tabs defaultValue="home" className="w-full">
         <TabsList className="flex flex-wrap w-full justify-center gap-2 h-auto p-2">
+        <TabsTrigger 
+          value="products-content"
+          className="flex items-center gap-2 flex-row-reverse"
+        >
+          <span>ניהול מוצרים</span>
+          <ShoppingCart className="w-4 h-4" />
+        </TabsTrigger>
         <TabsTrigger 
           value="articles-content"
           className="flex items-center gap-2 flex-row-reverse"
@@ -648,6 +758,248 @@ export default function ContentManager({ contentItems, onUpdate }) {
           </TabsContent>
         ))}
 
+        <TabsContent value="products-content">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold text-right">מוצרים</h3>
+              <Button
+                onClick={() => setIsCreatingProduct(true)}
+                className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>הוסף מוצר חדש</span>
+              </Button>
+            </div>
+
+            {isLoadingProducts ? (
+              <Card>
+                <CardContent className="p-12 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400" />
+                </CardContent>
+              </Card>
+            ) : products.length === 0 ? (
+              <Card>
+                <CardContent className="p-12 text-center">
+                  <p className="text-gray-500">אין מוצרים</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {products.map(product => (
+                  <Card key={product.id}>
+                    <CardContent className="p-6">
+                      {editingProduct?.id === product.id ? (
+                        <div className="space-y-4">
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                              <Label className="text-right block mb-2">שם בעברית *</Label>
+                              <Input
+                                value={editingProduct.name_he}
+                                onChange={(e) => setEditingProduct({...editingProduct, name_he: e.target.value})}
+                                className="text-right"
+                                dir="rtl"
+                              />
+                            </div>
+
+                            <div>
+                              <Label className="text-right block mb-2">שם באנגלית *</Label>
+                              <Input
+                                value={editingProduct.name_en}
+                                onChange={(e) => setEditingProduct({...editingProduct, name_en: e.target.value})}
+                                className="text-left"
+                                dir="ltr"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">תיאור בעברית</Label>
+                            <Textarea
+                              value={editingProduct.description_he}
+                              onChange={(e) => setEditingProduct({...editingProduct, description_he: e.target.value})}
+                              className="min-h-[100px] text-right"
+                              dir="rtl"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">תיאור באנגלית</Label>
+                            <Textarea
+                              value={editingProduct.description_en}
+                              onChange={(e) => setEditingProduct({...editingProduct, description_en: e.target.value})}
+                              className="min-h-[100px] text-left"
+                              dir="ltr"
+                            />
+                          </div>
+
+                          <div className="grid md:grid-cols-3 gap-4">
+                            <div>
+                              <Label className="text-right block mb-2">מחיר (₪) *</Label>
+                              <Input
+                                type="number"
+                                value={editingProduct.price}
+                                onChange={(e) => setEditingProduct({...editingProduct, price: parseFloat(e.target.value)})}
+                                className="text-right"
+                              />
+                            </div>
+
+                            <div>
+                              <Label className="text-right block mb-2">סוג מוצר</Label>
+                              <select
+                                value={editingProduct.product_type}
+                                onChange={(e) => setEditingProduct({...editingProduct, product_type: e.target.value})}
+                                className="w-full border rounded-md p-2 text-right"
+                                dir="rtl"
+                              >
+                                <option value="full_report">דוח מלא</option>
+                                <option value="answers_download">הורדת תשובות</option>
+                                <option value="online_coaching_7days">ליווי אונליין 7 ימים</option>
+                                <option value="booster_track">מסלול בוסטר</option>
+                                <option value="other">אחר</option>
+                              </select>
+                            </div>
+
+                            <div>
+                              <Label className="text-right block mb-2">סדר תצוגה</Label>
+                              <Input
+                                type="number"
+                                value={editingProduct.order}
+                                onChange={(e) => setEditingProduct({...editingProduct, order: parseInt(e.target.value)})}
+                                className="text-right"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4 flex-row-reverse">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <span className="text-sm">פעיל</span>
+                              <input
+                                type="checkbox"
+                                checked={editingProduct.active}
+                                onChange={(e) => setEditingProduct({...editingProduct, active: e.target.checked})}
+                                className="w-4 h-4"
+                              />
+                            </label>
+
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <span className="text-sm">מומלץ</span>
+                              <input
+                                type="checkbox"
+                                checked={editingProduct.featured}
+                                onChange={(e) => setEditingProduct({...editingProduct, featured: e.target.checked})}
+                                className="w-4 h-4"
+                              />
+                            </label>
+
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <span className="text-sm">ניתן להשתמש בקופונים</span>
+                              <input
+                                type="checkbox"
+                                checked={editingProduct.discount_eligible}
+                                onChange={(e) => setEditingProduct({...editingProduct, discount_eligible: e.target.checked})}
+                                className="w-4 h-4"
+                              />
+                            </label>
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">קודי קופון מותרים (מופרדים בפסיקים, ריק = כל הקופונים)</Label>
+                            <Input
+                              value={editingProduct.allowed_coupon_codes?.join(', ')}
+                              onChange={(e) => setEditingProduct({
+                                ...editingProduct, 
+                                allowed_coupon_codes: e.target.value.split(',').map(k => k.trim()).filter(k => k)
+                              })}
+                              className="text-right"
+                              dir="rtl"
+                              placeholder="SAVE20, WELCOME10"
+                            />
+                          </div>
+
+                          <div className="flex gap-3 flex-row-reverse pt-4 border-t">
+                            <Button
+                              onClick={() => handleSaveProduct(editingProduct)}
+                              disabled={isSaving}
+                              className="bg-blue-600 hover:bg-blue-700"
+                            >
+                              {isSaving ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                                  שומר...
+                                </>
+                              ) : (
+                                <>
+                                  <Save className="w-4 h-4 ml-2" />
+                                  שמור שינויים
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => setEditingProduct(null)}
+                              disabled={isSaving}
+                            >
+                              ביטול
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 text-right">
+                            <div className="flex items-center gap-2 mb-2 flex-row-reverse">
+                              <h4 className="text-lg font-bold">{product.name_he}</h4>
+                              <Badge className={product.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
+                                {product.active ? 'פעיל' : 'לא פעיל'}
+                              </Badge>
+                              {product.featured && (
+                                <Badge className="bg-amber-100 text-amber-800">⭐ מומלץ</Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 mb-2">{product.name_en}</p>
+                            <p className="text-2xl font-bold text-blue-600 mb-3">₪{product.price}</p>
+                            {product.description_he && (
+                              <div className="bg-gray-50 rounded-lg p-3 mt-3">
+                                <p className="text-sm text-gray-700">{product.description_he}</p>
+                              </div>
+                            )}
+                            <div className="flex gap-2 mt-3 flex-wrap flex-row-reverse">
+                              <Badge variant="outline">{product.product_type}</Badge>
+                              {product.discount_eligible && (
+                                <Badge variant="outline" className="text-green-600">ניתן להשתמש בקופונים</Badge>
+                              )}
+                              {product.allowed_coupon_codes?.length > 0 && (
+                                <Badge variant="outline">קופונים ספציפיים: {product.allowed_coupon_codes.join(', ')}</Badge>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setEditingProduct({...product})}
+                            >
+                              ערוך
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteProduct(product.id)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
         <TabsContent value="articles-content">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -828,6 +1180,174 @@ export default function ContentManager({ contentItems, onUpdate }) {
           </div>
         </TabsContent>
       </Tabs>
+
+      {isCreatingProduct && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <CardHeader className="bg-blue-100">
+              <CardTitle className="text-right">הוספת מוצר חדש</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-right block mb-2">שם בעברית *</Label>
+                  <Input
+                    value={newProduct.name_he}
+                    onChange={(e) => setNewProduct({...newProduct, name_he: e.target.value})}
+                    className="text-right"
+                    dir="rtl"
+                    placeholder="שם המוצר"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-right block mb-2">שם באנגלית *</Label>
+                  <Input
+                    value={newProduct.name_en}
+                    onChange={(e) => setNewProduct({...newProduct, name_en: e.target.value})}
+                    className="text-left"
+                    dir="ltr"
+                    placeholder="Product Name"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-right block mb-2">תיאור בעברית</Label>
+                <Textarea
+                  value={newProduct.description_he}
+                  onChange={(e) => setNewProduct({...newProduct, description_he: e.target.value})}
+                  className="min-h-[100px] text-right"
+                  dir="rtl"
+                  placeholder="תיאור המוצר..."
+                />
+              </div>
+
+              <div>
+                <Label className="text-right block mb-2">תיאור באנגלית</Label>
+                <Textarea
+                  value={newProduct.description_en}
+                  onChange={(e) => setNewProduct({...newProduct, description_en: e.target.value})}
+                  className="min-h-[100px] text-left"
+                  dir="ltr"
+                  placeholder="Product description..."
+                />
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-right block mb-2">מחיר (₪) *</Label>
+                  <Input
+                    type="number"
+                    value={newProduct.price}
+                    onChange={(e) => setNewProduct({...newProduct, price: parseFloat(e.target.value)})}
+                    className="text-right"
+                    placeholder="0"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-right block mb-2">סוג מוצר</Label>
+                  <select
+                    value={newProduct.product_type}
+                    onChange={(e) => setNewProduct({...newProduct, product_type: e.target.value})}
+                    className="w-full border rounded-md p-2 text-right"
+                    dir="rtl"
+                  >
+                    <option value="full_report">דוח מלא</option>
+                    <option value="answers_download">הורדת תשובות</option>
+                    <option value="online_coaching_7days">ליווי אונליין 7 ימים</option>
+                    <option value="booster_track">מסלול בוסטר</option>
+                    <option value="other">אחר</option>
+                  </select>
+                </div>
+
+                <div>
+                  <Label className="text-right block mb-2">סדר תצוגה</Label>
+                  <Input
+                    type="number"
+                    value={newProduct.order}
+                    onChange={(e) => setNewProduct({...newProduct, order: parseInt(e.target.value)})}
+                    className="text-right"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-4 flex-row-reverse">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <span className="text-sm">פעיל</span>
+                  <input
+                    type="checkbox"
+                    checked={newProduct.active}
+                    onChange={(e) => setNewProduct({...newProduct, active: e.target.checked})}
+                    className="w-4 h-4"
+                  />
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <span className="text-sm">מומלץ</span>
+                  <input
+                    type="checkbox"
+                    checked={newProduct.featured}
+                    onChange={(e) => setNewProduct({...newProduct, featured: e.target.checked})}
+                    className="w-4 h-4"
+                  />
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <span className="text-sm">ניתן להשתמש בקופונים</span>
+                  <input
+                    type="checkbox"
+                    checked={newProduct.discount_eligible}
+                    onChange={(e) => setNewProduct({...newProduct, discount_eligible: e.target.checked})}
+                    className="w-4 h-4"
+                  />
+                </label>
+              </div>
+
+              <div>
+                <Label className="text-right block mb-2">קודי קופון מותרים (מופרדים בפסיקים)</Label>
+                <Input
+                  value={newProduct.allowed_coupon_codes?.join(', ')}
+                  onChange={(e) => setNewProduct({
+                    ...newProduct, 
+                    allowed_coupon_codes: e.target.value.split(',').map(k => k.trim()).filter(k => k)
+                  })}
+                  className="text-right"
+                  dir="rtl"
+                  placeholder="SAVE20, WELCOME10"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t flex-row-reverse">
+                <Button
+                  onClick={handleCreateProduct}
+                  disabled={isSaving}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                      שומר...
+                    </>
+                  ) : (
+                    'צור מוצר'
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsCreatingProduct(false)}
+                  disabled={isSaving}
+                  className="flex-1"
+                >
+                  ביטול
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {isCreatingArticle && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
