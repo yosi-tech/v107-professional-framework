@@ -71,6 +71,12 @@ export default function ContentManager({ contentItems, onUpdate }) {
     user_email: '',
     source: 'promotion'
   });
+  const [quickCouponDialog, setQuickCouponDialog] = useState(false);
+  const [quickCoupon, setQuickCoupon] = useState({
+    code: '',
+    discount_amount: 0,
+    discount_percentage: 0
+  });
 
   const pages = [
     { value: 'home', label: 'דף הבית', icon: Home },
@@ -435,6 +441,43 @@ export default function ContentManager({ contentItems, onUpdate }) {
     } catch (error) {
       console.error('Error deleting coupon:', error);
       alert('שגיאה במחיקת הקופון');
+    }
+  };
+
+  const handleQuickCreateCoupon = async (currentProduct) => {
+    if (!quickCoupon.code || (!quickCoupon.discount_amount && !quickCoupon.discount_percentage)) {
+      alert('יש למלא קוד והנחה');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await base44.entities.Coupon.create({
+        code: quickCoupon.code,
+        discount_amount: quickCoupon.discount_amount || 0,
+        discount_percentage: quickCoupon.discount_percentage || 0,
+        user_email: '',
+        source: 'promotion',
+        used: false
+      });
+      
+      const updatedCoupons = await base44.entities.Coupon.list('-created_date');
+      setCoupons(updatedCoupons);
+      
+      // הוסף את הקוד לרשימת הקופונים המותרים במוצר
+      const updatedCodes = [...(currentProduct.allowed_coupon_codes || []), quickCoupon.code];
+      if (editingProduct) {
+        setEditingProduct({...editingProduct, allowed_coupon_codes: updatedCodes});
+      }
+      
+      setQuickCouponDialog(false);
+      setQuickCoupon({ code: '', discount_amount: 0, discount_percentage: 0 });
+      alert('הקופון נוצר והתוסף למוצר!');
+    } catch (error) {
+      console.error('Error creating quick coupon:', error);
+      alert('שגיאה ביצירת הקופון');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -997,7 +1040,22 @@ export default function ContentManager({ contentItems, onUpdate }) {
                           </div>
 
                           <div>
-                            <Label className="text-right block mb-2">קודי קופון מותרים (מופרדים בפסיקים, ריק = כל הקופונים)</Label>
+                            <div className="flex items-center justify-between mb-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setQuickCouponDialog(true);
+                                  setQuickCoupon({ code: '', discount_amount: 0, discount_percentage: 0 });
+                                }}
+                                className="flex items-center gap-2 bg-green-50 hover:bg-green-100"
+                              >
+                                <Plus className="w-4 h-4" />
+                                <span>צור קופון חדש</span>
+                              </Button>
+                              <Label className="text-right">קודי קופון מותרים</Label>
+                            </div>
                             <Input
                               value={editingProduct.allowed_coupon_codes?.join(', ')}
                               onChange={(e) => setEditingProduct({
@@ -1006,8 +1064,25 @@ export default function ContentManager({ contentItems, onUpdate }) {
                               })}
                               className="text-right"
                               dir="rtl"
-                              placeholder="SAVE20, WELCOME10"
+                              placeholder="SAVE20, WELCOME10 (או השאר ריק לכל הקופונים)"
                             />
+                            {editingProduct.allowed_coupon_codes?.length > 0 && (
+                              <div className="mt-2 flex flex-wrap gap-2 flex-row-reverse">
+                                {editingProduct.allowed_coupon_codes.map(code => {
+                                  const coupon = coupons.find(c => c.code === code);
+                                  return (
+                                    <Badge key={code} variant="outline" className="text-xs">
+                                      {code}
+                                      {coupon && (
+                                        <span className="mr-1 text-green-600">
+                                          ({coupon.discount_amount ? `${coupon.discount_amount}₪` : `${coupon.discount_percentage}%`})
+                                        </span>
+                                      )}
+                                    </Badge>
+                                  );
+                                })}
+                              </div>
+                            )}
                           </div>
 
                           <div className="flex gap-3 flex-row-reverse pt-4 border-t">
@@ -1465,6 +1540,83 @@ export default function ContentManager({ contentItems, onUpdate }) {
         </TabsContent>
       </Tabs>
 
+      {quickCouponDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="max-w-md w-full">
+            <CardHeader className="bg-green-100">
+              <CardTitle className="text-right">הוספה מהירה של קופון</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div>
+                <Label className="text-right block mb-2">קוד קופון *</Label>
+                <Input
+                  value={quickCoupon.code}
+                  onChange={(e) => setQuickCoupon({...quickCoupon, code: e.target.value.toUpperCase()})}
+                  className="text-right text-lg"
+                  dir="rtl"
+                  placeholder="SAVE20"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-right block mb-2">הנחה בשקלים</Label>
+                  <Input
+                    type="number"
+                    value={quickCoupon.discount_amount}
+                    onChange={(e) => setQuickCoupon({...quickCoupon, discount_amount: parseFloat(e.target.value) || 0})}
+                    className="text-right"
+                    placeholder="50"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-right block mb-2">הנחה באחוזים</Label>
+                  <Input
+                    type="number"
+                    value={quickCoupon.discount_percentage}
+                    onChange={(e) => setQuickCoupon({...quickCoupon, discount_percentage: parseFloat(e.target.value) || 0})}
+                    className="text-right"
+                    placeholder="10"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-xs text-amber-800 text-right">
+                  💡 מלא לפחות אחד: הנחה בשקלים או באחוזים
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t flex-row-reverse">
+                <Button
+                  onClick={() => handleQuickCreateCoupon(editingProduct || newProduct)}
+                  disabled={isSaving}
+                  className="flex-1 bg-green-600 hover:bg-green-700"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                      יוצר...
+                    </>
+                  ) : (
+                    'צור והוסף'
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setQuickCouponDialog(false)}
+                  disabled={isSaving}
+                  className="flex-1"
+                >
+                  ביטול
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {isCreatingCoupon && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -1709,7 +1861,22 @@ export default function ContentManager({ contentItems, onUpdate }) {
               </div>
 
               <div>
-                <Label className="text-right block mb-2">קודי קופון מותרים (מופרדים בפסיקים)</Label>
+                <div className="flex items-center justify-between mb-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setQuickCouponDialog(true);
+                      setQuickCoupon({ code: '', discount_amount: 0, discount_percentage: 0 });
+                    }}
+                    className="flex items-center gap-2 bg-green-50 hover:bg-green-100"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>צור קופון חדש</span>
+                  </Button>
+                  <Label className="text-right">קודי קופון מותרים</Label>
+                </div>
                 <Input
                   value={newProduct.allowed_coupon_codes?.join(', ')}
                   onChange={(e) => setNewProduct({
@@ -1718,7 +1885,7 @@ export default function ContentManager({ contentItems, onUpdate }) {
                   })}
                   className="text-right"
                   dir="rtl"
-                  placeholder="SAVE20, WELCOME10"
+                  placeholder="SAVE20, WELCOME10 (או השאר ריק לכל הקופונים)"
                 />
               </div>
 
