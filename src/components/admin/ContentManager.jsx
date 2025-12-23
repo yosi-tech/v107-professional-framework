@@ -60,6 +60,17 @@ export default function ContentManager({ contentItems, onUpdate }) {
 
   // Coupons state
   const [coupons, setCoupons] = useState([]);
+  const [editingCoupon, setEditingCoupon] = useState(null);
+  const [isCreatingCoupon, setIsCreatingCoupon] = useState(false);
+  const [newCoupon, setNewCoupon] = useState({
+    code: '',
+    discount_amount: 0,
+    discount_percentage: 0,
+    valid_until: '',
+    used: false,
+    user_email: '',
+    source: 'promotion'
+  });
 
   const pages = [
     { value: 'home', label: 'דף הבית', icon: Home },
@@ -356,6 +367,77 @@ export default function ContentManager({ contentItems, onUpdate }) {
     }
   };
 
+  // Coupon handlers
+  const handleCreateCoupon = async () => {
+    if (!newCoupon.code || (!newCoupon.discount_amount && !newCoupon.discount_percentage)) {
+      alert('יש למלא קוד והנחה (סכום או אחוז)');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await base44.entities.Coupon.create(newCoupon);
+      const data = await base44.entities.Coupon.list('-created_date');
+      setCoupons(data);
+      setIsCreatingCoupon(false);
+      setNewCoupon({
+        code: '',
+        discount_amount: 0,
+        discount_percentage: 0,
+        valid_until: '',
+        used: false,
+        user_email: '',
+        source: 'promotion'
+      });
+      alert('הקופון נוצר בהצלחה!');
+    } catch (error) {
+      console.error('Error creating coupon:', error);
+      alert('שגיאה ביצירת הקופון');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveCoupon = async (coupon) => {
+    setIsSaving(true);
+    try {
+      await base44.entities.Coupon.update(coupon.id, {
+        code: coupon.code,
+        discount_amount: coupon.discount_amount,
+        discount_percentage: coupon.discount_percentage,
+        valid_until: coupon.valid_until,
+        used: coupon.used,
+        user_email: coupon.user_email,
+        source: coupon.source
+      });
+      const data = await base44.entities.Coupon.list('-created_date');
+      setCoupons(data);
+      setEditingCoupon(null);
+      alert('הקופון עודכן בהצלחה!');
+    } catch (error) {
+      console.error('Error saving coupon:', error);
+      alert('שגיאה בשמירת הקופון');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteCoupon = async (couponId) => {
+    if (!window.confirm('האם אתה בטוח שברצונך למחוק קופון זה?')) {
+      return;
+    }
+
+    try {
+      await base44.entities.Coupon.delete(couponId);
+      const data = await base44.entities.Coupon.list('-created_date');
+      setCoupons(data);
+      alert('הקופון נמחק בהצלחה');
+    } catch (error) {
+      console.error('Error deleting coupon:', error);
+      alert('שגיאה במחיקת הקופון');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -487,6 +569,13 @@ export default function ContentManager({ contentItems, onUpdate }) {
 
       <Tabs defaultValue="home" className="w-full">
         <TabsList className="flex flex-wrap w-full justify-center gap-2 h-auto p-2">
+        <TabsTrigger 
+          value="coupons-content"
+          className="flex items-center gap-2 flex-row-reverse"
+        >
+          <span>ניהול קופונים</span>
+          <ShoppingCart className="w-4 h-4" />
+        </TabsTrigger>
         <TabsTrigger 
           value="products-content"
           className="flex items-center gap-2 flex-row-reverse"
@@ -1011,6 +1100,190 @@ export default function ContentManager({ contentItems, onUpdate }) {
           </div>
         </TabsContent>
 
+        <TabsContent value="coupons-content">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold text-right">קופונים</h3>
+              <Button
+                onClick={() => setIsCreatingCoupon(true)}
+                className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>הוסף קופון חדש</span>
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              {coupons.map(coupon => (
+                <Card key={coupon.id}>
+                  <CardContent className="p-6">
+                    {editingCoupon?.id === coupon.id ? (
+                      <div className="space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-right block mb-2">קוד קופון *</Label>
+                            <Input
+                              value={editingCoupon.code}
+                              onChange={(e) => setEditingCoupon({...editingCoupon, code: e.target.value.toUpperCase()})}
+                              className="text-right"
+                              dir="rtl"
+                              placeholder="SAVE20"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">מייל משתמש (אופציונלי)</Label>
+                            <Input
+                              value={editingCoupon.user_email}
+                              onChange={(e) => setEditingCoupon({...editingCoupon, user_email: e.target.value})}
+                              className="text-left"
+                              dir="ltr"
+                              placeholder="user@example.com"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-right block mb-2">הנחה בשקלים</Label>
+                            <Input
+                              type="number"
+                              value={editingCoupon.discount_amount}
+                              onChange={(e) => setEditingCoupon({...editingCoupon, discount_amount: parseFloat(e.target.value) || 0})}
+                              className="text-right"
+                              placeholder="50"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">הנחה באחוזים</Label>
+                            <Input
+                              type="number"
+                              value={editingCoupon.discount_percentage}
+                              onChange={(e) => setEditingCoupon({...editingCoupon, discount_percentage: parseFloat(e.target.value) || 0})}
+                              className="text-right"
+                              placeholder="10"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-right block mb-2">תוקף עד</Label>
+                            <Input
+                              type="date"
+                              value={editingCoupon.valid_until ? editingCoupon.valid_until.split('T')[0] : ''}
+                              onChange={(e) => setEditingCoupon({...editingCoupon, valid_until: e.target.value ? new Date(e.target.value).toISOString() : ''})}
+                              className="text-right"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-right block mb-2">מקור</Label>
+                            <select
+                              value={editingCoupon.source}
+                              onChange={(e) => setEditingCoupon({...editingCoupon, source: e.target.value})}
+                              className="w-full border rounded-md p-2 text-right"
+                              dir="rtl"
+                            >
+                              <option value="abandonment_survey">סקר נטישה</option>
+                              <option value="promotion">פרומושן</option>
+                              <option value="referral">הפניה</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-4 flex-row-reverse">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="text-sm">נוצל</span>
+                            <input
+                              type="checkbox"
+                              checked={editingCoupon.used}
+                              onChange={(e) => setEditingCoupon({...editingCoupon, used: e.target.checked})}
+                              className="w-4 h-4"
+                            />
+                          </label>
+                        </div>
+
+                        <div className="flex gap-3 flex-row-reverse pt-4 border-t">
+                          <Button
+                            onClick={() => handleSaveCoupon(editingCoupon)}
+                            disabled={isSaving}
+                            className="bg-blue-600 hover:bg-blue-700"
+                          >
+                            {isSaving ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                                שומר...
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-4 h-4 ml-2" />
+                                שמור שינויים
+                              </>
+                            )}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => setEditingCoupon(null)}
+                            disabled={isSaving}
+                          >
+                            ביטול
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 text-right">
+                          <div className="flex items-center gap-2 mb-2 flex-row-reverse">
+                            <h4 className="text-2xl font-bold text-blue-600">{coupon.code}</h4>
+                            <Badge className={coupon.used ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'}>
+                              {coupon.used ? 'נוצל' : 'פעיל'}
+                            </Badge>
+                          </div>
+                          <div className="space-y-2">
+                            {coupon.discount_amount > 0 && (
+                              <p className="text-lg font-bold text-green-600">הנחה: ₪{coupon.discount_amount}</p>
+                            )}
+                            {coupon.discount_percentage > 0 && (
+                              <p className="text-lg font-bold text-green-600">הנחה: {coupon.discount_percentage}%</p>
+                            )}
+                            {coupon.user_email && (
+                              <p className="text-sm text-gray-600">למשתמש: {coupon.user_email}</p>
+                            )}
+                            {coupon.valid_until && (
+                              <p className="text-sm text-gray-600">תוקף עד: {new Date(coupon.valid_until).toLocaleDateString('he-IL')}</p>
+                            )}
+                            <Badge variant="outline">{coupon.source}</Badge>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setEditingCoupon({...coupon})}
+                          >
+                            ערוך
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteCoupon(coupon.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
         <TabsContent value="articles-content">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -1191,6 +1464,124 @@ export default function ContentManager({ contentItems, onUpdate }) {
           </div>
         </TabsContent>
       </Tabs>
+
+      {isCreatingCoupon && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <CardHeader className="bg-green-100">
+              <CardTitle className="text-right">הוספת קופון חדש</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-right block mb-2">קוד קופון * (באנגלית גדולות)</Label>
+                  <Input
+                    value={newCoupon.code}
+                    onChange={(e) => setNewCoupon({...newCoupon, code: e.target.value.toUpperCase()})}
+                    className="text-right"
+                    dir="rtl"
+                    placeholder="SAVE20"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-right block mb-2">מייל משתמש (אופציונלי)</Label>
+                  <Input
+                    value={newCoupon.user_email}
+                    onChange={(e) => setNewCoupon({...newCoupon, user_email: e.target.value})}
+                    className="text-left"
+                    dir="ltr"
+                    placeholder="user@example.com"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-right block mb-2">הנחה בשקלים</Label>
+                  <Input
+                    type="number"
+                    value={newCoupon.discount_amount}
+                    onChange={(e) => setNewCoupon({...newCoupon, discount_amount: parseFloat(e.target.value) || 0})}
+                    className="text-right"
+                    placeholder="50"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 text-right">השאר 0 אם אין הנחה בשקלים</p>
+                </div>
+
+                <div>
+                  <Label className="text-right block mb-2">הנחה באחוזים</Label>
+                  <Input
+                    type="number"
+                    value={newCoupon.discount_percentage}
+                    onChange={(e) => setNewCoupon({...newCoupon, discount_percentage: parseFloat(e.target.value) || 0})}
+                    className="text-right"
+                    placeholder="10"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 text-right">השאר 0 אם אין הנחה באחוזים</p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-right block mb-2">תוקף עד (אופציונלי)</Label>
+                  <Input
+                    type="date"
+                    value={newCoupon.valid_until ? newCoupon.valid_until.split('T')[0] : ''}
+                    onChange={(e) => setNewCoupon({...newCoupon, valid_until: e.target.value ? new Date(e.target.value).toISOString() : ''})}
+                    className="text-right"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-right block mb-2">מקור</Label>
+                  <select
+                    value={newCoupon.source}
+                    onChange={(e) => setNewCoupon({...newCoupon, source: e.target.value})}
+                    className="w-full border rounded-md p-2 text-right"
+                    dir="rtl"
+                  >
+                    <option value="abandonment_survey">סקר נטישה</option>
+                    <option value="promotion">פרומושן</option>
+                    <option value="referral">הפניה</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-sm text-amber-800 text-right">
+                  💡 יש למלא לפחות אחד מהשדות: הנחה בשקלים או הנחה באחוזים
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t flex-row-reverse">
+                <Button
+                  onClick={handleCreateCoupon}
+                  disabled={isSaving}
+                  className="flex-1 bg-green-600 hover:bg-green-700"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                      שומר...
+                    </>
+                  ) : (
+                    'צור קופון'
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsCreatingCoupon(false)}
+                  disabled={isSaving}
+                  className="flex-1"
+                >
+                  ביטול
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {isCreatingProduct && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
