@@ -31,8 +31,8 @@ import {
   TrendingUp,
   Rocket,
   MessageSquare,
-  Edit3
-} from "lucide-react";
+  Edit3 } from
+"lucide-react";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -44,14 +44,14 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from
+"@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from
+"@/components/ui/dropdown-menu";
 import { getAbandonmentEmailTemplate } from "@/components/email/AbandonmentEmailTemplate";
 import { simulatePurchase } from "@/functions/simulatePurchase";
 import {
@@ -59,8 +59,8 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from
+"@/components/ui/select";
 
 
 
@@ -102,7 +102,7 @@ export default function AdminReports() {
   const [filters, setFilters] = useState({
     hasPurchased: 'all', // 'all', 'purchased', 'not_purchased'
     hasReport: 'all', // 'all', 'has_report', 'no_report'
-    questionnaireStatus: 'all', // 'all', 'completed', 'in_progress', 'abandoned'
+    questionnaireStatus: 'all' // 'all', 'completed', 'in_progress', 'abandoned'
   });
 
   useEffect(() => {
@@ -129,17 +129,17 @@ export default function AdminReports() {
   const loadData = async () => {
     try {
       const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses, allSiteSettings, allBoosterSubscriptions, allContentItems] = await Promise.all([
-        base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date'),
-        base44.entities.QuestionnaireResponse.filter({ status: 'in_progress' }, '-created_date'),
-        base44.entities.GeneratedReport.list('-created_date'),
-        base44.entities.User.list(),
-        base44.entities.EmailLog.list('-created_date'),
-        base44.entities.EmailTemplate.list('-created_date'),
-        base44.entities.SurveyResponse.list('-created_date'),
-        base44.entities.SiteSettings.list().catch(() => []),
-        base44.entities.OnlineCoachingSubscription.list('-created_date').catch(() => []),
-        base44.entities.ContentItem.list().catch(() => [])
-      ]);
+      base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date'),
+      base44.entities.QuestionnaireResponse.filter({ status: 'in_progress' }, '-created_date'),
+      base44.entities.GeneratedReport.list('-created_date'),
+      base44.entities.User.list(),
+      base44.entities.EmailLog.list('-created_date'),
+      base44.entities.EmailTemplate.list('-created_date'),
+      base44.entities.SurveyResponse.list('-created_date'),
+      base44.entities.SiteSettings.list().catch(() => []),
+      base44.entities.OnlineCoachingSubscription.list('-created_date').catch(() => []),
+      base44.entities.ContentItem.list().catch(() => [])]
+      );
       setResponses([...completedResponses, ...inProgressResponses]);
       setReports(allReports);
       setUsers(allUsers);
@@ -162,7 +162,7 @@ export default function AdminReports() {
   const generateReport = async (response, isRegenerate = false) => {
     setGeneratingReportId(response.id);
     const reportLanguage = response.language || 'he';
-    
+
     try {
       if (!response.responses || Object.keys(response.responses).length === 0) {
         alert(reportLanguage === 'en' ? "The questionnaire does not contain answers. A report cannot be created." : "השאלון לא מכיל תשובות. לא ניתן ליצור דו\"ח.");
@@ -183,8 +183,8 @@ export default function AdminReports() {
       }
 
       // Call the backend function to generate the report
-      const result = await base44.functions.invoke('generateReportAutomatic', { 
-        responseId: response.id 
+      const result = await base44.functions.invoke('generateReportAutomatic', {
+        responseId: response.id
       });
 
       await loadData();
@@ -214,13 +214,13 @@ export default function AdminReports() {
 
     setDeletingResponseId(responseId);
     try {
-      const relatedReport = reports.find(r => r.questionnaire_response_id === responseId);
+      const relatedReport = reports.find((r) => r.questionnaire_response_id === responseId);
       if (relatedReport) {
         await base44.entities.GeneratedReport.delete(relatedReport.id);
       }
 
-      const relatedEmailLogs = emailLogs.filter(log => log.related_questionnaire_response_id === responseId);
-      await Promise.all(relatedEmailLogs.map(log => base44.entities.EmailLog.delete(log.id)));
+      const relatedEmailLogs = emailLogs.filter((log) => log.related_questionnaire_response_id === responseId);
+      await Promise.all(relatedEmailLogs.map((log) => base44.entities.EmailLog.delete(log.id)));
 
       await base44.entities.QuestionnaireResponse.delete(responseId);
 
@@ -235,18 +235,18 @@ export default function AdminReports() {
   };
 
   const getReportForResponse = (responseId) => {
-    return reports.find(r => r.questionnaire_response_id === responseId);
+    return reports.find((r) => r.questionnaire_response_id === responseId);
   };
 
   const getUserForResponse = (response) => {
-    return users.find(u => u.email === response.created_by || u.email === response.personal_info?.email);
+    return users.find((u) => u.email === response.created_by || u.email === response.personal_info?.email);
   };
 
   const getEmailsForResponse = (response) => {
-    return emailLogs.filter(log =>
-      log.related_questionnaire_response_id === response.id ||
-      log.related_user_email === response.created_by ||
-      log.related_user_email === response.personal_info?.email
+    return emailLogs.filter((log) =>
+    log.related_questionnaire_response_id === response.id ||
+    log.related_user_email === response.created_by ||
+    log.related_user_email === response.personal_info?.email
     );
   };
 
@@ -469,7 +469,7 @@ export default function AdminReports() {
       const clientEmail = response.personal_info?.email || report.user_email;
       const clientName = response.personal_info?.full_name || report.user_name;
 
-      const userExists = users.some(u => u.email === clientEmail);
+      const userExists = users.some((u) => u.email === clientEmail);
 
       if (!userExists) {
         alert(language === 'en' ? `Cannot send email - user ${clientEmail} is not registered in the application.\n\nTo send emails, the user must be registered in the system via Dashboard -> Users.` : `לא ניתן לשלוח מייל - המשתמש ${clientEmail} לא רשום באפליקציה.\n\nכדי לשלוח מיילים, המשתמש צריך להיות רשום במערכת דרך Dashboard -> Users.`);
@@ -552,17 +552,17 @@ export default function AdminReports() {
       const questionnaireUrl = `${window.location.origin}${createPageUrl('Questionnaire')}`;
       const reportUrl = `${window.location.origin}${createPageUrl('MyAccount')}`;
       const purchaseUrl = `${window.location.origin}${createPageUrl(`Completion?responseId=${response.id}`)}`;
-      
-      emailHtml = emailHtml
-        .replace(/{userName}/g, userName)
-        .replace(/{surveyUrl}/g, surveyUrl)
-        .replace(/{questionnaireUrl}/g, questionnaireUrl)
-        .replace(/{reportUrl}/g, reportUrl)
-        .replace(/{purchaseUrl}/g, purchaseUrl)
-        .replace(/{couponCode}/g, couponCode || '');
+
+      emailHtml = emailHtml.
+      replace(/{userName}/g, userName).
+      replace(/{surveyUrl}/g, surveyUrl).
+      replace(/{questionnaireUrl}/g, questionnaireUrl).
+      replace(/{reportUrl}/g, reportUrl).
+      replace(/{purchaseUrl}/g, purchaseUrl).
+      replace(/{couponCode}/g, couponCode || '');
 
       console.log('Attempting to send email...');
-      
+
       await base44.integrations.Core.SendEmail({
         to: userEmail,
         subject: emailSubject,
@@ -583,10 +583,10 @@ export default function AdminReports() {
 
       // סגירת הדיאלוג
       setTemplateSelectionDialog({ open: false, response: null });
-      
+
       // טעינה מחדש של כל הנתונים
       await loadData();
-      
+
       alert(emailLanguage === 'en' ? `Email sent successfully to ${userEmail}` : `מייל נשלח בהצלחה ל-${userEmail}`);
     } catch (error) {
       console.error("Error sending manual email:", error);
@@ -607,7 +607,7 @@ export default function AdminReports() {
       let emailSubject = '';
       let emailHtml = '';
 
-      const userExists = users.some(u => u.email === userEmail);
+      const userExists = users.some((u) => u.email === userEmail);
       if (!userExists) {
         alert(emailLanguage === 'en' ? `Cannot send email - user ${userEmail} is not registered in the application.\n\nTo send emails, the user must be registered in the system via Dashboard -> Users.` : `לא ניתן לשלוח מייל - המשתמש ${userEmail} לא רשום באפליקציה.\n\nכדי לשלוח מיילים, המשתמש צריך להיות רשום במערכת דרך Dashboard -> Users.`);
         setSendingEmailType(null);
@@ -674,12 +674,12 @@ export default function AdminReports() {
     }
   };
 
-  const filteredResponses = responses.filter(r => {
+  const filteredResponses = responses.filter((r) => {
     const fullName = r.personal_info?.full_name || '';
     const email = r.personal_info?.email || '';
     const searchMatch = fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           email.toLowerCase().includes(searchTerm.toLowerCase());
-    
+    email.toLowerCase().includes(searchTerm.toLowerCase());
+
     if (!searchMatch) return false;
 
     // סינון לפי רכישה
@@ -711,10 +711,10 @@ export default function AdminReports() {
   });
 
   const getAbandonedUsers = () => {
-    return users.filter(u => {
-      const hasCompletedResponse = responses.some(r =>
-        (r.created_by === u.email || r.personal_info?.email === u.email) &&
-        r.status === 'completed'
+    return users.filter((u) => {
+      const hasCompletedResponse = responses.some((r) =>
+      (r.created_by === u.email || r.personal_info?.email === u.email) &&
+      r.status === 'completed'
       );
       const hasPurchased = (u.has_purchased_full_report ?? false) || (u.has_purchased_answers_download ?? false);
 
@@ -723,16 +723,16 @@ export default function AdminReports() {
   };
 
   const getInProgressUsers = () => {
-    return users.filter(u => {
-      const hasInProgressResponse = responses.some(r =>
-        (r.created_by === u.email || r.personal_info?.email === u.email) &&
-        r.status === 'in_progress'
+    return users.filter((u) => {
+      const hasInProgressResponse = responses.some((r) =>
+      (r.created_by === u.email || r.personal_info?.email === u.email) &&
+      r.status === 'in_progress'
       );
-      const hasCompletedResponse = responses.some(r =>
-        (r.created_by === u.email || r.personal_info?.email === u.email) &&
-        r.status === 'completed'
+      const hasCompletedResponse = responses.some((r) =>
+      (r.created_by === u.email || r.personal_info?.email === u.email) &&
+      r.status === 'completed'
       );
-      
+
       // רק אם יש in_progress ואין completed
       return hasInProgressResponse && !hasCompletedResponse;
     });
@@ -784,31 +784,31 @@ export default function AdminReports() {
                   {template.trigger_event === 'on_questionnaire_submit' && '📝 הגשת שאלון'}
                 </Badge>
 
-                {template.include_coupon && (
-                  <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                {template.include_coupon &&
+                <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
                     <DollarSign className="w-3 h-3 ml-1" />
                     קופון {template.coupon_amount} ₪
                   </Badge>
-                )}
+                }
               </div>
 
-              {showPreview && (
-                <div className="mt-4 space-y-3">
+              {showPreview &&
+              <div className="mt-4 space-y-3">
                   <div className="flex justify-center gap-2">
                     <Button
-                      type="button"
-                      size="sm"
-                      variant={previewLangLocal === 'he' ? 'default' : 'outline'}
-                      onClick={() => setPreviewLangLocal('he')}
-                    >
+                    type="button"
+                    size="sm"
+                    variant={previewLangLocal === 'he' ? 'default' : 'outline'}
+                    onClick={() => setPreviewLangLocal('he')}>
+
                       🇮🇱 עברית
                     </Button>
                     <Button
-                      type="button"
-                      size="sm"
-                      variant={previewLangLocal === 'en' ? 'default' : 'outline'}
-                      onClick={() => setPreviewLangLocal('en')}
-                    >
+                    type="button"
+                    size="sm"
+                    variant={previewLangLocal === 'en' ? 'default' : 'outline'}
+                    onClick={() => setPreviewLangLocal('en')}>
+
                       🇬🇧 English
                     </Button>
                   </div>
@@ -820,21 +820,21 @@ export default function AdminReports() {
                     </p>
                     <div className="border rounded-lg bg-white overflow-hidden shadow">
                       <iframe
-                        srcDoc={(previewLangLocal === 'he' ? template.content_he : template.content_en)
-                          .replace(/{userName}/g, previewLangLocal === 'he' ? 'ישראל ישראלי' : 'John Doe')
-                          .replace(/{questionnaireUrl}/g, '#questionnaire')
-                          .replace(/{reportUrl}/g, '#report')
-                          .replace(/{surveyUrl}/g, '#survey')
-                          .replace(/{couponCode}/g, 'DEMO50')
-                          .replace(/{purchaseUrl}/g, '#purchase')
-                        }
-                        className="w-full h-[400px] border-0"
-                        title="Email Preview"
-                      />
+                      srcDoc={(previewLangLocal === 'he' ? template.content_he : template.content_en).
+                      replace(/{userName}/g, previewLangLocal === 'he' ? 'ישראל ישראלי' : 'John Doe').
+                      replace(/{questionnaireUrl}/g, '#questionnaire').
+                      replace(/{reportUrl}/g, '#report').
+                      replace(/{surveyUrl}/g, '#survey').
+                      replace(/{couponCode}/g, 'DEMO50').
+                      replace(/{purchaseUrl}/g, '#purchase')
+                      }
+                      className="w-full h-[400px] border-0"
+                      title="Email Preview" />
+
                     </div>
                   </div>
                 </div>
-              )}
+              }
             </div>
 
             <div className="flex flex-col gap-2">
@@ -842,8 +842,8 @@ export default function AdminReports() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowPreview(!showPreview)}
-                className="flex items-center gap-2 flex-row-reverse"
-              >
+                className="flex items-center gap-2 flex-row-reverse">
+
                 <span>{showPreview ? 'סגור תצוגה' : 'תצוגה מקדימה'}</span>
                 <Eye className="w-4 h-4" />
               </Button>
@@ -851,8 +851,8 @@ export default function AdminReports() {
                 variant="outline"
                 size="sm"
                 onClick={onEdit}
-                className="flex items-center gap-2 flex-row-reverse"
-              >
+                className="flex items-center gap-2 flex-row-reverse">
+
                 <span>ערוך</span>
                 <FileText className="w-4 h-4" />
               </Button>
@@ -861,27 +861,27 @@ export default function AdminReports() {
                 size="sm"
                 onClick={onDelete}
                 disabled={isDeleting}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50 flex items-center gap-2 flex-row-reverse"
-              >
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 flex items-center gap-2 flex-row-reverse">
+
                 <span>מחק</span>
-                {isDeleting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Trash2 className="w-4 h-4" />
-                )}
+                {isDeleting ?
+                <Loader2 className="w-4 h-4 animate-spin" /> :
+
+                <Trash2 className="w-4 h-4" />
+                }
               </Button>
             </div>
           </div>
         </CardContent>
-      </Card>
-    );
+      </Card>);
+
   }
 
   const handleUserPurchaseStatusChange = async (userEmail, status) => {
     try {
       let updateData = {
         has_purchased_full_report: false,
-        has_purchased_answers_download: false,
+        has_purchased_answers_download: false
       };
 
       if (status === 'full_report') {
@@ -890,7 +890,7 @@ export default function AdminReports() {
         updateData.has_purchased_answers_download = true;
       }
 
-      const userToUpdate = users.find(u => u.email === userEmail);
+      const userToUpdate = users.find((u) => u.email === userEmail);
       if (!userToUpdate) {
         alert('משתמש לא נמצא');
         return;
@@ -899,7 +899,7 @@ export default function AdminReports() {
       await base44.entities.User.update(userToUpdate.id, updateData);
 
       // עדכן גם את כל הדוחות הרלוונטיים
-      const userReports = reports.filter(r => r.user_email === userEmail);
+      const userReports = reports.filter((r) => r.user_email === userEmail);
       for (const report of userReports) {
         await base44.entities.GeneratedReport.update(report.id, {
           purchased: status !== 'none'
@@ -960,8 +960,8 @@ export default function AdminReports() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -975,15 +975,15 @@ export default function AdminReports() {
           <div className="flex gap-2 flex-wrap w-full sm:w-auto order-1 sm:order-2">
             <Button
               onClick={() => setSimulationDialog(true)}
-              className="bg-purple-600 hover:bg-purple-700 flex-1 sm:flex-initial text-sm flex items-center gap-2 flex-row-reverse"
-            >
+              className="bg-purple-600 hover:bg-purple-700 flex-1 sm:flex-initial text-sm flex items-center gap-2 flex-row-reverse">
+
               <span>דמה רכישת מוצר</span>
               <DollarSign className="w-4 h-4" />
             </Button>
             <Button
               onClick={() => navigate(createPageUrl('BoosterContinuation'))}
-              className="bg-pink-600 hover:bg-pink-700 flex-1 sm:flex-initial text-sm flex items-center gap-2 flex-row-reverse"
-            >
+              className="bg-pink-600 hover:bg-pink-700 flex-1 sm:flex-initial text-sm flex items-center gap-2 flex-row-reverse">
+
               <span>עמוד מוצר בוסטר</span>
               <Rocket className="w-4 h-4" />
             </Button>
@@ -1073,8 +1073,8 @@ export default function AdminReports() {
                   placeholder="חיפוש לפי שם או אימייל..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pr-10 text-right"
-                />
+                  className="pr-10 text-right" />
+
               </div>
 
               <div className="flex gap-3 flex-wrap justify-end">
@@ -1082,10 +1082,10 @@ export default function AdminReports() {
                   <label className="text-sm font-medium text-gray-700">רכישה:</label>
                   <select
                     value={filters.hasPurchased}
-                    onChange={(e) => setFilters({...filters, hasPurchased: e.target.value})}
+                    onChange={(e) => setFilters({ ...filters, hasPurchased: e.target.value })}
                     className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-right"
-                    dir="rtl"
-                  >
+                    dir="rtl">
+
                     <option value="all">הכל</option>
                     <option value="purchased">רכש</option>
                     <option value="not_purchased">לא רכש</option>
@@ -1096,10 +1096,10 @@ export default function AdminReports() {
                   <label className="text-sm font-medium text-gray-700">דוח:</label>
                   <select
                     value={filters.hasReport}
-                    onChange={(e) => setFilters({...filters, hasReport: e.target.value})}
+                    onChange={(e) => setFilters({ ...filters, hasReport: e.target.value })}
                     className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-right"
-                    dir="rtl"
-                  >
+                    dir="rtl">
+
                     <option value="all">הכל</option>
                     <option value="has_report">יש דוח</option>
                     <option value="no_report">אין דוח</option>
@@ -1110,26 +1110,26 @@ export default function AdminReports() {
                   <label className="text-sm font-medium text-gray-700">סטטוס שאלון:</label>
                   <select
                     value={filters.questionnaireStatus}
-                    onChange={(e) => setFilters({...filters, questionnaireStatus: e.target.value})}
+                    onChange={(e) => setFilters({ ...filters, questionnaireStatus: e.target.value })}
                     className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-right"
-                    dir="rtl"
-                  >
+                    dir="rtl">
+
                     <option value="all">הכל</option>
                     <option value="completed">שאלון מלא</option>
                     <option value="abandoned">נטש שאלון</option>
                   </select>
                 </div>
 
-                {(filters.hasPurchased !== 'all' || filters.hasReport !== 'all' || filters.questionnaireStatus !== 'all') && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setFilters({ hasPurchased: 'all', hasReport: 'all', questionnaireStatus: 'all' })}
-                    className="text-xs"
-                  >
+                {(filters.hasPurchased !== 'all' || filters.hasReport !== 'all' || filters.questionnaireStatus !== 'all') &&
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFilters({ hasPurchased: 'all', hasReport: 'all', questionnaireStatus: 'all' })}
+                  className="text-xs">
+
                     נקה סינונים
                   </Button>
-                )}
+                }
               </div>
             </div>
 
@@ -1146,13 +1146,13 @@ export default function AdminReports() {
                 const email = response.personal_info?.email || 'אימייל לא זמין';
                 const age = response.personal_info?.age;
                 const occupation = response.personal_info?.occupation;
-                
+
                 // מציאת כל השאלונים של אותו משתמש
                 const userEmail = response.personal_info?.email || response.created_by;
-                const userAllResponses = responses.filter(r => 
-                  (r.personal_info?.email === userEmail || r.created_by === userEmail)
+                const userAllResponses = responses.filter((r) =>
+                r.personal_info?.email === userEmail || r.created_by === userEmail
                 ).sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime());
-                const responseIndex = userAllResponses.findIndex(r => r.id === response.id) + 1;
+                const responseIndex = userAllResponses.findIndex((r) => r.id === response.id) + 1;
                 const hasMultipleResponses = userAllResponses.length > 1;
 
                 const hasPurchasedFullReport = userInfo?.has_purchased_full_report ?? false;
@@ -1161,22 +1161,22 @@ export default function AdminReports() {
                 const paymentAmount = userInfo?.payment_amount ?? 0;
 
                 const purchaseStatus = hasPurchasedFullReport ?
-                  `דו"ח מלא${expressDelivery ? ' + מואץ' : ''}` :
-                  hasPurchasedAnswersDownload ?
-                  'תשובות בלבד' :
-                  'לא רכש';
+                `דו"ח מלא${expressDelivery ? ' + מואץ' : ''}` :
+                hasPurchasedAnswersDownload ?
+                'תשובות בלבד' :
+                'לא רכש';
 
                 // חישוב כמה שעות עברו
                 const hoursAgo = Math.floor((Date.now() - new Date(response.created_date).getTime()) / (1000 * 60 * 60));
-                
+
                 // בדיקה אם נשלח דוח ללקוח
-                const reportSentEmail = emails.find(e => e.email_type === 'report_ready');
+                const reportSentEmail = emails.find((e) => e.email_type === 'report_ready');
                 const isReportSent = !!reportSentEmail;
-                
+
                 // קביעת צבע רקע לפי זמן ושליחת דוח
                 let cardBgClass = '';
                 let timeWarningClass = '';
-                
+
                 // ירוק עדין אם שאלון מלא ודוח נשלח ללקוח
                 if (response.status === 'completed' && isReportSent) {
                   cardBgClass = 'bg-green-50 border-green-300';
@@ -1202,11 +1202,11 @@ export default function AdminReports() {
                                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
                                   {fullName}
                                 </h3>
-                                {hasMultipleResponses && (
-                                  <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-300 text-xs">
+                                {hasMultipleResponses &&
+                                <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-300 text-xs">
                                     שאלון #{responseIndex} מתוך {userAllResponses.length}
                                   </Badge>
-                                )}
+                                }
                               </div>
                               <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 text-xs sm:text-sm text-gray-600">
                                 <span className="flex items-center gap-1 flex-row-reverse truncate max-w-full">
@@ -1229,17 +1229,17 @@ export default function AdminReports() {
                           </div>
 
                           <div className="flex gap-1 sm:gap-2 mb-3 flex-wrap justify-end">
-                            {response.status === 'completed' ? (
-                              <Badge className="bg-green-100 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
+                            {response.status === 'completed' ?
+                            <Badge className="bg-green-100 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
                                 שאלון מלא
                                 <CheckCircle className="w-3 h-3" />
-                              </Badge>
-                            ) : (
-                              <Badge className="bg-red-100 text-red-800 flex items-center gap-1 flex-row-reverse text-xs">
+                              </Badge> :
+
+                            <Badge className="bg-red-100 text-red-800 flex items-center gap-1 flex-row-reverse text-xs">
                                 נטש שאלון
                                 <AlertCircle className="w-3 h-3" />
                               </Badge>
-                            )}
+                            }
 
                             <Badge variant="outline" className="flex items-center gap-1 flex-row-reverse text-xs">
                               {purchaseStatus}
@@ -1247,33 +1247,33 @@ export default function AdminReports() {
                               <DollarSign className="w-3 h-3" />
                             </Badge>
 
-                            {emails.length > 0 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setViewingEmails(emails)}
-                                className="h-6 text-xs flex items-center gap-1 flex-row-reverse px-2"
-                              >
+                            {emails.length > 0 &&
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setViewingEmails(emails)}
+                              className="h-6 text-xs flex items-center gap-1 flex-row-reverse px-2">
+
                                 {emails.length} מיילים
                                 <Mail className="w-3 h-3" />
                               </Button>
-                            )}
+                            }
 
-                            {existingReport && (
-                              <Badge className={`flex items-center gap-1 flex-row-reverse text-xs ${isReportSent ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}>
+                            {existingReport &&
+                            <Badge className={`flex items-center gap-1 flex-row-reverse text-xs ${isReportSent ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}>
                                 {isReportSent ? 'דוח נשלח ללקוח' : 'דוח לא נשלח'}
                                 <CheckCircle className="w-3 h-3" />
                               </Badge>
-                            )}
+                            }
                           </div>
 
-                          {(age || occupation) && (
-                            <div className="text-xs sm:text-sm text-gray-600 text-right">
+                          {(age || occupation) &&
+                          <div className="text-xs sm:text-sm text-gray-600 text-right">
                               {age && `גיל: ${age}`}
                               {age && occupation && ' · '}
                               {occupation && `תחום: ${occupation}`}
                             </div>
-                          )}
+                          }
                         </div>
 
                         <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto">
@@ -1289,8 +1289,8 @@ export default function AdminReports() {
                                 <span>צפה בשאלון</span>
                               </DropdownMenuItem>
 
-                              {existingReport ? (
-                                <>
+                              {existingReport ?
+                              <>
                                   <DropdownMenuItem asChild>
                                     <Link to={createPageUrl(`ReportView?reportId=${existingReport.id}`)} className="flex flex-row-reverse justify-between">
                                       <Eye className="w-4 h-4" />
@@ -1304,38 +1304,38 @@ export default function AdminReports() {
                                     </Link>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
-                                    onClick={() => generateReport(response, true)}
-                                    disabled={isGenerating}
-                                    className="flex flex-row-reverse justify-between"
-                                  >
+                                  onClick={() => generateReport(response, true)}
+                                  disabled={isGenerating}
+                                  className="flex flex-row-reverse justify-between">
+
                                     <RefreshCw className="w-4 h-4" />
                                     <span>צור דו"ח מחדש</span>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
-                                    onClick={() => openLanguageDialog(existingReport, response)}
-                                    disabled={sendingReportId === existingReport.id || isSendingManualReportReady}
-                                    className="flex flex-row-reverse justify-between"
-                                  >
+                                  onClick={() => openLanguageDialog(existingReport, response)}
+                                  disabled={sendingReportId === existingReport.id || isSendingManualReportReady}
+                                  className="flex flex-row-reverse justify-between">
+
                                     <Send className="w-4 h-4" />
                                     <span>שלח דו"ח ללקוח</span>
                                   </DropdownMenuItem>
-                                </>
-                              ) : (
-                                <DropdownMenuItem
-                                  onClick={() => generateReport(response, false)}
-                                  disabled={isGenerating}
-                                  className="flex flex-row-reverse justify-between"
-                                >
+                                </> :
+
+                              <DropdownMenuItem
+                                onClick={() => generateReport(response, false)}
+                                disabled={isGenerating}
+                                className="flex flex-row-reverse justify-between">
+
                                   <FileText className="w-4 h-4" />
                                   <span>{isGenerating ? 'יוצר דו"ח...' : 'צור דו"ח'}</span>
                                 </DropdownMenuItem>
-                              )}
+                              }
 
                               <DropdownMenuItem
                                 onClick={() => setTemplateSelectionDialog({ open: true, response })}
                                 disabled={isGenerating || isDeleting || isSendingManualReportReady}
-                                className="flex flex-row-reverse justify-between"
-                              >
+                                className="flex flex-row-reverse justify-between">
+
                                 <Mail className="w-4 h-4" />
                                 <span>שלח מייל מתבנית</span>
                               </DropdownMenuItem>
@@ -1343,8 +1343,8 @@ export default function AdminReports() {
                               <DropdownMenuItem
                                 onClick={() => deleteResponse(response.id)}
                                 disabled={isDeleting || isGenerating || isSendingManualAbandonment || isSendingManualReportReady}
-                                className="text-red-600 flex flex-row-reverse justify-between"
-                              >
+                                className="text-red-600 flex flex-row-reverse justify-between">
+
                                 <Trash2 className="w-4 h-4" />
                                 <span>מחק</span>
                               </DropdownMenuItem>
@@ -1353,25 +1353,25 @@ export default function AdminReports() {
                         </div>
                       </div>
                     </CardContent>
-                  </Card>
-                );
+                  </Card>);
+
               })}
 
-              {filteredResponses.length === 0 && (
-                <Card>
+              {filteredResponses.length === 0 &&
+              <Card>
                   <CardContent className="p-12 text-center">
                     <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       {searchTerm ? 'לא נמצאו תוצאות' : 'אין שאלונים שהושלמו'}
                     </h3>
                     <p className="text-gray-600">
-                      {searchTerm
-                        ? 'נסה לשנות את מילות החיפוש'
-                        : 'כאשר משתמשים ישלימו את השאלון, הם יופיעו כאן'}
+                      {searchTerm ?
+                    'נסה לשנות את מילות החיפוש' :
+                    'כאשר משתמשים ישלימו את השאלון, הם יופיעו כאן'}
                     </p>
                   </CardContent>
                 </Card>
-              )}
+              }
             </div>
           </TabsContent>
 
@@ -1393,54 +1393,54 @@ export default function AdminReports() {
                   <Tabs defaultValue="not-sent" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 mb-4">
                       <TabsTrigger value="all">הכל ({inProgressUsers.length})</TabsTrigger>
-                      <TabsTrigger value="sent">נשלחו מיילים ({inProgressUsers.filter(u => {
-                        const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                        return emailLogs.some(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                        );
-                      }).length})</TabsTrigger>
-                      <TabsTrigger value="not-sent">לא נשלחו מיילים ({inProgressUsers.filter(u => {
-                        const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                        return !emailLogs.some(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                        );
-                      }).length})</TabsTrigger>
+                      <TabsTrigger value="sent">נשלחו מיילים ({inProgressUsers.filter((u) => {
+                          const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                          return emailLogs.some((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          );
+                        }).length})</TabsTrigger>
+                      <TabsTrigger value="not-sent">לא נשלחו מיילים ({inProgressUsers.filter((u) => {
+                          const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                          return !emailLogs.some((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          );
+                        }).length})</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="all">
-                  {inProgressUsers.length === 0 ? (
-                    <div className="text-center py-8">
+                  {inProgressUsers.length === 0 ?
+                      <div className="text-center py-8">
                       <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                       <p className="text-gray-600">אין משתמשים עם שאלון בתהליך</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {inProgressUsers.map(user => {
-                        const userResponse = responses.find(r =>
+                    </div> :
+
+                      <div className="space-y-3">
+                      {inProgressUsers.map((user) => {
+                          const userResponse = responses.find((r) =>
                           (r.created_by === user.email || r.personal_info?.email === user.email) &&
                           r.status === 'in_progress'
-                        );
-                        const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
-                        
-                        // ספירת מיילי נטישה שנשלחו למשתמש
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
-                        const abandonmentEmailsCount = emailLogs.filter(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                        ).length;
+                          );
+                          const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
 
-                        return (
-                          <Card key={user.id} className="border-yellow-300 bg-yellow-50">
+                          // ספירת מיילי נטישה שנשלחו למשתמש
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+                          const abandonmentEmailsCount = emailLogs.filter((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          ).length;
+
+                          return (
+                            <Card key={user.id} className="border-yellow-300 bg-yellow-50">
                             <CardContent className="p-3 sm:p-4">
                               <div className="flex flex-col gap-3">
                                 <div className="text-right">
                                   <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
                                   <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
-                                  {userResponse?.created_date && (
+                                  {userResponse?.created_date &&
                                     <>
                                       <p className="text-xs text-gray-500 mt-1">
                                         התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
@@ -1452,21 +1452,21 @@ export default function AdminReports() {
                                         })()}
                                       </p>
                                     </>
-                                  )}
+                                    }
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
                                   <Button
-                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
-                                    disabled={!userResponse || isSending}
-                                    className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
-                                  >
+                                      onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                      disabled={!userResponse || isSending}
+                                      className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm">
+
                                     <span>שלח מייל נטישה</span>
-                                    {isSending ? (
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
+                                    {isSending ?
+                                      <Loader2 className="w-4 h-4 animate-spin" /> :
+
                                       <Mail className="w-4 h-4" />
-                                    )}
+                                      }
                                   </Button>
                                   
                                   <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
@@ -1475,84 +1475,84 @@ export default function AdminReports() {
                                       שאלון בתהליך
                                     </Badge>
                                     
-                                    {abandonmentEmailsCount > 0 ? (
+                                    {abandonmentEmailsCount > 0 ?
                                       <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={() => {
-                                          const userEmails = emailLogs.filter(log =>
-                                            (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                                            (log.related_user_email === userEmail || log.to_email === userEmail)
+                                          const userEmails = emailLogs.filter((log) =>
+                                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                                          log.related_user_email === userEmail || log.to_email === userEmail)
                                           );
                                           setViewingEmails(userEmails);
                                         }}
-                                        className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2"
-                                      >
+                                        className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2">
+
                                         <Mail className="w-3 h-3" />
                                         <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה</span>
                                         <span className="sm:hidden">{abandonmentEmailsCount}</span>
-                                      </Button>
-                                    ) : (
+                                      </Button> :
+
                                       <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
                                         <Mail className="w-3 h-3" />
                                         <span className="hidden sm:inline">לא נשלח מייל נטישה</span>
                                         <span className="sm:hidden">לא נשלח</span>
                                       </Badge>
-                                    )}
+                                      }
                                   </div>
                                 </div>
                               </div>
                             </CardContent>
-                          </Card>
-                        );
-                      })}
+                          </Card>);
+
+                        })}
                     </div>
-                  )}
+                      }
                     </TabsContent>
 
                     <TabsContent value="sent">
-                  {inProgressUsers.filter(u => {
-                    const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                    const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                    return emailLogs.some(log =>
-                      (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                      (log.related_user_email === userEmail || log.to_email === userEmail)
-                    );
-                  }).length === 0 ? (
-                    <div className="text-center py-8">
+                  {inProgressUsers.filter((u) => {
+                        const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                        return emailLogs.some((log) =>
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                        log.related_user_email === userEmail || log.to_email === userEmail)
+                        );
+                      }).length === 0 ?
+                      <div className="text-center py-8">
                       <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                       <p className="text-gray-600">אין משתמשים שנשלחו להם מיילים</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {inProgressUsers.filter(u => {
-                        const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                        return emailLogs.some(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                        );
-                      }).map(user => {
-                        const userResponse = responses.find(r =>
+                    </div> :
+
+                      <div className="space-y-3">
+                      {inProgressUsers.filter((u) => {
+                          const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                          return emailLogs.some((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          );
+                        }).map((user) => {
+                          const userResponse = responses.find((r) =>
                           (r.created_by === user.email || r.personal_info?.email === user.email) &&
                           r.status === 'in_progress'
-                        );
-                        const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
-                        
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
-                        const abandonmentEmailsCount = emailLogs.filter(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                        ).length;
+                          );
+                          const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
 
-                        return (
-                          <Card key={user.id} className="border-yellow-300 bg-yellow-50">
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+                          const abandonmentEmailsCount = emailLogs.filter((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          ).length;
+
+                          return (
+                            <Card key={user.id} className="border-yellow-300 bg-yellow-50">
                             <CardContent className="p-3 sm:p-4">
                               <div className="flex flex-col gap-3">
                                 <div className="text-right">
                                   <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
                                   <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
-                                  {userResponse?.created_date && (
+                                  {userResponse?.created_date &&
                                     <>
                                       <p className="text-xs text-gray-500 mt-1">
                                         התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
@@ -1564,21 +1564,21 @@ export default function AdminReports() {
                                         })()}
                                       </p>
                                     </>
-                                  )}
+                                    }
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
                                   <Button
-                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
-                                    disabled={!userResponse || isSending}
-                                    className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
-                                  >
+                                      onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                      disabled={!userResponse || isSending}
+                                      className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm">
+
                                     <span>שלח מייל נטישה</span>
-                                    {isSending ? (
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
+                                    {isSending ?
+                                      <Loader2 className="w-4 h-4 animate-spin" /> :
+
                                       <Mail className="w-4 h-4" />
-                                    )}
+                                      }
                                   </Button>
                                   
                                   <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
@@ -1587,80 +1587,80 @@ export default function AdminReports() {
                                       שאלון בתהליך
                                     </Badge>
                                     
-                                    {abandonmentEmailsCount > 0 ? (
+                                    {abandonmentEmailsCount > 0 ?
                                       <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={() => {
-                                          const userEmails = emailLogs.filter(log =>
-                                            (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                                            (log.related_user_email === userEmail || log.to_email === userEmail)
+                                          const userEmails = emailLogs.filter((log) =>
+                                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                                          log.related_user_email === userEmail || log.to_email === userEmail)
                                           );
                                           setViewingEmails(userEmails);
                                         }}
-                                        className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2"
-                                      >
+                                        className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2">
+
                                         <Mail className="w-3 h-3" />
                                         <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה</span>
                                         <span className="sm:hidden">{abandonmentEmailsCount}</span>
-                                      </Button>
-                                    ) : (
+                                      </Button> :
+
                                       <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
                                         <Mail className="w-3 h-3" />
                                         <span className="hidden sm:inline">לא נשלח מייל נטישה</span>
                                         <span className="sm:hidden">לא נשלח</span>
                                       </Badge>
-                                    )}
+                                      }
                                   </div>
                                 </div>
                               </div>
                             </CardContent>
-                          </Card>
-                        );
-                      })}
+                          </Card>);
+
+                        })}
                     </div>
-                  )}
+                      }
                     </TabsContent>
 
                     <TabsContent value="not-sent">
-                  {inProgressUsers.filter(u => {
-                    const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                    const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                    return !emailLogs.some(log =>
-                      (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                      (log.related_user_email === userEmail || log.to_email === userEmail)
-                    );
-                  }).length === 0 ? (
-                    <div className="text-center py-8">
+                  {inProgressUsers.filter((u) => {
+                        const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                        return !emailLogs.some((log) =>
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                        log.related_user_email === userEmail || log.to_email === userEmail)
+                        );
+                      }).length === 0 ?
+                      <div className="text-center py-8">
                       <CheckCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                       <p className="text-gray-600">אין משתמשים ללא מיילים - הכל מטופל!</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {inProgressUsers.filter(u => {
-                        const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                        return !emailLogs.some(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                        );
-                      }).map(user => {
-                        const userResponse = responses.find(r =>
+                    </div> :
+
+                      <div className="space-y-3">
+                      {inProgressUsers.filter((u) => {
+                          const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                          return !emailLogs.some((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          );
+                        }).map((user) => {
+                          const userResponse = responses.find((r) =>
                           (r.created_by === user.email || r.personal_info?.email === user.email) &&
                           r.status === 'in_progress'
-                        );
-                        const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
-                        
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+                          );
+                          const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
 
-                        return (
-                          <Card key={user.id} className="border-yellow-300 bg-yellow-50">
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+
+                          return (
+                            <Card key={user.id} className="border-yellow-300 bg-yellow-50">
                             <CardContent className="p-3 sm:p-4">
                               <div className="flex flex-col gap-3">
                                 <div className="text-right">
                                   <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
                                   <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
-                                  {userResponse?.created_date && (
+                                  {userResponse?.created_date &&
                                     <>
                                       <p className="text-xs text-gray-500 mt-1">
                                         התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
@@ -1672,21 +1672,21 @@ export default function AdminReports() {
                                         })()}
                                       </p>
                                     </>
-                                  )}
+                                    }
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
                                   <Button
-                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
-                                    disabled={!userResponse || isSending}
-                                    className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
-                                  >
+                                      onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                      disabled={!userResponse || isSending}
+                                      className="bg-yellow-600 hover:bg-yellow-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm">
+
                                     <span>שלח מייל נטישה</span>
-                                    {isSending ? (
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
+                                    {isSending ?
+                                      <Loader2 className="w-4 h-4 animate-spin" /> :
+
                                       <Mail className="w-4 h-4" />
-                                    )}
+                                      }
                                   </Button>
                                   
                                   <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
@@ -1704,11 +1704,11 @@ export default function AdminReports() {
                                 </div>
                               </div>
                             </CardContent>
-                          </Card>
-                        );
-                      })}
+                          </Card>);
+
+                        })}
                     </div>
-                  )}
+                      }
                     </TabsContent>
                   </Tabs>
                 </CardContent>
@@ -1730,95 +1730,95 @@ export default function AdminReports() {
                   <Tabs defaultValue="not-sent" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 mb-4">
                       <TabsTrigger value="all">הכל ({abandonedUsers.length})</TabsTrigger>
-                      <TabsTrigger value="sent">נשלחו מיילים ({abandonedUsers.filter(u => {
-                        const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                        return emailLogs.some(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                        );
-                      }).length})</TabsTrigger>
-                      <TabsTrigger value="not-sent">לא נשלחו מיילים ({abandonedUsers.filter(u => {
-                        const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                        return !emailLogs.some(log =>
-                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                        );
-                      }).length})</TabsTrigger>
+                      <TabsTrigger value="sent">נשלחו מיילים ({abandonedUsers.filter((u) => {
+                          const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                          return emailLogs.some((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          );
+                        }).length})</TabsTrigger>
+                      <TabsTrigger value="not-sent">לא נשלחו מיילים ({abandonedUsers.filter((u) => {
+                          const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                          return !emailLogs.some((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          );
+                        }).length})</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="all">
-                {abandonedUsers.length === 0 ? (
-                  <div className="text-center py-8">
+                {abandonedUsers.length === 0 ?
+                      <div className="text-center py-8">
                     <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-600">אין משתמשים שנטשו כרגע. כל הכבוד!</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {abandonedUsers.map(user => {
-                      const userResponse = responses.find(r =>
-                        r.created_by === user.email || r.personal_info?.email === user.email
-                      );
-                      const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
+                  </div> :
 
-                      // בדיקה האם המשתמש השלים שאלון לאחר שנשלח לו מייל נטישה
-                      const abandonmentEmail = emailLogs.find(log => 
-                        log.email_type === 'abandonment_survey' && 
-                        (log.related_user_email === user.email || log.to_email === user.email)
-                      );
-                      const completedAfterAbandonment = abandonmentEmail && userResponse && 
-                        new Date(userResponse.created_date) > new Date(abandonmentEmail.created_date);
+                      <div className="space-y-4">
+                    {abandonedUsers.map((user) => {
+                          const userResponse = responses.find((r) =>
+                          r.created_by === user.email || r.personal_info?.email === user.email
+                          );
+                          const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
 
-                      // ספירת מיילי נטישה שנשלחו למשתמש
-                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
-                      const abandonmentEmailsCount = emailLogs.filter(log =>
-                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                        (log.related_user_email === userEmail || log.to_email === userEmail)
-                      ).length;
+                          // בדיקה האם המשתמש השלים שאלון לאחר שנשלח לו מייל נטישה
+                          const abandonmentEmail = emailLogs.find((log) =>
+                          log.email_type === 'abandonment_survey' && (
+                          log.related_user_email === user.email || log.to_email === user.email)
+                          );
+                          const completedAfterAbandonment = abandonmentEmail && userResponse &&
+                          new Date(userResponse.created_date) > new Date(abandonmentEmail.created_date);
 
-                      return (
-                        <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
+                          // ספירת מיילי נטישה שנשלחו למשתמש
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+                          const abandonmentEmailsCount = emailLogs.filter((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          ).length;
+
+                          return (
+                            <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
                           <CardContent className="p-3 sm:p-4">
                             <div className="flex flex-col gap-3">
                               <div className="text-right">
                                 <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
                                 <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
-                                {userResponse?.created_date && (
-                                  <>
+                                {userResponse?.created_date &&
+                                    <>
                                     <p className="text-xs text-gray-500 mt-1">
                                       סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                     </p>
                                     <p className="text-xs font-semibold text-orange-600 mt-1">
                                       {(() => {
-                                        const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                        return `עברו ${hoursAgo} שעות`;
-                                      })()}
+                                          const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
+                                          return `עברו ${hoursAgo} שעות`;
+                                        })()}
                                     </p>
                                   </>
-                                )}
+                                    }
                               </div>
 
                               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
-                                {completedAfterAbandonment ? (
-                                  <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse justify-center text-xs py-2">
+                                {completedAfterAbandonment ?
+                                    <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse justify-center text-xs py-2">
                                     <CheckCircle className="w-4 h-4" />
                                     השלים לאחר מייל נטישה
-                                  </Badge>
-                                ) : (
-                                  <Button
-                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
-                                    disabled={!userResponse || isSending}
-                                    className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
-                                  >
+                                  </Badge> :
+
+                                    <Button
+                                      onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                      disabled={!userResponse || isSending}
+                                      className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm">
+
                                     <span>שלח מייל נטישה</span>
-                                    {isSending ? (
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
+                                    {isSending ?
+                                      <Loader2 className="w-4 h-4 animate-spin" /> :
+
                                       <Mail className="w-4 h-4" />
-                                    )}
+                                      }
                                   </Button>
-                                )}
+                                    }
 
                                 <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
                                   <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
@@ -1827,126 +1827,126 @@ export default function AdminReports() {
                                     <span className="sm:hidden">השלים</span>
                                   </Badge>
 
-                                  {abandonmentEmailsCount > 0 ? (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        const userEmails = emailLogs.filter(log =>
-                                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                                        );
-                                        setViewingEmails(userEmails);
-                                      }}
-                                      className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2"
-                                    >
+                                  {abandonmentEmailsCount > 0 ?
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                          const userEmails = emailLogs.filter((log) =>
+                                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                                          log.related_user_email === userEmail || log.to_email === userEmail)
+                                          );
+                                          setViewingEmails(userEmails);
+                                        }}
+                                        className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2">
+
                                       <Mail className="w-3 h-3" />
                                       <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה</span>
                                       <span className="sm:hidden">{abandonmentEmailsCount}</span>
-                                    </Button>
-                                  ) : (
-                                    <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
+                                    </Button> :
+
+                                      <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
                                       <Mail className="w-3 h-3" />
                                       <span className="hidden sm:inline">לא נשלח מייל נטישה</span>
                                       <span className="sm:hidden">לא נשלח</span>
                                     </Badge>
-                                  )}
+                                      }
                                 </div>
                               </div>
                             </div>
                           </CardContent>
-                        </Card>
-                      );
-                    })}
+                        </Card>);
+
+                        })}
                   </div>
-                )}
+                      }
                     </TabsContent>
 
                     <TabsContent value="sent">
-                {abandonedUsers.filter(u => {
-                  const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                  const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                  return emailLogs.some(log =>
-                    (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                    (log.related_user_email === userEmail || log.to_email === userEmail)
-                  );
-                }).length === 0 ? (
-                  <div className="text-center py-8">
+                {abandonedUsers.filter((u) => {
+                        const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                        return emailLogs.some((log) =>
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                        log.related_user_email === userEmail || log.to_email === userEmail)
+                        );
+                      }).length === 0 ?
+                      <div className="text-center py-8">
                     <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-600">אין משתמשים שנשלחו להם מיילים</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {abandonedUsers.filter(u => {
-                      const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                      return emailLogs.some(log =>
-                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                        (log.related_user_email === userEmail || log.to_email === userEmail)
-                      );
-                    }).map(user => {
-                      const userResponse = responses.find(r =>
-                        r.created_by === user.email || r.personal_info?.email === user.email
-                      );
-                      const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
+                  </div> :
 
-                      // בדיקה האם המשתמש השלים שאלון לאחר שנשלח לו מייל נטישה
-                      const abandonmentEmail = emailLogs.find(log => 
-                        log.email_type === 'abandonment_survey' && 
-                        (log.related_user_email === user.email || log.to_email === user.email)
-                      );
-                      const completedAfterAbandonment = abandonmentEmail && userResponse && 
-                        new Date(userResponse.created_date) > new Date(abandonmentEmail.created_date);
+                      <div className="space-y-4">
+                    {abandonedUsers.filter((u) => {
+                          const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                          return emailLogs.some((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          );
+                        }).map((user) => {
+                          const userResponse = responses.find((r) =>
+                          r.created_by === user.email || r.personal_info?.email === user.email
+                          );
+                          const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
 
-                      // ספירת מיילי נטישה שנשלחו למשתמש
-                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
-                      const abandonmentEmailsCount = emailLogs.filter(log =>
-                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                        (log.related_user_email === userEmail || log.to_email === userEmail)
-                      ).length;
+                          // בדיקה האם המשתמש השלים שאלון לאחר שנשלח לו מייל נטישה
+                          const abandonmentEmail = emailLogs.find((log) =>
+                          log.email_type === 'abandonment_survey' && (
+                          log.related_user_email === user.email || log.to_email === user.email)
+                          );
+                          const completedAfterAbandonment = abandonmentEmail && userResponse &&
+                          new Date(userResponse.created_date) > new Date(abandonmentEmail.created_date);
 
-                      return (
-                        <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
+                          // ספירת מיילי נטישה שנשלחו למשתמש
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+                          const abandonmentEmailsCount = emailLogs.filter((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          ).length;
+
+                          return (
+                            <Card key={user.id} className={completedAfterAbandonment ? "border-green-300 bg-green-50" : "border-orange-200"}>
                           <CardContent className="p-3 sm:p-4">
                             <div className="flex flex-col gap-3">
                               <div className="text-right">
                                 <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
                                 <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
-                                {userResponse?.created_date && (
-                                  <>
+                                {userResponse?.created_date &&
+                                    <>
                                     <p className="text-xs text-gray-500 mt-1">
                                       סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                     </p>
                                     <p className="text-xs font-semibold text-orange-600 mt-1">
                                       {(() => {
-                                        const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                        return `עברו ${hoursAgo} שעות`;
-                                      })()}
+                                          const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
+                                          return `עברו ${hoursAgo} שעות`;
+                                        })()}
                                     </p>
                                   </>
-                                )}
+                                    }
                               </div>
 
                               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
-                                {completedAfterAbandonment ? (
-                                  <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse justify-center text-xs py-2">
+                                {completedAfterAbandonment ?
+                                    <Badge className="bg-green-600 text-white flex items-center gap-1 flex-row-reverse justify-center text-xs py-2">
                                     <CheckCircle className="w-4 h-4" />
                                     השלים לאחר מייל נטישה
-                                  </Badge>
-                                ) : (
-                                  <Button
-                                    onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
-                                    disabled={!userResponse || isSending}
-                                    className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
-                                  >
+                                  </Badge> :
+
+                                    <Button
+                                      onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                      disabled={!userResponse || isSending}
+                                      className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm">
+
                                     <span>שלח מייל נטישה</span>
-                                    {isSending ? (
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
+                                    {isSending ?
+                                      <Loader2 className="w-4 h-4 animate-spin" /> :
+
                                       <Mail className="w-4 h-4" />
-                                    )}
+                                      }
                                   </Button>
-                                )}
+                                    }
 
                                 <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
                                   <Badge variant="outline" className="bg-green-100 border-green-300 text-green-800 flex items-center gap-1 flex-row-reverse text-xs">
@@ -1955,105 +1955,105 @@ export default function AdminReports() {
                                     <span className="sm:hidden">השלים</span>
                                   </Badge>
 
-                                  {abandonmentEmailsCount > 0 ? (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        const userEmails = emailLogs.filter(log =>
-                                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                                          (log.related_user_email === userEmail || log.to_email === userEmail)
-                                        );
-                                        setViewingEmails(userEmails);
-                                      }}
-                                      className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2"
-                                    >
+                                  {abandonmentEmailsCount > 0 ?
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                          const userEmails = emailLogs.filter((log) =>
+                                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                                          log.related_user_email === userEmail || log.to_email === userEmail)
+                                          );
+                                          setViewingEmails(userEmails);
+                                        }}
+                                        className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2">
+
                                       <Mail className="w-3 h-3" />
                                       <span className="hidden sm:inline">{abandonmentEmailsCount} מיילי נטישה</span>
                                       <span className="sm:hidden">{abandonmentEmailsCount}</span>
-                                    </Button>
-                                  ) : (
-                                    <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
+                                    </Button> :
+
+                                      <Badge variant="outline" className="bg-gray-100 border-gray-300 text-gray-600 flex items-center gap-1 flex-row-reverse text-xs">
                                       <Mail className="w-3 h-3" />
                                       <span className="hidden sm:inline">לא נשלח מייל נטישה</span>
                                       <span className="sm:hidden">לא נשלח</span>
                                     </Badge>
-                                  )}
+                                      }
                                 </div>
                               </div>
                             </div>
                           </CardContent>
-                        </Card>
-                      );
-                    })}
+                        </Card>);
+
+                        })}
                     </div>
-                    )}
+                      }
                     </TabsContent>
 
                     <TabsContent value="not-sent">
-                    {abandonedUsers.filter(u => {
-                    const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                    const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                    return !emailLogs.some(log =>
-                    (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                    (log.related_user_email === userEmail || log.to_email === userEmail)
-                    );
-                    }).length === 0 ? (
-                    <div className="text-center py-8">
+                    {abandonedUsers.filter((u) => {
+                        const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                        const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                        return !emailLogs.some((log) =>
+                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                        log.related_user_email === userEmail || log.to_email === userEmail)
+                        );
+                      }).length === 0 ?
+                      <div className="text-center py-8">
                     <CheckCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-600">אין משתמשים ללא מיילים - הכל מטופל!</p>
-                    </div>
-                    ) : (
-                    <div className="space-y-4">
-                    {abandonedUsers.filter(u => {
-                      const userResponse = responses.find(r => r.created_by === u.email || r.personal_info?.email === u.email);
-                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
-                      return !emailLogs.some(log =>
-                        (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') &&
-                        (log.related_user_email === userEmail || log.to_email === userEmail)
-                      );
-                    }).map(user => {
-                      const userResponse = responses.find(r =>
-                        r.created_by === user.email || r.personal_info?.email === user.email
-                      );
-                      const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
+                    </div> :
 
-                      const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+                      <div className="space-y-4">
+                    {abandonedUsers.filter((u) => {
+                          const userResponse = responses.find((r) => r.created_by === u.email || r.personal_info?.email === u.email);
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || u.email;
+                          return !emailLogs.some((log) =>
+                          (log.email_type === 'abandonment_survey' || log.email_type === 'abandonment_reminder_96h' || log.email_type === 'abandonment_after_completion') && (
+                          log.related_user_email === userEmail || log.to_email === userEmail)
+                          );
+                        }).map((user) => {
+                          const userResponse = responses.find((r) =>
+                          r.created_by === user.email || r.personal_info?.email === user.email
+                          );
+                          const isSending = sendingEmailType === `abandonment_survey_${userResponse?.id}`;
 
-                      return (
-                        <Card key={user.id} className="border-orange-200">
+                          const userEmail = userResponse?.personal_info?.email || userResponse?.created_by || user.email;
+
+                          return (
+                            <Card key={user.id} className="border-orange-200">
                           <CardContent className="p-3 sm:p-4">
                             <div className="flex flex-col gap-3">
                               <div className="text-right">
                                 <h4 className="font-semibold text-sm sm:text-base">{user.full_name || 'שם לא זמין'}</h4>
                                 <p className="text-xs sm:text-sm text-gray-600 truncate">{user.email}</p>
-                                {userResponse?.created_date && (
-                                  <>
+                                {userResponse?.created_date &&
+                                    <>
                                     <p className="text-xs text-gray-500 mt-1">
                                       סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                     </p>
                                     <p className="text-xs font-semibold text-orange-600 mt-1">
                                       {(() => {
-                                        const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                        return `עברו ${hoursAgo} שעות`;
-                                      })()}
+                                          const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
+                                          return `עברו ${hoursAgo} שעות`;
+                                        })()}
                                     </p>
                                   </>
-                                )}
+                                    }
                               </div>
 
                               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-row-reverse">
                                 <Button
-                                  onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
-                                  disabled={!userResponse || isSending}
-                                  className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm"
-                                >
+                                      onClick={() => userResponse && setTemplateSelectionDialog({ open: true, response: userResponse })}
+                                      disabled={!userResponse || isSending}
+                                      className="bg-orange-600 hover:bg-orange-700 flex items-center gap-2 flex-row-reverse justify-center text-xs sm:text-sm">
+
                                   <span>שלח מייל נטישה</span>
-                                  {isSending ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                  ) : (
-                                    <Mail className="w-4 h-4" />
-                                  )}
+                                  {isSending ?
+                                      <Loader2 className="w-4 h-4 animate-spin" /> :
+
+                                      <Mail className="w-4 h-4" />
+                                      }
                                 </Button>
 
                                 <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
@@ -2072,11 +2072,11 @@ export default function AdminReports() {
                               </div>
                             </div>
                           </CardContent>
-                        </Card>
-                      );
-                    })}
+                        </Card>);
+
+                        })}
                     </div>
-                    )}
+                      }
                     </TabsContent>
                     </Tabs>
                     </CardContent>
@@ -2087,8 +2087,8 @@ export default function AdminReports() {
           <TabsContent value="survey-results">
             <Tabs defaultValue="abandonment" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="abandonment">סקר נטישת שאלון ({surveyResponses.filter(s => s.survey_type === 'abandonment').length})</TabsTrigger>
-                <TabsTrigger value="booster_feedback">משוב בוסטר ({surveyResponses.filter(s => s.survey_type === 'booster_feedback').length})</TabsTrigger>
+                <TabsTrigger value="abandonment">סקר נטישת שאלון ({surveyResponses.filter((s) => s.survey_type === 'abandonment').length})</TabsTrigger>
+                <TabsTrigger value="booster_feedback">משוב בוסטר ({surveyResponses.filter((s) => s.survey_type === 'booster_feedback').length})</TabsTrigger>
               </TabsList>
               
               <TabsContent value="abandonment">
@@ -2101,7 +2101,7 @@ export default function AdminReports() {
                         <FileSearch className="w-4 h-4 text-purple-600" />
                       </CardHeader>
                       <CardContent>
-                        <div className="text-2xl font-bold text-right text-purple-600">{surveyResponses.filter(s => s.survey_type === 'abandonment').length}</div>
+                        <div className="text-2xl font-bold text-right text-purple-600">{surveyResponses.filter((s) => s.survey_type === 'abandonment').length}</div>
                       </CardContent>
                     </Card>
 
@@ -2113,10 +2113,10 @@ export default function AdminReports() {
                       <CardContent>
                         <div className="text-sm font-semibold text-right">
                           {(() => {
-                            const q1Responses = surveyResponses.filter(s => s.survey_type === 'abandonment').map(s => s.responses?.q1).filter(Boolean);
+                            const q1Responses = surveyResponses.filter((s) => s.survey_type === 'abandonment').map((s) => s.responses?.q1).filter(Boolean);
                             if (q1Responses.length === 0) return 'אין נתונים';
                             const counts = {};
-                            q1Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
+                            q1Responses.forEach((r) => {counts[r] = (counts[r] || 0) + 1;});
                             const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
                             return top ? `${top[0]} (${top[1]})` : 'אין נתונים';
                           })()}
@@ -2132,10 +2132,10 @@ export default function AdminReports() {
                       <CardContent>
                         <div className="text-sm font-semibold text-right">
                           {(() => {
-                            const q2Responses = surveyResponses.filter(s => s.survey_type === 'abandonment').map(s => s.responses?.q2).filter(Boolean);
+                            const q2Responses = surveyResponses.filter((s) => s.survey_type === 'abandonment').map((s) => s.responses?.q2).filter(Boolean);
                             if (q2Responses.length === 0) return 'אין נתונים';
                             const counts = {};
-                            q2Responses.forEach(r => { counts[r] = (counts[r] || 0) + 1; });
+                            q2Responses.forEach((r) => {counts[r] = (counts[r] || 0) + 1;});
                             const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
                             return top ? `${top[0]} (${top[1]})` : 'אין נתונים';
                           })()}
@@ -2145,7 +2145,7 @@ export default function AdminReports() {
                   </div>
 
                   {/* Unified Survey Chart with Selector */}
-                  <UnifiedSurveyChart surveyResponses={surveyResponses.filter(s => s.survey_type === 'abandonment')} />
+                  <UnifiedSurveyChart surveyResponses={surveyResponses.filter((s) => s.survey_type === 'abandonment')} />
 
                   {/* הערות והצעות */}
                   <Card>
@@ -2154,21 +2154,21 @@ export default function AdminReports() {
                     </CardHeader>
                     <CardContent className="p-6">
                       <div className="space-y-3">
-                        {surveyResponses
-                          .filter(s => s.survey_type === 'abandonment' && s.responses?.q4)
-                          .map((survey) => (
-                            <div key={survey.id} className="bg-white p-4 rounded-lg border-r-4 border-blue-500 shadow-sm hover:shadow-md transition-shadow">
+                        {surveyResponses.
+                        filter((s) => s.survey_type === 'abandonment' && s.responses?.q4).
+                        map((survey) =>
+                        <div key={survey.id} className="bg-white p-4 rounded-lg border-r-4 border-blue-500 shadow-sm hover:shadow-md transition-shadow">
                               <p className="text-sm text-gray-900 mb-2 text-right">{survey.responses.q4}</p>
                               <p className="text-xs text-gray-500 text-right">
                                 {survey.user_email || survey.created_by} • {new Date(survey.created_date).toLocaleDateString('he-IL')}
                               </p>
                             </div>
-                          ))}
-                        {surveyResponses.filter(s => s.survey_type === 'abandonment' && s.responses?.q4).length === 0 && (
-                          <div className="text-center py-8">
+                        )}
+                        {surveyResponses.filter((s) => s.survey_type === 'abandonment' && s.responses?.q4).length === 0 &&
+                        <div className="text-center py-8">
                             <p className="text-gray-500 text-sm">אין הערות נוספות</p>
                           </div>
-                        )}
+                        }
                       </div>
                     </CardContent>
                   </Card>
@@ -2176,18 +2176,18 @@ export default function AdminReports() {
                   {/* רשימת תגובות מפורטת */}
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-right">תשובות בודדות ({surveyResponses.filter(s => s.survey_type === 'abandonment').length})</CardTitle>
+                      <CardTitle className="text-right">תשובות בודדות ({surveyResponses.filter((s) => s.survey_type === 'abandonment').length})</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {surveyResponses.filter(s => s.survey_type === 'abandonment').length === 0 ? (
-                        <div className="text-center py-12">
+                      {surveyResponses.filter((s) => s.survey_type === 'abandonment').length === 0 ?
+                      <div className="text-center py-12">
                           <FileSearch className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                           <p className="text-gray-500 text-lg">אין עדיין תוצאות סקר נטישה</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          {surveyResponses.filter(s => s.survey_type === 'abandonment').map((survey) => (
-                            <Card key={survey.id} className="border-r-4 border-r-purple-500">
+                        </div> :
+
+                      <div className="space-y-4">
+                          {surveyResponses.filter((s) => s.survey_type === 'abandonment').map((survey) =>
+                        <Card key={survey.id} className="border-r-4 border-r-purple-500">
                               <CardContent className="p-6">
                                 <div className="flex items-start justify-between mb-4 flex-row-reverse">
                                   <div className="text-right flex-1">
@@ -2196,63 +2196,63 @@ export default function AdminReports() {
                                     </p>
                                     <p className="text-sm text-gray-500">
                                       {new Date(survey.created_date).toLocaleDateString('he-IL', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                      })}
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
                                     </p>
-                                    {survey.coupon_code && (
-                                      <div className="mt-2 inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
+                                    {survey.coupon_code &&
+                                <div className="mt-2 inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
                                         קופון: {survey.coupon_code}
                                       </div>
-                                    )}
+                                }
                                   </div>
                                 </div>
                                 
                                 <div className="space-y-4 text-right" dir="rtl">
-                                  {survey.responses.q1 && (
-                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                  {survey.responses.q1 &&
+                              <div className="bg-gray-50 p-4 rounded-lg">
                                       <p className="text-sm font-semibold text-gray-700 mb-2">
                                         מה הסיבה העיקרית שבחרת שלא לרכוש את הדו"ח עכשיו?
                                       </p>
                                       <p className="text-gray-900">{survey.responses.q1}</p>
                                     </div>
-                                  )}
+                              }
                                   
-                                  {survey.responses.q2 && (
-                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                  {survey.responses.q2 &&
+                              <div className="bg-gray-50 p-4 rounded-lg">
                                       <p className="text-sm font-semibold text-gray-700 mb-2">
                                         באיזה מחיר היית שוקל/ת לרכוש את הדו"ח המלא?
                                       </p>
                                       <p className="text-gray-900">{survey.responses.q2}</p>
                                     </div>
-                                  )}
+                              }
                                   
-                                  {survey.responses.q3 && (
-                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                  {survey.responses.q3 &&
+                              <div className="bg-gray-50 p-4 rounded-lg">
                                       <p className="text-sm font-semibold text-gray-700 mb-2">
                                         מה היה יכול לשכנע אותך לרכוש את הדו"ח?
                                       </p>
                                       <p className="text-gray-900">{survey.responses.q3}</p>
                                     </div>
-                                  )}
+                              }
                                   
-                                  {survey.responses.q4 && (
-                                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                  {survey.responses.q4 &&
+                              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                                       <p className="text-sm font-semibold text-blue-900 mb-2">
                                         הערות והצעות לשיפור:
                                       </p>
                                       <p className="text-blue-900">{survey.responses.q4}</p>
                                     </div>
-                                  )}
+                              }
                                 </div>
                               </CardContent>
                             </Card>
-                          ))}
+                        )}
                         </div>
-                      )}
+                      }
                     </CardContent>
                   </Card>
                 </div>
@@ -2260,18 +2260,18 @@ export default function AdminReports() {
               
               <TabsContent value="booster_feedback">
                 <div className="space-y-4">
-                  {surveyResponses.filter(s => s.survey_type === 'booster_feedback').length === 0 ? (
-                    <Card>
+                  {surveyResponses.filter((s) => s.survey_type === 'booster_feedback').length === 0 ?
+                  <Card>
                       <CardContent className="p-12 text-center">
                         <p className="text-gray-500">אין משובי בוסטר להצגה</p>
                       </CardContent>
-                    </Card>
-                  ) : (
-                    <div className="grid gap-4">
-                      {surveyResponses
-                        .filter(s => s.survey_type === 'booster_feedback')
-                        .map((survey) => (
-                          <Card key={survey.id} className="border-r-4 border-r-pink-500">
+                    </Card> :
+
+                  <div className="grid gap-4">
+                      {surveyResponses.
+                    filter((s) => s.survey_type === 'booster_feedback').
+                    map((survey) =>
+                    <Card key={survey.id} className="border-r-4 border-r-pink-500">
                             <CardContent className="p-6">
                               <div className="flex items-start justify-between mb-4">
                                 <div>
@@ -2283,8 +2283,8 @@ export default function AdminReports() {
                                 </Badge>
                               </div>
                               
-                              {survey.responses?.booster_track && (
-                                <div className="mb-3">
+                              {survey.responses?.booster_track &&
+                        <div className="mb-3">
                                   <span className="text-sm text-gray-600">מסלול: </span>
                                   <Badge variant="outline" className="bg-purple-50 text-purple-700">
                                     {survey.responses.booster_track === 'execution' && 'ביצוע'}
@@ -2295,39 +2295,39 @@ export default function AdminReports() {
                                     {survey.responses.booster_track === 'vision' && 'חזון'}
                                   </Badge>
                                 </div>
-                              )}
+                        }
                               
-                              {survey.responses?.feedback_text && (
-                                <div className="bg-gray-50 rounded-lg p-4 mt-3">
+                              {survey.responses?.feedback_text &&
+                        <div className="bg-gray-50 rounded-lg p-4 mt-3">
                                   <p className="text-sm font-semibold text-gray-700 mb-2">משוב:</p>
                                   <p className="text-sm text-gray-700 whitespace-pre-wrap">{survey.responses.feedback_text}</p>
                                 </div>
-                              )}
+                        }
                               
                               <div className="text-xs text-gray-400 mt-3 text-right">
                                 {new Date(survey.created_date).toLocaleDateString('he-IL', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
                               </div>
                             </CardContent>
                           </Card>
-                        ))}
+                    )}
                     </div>
-                  )}
+                  }
                 </div>
               </TabsContent>
             </Tabs>
           </TabsContent>
 
           <TabsContent value="content-management">
-            <ContentManager 
+            <ContentManager
               contentItems={contentItems}
-              onUpdate={loadData}
-            />
+              onUpdate={loadData} />
+
           </TabsContent>
 
           <TabsContent value="users">
@@ -2339,42 +2339,42 @@ export default function AdminReports() {
                 </p>
               </CardHeader>
               <CardContent>
-                {users.length === 0 ? (
-                  <div className="text-center py-12">
+                {users.length === 0 ?
+                <div className="text-center py-12">
                     <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <p className="text-gray-500 text-lg">אין משתמשים רשומים</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {users.map(user => {
-                      const userResponses = responses.filter(r => 
-                        r.created_by === user.email || r.personal_info?.email === user.email
-                      );
-                      const userReports = reports.filter(r => r.user_email === user.email);
-                      const hasPurchasedFullReport = (user.has_purchased_full_report ?? false);
-                      const hasPurchasedAnswersDownload = (user.has_purchased_answers_download ?? false);
-                      const activeBoosterSubscription = boosterSubscriptions.find(s => 
-                        s.user_email === user.email && s.status === 'active'
-                      );
+                  </div> :
 
-                      return (
-                        <Card key={user.id} className="border">
+                <div className="space-y-3">
+                    {users.map((user) => {
+                    const userResponses = responses.filter((r) =>
+                    r.created_by === user.email || r.personal_info?.email === user.email
+                    );
+                    const userReports = reports.filter((r) => r.user_email === user.email);
+                    const hasPurchasedFullReport = user.has_purchased_full_report ?? false;
+                    const hasPurchasedAnswersDownload = user.has_purchased_answers_download ?? false;
+                    const activeBoosterSubscription = boosterSubscriptions.find((s) =>
+                    s.user_email === user.email && s.status === 'active'
+                    );
+
+                    return (
+                      <Card key={user.id} className="border">
                           <CardContent className="p-4">
                             <div className="flex items-start justify-between gap-4 flex-row-reverse">
                               <div className="flex-1 text-right">
                                 <div className="flex items-center gap-2 mb-2 flex-row-reverse">
                                   <h4 className="font-semibold text-base">{user.full_name || 'שם לא זמין'}</h4>
-                                  {user.role === 'admin' && (
-                                    <Badge className="bg-purple-600 text-white text-xs">
+                                  {user.role === 'admin' &&
+                                <Badge className="bg-purple-600 text-white text-xs">
                                       Admin
                                     </Badge>
-                                  )}
-                                  {activeBoosterSubscription && (
-                                    <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs flex items-center gap-1">
+                                }
+                                  {activeBoosterSubscription &&
+                                <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs flex items-center gap-1">
                                       <Rocket className="w-3 h-3" />
                                       בוסטר יום {activeBoosterSubscription.current_day}/7
                                     </Badge>
-                                  )}
+                                }
                                 </div>
                                 <p className="text-sm text-gray-600 mb-2">{user.email}</p>
                                 <p className="text-xs text-gray-500">
@@ -2392,9 +2392,9 @@ export default function AdminReports() {
                                 <div className="mt-3">
                                   <Label className="text-xs mb-2 block">סטטוס תשלום:</Label>
                                   <Select
-                                    value={hasPurchasedFullReport ? 'full_report' : (hasPurchasedAnswersDownload ? 'answers_download' : 'none')}
-                                    onValueChange={(value) => handleUserPurchaseStatusChange(user.email, value)}
-                                  >
+                                  value={hasPurchasedFullReport ? 'full_report' : hasPurchasedAnswersDownload ? 'answers_download' : 'none'}
+                                  onValueChange={(value) => handleUserPurchaseStatusChange(user.email, value)}>
+
                                     <SelectTrigger className="w-full text-right">
                                       <SelectValue placeholder="בחר סטטוס" />
                                     </SelectTrigger>
@@ -2412,11 +2412,11 @@ export default function AdminReports() {
                               </div>
                             </div>
                           </CardContent>
-                        </Card>
-                      );
-                    })}
+                        </Card>);
+
+                  })}
                   </div>
-                )}
+                }
               </CardContent>
             </Card>
           </TabsContent>
@@ -2429,8 +2429,8 @@ export default function AdminReports() {
                     setEditingTemplate(null);
                     setTemplateDialog(true);
                   }}
-                  className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 flex-row-reverse"
-                >
+                  className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 flex-row-reverse">
+
                   <span>תבנית מייל חדשה</span>
                   <Mail className="w-4 h-4" />
                 </Button>
@@ -2450,20 +2450,20 @@ export default function AdminReports() {
                 {/* תבניות כלליות */}
                 <TabsContent value="general">
                   <div className="grid gap-4">
-                    {emailTemplates.filter(t => !t.booster_track).map(template => (
-                      <EmailTemplateCard
-                        key={template.id}
-                        template={template}
-                        onEdit={() => {
-                          setEditingTemplate(template);
-                          setTemplateDialog(true);
-                        }}
-                        onDelete={() => deleteTemplate(template.id)}
-                      />
-                    ))}
+                    {emailTemplates.filter((t) => !t.booster_track).map((template) =>
+                    <EmailTemplateCard
+                      key={template.id}
+                      template={template}
+                      onEdit={() => {
+                        setEditingTemplate(template);
+                        setTemplateDialog(true);
+                      }}
+                      onDelete={() => deleteTemplate(template.id)} />
 
-                    {emailTemplates.filter(t => !t.booster_track).length === 0 && (
-                      <Card>
+                    )}
+
+                    {emailTemplates.filter((t) => !t.booster_track).length === 0 &&
+                    <Card>
                         <CardContent className="p-12 text-center">
                           <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -2474,30 +2474,30 @@ export default function AdminReports() {
                           </p>
                         </CardContent>
                       </Card>
-                    )}
+                    }
                   </div>
                 </TabsContent>
 
                 {/* מסלול ביצוע */}
                 <TabsContent value="execution">
                   <div className="grid gap-4">
-                    {emailTemplates
-                      .filter(t => t.booster_track === 'execution')
-                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
-                      .map(template => (
-                        <EmailTemplateCard
-                          key={template.id}
-                          template={template}
-                          onEdit={() => {
-                            setEditingTemplate(template);
-                            setTemplateDialog(true);
-                          }}
-                          onDelete={() => deleteTemplate(template.id)}
-                        />
-                      ))}
+                    {emailTemplates.
+                    filter((t) => t.booster_track === 'execution').
+                    sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0)).
+                    map((template) =>
+                    <EmailTemplateCard
+                      key={template.id}
+                      template={template}
+                      onEdit={() => {
+                        setEditingTemplate(template);
+                        setTemplateDialog(true);
+                      }}
+                      onDelete={() => deleteTemplate(template.id)} />
 
-                    {emailTemplates.filter(t => t.booster_track === 'execution').length === 0 && (
-                      <Card>
+                    )}
+
+                    {emailTemplates.filter((t) => t.booster_track === 'execution').length === 0 &&
+                    <Card>
                         <CardContent className="p-12 text-center">
                           <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -2508,30 +2508,30 @@ export default function AdminReports() {
                           </p>
                         </CardContent>
                       </Card>
-                    )}
+                    }
                   </div>
                 </TabsContent>
 
                 {/* מסלול דיגיטל */}
                 <TabsContent value="digital">
                   <div className="grid gap-4">
-                    {emailTemplates
-                      .filter(t => t.booster_track === 'digital')
-                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
-                      .map(template => (
-                        <EmailTemplateCard
-                          key={template.id}
-                          template={template}
-                          onEdit={() => {
-                            setEditingTemplate(template);
-                            setTemplateDialog(true);
-                          }}
-                          onDelete={() => deleteTemplate(template.id)}
-                        />
-                      ))}
+                    {emailTemplates.
+                    filter((t) => t.booster_track === 'digital').
+                    sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0)).
+                    map((template) =>
+                    <EmailTemplateCard
+                      key={template.id}
+                      template={template}
+                      onEdit={() => {
+                        setEditingTemplate(template);
+                        setTemplateDialog(true);
+                      }}
+                      onDelete={() => deleteTemplate(template.id)} />
 
-                    {emailTemplates.filter(t => t.booster_track === 'digital').length === 0 && (
-                      <Card>
+                    )}
+
+                    {emailTemplates.filter((t) => t.booster_track === 'digital').length === 0 &&
+                    <Card>
                         <CardContent className="p-12 text-center">
                           <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -2542,30 +2542,30 @@ export default function AdminReports() {
                           </p>
                         </CardContent>
                       </Card>
-                    )}
+                    }
                   </div>
                 </TabsContent>
 
                 {/* מסלול פיננסים */}
                 <TabsContent value="finance">
                   <div className="grid gap-4">
-                    {emailTemplates
-                      .filter(t => t.booster_track === 'finance')
-                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
-                      .map(template => (
-                        <EmailTemplateCard
-                          key={template.id}
-                          template={template}
-                          onEdit={() => {
-                            setEditingTemplate(template);
-                            setTemplateDialog(true);
-                          }}
-                          onDelete={() => deleteTemplate(template.id)}
-                        />
-                      ))}
+                    {emailTemplates.
+                    filter((t) => t.booster_track === 'finance').
+                    sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0)).
+                    map((template) =>
+                    <EmailTemplateCard
+                      key={template.id}
+                      template={template}
+                      onEdit={() => {
+                        setEditingTemplate(template);
+                        setTemplateDialog(true);
+                      }}
+                      onDelete={() => deleteTemplate(template.id)} />
 
-                    {emailTemplates.filter(t => t.booster_track === 'finance').length === 0 && (
-                      <Card>
+                    )}
+
+                    {emailTemplates.filter((t) => t.booster_track === 'finance').length === 0 &&
+                    <Card>
                         <CardContent className="p-12 text-center">
                           <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -2576,30 +2576,30 @@ export default function AdminReports() {
                           </p>
                         </CardContent>
                       </Card>
-                    )}
+                    }
                   </div>
                 </TabsContent>
 
                 {/* מסלול שיווק */}
                 <TabsContent value="marketing">
                   <div className="grid gap-4">
-                    {emailTemplates
-                      .filter(t => t.booster_track === 'marketing')
-                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
-                      .map(template => (
-                        <EmailTemplateCard
-                          key={template.id}
-                          template={template}
-                          onEdit={() => {
-                            setEditingTemplate(template);
-                            setTemplateDialog(true);
-                          }}
-                          onDelete={() => deleteTemplate(template.id)}
-                        />
-                      ))}
+                    {emailTemplates.
+                    filter((t) => t.booster_track === 'marketing').
+                    sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0)).
+                    map((template) =>
+                    <EmailTemplateCard
+                      key={template.id}
+                      template={template}
+                      onEdit={() => {
+                        setEditingTemplate(template);
+                        setTemplateDialog(true);
+                      }}
+                      onDelete={() => deleteTemplate(template.id)} />
 
-                    {emailTemplates.filter(t => t.booster_track === 'marketing').length === 0 && (
-                      <Card>
+                    )}
+
+                    {emailTemplates.filter((t) => t.booster_track === 'marketing').length === 0 &&
+                    <Card>
                         <CardContent className="p-12 text-center">
                           <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -2610,30 +2610,30 @@ export default function AdminReports() {
                           </p>
                         </CardContent>
                       </Card>
-                    )}
+                    }
                   </div>
                 </TabsContent>
 
                 {/* מסלול ניהול */}
                 <TabsContent value="management">
                   <div className="grid gap-4">
-                    {emailTemplates
-                      .filter(t => t.booster_track === 'management')
-                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
-                      .map(template => (
-                        <EmailTemplateCard
-                          key={template.id}
-                          template={template}
-                          onEdit={() => {
-                            setEditingTemplate(template);
-                            setTemplateDialog(true);
-                          }}
-                          onDelete={() => deleteTemplate(template.id)}
-                        />
-                      ))}
+                    {emailTemplates.
+                    filter((t) => t.booster_track === 'management').
+                    sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0)).
+                    map((template) =>
+                    <EmailTemplateCard
+                      key={template.id}
+                      template={template}
+                      onEdit={() => {
+                        setEditingTemplate(template);
+                        setTemplateDialog(true);
+                      }}
+                      onDelete={() => deleteTemplate(template.id)} />
 
-                    {emailTemplates.filter(t => t.booster_track === 'management').length === 0 && (
-                      <Card>
+                    )}
+
+                    {emailTemplates.filter((t) => t.booster_track === 'management').length === 0 &&
+                    <Card>
                         <CardContent className="p-12 text-center">
                           <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -2644,30 +2644,30 @@ export default function AdminReports() {
                           </p>
                         </CardContent>
                       </Card>
-                    )}
+                    }
                   </div>
                 </TabsContent>
 
                 {/* מסלול חזון */}
                 <TabsContent value="vision">
                   <div className="grid gap-4">
-                    {emailTemplates
-                      .filter(t => t.booster_track === 'vision')
-                      .sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0))
-                      .map(template => (
-                        <EmailTemplateCard
-                          key={template.id}
-                          template={template}
-                          onEdit={() => {
-                            setEditingTemplate(template);
-                            setTemplateDialog(true);
-                          }}
-                          onDelete={() => deleteTemplate(template.id)}
-                        />
-                      ))}
+                    {emailTemplates.
+                    filter((t) => t.booster_track === 'vision').
+                    sort((a, b) => (a.booster_day || 0) - (b.booster_day || 0)).
+                    map((template) =>
+                    <EmailTemplateCard
+                      key={template.id}
+                      template={template}
+                      onEdit={() => {
+                        setEditingTemplate(template);
+                        setTemplateDialog(true);
+                      }}
+                      onDelete={() => deleteTemplate(template.id)} />
 
-                    {emailTemplates.filter(t => t.booster_track === 'vision').length === 0 && (
-                      <Card>
+                    )}
+
+                    {emailTemplates.filter((t) => t.booster_track === 'vision').length === 0 &&
+                    <Card>
                         <CardContent className="p-12 text-center">
                           <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -2678,7 +2678,7 @@ export default function AdminReports() {
                           </p>
                         </CardContent>
                       </Card>
-                    )}
+                    }
                   </div>
                 </TabsContent>
               </Tabs>
@@ -2696,7 +2696,7 @@ export default function AdminReports() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-right text-green-600">
-                      {users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length}
+                      {users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length}
                     </div>
                   </CardContent>
                 </Card>
@@ -2708,7 +2708,7 @@ export default function AdminReports() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-right text-blue-600">
-                      {users.filter(u => u.has_purchased_full_report).length}
+                      {users.filter((u) => u.has_purchased_full_report).length}
                     </div>
                   </CardContent>
                 </Card>
@@ -2720,7 +2720,7 @@ export default function AdminReports() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-right text-purple-600">
-                      {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length}
+                      {users.filter((u) => u.has_purchased_answers_download && !u.has_purchased_full_report).length}
                     </div>
                   </CardContent>
                 </Card>
@@ -2732,9 +2732,9 @@ export default function AdminReports() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-right text-orange-600">
-                      {responses.filter(r => r.status === 'completed').length > 0 
-                        ? `${Math.round((users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length / responses.filter(r => r.status === 'completed').length) * 100)}%`
-                        : '0%'
+                      {responses.filter((r) => r.status === 'completed').length > 0 ?
+                      `${Math.round(users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length / responses.filter((r) => r.status === 'completed').length * 100)}%` :
+                      '0%'
                       }
                     </div>
                   </CardContent>
@@ -2764,12 +2764,12 @@ export default function AdminReports() {
                           </td>
                           <td className="text-center py-4 px-4">
                             <Badge className="bg-blue-100 text-blue-800">
-                              {users.filter(u => u.has_purchased_full_report && !u.express_delivery).length}
+                              {users.filter((u) => u.has_purchased_full_report && !u.express_delivery).length}
                             </Badge>
                           </td>
                           <td className="text-left py-4 px-4">
                             <div className="text-xl font-bold text-blue-600">
-                              {users.filter(u => u.has_purchased_full_report && !u.express_delivery).length * 299} ₪
+                              {users.filter((u) => u.has_purchased_full_report && !u.express_delivery).length * 299} ₪
                             </div>
                           </td>
                         </tr>
@@ -2781,12 +2781,12 @@ export default function AdminReports() {
                           </td>
                           <td className="text-center py-4 px-4">
                             <Badge className="bg-purple-100 text-purple-800">
-                              {users.filter(u => u.has_purchased_full_report && u.express_delivery).length}
+                              {users.filter((u) => u.has_purchased_full_report && u.express_delivery).length}
                             </Badge>
                           </td>
                           <td className="text-left py-4 px-4">
                             <div className="text-xl font-bold text-purple-600">
-                              {users.filter(u => u.has_purchased_full_report && u.express_delivery).length * 378} ₪
+                              {users.filter((u) => u.has_purchased_full_report && u.express_delivery).length * 378} ₪
                             </div>
                           </td>
                         </tr>
@@ -2798,12 +2798,12 @@ export default function AdminReports() {
                           </td>
                           <td className="text-center py-4 px-4">
                             <Badge className="bg-green-100 text-green-800">
-                              {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length}
+                              {users.filter((u) => u.has_purchased_answers_download && !u.has_purchased_full_report).length}
                             </Badge>
                           </td>
                           <td className="text-left py-4 px-4">
                             <div className="text-xl font-bold text-green-600">
-                              {users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59} ₪
+                              {users.filter((u) => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59} ₪
                             </div>
                           </td>
                         </tr>
@@ -2814,15 +2814,15 @@ export default function AdminReports() {
                           </td>
                           <td className="text-center py-4 px-4">
                             <Badge className="bg-gray-800 text-white">
-                              {users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length}
+                              {users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length}
                             </Badge>
                           </td>
                           <td className="text-left py-4 px-4">
                             <div className="text-3xl font-bold text-green-700">
                               {
-                                users.filter(u => u.has_purchased_full_report && !u.express_delivery).length * 299 +
-                                users.filter(u => u.has_purchased_full_report && u.express_delivery).length * 378 +
-                                users.filter(u => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59
+                              users.filter((u) => u.has_purchased_full_report && !u.express_delivery).length * 299 +
+                              users.filter((u) => u.has_purchased_full_report && u.express_delivery).length * 378 +
+                              users.filter((u) => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59
                               } ₪
                             </div>
                           </td>
@@ -2836,18 +2836,18 @@ export default function AdminReports() {
               {/* רשימת רוכשים */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-right">רשימת רוכשים ({users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length})</CardTitle>
+                  <CardTitle className="text-right">רשימת רוכשים ({users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length})</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).map(user => {
-                      const userReports = reports.filter(r => r.user_email === user.email);
-                      const purchaseType = user.has_purchased_full_report 
-                        ? (user.express_delivery ? 'דו"ח מלא + מואץ (378 ₪)' : 'דו"ח מלא (299 ₪)')
-                        : 'הורדת תשובות (59 ₪)';
-                      const amount = user.has_purchased_full_report 
-                        ? (user.express_delivery ? 378 : 299)
-                        : 59;
+                    {users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).map((user) => {
+                      const userReports = reports.filter((r) => r.user_email === user.email);
+                      const purchaseType = user.has_purchased_full_report ?
+                      user.express_delivery ? 'דו"ח מלא + מואץ (378 ₪)' : 'דו"ח מלא (299 ₪)' :
+                      'הורדת תשובות (59 ₪)';
+                      const amount = user.has_purchased_full_report ?
+                      user.express_delivery ? 378 : 299 :
+                      59;
 
                       return (
                         <Card key={user.id} className="border">
@@ -2873,16 +2873,16 @@ export default function AdminReports() {
                               </div>
                             </div>
                           </CardContent>
-                        </Card>
-                      );
+                        </Card>);
+
                     })}
 
-                    {users.filter(u => u.has_purchased_full_report || u.has_purchased_answers_download).length === 0 && (
-                      <div className="text-center py-12">
+                    {users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length === 0 &&
+                    <div className="text-center py-12">
                         <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                         <p className="text-gray-500">אין רכישות עדיין</p>
                       </div>
-                    )}
+                    }
                   </div>
                 </CardContent>
               </Card>
@@ -2904,11 +2904,11 @@ export default function AdminReports() {
                     <div>
                       <Label className="text-right block mb-2">Facebook Pixel ID</Label>
                       <Input
-                        value={siteSettings.find(s => s.setting_key === 'facebook_pixel')?.setting_value || ''}
+                        value={siteSettings.find((s) => s.setting_key === 'facebook_pixel')?.setting_value || ''}
                         onChange={async (e) => {
                           const value = e.target.value;
-                          const existing = siteSettings.find(s => s.setting_key === 'facebook_pixel');
-                          
+                          const existing = siteSettings.find((s) => s.setting_key === 'facebook_pixel');
+
                           try {
                             if (existing) {
                               await base44.entities.SiteSettings.update(existing.id, { setting_value: value });
@@ -2927,8 +2927,8 @@ export default function AdminReports() {
                         }}
                         placeholder="הכנס Facebook Pixel ID"
                         className="text-left"
-                        dir="ltr"
-                      />
+                        dir="ltr" />
+
                       <p className="text-xs text-gray-500 mt-1 text-right">
                         ניתן למצוא את ה-Pixel ID בפייסבוק Business Manager
                       </p>
@@ -2938,11 +2938,11 @@ export default function AdminReports() {
                     <div>
                       <Label className="text-right block mb-2">Google Analytics Measurement ID</Label>
                       <Input
-                        value={siteSettings.find(s => s.setting_key === 'google_analytics')?.setting_value || ''}
+                        value={siteSettings.find((s) => s.setting_key === 'google_analytics')?.setting_value || ''}
                         onChange={async (e) => {
                           const value = e.target.value;
-                          const existing = siteSettings.find(s => s.setting_key === 'google_analytics');
-                          
+                          const existing = siteSettings.find((s) => s.setting_key === 'google_analytics');
+
                           try {
                             if (existing) {
                               await base44.entities.SiteSettings.update(existing.id, { setting_value: value });
@@ -2961,8 +2961,8 @@ export default function AdminReports() {
                         }}
                         placeholder="G-XXXXXXXXXX"
                         className="text-left"
-                        dir="ltr"
-                      />
+                        dir="ltr" />
+
                       <p className="text-xs text-gray-500 mt-1 text-right">
                         Measurement ID מתחיל ב-G- ונמצא ב-Google Analytics Admin
                       </p>
@@ -2972,11 +2972,11 @@ export default function AdminReports() {
                     <div>
                       <Label className="text-right block mb-2">Google Tag Manager ID (אופציונלי)</Label>
                       <Input
-                        value={siteSettings.find(s => s.setting_key === 'google_tag_manager')?.setting_value || ''}
+                        value={siteSettings.find((s) => s.setting_key === 'google_tag_manager')?.setting_value || ''}
                         onChange={async (e) => {
                           const value = e.target.value;
-                          const existing = siteSettings.find(s => s.setting_key === 'google_tag_manager');
-                          
+                          const existing = siteSettings.find((s) => s.setting_key === 'google_tag_manager');
+
                           try {
                             if (existing) {
                               await base44.entities.SiteSettings.update(existing.id, { setting_value: value });
@@ -2995,8 +2995,8 @@ export default function AdminReports() {
                         }}
                         placeholder="GTM-XXXXXXX"
                         className="text-left"
-                        dir="ltr"
-                      />
+                        dir="ltr" />
+
                       <p className="text-xs text-gray-500 mt-1 text-right">
                         Container ID מתחיל ב-GTM- ונמצא ב-Google Tag Manager
                       </p>
@@ -3018,8 +3018,8 @@ export default function AdminReports() {
                         <div className="text-right">
                           <h4 className="font-semibold text-green-900 mb-2">פיקסלים פעילים:</h4>
                           <div className="space-y-2">
-                            {siteSettings.filter(s => s.active && s.setting_value).map(setting => (
-                              <div key={setting.id} className="flex items-center gap-2 flex-row-reverse">
+                            {siteSettings.filter((s) => s.active && s.setting_value).map((setting) =>
+                            <div key={setting.id} className="flex items-center gap-2 flex-row-reverse">
                                 <CheckCircle className="w-4 h-4 text-green-600" />
                                 <span className="text-sm">
                                   {setting.setting_key === 'facebook_pixel' && 'Facebook Pixel'}
@@ -3028,10 +3028,10 @@ export default function AdminReports() {
                                 </span>
                                 <code className="text-xs bg-white px-2 py-1 rounded">{setting.setting_value}</code>
                               </div>
-                            ))}
-                            {siteSettings.filter(s => s.active && s.setting_value).length === 0 && (
-                              <p className="text-sm text-gray-600">לא הוגדרו פיקסלים עדיין</p>
                             )}
+                            {siteSettings.filter((s) => s.active && s.setting_value).length === 0 &&
+                            <p className="text-sm text-gray-600">לא הוגדרו פיקסלים עדיין</p>
+                            }
                           </div>
                         </div>
                       </CardContent>
@@ -3051,35 +3051,35 @@ export default function AdminReports() {
                 </p>
               </CardHeader>
               <CardContent>
-                {boosterSubscriptions.length === 0 ? (
-                  <div className="text-center py-12">
+                {boosterSubscriptions.length === 0 ?
+                <div className="text-center py-12">
                     <Rocket className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <p className="text-gray-500">אין מנויי בוסטר עדיין</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {boosterSubscriptions
-                      .sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime())
-                      .map(subscription => {
-                        const trackInfo = {
-                          execution: { name: 'ביצוע', icon: '⚡', color: 'blue' },
-                          digital: { name: 'דיגיטל', icon: '💻', color: 'purple' },
-                          finance: { name: 'פיננסים', icon: '💰', color: 'green' },
-                          marketing: { name: 'שיווק', icon: '📢', color: 'orange' },
-                          management: { name: 'ניהול', icon: '👥', color: 'indigo' },
-                          vision: { name: 'חזון', icon: '🎯', color: 'pink' }
-                        };
-                        const track = trackInfo[subscription.recommended_booster_track] || trackInfo.execution;
-                        
-                        const daysLeft = Math.max(0, 7 - subscription.current_day + 1);
-                        
-                        return (
-                          <Card key={subscription.id} className={`border-2 ${
-                            subscription.status === 'active' ? `border-${track.color}-300 bg-${track.color}-50` :
-                            subscription.status === 'completed' ? 'border-green-300 bg-green-50' :
-                            subscription.status === 'cancelled' ? 'border-red-300 bg-red-50' :
-                            'border-gray-300 bg-gray-50'
-                          }`}>
+                  </div> :
+
+                <div className="space-y-3">
+                    {boosterSubscriptions.
+                  sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime()).
+                  map((subscription) => {
+                    const trackInfo = {
+                      execution: { name: 'ביצוע', icon: '⚡', color: 'blue' },
+                      digital: { name: 'דיגיטל', icon: '💻', color: 'purple' },
+                      finance: { name: 'פיננסים', icon: '💰', color: 'green' },
+                      marketing: { name: 'שיווק', icon: '📢', color: 'orange' },
+                      management: { name: 'ניהול', icon: '👥', color: 'indigo' },
+                      vision: { name: 'חזון', icon: '🎯', color: 'pink' }
+                    };
+                    const track = trackInfo[subscription.recommended_booster_track] || trackInfo.execution;
+
+                    const daysLeft = Math.max(0, 7 - subscription.current_day + 1);
+
+                    return (
+                      <Card key={subscription.id} className={`border-2 ${
+                      subscription.status === 'active' ? `border-${track.color}-300 bg-${track.color}-50` :
+                      subscription.status === 'completed' ? 'border-green-300 bg-green-50' :
+                      subscription.status === 'cancelled' ? 'border-red-300 bg-red-50' :
+                      'border-gray-300 bg-gray-50'}`
+                      }>
                             <CardContent className="p-4">
                               <div className="flex items-start justify-between gap-4 flex-row-reverse">
                                 <div className="flex-1 text-right">
@@ -3095,19 +3095,19 @@ export default function AdminReports() {
                                       מסלול {track.name}
                                     </Badge>
                                     
-                                    {subscription.status === 'active' && (
-                                      <Badge className="bg-green-100 text-green-800 text-xs">
+                                    {subscription.status === 'active' &&
+                                <Badge className="bg-green-100 text-green-800 text-xs">
                                         יום {subscription.current_day}/7
                                       </Badge>
-                                    )}
+                                }
                                     
                                     <Badge variant="outline" className={`text-xs ${
-                                      subscription.status === 'active' ? 'bg-green-50 text-green-700 border-green-300' :
-                                      subscription.status === 'completed' ? 'bg-blue-50 text-blue-700 border-blue-300' :
-                                      subscription.status === 'cancelled' ? 'bg-red-50 text-red-700 border-red-300' :
-                                      subscription.status === 'upgraded' ? 'bg-purple-50 text-purple-700 border-purple-300' :
-                                      'bg-gray-50 text-gray-700 border-gray-300'
-                                    }`}>
+                                subscription.status === 'active' ? 'bg-green-50 text-green-700 border-green-300' :
+                                subscription.status === 'completed' ? 'bg-blue-50 text-blue-700 border-blue-300' :
+                                subscription.status === 'cancelled' ? 'bg-red-50 text-red-700 border-red-300' :
+                                subscription.status === 'upgraded' ? 'bg-purple-50 text-purple-700 border-purple-300' :
+                                'bg-gray-50 text-gray-700 border-gray-300'}`
+                                }>
                                       {subscription.status === 'active' && '✓ פעיל'}
                                       {subscription.status === 'completed' && '✓ הושלם'}
                                       {subscription.status === 'cancelled' && '✗ בוטל'}
@@ -3122,124 +3122,124 @@ export default function AdminReports() {
                                   <div className="text-xs text-gray-600 space-y-1">
                                     <div>התחלה: {format(new Date(subscription.start_date), 'dd/MM/yyyy')}</div>
                                     <div>סיום: {format(new Date(subscription.end_date), 'dd/MM/yyyy')}</div>
-                                    {subscription.last_email_sent_date && (
-                                      <div>מייל אחרון: {format(new Date(subscription.last_email_sent_date), 'dd/MM/yyyy HH:mm')}</div>
-                                    )}
-                                    {subscription.status === 'active' && (
-                                      <div className="font-semibold text-orange-600">
+                                    {subscription.last_email_sent_date &&
+                                <div>מייל אחרון: {format(new Date(subscription.last_email_sent_date), 'dd/MM/yyyy HH:mm')}</div>
+                                }
+                                    {subscription.status === 'active' &&
+                                <div className="font-semibold text-orange-600">
                                         נותרו {daysLeft} ימים
                                       </div>
-                                    )}
-                                    {subscription.experienced_improvement !== undefined && (
-                                      <div className={subscription.experienced_improvement ? 'text-green-700 font-semibold' : 'text-red-700'}>
+                                }
+                                    {subscription.experienced_improvement !== undefined &&
+                                <div className={subscription.experienced_improvement ? 'text-green-700 font-semibold' : 'text-red-700'}>
                                         {subscription.experienced_improvement ? '✓ חש שיפור' : '✗ לא חש שיפור'}
                                       </div>
-                                    )}
-                                    {subscription.feedback_text && (
-                                      <div className="bg-white p-2 rounded mt-2 border">
+                                }
+                                    {subscription.feedback_text &&
+                                <div className="bg-white p-2 rounded mt-2 border">
                                         <span className="font-semibold">משוב: </span>
                                         {subscription.feedback_text}
                                       </div>
-                                    )}
+                                }
                                     
                                     {(() => {
-                                      const boosterEmails = emailLogs.filter(log => 
-                                        log.email_type === 'booster_email' && 
-                                        log.to_email === subscription.user_email
-                                      );
-                                      return boosterEmails.length > 0 && (
-                                        <div className="mt-2">
+                                  const boosterEmails = emailLogs.filter((log) =>
+                                  log.email_type === 'booster_email' &&
+                                  log.to_email === subscription.user_email
+                                  );
+                                  return boosterEmails.length > 0 &&
+                                  <div className="mt-2">
                                           <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => setViewingEmails(boosterEmails)}
-                                            className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2"
-                                          >
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setViewingEmails(boosterEmails)}
+                                      className="bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200 flex items-center gap-1 flex-row-reverse text-xs h-6 px-2">
+
                                             <Mail className="w-3 h-3" />
                                             {boosterEmails.length} מיילי בוסטר נשלחו
                                           </Button>
-                                        </div>
-                                      );
-                                    })()}
+                                        </div>;
+
+                                })()}
                                   </div>
                                 </div>
                                 
                                 <div className="flex flex-col gap-2">
-                                  {subscription.status === 'active' && (
-                                    <>
+                                  {subscription.status === 'active' &&
+                              <>
                                       <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={async () => {
-                                          if (window.confirm('האם לבטל את המנוי?')) {
-                                            try {
-                                              await base44.entities.OnlineCoachingSubscription.update(subscription.id, {
-                                                status: 'cancelled'
-                                              });
-                                              await loadData();
-                                              alert('המנוי בוטל בהצלחה');
-                                            } catch (error) {
-                                              console.error('Error cancelling subscription:', error);
-                                              alert('שגיאה בביטול המנוי');
-                                            }
-                                          }
-                                        }}
-                                        className="text-orange-600 hover:text-orange-700"
-                                      >
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={async () => {
+                                    if (window.confirm('האם לבטל את המנוי?')) {
+                                      try {
+                                        await base44.entities.OnlineCoachingSubscription.update(subscription.id, {
+                                          status: 'cancelled'
+                                        });
+                                        await loadData();
+                                        alert('המנוי בוטל בהצלחה');
+                                      } catch (error) {
+                                        console.error('Error cancelling subscription:', error);
+                                        alert('שגיאה בביטול המנוי');
+                                      }
+                                    }
+                                  }}
+                                  className="text-orange-600 hover:text-orange-700">
+
                                         ביטול
                                       </Button>
                                       
                                       <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={async () => {
-                                          if (window.confirm('האם לסמן כהושלם?')) {
-                                            try {
-                                              await base44.entities.OnlineCoachingSubscription.update(subscription.id, {
-                                                status: 'completed'
-                                              });
-                                              await loadData();
-                                              alert('המנוי סומן כהושלם');
-                                            } catch (error) {
-                                              console.error('Error completing subscription:', error);
-                                              alert('שגיאה בעדכון המנוי');
-                                            }
-                                          }
-                                        }}
-                                        className="text-green-600 hover:text-green-700"
-                                      >
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={async () => {
+                                    if (window.confirm('האם לסמן כהושלם?')) {
+                                      try {
+                                        await base44.entities.OnlineCoachingSubscription.update(subscription.id, {
+                                          status: 'completed'
+                                        });
+                                        await loadData();
+                                        alert('המנוי סומן כהושלם');
+                                      } catch (error) {
+                                        console.error('Error completing subscription:', error);
+                                        alert('שגיאה בעדכון המנוי');
+                                      }
+                                    }
+                                  }}
+                                  className="text-green-600 hover:text-green-700">
+
                                         סמן הושלם
                                       </Button>
                                     </>
-                                  )}
+                              }
                                   
                                   <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={async () => {
-                                      if (window.confirm('האם למחוק את המנוי? פעולה זו בלתי הפיכה.')) {
-                                        try {
-                                          await base44.entities.OnlineCoachingSubscription.delete(subscription.id);
-                                          await loadData();
-                                          alert('המנוי נמחק בהצלחה');
-                                        } catch (error) {
-                                          console.error('Error deleting subscription:', error);
-                                          alert('שגיאה במחיקת המנוי');
-                                        }
-                                      }
-                                    }}
-                                    className="text-red-600 hover:text-red-700"
-                                  >
+                                size="sm"
+                                variant="outline"
+                                onClick={async () => {
+                                  if (window.confirm('האם למחוק את המנוי? פעולה זו בלתי הפיכה.')) {
+                                    try {
+                                      await base44.entities.OnlineCoachingSubscription.delete(subscription.id);
+                                      await loadData();
+                                      alert('המנוי נמחק בהצלחה');
+                                    } catch (error) {
+                                      console.error('Error deleting subscription:', error);
+                                      alert('שגיאה במחיקת המנוי');
+                                    }
+                                  }
+                                }}
+                                className="text-red-600 hover:text-red-700">
+
                                     <Trash2 className="w-4 h-4" />
                                   </Button>
                                 </div>
                               </div>
                             </CardContent>
-                          </Card>
-                        );
-                      })}
+                          </Card>);
+
+                  })}
                   </div>
-                )}
+                }
               </CardContent>
             </Card>
           </TabsContent>
@@ -3255,8 +3255,8 @@ export default function AdminReports() {
             </DialogDescription>
           </DialogHeader>
 
-          {viewingResponse && (
-            <div className="space-y-6">
+          {viewingResponse &&
+          <div className="space-y-6">
               <div className="bg-blue-50 p-4 rounded-lg text-right">
                 <h3 className="font-semibold text-lg mb-3">פרטים אישיים</h3>
                 <div className="grid md:grid-cols-2 gap-3 text-sm">
@@ -3273,27 +3273,27 @@ export default function AdminReports() {
               <div className="text-right">
                 <h3 className="font-semibold text-lg mb-3">תשובות לשאלון (1-7)</h3>
                 <div className="grid md:grid-cols-5 gap-2 text-sm">
-                  {Object.entries(viewingResponse.responses || {})
-                    .sort((a, b) => {
-                      const numA = parseInt(a[0].replace('q', ''));
-                      const numB = parseInt(b[0].replace('q', ''));
-                      return numA - numB;
-                    })
-                    .map(([key, value]) => (
-                      <div key={key} className="bg-gray-100 p-2 rounded text-center">
+                  {Object.entries(viewingResponse.responses || {}).
+                sort((a, b) => {
+                  const numA = parseInt(a[0].replace('q', ''));
+                  const numB = parseInt(b[0].replace('q', ''));
+                  return numA - numB;
+                }).
+                map(([key, value]) =>
+                <div key={key} className="bg-gray-100 p-2 rounded text-center">
                         <div className="font-medium text-gray-600">{key.replace('q', 'שאלה ')}</div>
                         <div className="text-xl font-bold text-blue-600">{value}</div>
                       </div>
-                    ))}
+                )}
                 </div>
               </div>
 
-              {viewingResponse.optional_comment && (
-                <div className="bg-amber-50 p-4 rounded-lg text-right">
+              {viewingResponse.optional_comment &&
+            <div className="bg-amber-50 p-4 rounded-lg text-right">
                   <h3 className="font-semibold text-lg mb-2">הערה אופציונלית</h3>
                   <p className="text-sm whitespace-pre-wrap">{viewingResponse.optional_comment}</p>
                 </div>
-              )}
+            }
 
               <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600 text-right">
                 <div className="grid md:grid-cols-3 gap-2">
@@ -3303,26 +3303,26 @@ export default function AdminReports() {
                 </div>
               </div>
             </div>
-          )}
+          }
         </DialogContent>
       </Dialog>
 
       <Dialog open={!!viewingEmails} onOpenChange={() => setViewingEmails(null)}>
         <DialogContent className="max-w-2xl" dir="rtl">
           <DialogHeader>
-            <DialogTitle>היסטוריית מיילים</DialogTitle>
-            <DialogDescription>
-              מיילים שנשלחו למשתמש זה
+            <DialogTitle className="text-lg font-semibold text-right tracking-tight leading-none">היסטוריית מיילים</DialogTitle>
+            <DialogDescription className="text-muted-foreground text-sm text-right">מיילים שנשלחו למשתמש זה
+
             </DialogDescription>
           </DialogHeader>
 
-          {viewingEmails && (
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-              {viewingEmails.length === 0 ? (
-                <p className="text-center text-gray-500 py-4">אין מיילים שנשלחו למשתמש זה.</p>
-              ) : (
-                viewingEmails.map(log => (
-                  <Card key={log.id} className="border">
+          {viewingEmails &&
+          <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+              {viewingEmails.length === 0 ?
+            <p className="text-center text-gray-500 py-4">אין מיילים שנשלחו למשתמש זה.</p> :
+
+            viewingEmails.map((log) =>
+            <Card key={log.id} className="border">
                     <CardContent className="p-4 text-right">
                       <div className="flex items-start justify-between flex-row-reverse">
                         <div className="flex-1">
@@ -3341,10 +3341,10 @@ export default function AdminReports() {
                       </div>
                     </CardContent>
                   </Card>
-                ))
-              )}
+            )
+            }
             </div>
-          )}
+          }
         </DialogContent>
       </Dialog>
 
@@ -3360,15 +3360,15 @@ export default function AdminReports() {
             <Button
               onClick={() => sendReportToClient('he')}
               className="w-full text-lg py-6"
-              variant="outline"
-            >
+              variant="outline">
+
               🇮🇱 עברית
             </Button>
             <Button
               onClick={() => sendReportToClient('en')}
               className="w-full text-lg py-6"
-              variant="outline"
-            >
+              variant="outline">
+
               🇬🇧 English
             </Button>
           </div>
@@ -3390,11 +3390,11 @@ export default function AdminReports() {
                 id="userEmail"
                 type="email"
                 value={simulationForm.userEmail}
-                onChange={(e) => setSimulationForm({...simulationForm, userEmail: e.target.value})}
+                onChange={(e) => setSimulationForm({ ...simulationForm, userEmail: e.target.value })}
                 placeholder="user@example.com"
                 className="text-right"
-                dir="rtl"
-              />
+                dir="rtl" />
+
               <p className="text-xs text-gray-500 mt-1 text-right">
                 המשתמש חייב להיות רשום במערכת
               </p>
@@ -3405,38 +3405,38 @@ export default function AdminReports() {
               <select
                 id="productType"
                 value={simulationForm.productType}
-                onChange={(e) => setSimulationForm({...simulationForm, productType: e.target.value})}
+                onChange={(e) => setSimulationForm({ ...simulationForm, productType: e.target.value })}
                 className="w-full border border-gray-300 rounded-md p-2 text-right"
-                dir="rtl"
-              >
+                dir="rtl">
+
                 <option value="full_report">דו"ח מלא (299 ₪)</option>
                 <option value="answers_download">הורדת תשובות (59 ₪)</option>
                 <option value="online_coaching_7days">ליווי און ליין 7 ימים (497 ₪)</option>
               </select>
             </div>
 
-            {simulationForm.productType === 'full_report' && (
-              <div className="flex items-center gap-2 flex-row-reverse">
+            {simulationForm.productType === 'full_report' &&
+            <div className="flex items-center gap-2 flex-row-reverse">
                 <Label htmlFor="expressDelivery" className="cursor-pointer">אספקה מואצת (+79 ₪)</Label>
                 <input
-                  id="expressDelivery"
-                  type="checkbox"
-                  checked={simulationForm.expressDelivery}
-                  onChange={(e) => setSimulationForm({...simulationForm, expressDelivery: e.target.checked})}
-                  className="w-4 h-4"
-                />
+                id="expressDelivery"
+                type="checkbox"
+                checked={simulationForm.expressDelivery}
+                onChange={(e) => setSimulationForm({ ...simulationForm, expressDelivery: e.target.checked })}
+                className="w-4 h-4" />
+
               </div>
-            )}
+            }
 
             <div>
               <Label htmlFor="language" className="text-right block mb-2">שפת המיילים</Label>
               <select
                 id="language"
                 value={simulationForm.language}
-                onChange={(e) => setSimulationForm({...simulationForm, language: e.target.value})}
+                onChange={(e) => setSimulationForm({ ...simulationForm, language: e.target.value })}
                 className="w-full border border-gray-300 rounded-md p-2 text-right"
-                dir="rtl"
-              >
+                dir="rtl">
+
                 <option value="he">עברית</option>
                 <option value="en">English</option>
               </select>
@@ -3448,9 +3448,9 @@ export default function AdminReports() {
                 <li>עדכון פרטי המשתמש כאילו רכש את המוצר</li>
                 <li>שליחת מייל אישור למשתמש</li>
                 <li>תיעוד הרכישה המדומה במערכת</li>
-                {simulationForm.productType === 'online_coaching_7days' && (
-                  <li className="text-orange-700 font-semibold">יצירת מנוי ליווי 7 ימים (דורש תזמון חיצוני למיילים יומיים)</li>
-                )}
+                {simulationForm.productType === 'online_coaching_7days' &&
+                <li className="text-orange-700 font-semibold">יצירת מנוי ליווי 7 ימים (דורש תזמון חיצוני למיילים יומיים)</li>
+                }
               </ul>
             </div>
 
@@ -3458,23 +3458,23 @@ export default function AdminReports() {
               <Button
                 onClick={handleSimulatePurchase}
                 className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2 justify-center"
-                disabled={isSimulating}
-              >
-                {isSimulating ? (
-                  <>
+                disabled={isSimulating}>
+
+                {isSimulating ?
+                <>
                     <span>מדמה...</span>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                  </>
-                ) : (
-                  'דמה רכישה'
-                )}
+                  </> :
+
+                'דמה רכישה'
+                }
               </Button>
               <Button
                 onClick={() => setSimulationDialog(false)}
                 variant="outline"
                 className="flex-1"
-                disabled={isSimulating}
-              >
+                disabled={isSimulating}>
+
                 ביטול
               </Button>
             </div>
@@ -3491,32 +3491,32 @@ export default function AdminReports() {
           <DialogHeader>
             <DialogTitle>בחר תבנית מייל לשליחה</DialogTitle>
             <DialogDescription>
-              {templateSelectionDialog.response?.personal_info?.full_name && 
-                `שליחת מייל אל: ${templateSelectionDialog.response.personal_info.full_name} (${templateSelectionDialog.response.personal_info?.email || templateSelectionDialog.response.created_by})`
+              {templateSelectionDialog.response?.personal_info?.full_name &&
+              `שליחת מייל אל: ${templateSelectionDialog.response.personal_info.full_name} (${templateSelectionDialog.response.personal_info?.email || templateSelectionDialog.response.created_by})`
               }
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 max-h-[60vh] overflow-y-auto p-2">
-            {emailTemplates.filter(t => t.active).length === 0 ? (
-              <div className="text-center py-8">
+            {emailTemplates.filter((t) => t.active).length === 0 ?
+            <div className="text-center py-8">
                 <p className="text-gray-500 mb-4">אין תבניות מייל פעילות במערכת</p>
                 <Button
-                  onClick={() => {
-                    setTemplateSelectionDialog({ open: false, response: null });
-                    setTemplateDialog(true);
-                  }}
-                  variant="outline"
-                >
+                onClick={() => {
+                  setTemplateSelectionDialog({ open: false, response: null });
+                  setTemplateDialog(true);
+                }}
+                variant="outline">
+
                   צור תבנית חדשה
                 </Button>
-              </div>
-            ) : (
-              emailTemplates
-                .filter(t => t.active)
-                .map(template => {
-                  const isSending = sendingEmailType === `template_${template.id}_${templateSelectionDialog.response?.id}`;
-                  return (
-                    <Card key={template.id} className="hover:shadow-md transition-shadow">
+              </div> :
+
+            emailTemplates.
+            filter((t) => t.active).
+            map((template) => {
+              const isSending = sendingEmailType === `template_${template.id}_${templateSelectionDialog.response?.id}`;
+              return (
+                <Card key={template.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between gap-4 flex-row-reverse">
                           <div className="flex-1 text-right">
@@ -3534,38 +3534,38 @@ export default function AdminReports() {
                                 {template.template_type === 'consultation_request' && 'בקשת ייעוץ'}
                                 {template.template_type === 'questionnaire_completion' && 'השלמת שאלון'}
                               </Badge>
-                              {template.include_coupon && (
-                                <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                              {template.include_coupon &&
+                          <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
                                   <DollarSign className="w-3 h-3 ml-1" />
                                   קופון {template.coupon_amount} ₪
                                 </Badge>
-                              )}
+                          }
                             </div>
                           </div>
                           <Button
-                            onClick={() => templateSelectionDialog.response && sendManualEmailFromTemplate(template, templateSelectionDialog.response)}
-                            disabled={isSending || !templateSelectionDialog.response}
-                            className="bg-blue-600 hover:bg-blue-700 flex-shrink-0 flex items-center gap-2 flex-row-reverse"
-                            size="sm"
-                          >
-                            {isSending ? (
-                              <>
+                        onClick={() => templateSelectionDialog.response && sendManualEmailFromTemplate(template, templateSelectionDialog.response)}
+                        disabled={isSending || !templateSelectionDialog.response}
+                        className="bg-blue-600 hover:bg-blue-700 flex-shrink-0 flex items-center gap-2 flex-row-reverse"
+                        size="sm">
+
+                            {isSending ?
+                        <>
                                 <span>שולח...</span>
                                 <Loader2 className="w-4 h-4 animate-spin" />
-                              </>
-                            ) : (
-                              <>
+                              </> :
+
+                        <>
                                 <span>שלח</span>
                                 <Send className="w-4 h-4" />
                               </>
-                            )}
+                        }
                           </Button>
                         </div>
                       </CardContent>
-                    </Card>
-                  );
-                })
-            )}
+                    </Card>);
+
+            })
+            }
           </div>
         </DialogContent>
       </Dialog>
@@ -3589,106 +3589,106 @@ export default function AdminReports() {
             console.error('Error saving template:', error);
             alert('שגיאה בשמירת התבנית');
           }
-        }}
-      />
-      </div>
-      );
-      }
+        }} />
 
-      function EmailTemplateDialog({ open, onOpenChange, template, onSave }) {
-      const [formData, setFormData] = React.useState({
-        template_type: template?.template_type || 'abandonment_incomplete',
-        trigger_event: template?.trigger_event || 'manual',
-        name_he: template?.name_he || '',
-        name_en: template?.name_en || '',
-        subject_he: template?.subject_he || '',
-        subject_en: template?.subject_en || '',
-        content_he: template?.content_he || '',
-        content_en: template?.content_en || '',
-        description_he: template?.description_he || '',
-        description_en: template?.description_en || '',
-        active: template?.active ?? true,
-        include_coupon: template?.include_coupon ?? false,
-        coupon_amount: template?.coupon_amount || 50,
-        aiPrompt: ''
+      </div>);
+
+}
+
+function EmailTemplateDialog({ open, onOpenChange, template, onSave }) {
+  const [formData, setFormData] = React.useState({
+    template_type: template?.template_type || 'abandonment_incomplete',
+    trigger_event: template?.trigger_event || 'manual',
+    name_he: template?.name_he || '',
+    name_en: template?.name_en || '',
+    subject_he: template?.subject_he || '',
+    subject_en: template?.subject_en || '',
+    content_he: template?.content_he || '',
+    content_en: template?.content_en || '',
+    description_he: template?.description_he || '',
+    description_en: template?.description_en || '',
+    active: template?.active ?? true,
+    include_coupon: template?.include_coupon ?? false,
+    coupon_amount: template?.coupon_amount || 50,
+    aiPrompt: ''
+  });
+  const [isGeneratingAI, setIsGeneratingAI] = React.useState(false);
+  const [previewLang, setPreviewLang] = React.useState('he');
+  const [contentMode, setContentMode] = React.useState('simple'); // 'simple' or 'html'
+  const [simpleContent, setSimpleContent] = React.useState({ he: '', en: '' });
+  const [isConvertingToHtml, setIsConvertingToHtml] = React.useState(false);
+
+  React.useEffect(() => {
+    if (template) {
+      setFormData({
+        template_type: template.template_type,
+        trigger_event: template.trigger_event || 'manual',
+        name_he: template.name_he,
+        name_en: template.name_en,
+        subject_he: template.subject_he,
+        subject_en: template.subject_en,
+        content_he: template.content_he,
+        content_en: template.content_en,
+        description_he: template.description_he || '',
+        description_en: template.description_en || '',
+        active: template.active ?? true,
+        include_coupon: template.include_coupon ?? false,
+        coupon_amount: template.coupon_amount || 50
       });
-      const [isGeneratingAI, setIsGeneratingAI] = React.useState(false);
-      const [previewLang, setPreviewLang] = React.useState('he');
-      const [contentMode, setContentMode] = React.useState('simple'); // 'simple' or 'html'
-      const [simpleContent, setSimpleContent] = React.useState({ he: '', en: '' });
-      const [isConvertingToHtml, setIsConvertingToHtml] = React.useState(false);
+    } else {
+      setFormData({
+        template_type: 'abandonment_incomplete',
+        trigger_event: 'manual',
+        name_he: '',
+        name_en: '',
+        subject_he: '',
+        subject_en: '',
+        content_he: '',
+        content_en: '',
+        description_he: '',
+        description_en: '',
+        active: true,
+        include_coupon: false,
+        coupon_amount: 50
+      });
+    }
+  }, [template]);
 
-      React.useEffect(() => {
-      if (template) {
-        setFormData({
-          template_type: template.template_type,
-          trigger_event: template.trigger_event || 'manual',
-          name_he: template.name_he,
-          name_en: template.name_en,
-          subject_he: template.subject_he,
-          subject_en: template.subject_en,
-          content_he: template.content_he,
-          content_en: template.content_en,
-          description_he: template.description_he || '',
-          description_en: template.description_en || '',
-          active: template.active ?? true,
-          include_coupon: template.include_coupon ?? false,
-          coupon_amount: template.coupon_amount || 50
-        });
-      } else {
-        setFormData({
-          template_type: 'abandonment_incomplete',
-          trigger_event: 'manual',
-          name_he: '',
-          name_en: '',
-          subject_he: '',
-          subject_en: '',
-          content_he: '',
-          content_en: '',
-          description_he: '',
-          description_en: '',
-          active: true,
-          include_coupon: false,
-          coupon_amount: 50
-        });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name_he || !formData.subject_he) {
+      alert('יש למלא לפחות את השם והנושא בעברית');
+      return;
+    }
+
+    // אם במצב Simple ויש תוכן, המר ל-HTML
+    if (contentMode === 'simple' && (simpleContent.he || simpleContent.en)) {
+      setIsConvertingToHtml(true);
+      try {
+        const convertedHtml = await convertSimpleToHtml(simpleContent.he, simpleContent.en);
+        const finalData = {
+          ...formData,
+          content_he: convertedHtml.content_he,
+          content_en: convertedHtml.content_en
+        };
+        onSave(finalData);
+      } catch (error) {
+        alert('שגיאה בהמרת התוכן ל-HTML: ' + error.message);
+      } finally {
+        setIsConvertingToHtml(false);
       }
-      }, [template]);
+      return;
+    }
 
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!formData.name_he || !formData.subject_he) {
-          alert('יש למלא לפחות את השם והנושא בעברית');
-          return;
-        }
+    if (!formData.content_he) {
+      alert('יש למלא את תוכן המייל בעברית');
+      return;
+    }
+    onSave(formData);
+  };
 
-        // אם במצב Simple ויש תוכן, המר ל-HTML
-        if (contentMode === 'simple' && (simpleContent.he || simpleContent.en)) {
-          setIsConvertingToHtml(true);
-          try {
-            const convertedHtml = await convertSimpleToHtml(simpleContent.he, simpleContent.en);
-            const finalData = {
-              ...formData,
-              content_he: convertedHtml.content_he,
-              content_en: convertedHtml.content_en
-            };
-            onSave(finalData);
-          } catch (error) {
-            alert('שגיאה בהמרת התוכן ל-HTML: ' + error.message);
-          } finally {
-            setIsConvertingToHtml(false);
-          }
-          return;
-        }
-
-        if (!formData.content_he) {
-          alert('יש למלא את תוכן המייל בעברית');
-          return;
-        }
-        onSave(formData);
-      };
-
-      const convertSimpleToHtml = async (textHe, textEn) => {
-        const prompt = `המר את התוכן הטקסטואלי הבא לתבניות HTML מעוצבות ומקצועיות עבור מיילים.
+  const convertSimpleToHtml = async (textHe, textEn) => {
+    const prompt = `המר את התוכן הטקסטואלי הבא לתבניות HTML מעוצבות ומקצועיות עבור מיילים.
 
 תוכן בעברית:
 ${textHe || 'אין תוכן'}
@@ -3714,26 +3714,26 @@ ${textEn || 'אין תוכן'}
   "content_en": "Full HTML in English"
 }`;
 
-        const result = await base44.integrations.Core.InvokeLLM({
-          prompt: prompt,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              content_he: { type: "string" },
-              content_en: { type: "string" }
-            }
-          }
-        });
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: prompt,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          content_he: { type: "string" },
+          content_en: { type: "string" }
+        }
+      }
+    });
 
-        return result;
-      };
+    return result;
+  };
 
-      const handleGenerateWithAI = async () => {
-        if (!formData.aiPrompt) return;
+  const handleGenerateWithAI = async () => {
+    if (!formData.aiPrompt) return;
 
-        setIsGeneratingAI(true);
-        try {
-          const prompt = `אתה מעצב מיילים מקצועי. צור תבנית מייל HTML עבור אפליקציית V107.
+    setIsGeneratingAI(true);
+    try {
+      const prompt = `אתה מעצב מיילים מקצועי. צור תבנית מייל HTML עבור אפליקציית V107.
 
       תיאור: ${formData.aiPrompt}
 
@@ -3758,47 +3758,47 @@ ${textEn || 'אין תוכן'}
       "description_en": "Short description of template"
       }`;
 
-          const result = await base44.integrations.Core.InvokeLLM({
-            prompt: prompt,
-            response_json_schema: {
-              type: "object",
-              properties: {
-                name_he: { type: "string" },
-                name_en: { type: "string" },
-                subject_he: { type: "string" },
-                subject_en: { type: "string" },
-                content_he: { type: "string" },
-                content_en: { type: "string" },
-                description_he: { type: "string" },
-                description_en: { type: "string" }
-              }
-            }
-          });
-
-          setFormData({
-            ...formData,
-            name_he: result.name_he,
-            name_en: result.name_en,
-            subject_he: result.subject_he,
-            subject_en: result.subject_en,
-            content_he: result.content_he,
-            content_en: result.content_en,
-            description_he: result.description_he,
-            description_en: result.description_en,
-            aiPrompt: ''
-          });
-
-          alert('התבנית נוצרה בהצלחה! בדוק את התוצאה ובצע התאמות במידת הצורך.');
-        } catch (error) {
-          console.error('Error generating template:', error);
-          alert('שגיאה ביצירת התבנית: ' + error.message);
-        } finally {
-          setIsGeneratingAI(false);
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            name_he: { type: "string" },
+            name_en: { type: "string" },
+            subject_he: { type: "string" },
+            subject_en: { type: "string" },
+            content_he: { type: "string" },
+            content_en: { type: "string" },
+            description_he: { type: "string" },
+            description_en: { type: "string" }
+          }
         }
-      };
+      });
 
-      return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      setFormData({
+        ...formData,
+        name_he: result.name_he,
+        name_en: result.name_en,
+        subject_he: result.subject_he,
+        subject_en: result.subject_en,
+        content_he: result.content_he,
+        content_en: result.content_en,
+        description_he: result.description_he,
+        description_en: result.description_en,
+        aiPrompt: ''
+      });
+
+      alert('התבנית נוצרה בהצלחה! בדוק את התוצאה ובצע התאמות במידת הצורך.');
+    } catch (error) {
+      console.error('Error generating template:', error);
+      alert('שגיאה ביצירת התבנית: ' + error.message);
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" dir="rtl">
         <DialogHeader>
           <DialogTitle>{template ? 'עריכת תבנית מייל' : 'תבנית מייל חדשה'}</DialogTitle>
@@ -3818,15 +3818,15 @@ ${textEn || 'אין תוכן'}
               <Button
                 type="button"
                 variant={previewLang === 'he' ? 'default' : 'outline'}
-                onClick={() => setPreviewLang('he')}
-              >
+                onClick={() => setPreviewLang('he')}>
+
                 🇮🇱 עברית
               </Button>
               <Button
                 type="button"
                 variant={previewLang === 'en' ? 'default' : 'outline'}
-                onClick={() => setPreviewLang('en')}
-              >
+                onClick={() => setPreviewLang('en')}>
+
                 🇬🇧 English
               </Button>
             </div>
@@ -3838,17 +3838,17 @@ ${textEn || 'אין תוכן'}
               </h3>
               <div className="border rounded-lg bg-white overflow-hidden shadow-lg">
                 <iframe
-                  srcDoc={(previewLang === 'he' ? formData.content_he : formData.content_en)
-                    .replace('{userName}', previewLang === 'he' ? 'ישראל ישראלי' : 'John Doe')
-                    .replace('{questionnaireUrl}', '#questionnaire')
-                    .replace('{reportUrl}', '#report')
-                    .replace('{surveyUrl}', '#survey')
-                    .replace('{couponCode}', 'DEMO50')
-                    .replace('{purchaseUrl}', '#purchase')
+                  srcDoc={(previewLang === 'he' ? formData.content_he : formData.content_en).
+                  replace('{userName}', previewLang === 'he' ? 'ישראל ישראלי' : 'John Doe').
+                  replace('{questionnaireUrl}', '#questionnaire').
+                  replace('{reportUrl}', '#report').
+                  replace('{surveyUrl}', '#survey').
+                  replace('{couponCode}', 'DEMO50').
+                  replace('{purchaseUrl}', '#purchase')
                   }
                   className="w-full h-[600px] border-0"
-                  title="Email Preview"
-                />
+                  title="Email Preview" />
+
               </div>
             </div>
           </TabsContent>
@@ -3859,11 +3859,11 @@ ${textEn || 'אין תוכן'}
             <div className="space-y-2">
               <Label>סוג תבנית</Label>
               <select
-                value={formData.template_type}
-                onChange={(e) => setFormData({...formData, template_type: e.target.value})}
-                className="w-full border rounded-md p-2 text-right"
-                dir="rtl"
-              >
+                    value={formData.template_type}
+                    onChange={(e) => setFormData({ ...formData, template_type: e.target.value })}
+                    className="w-full border rounded-md p-2 text-right"
+                    dir="rtl">
+
                 <option value="abandonment_incomplete">נטישה לפני סיום השאלון</option>
                 <option value="abandonment_reminder_96h">תזכורת 96 שעות</option>
                 <option value="abandonment_after_completion">נטישה אחרי סיום השאלון</option>
@@ -3879,11 +3879,11 @@ ${textEn || 'אין תוכן'}
             <div className="space-y-2">
               <Label>טריגר</Label>
               <select
-                value={formData.trigger_event}
-                onChange={(e) => setFormData({...formData, trigger_event: e.target.value})}
-                className="w-full border rounded-md p-2 text-right"
-                dir="rtl"
-              >
+                    value={formData.trigger_event}
+                    onChange={(e) => setFormData({ ...formData, trigger_event: e.target.value })}
+                    className="w-full border rounded-md p-2 text-right"
+                    dir="rtl">
+
                 <option value="manual">ידני בלבד</option>
                 <option value="on_navigation_away">בעת ניווט החוצה מהשאלון</option>
                 <option value="after_96_hours">אחרי 96 שעות</option>
@@ -3900,28 +3900,28 @@ ${textEn || 'אין תוכן'}
                 <Label className="font-semibold">🤖 יצירת תבנית באמצעות AI</Label>
               </div>
               <Textarea
-                placeholder="תאר במילים פשוטות מה המייל צריך לכלול... (לדוגמה: מייל המעודד משתמש לחזור ולהשלים את השאלון, עם טון חברי ומעודד)"
-                value={formData.aiPrompt || ''}
-                onChange={(e) => setFormData({...formData, aiPrompt: e.target.value})}
-                className="min-h-[80px] text-right mb-2"
-                dir="rtl"
-              />
+                    placeholder="תאר במילים פשוטות מה המייל צריך לכלול... (לדוגמה: מייל המעודד משתמש לחזור ולהשלים את השאלון, עם טון חברי ומעודד)"
+                    value={formData.aiPrompt || ''}
+                    onChange={(e) => setFormData({ ...formData, aiPrompt: e.target.value })}
+                    className="min-h-[80px] text-right mb-2"
+                    dir="rtl" />
+
               <Button
-                type="button"
-                onClick={() => handleGenerateWithAI()}
-                disabled={isGeneratingAI || !formData.aiPrompt}
-                className="w-full bg-blue-600 hover:bg-blue-700"
-              >
-                {isGeneratingAI ? (
-                  <>
+                    type="button"
+                    onClick={() => handleGenerateWithAI()}
+                    disabled={isGeneratingAI || !formData.aiPrompt}
+                    className="w-full bg-blue-600 hover:bg-blue-700">
+
+                {isGeneratingAI ?
+                    <>
                     <Loader2 className="w-4 h-4 ml-2 animate-spin" />
                     מייצר תבנית...
-                  </>
-                ) : (
-                  <>
+                  </> :
+
+                    <>
                     ✨ צור תבנית באמצעות AI
                   </>
-                )}
+                    }
               </Button>
             </div>
 
@@ -3929,34 +3929,34 @@ ${textEn || 'אין תוכן'}
               <div className="flex items-center gap-2 flex-row-reverse">
                 <Label>פעיל</Label>
                 <input
-                  type="checkbox"
-                  checked={formData.active}
-                  onChange={(e) => setFormData({...formData, active: e.target.checked})}
-                  className="w-4 h-4"
-                />
+                      type="checkbox"
+                      checked={formData.active}
+                      onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
+                      className="w-4 h-4" />
+
               </div>
 
               <div className="flex items-center gap-2 flex-row-reverse">
                 <Label>כולל קופון</Label>
                 <input
-                  type="checkbox"
-                  checked={formData.include_coupon}
-                  onChange={(e) => setFormData({...formData, include_coupon: e.target.checked})}
-                  className="w-4 h-4"
-                />
+                      type="checkbox"
+                      checked={formData.include_coupon}
+                      onChange={(e) => setFormData({ ...formData, include_coupon: e.target.checked })}
+                      className="w-4 h-4" />
+
               </div>
 
-              {formData.include_coupon && (
-                <div className="flex items-center gap-2 flex-row-reverse">
+              {formData.include_coupon &&
+                  <div className="flex items-center gap-2 flex-row-reverse">
                   <Label>סכום קופון (₪)</Label>
                   <Input
-                    type="number"
-                    value={formData.coupon_amount}
-                    onChange={(e) => setFormData({...formData, coupon_amount: parseInt(e.target.value)})}
-                    className="w-20 text-right"
-                  />
+                      type="number"
+                      value={formData.coupon_amount}
+                      onChange={(e) => setFormData({ ...formData, coupon_amount: parseInt(e.target.value) })}
+                      className="w-20 text-right" />
+
                 </div>
-              )}
+                  }
             </div>
           </div>
 
@@ -3965,19 +3965,19 @@ ${textEn || 'אין תוכן'}
               <h3 className="font-semibold text-right">תוכן המייל</h3>
               <div className="flex gap-2">
                 <Button
-                  type="button"
-                  size="sm"
-                  variant={contentMode === 'simple' ? 'default' : 'outline'}
-                  onClick={() => setContentMode('simple')}
-                >
+                      type="button"
+                      size="sm"
+                      variant={contentMode === 'simple' ? 'default' : 'outline'}
+                      onClick={() => setContentMode('simple')}>
+
                   ✍️ טקסט פשוט
                 </Button>
                 <Button
-                  type="button"
-                  size="sm"
-                  variant={contentMode === 'html' ? 'default' : 'outline'}
-                  onClick={() => setContentMode('html')}
-                >
+                      type="button"
+                      size="sm"
+                      variant={contentMode === 'html' ? 'default' : 'outline'}
+                      onClick={() => setContentMode('html')}>
+
                   💻 HTML
                 </Button>
               </div>
@@ -3987,65 +3987,65 @@ ${textEn || 'אין תוכן'}
               <div>
                 <Label>שם התבנית</Label>
                 <Input
-                  value={formData.name_he}
-                  onChange={(e) => setFormData({...formData, name_he: e.target.value})}
-                  placeholder="למשל: מייל עידוד להשלמת שאלון"
-                  className="text-right"
-                  dir="rtl"
-                />
+                      value={formData.name_he}
+                      onChange={(e) => setFormData({ ...formData, name_he: e.target.value })}
+                      placeholder="למשל: מייל עידוד להשלמת שאלון"
+                      className="text-right"
+                      dir="rtl" />
+
               </div>
 
               <div>
                 <Label>תיאור (אופציונלי)</Label>
                 <Input
-                  value={formData.description_he}
-                  onChange={(e) => setFormData({...formData, description_he: e.target.value})}
-                  placeholder="תיאור קצר של המייל"
-                  className="text-right"
-                  dir="rtl"
-                />
+                      value={formData.description_he}
+                      onChange={(e) => setFormData({ ...formData, description_he: e.target.value })}
+                      placeholder="תיאור קצר של המייל"
+                      className="text-right"
+                      dir="rtl" />
+
               </div>
 
               <div>
                 <Label>נושא המייל</Label>
                 <Input
-                  value={formData.subject_he}
-                  onChange={(e) => setFormData({...formData, subject_he: e.target.value})}
-                  placeholder="נושא המייל"
-                  className="text-right"
-                  dir="rtl"
-                />
+                      value={formData.subject_he}
+                      onChange={(e) => setFormData({ ...formData, subject_he: e.target.value })}
+                      placeholder="נושא המייל"
+                      className="text-right"
+                      dir="rtl" />
+
               </div>
 
-              {contentMode === 'simple' ? (
-                <div>
+              {contentMode === 'simple' ?
+                  <div>
                   <Label>תוכן המייל בעברית (טקסט פשוט)</Label>
                   <Textarea
-                    value={simpleContent.he}
-                    onChange={(e) => setSimpleContent({...simpleContent, he: e.target.value})}
-                    placeholder="כתוב את תוכן המייל בשפה רגילה... המערכת תמיר אותו אוטומטית לעיצוב מקצועי."
-                    className="min-h-[200px] text-right"
-                    dir="rtl"
-                  />
+                      value={simpleContent.he}
+                      onChange={(e) => setSimpleContent({ ...simpleContent, he: e.target.value })}
+                      placeholder="כתוב את תוכן המייל בשפה רגילה... המערכת תמיר אותו אוטומטית לעיצוב מקצועי."
+                      className="min-h-[200px] text-right"
+                      dir="rtl" />
+
                   <p className="text-xs text-gray-500 mt-1 text-right">
                     ניתן להשתמש במשתנים: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
                   </p>
-                </div>
-              ) : (
-                <div>
+                </div> :
+
+                  <div>
                   <Label>תוכן המייל (HTML)</Label>
                   <Textarea
-                    value={formData.content_he}
-                    onChange={(e) => setFormData({...formData, content_he: e.target.value})}
-                    placeholder="תוכן HTML של המייל..."
-                    className="min-h-[200px] font-mono text-sm text-right"
-                    dir="rtl"
-                  />
+                      value={formData.content_he}
+                      onChange={(e) => setFormData({ ...formData, content_he: e.target.value })}
+                      placeholder="תוכן HTML של המייל..."
+                      className="min-h-[200px] font-mono text-sm text-right"
+                      dir="rtl" />
+
                   <p className="text-xs text-gray-500 mt-1 text-right">
                     ניתן להשתמש במשתנים: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
                   </p>
                 </div>
-              )}
+                  }
             </div>
           </div>
 
@@ -4056,90 +4056,90 @@ ${textEn || 'אין תוכן'}
               <div>
                 <Label>Template Name</Label>
                 <Input
-                  value={formData.name_en}
-                  onChange={(e) => setFormData({...formData, name_en: e.target.value})}
-                  placeholder="e.g.: Questionnaire Completion Encouragement"
-                  className="text-left"
-                  dir="ltr"
-                />
+                      value={formData.name_en}
+                      onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
+                      placeholder="e.g.: Questionnaire Completion Encouragement"
+                      className="text-left"
+                      dir="ltr" />
+
               </div>
 
               <div>
                 <Label>Description (optional)</Label>
                 <Input
-                  value={formData.description_en}
-                  onChange={(e) => setFormData({...formData, description_en: e.target.value})}
-                  placeholder="Brief description"
-                  className="text-left"
-                  dir="ltr"
-                />
+                      value={formData.description_en}
+                      onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+                      placeholder="Brief description"
+                      className="text-left"
+                      dir="ltr" />
+
               </div>
 
               <div>
                 <Label>Email Subject</Label>
                 <Input
-                  value={formData.subject_en}
-                  onChange={(e) => setFormData({...formData, subject_en: e.target.value})}
-                  placeholder="Email subject"
-                  className="text-left"
-                  dir="ltr"
-                />
+                      value={formData.subject_en}
+                      onChange={(e) => setFormData({ ...formData, subject_en: e.target.value })}
+                      placeholder="Email subject"
+                      className="text-left"
+                      dir="ltr" />
+
               </div>
 
-              {contentMode === 'simple' ? (
-                <div>
+              {contentMode === 'simple' ?
+                  <div>
                   <Label>Email Content (Plain Text)</Label>
                   <Textarea
-                    value={simpleContent.en}
-                    onChange={(e) => setSimpleContent({...simpleContent, en: e.target.value})}
-                    placeholder="Write your email content in plain language... The system will convert it to professional HTML."
-                    className="min-h-[200px] text-left"
-                    dir="ltr"
-                  />
+                      value={simpleContent.en}
+                      onChange={(e) => setSimpleContent({ ...simpleContent, en: e.target.value })}
+                      placeholder="Write your email content in plain language... The system will convert it to professional HTML."
+                      className="min-h-[200px] text-left"
+                      dir="ltr" />
+
                   <p className="text-xs text-gray-500 mt-1 text-left">
                     Available variables: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
                   </p>
-                </div>
-              ) : (
-                <div>
+                </div> :
+
+                  <div>
                   <Label>Email Content (HTML)</Label>
                   <Textarea
-                    value={formData.content_en}
-                    onChange={(e) => setFormData({...formData, content_en: e.target.value})}
-                    placeholder="HTML email content..."
-                    className="min-h-[200px] font-mono text-sm text-left"
-                    dir="ltr"
-                  />
+                      value={formData.content_en}
+                      onChange={(e) => setFormData({ ...formData, content_en: e.target.value })}
+                      placeholder="HTML email content..."
+                      className="min-h-[200px] font-mono text-sm text-left"
+                      dir="ltr" />
+
                   <p className="text-xs text-gray-500 mt-1 text-left">
                     Available variables: {'{userName}'}, {'{surveyUrl}'}, {'{questionnaireUrl}'}, {'{couponCode}'}
                   </p>
                 </div>
-              )}
+                  }
             </div>
             </div>
 
             <div className="flex gap-3 pt-4 border-t flex-row-reverse">
             <Button
-              type="submit"
-              className="flex-1 bg-blue-600 hover:bg-blue-700"
-              disabled={isConvertingToHtml}
-            >
-              {isConvertingToHtml ? (
-                <>
+                  type="submit"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  disabled={isConvertingToHtml}>
+
+              {isConvertingToHtml ?
+                  <>
                   <Loader2 className="w-4 h-4 ml-2 animate-spin" />
                   ממיר ושומר...
-                </>
-              ) : (
-                'שמור תבנית'
-              )}
+                </> :
+
+                  'שמור תבנית'
+                  }
             </Button>
             <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1"
-              disabled={isConvertingToHtml}
-            >
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  className="flex-1"
+                  disabled={isConvertingToHtml}>
+
               ביטול
             </Button>
             </div>
@@ -4147,6 +4147,6 @@ ${textEn || 'אין תוכן'}
             </TabsContent>
             </Tabs>
             </DialogContent>
-            </Dialog>
-      );
-      }
+            </Dialog>);
+
+}
