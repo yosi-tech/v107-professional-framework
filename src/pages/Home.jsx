@@ -630,66 +630,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Video Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-50 relative overflow-hidden">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}>
-              <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'ראה את השאלון בפעולה' : 'See the Questionnaire in Action'}
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {language === 'he' ? 
-                  'גלה כיצד השאלון שלנו יכול לעזור לך להבין את היכולות המקצועיות שלך' : 
-                  'Discover how our questionnaire can help you understand your professional capabilities'
-                }
-              </p>
-            </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative rounded-3xl overflow-hidden shadow-2xl">
-            <div className="relative pb-[56.25%]">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/ukwW8_NJ3hw"
-                title="V107 Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center mt-12">
-            <Link to={createPageUrl("Questionnaire")}>
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xl px-12 py-7 rounded-2xl shadow-xl font-bold group">
-                <span className="flex items-center gap-3">
-                  <Play className="w-6 h-6" />
-                  {language === 'he' ? 'מוכן להתחיל? מלא את השאלון!' : 'Ready to Start? Fill the Questionnaire!'}
-                  {React.createElement(currentArrowIcon, { className: "w-6 h-6 group-hover:translate-x-1 transition-transform" })}
-                </span>
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Social Proof - Testimonials */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -786,6 +726,66 @@ export default function Home() {
               <p className="text-gray-500">{language === 'he' ? 'אין עדויות להצגה' : 'No testimonials available'}</p>
             </div>
           }
+        </div>
+      </section>
+
+      {/* Video Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-50 relative overflow-hidden">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}>
+              <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
+                {language === 'he' ? 'ראה את השאלון בפעולה' : 'See the Questionnaire in Action'}
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                {language === 'he' ? 
+                  'גלה כיצד השאלון שלנו יכול לעזור לך להבין את היכולות המקצועיות שלך' : 
+                  'Discover how our questionnaire can help you understand your professional capabilities'
+                }
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative pb-[56.25%]">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/ukwW8_NJ3hw"
+                title="V107 Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-center mt-12">
+            <Link to={createPageUrl("Questionnaire")}>
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xl px-12 py-7 rounded-2xl shadow-xl font-bold group">
+                <span className="flex items-center gap-3">
+                  <Play className="w-6 h-6" />
+                  {language === 'he' ? 'מוכן להתחיל? מלא את השאלון!' : 'Ready to Start? Fill the Questionnaire!'}
+                  {React.createElement(currentArrowIcon, { className: "w-6 h-6 group-hover:translate-x-1 transition-transform" })}
+                </span>
+              </Button>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
