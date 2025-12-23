@@ -134,7 +134,6 @@ export default function Completion() {
   const discountMultiplier = discountParam === '10' ? 0.9 : 1;
 
   const productCards = products
-    .sort((a, b) => a.order - b.order)
     .map((product) => {
       const price = Math.round(product.price * discountMultiplier);
       
@@ -142,18 +141,23 @@ export default function Completion() {
       let title = product.name_he;
       let description = product.description_he || "";
       let buttonText = `רכוש ${product.name_he}`;
-      let recommended = product.featured;
+      let recommended = false;
+      let sortOrder = 2;
       
       if (product.product_type === 'full_report' && product.name_he.includes('מואץ')) {
         icon = Zap;
         description = `${description}${discountParam ? ' מחיר מיוחד!' : ''}`;
         buttonText = 'הפק דו"ח מואץ';
-      } else if (product.product_type === 'full_report') {
+        sortOrder = 3; // שמאל
+      } else if (product.product_type === 'full_report' && !product.name_he.includes('מואץ')) {
         icon = Star;
         description = `${description}${discountParam ? ' מחיר מיוחד!' : ''}`;
         buttonText = 'הפק דו"ח מלא';
+        recommended = true; // המומלץ
+        sortOrder = 2; // אמצע
       } else if (product.product_type === 'answers_download') {
         buttonText = 'רכוש תשובות בלבד';
+        sortOrder = 1; // ימין
       }
       
       const productParam = product.product_type === 'answers_download' ? 'answers_download' : 'full_report';
@@ -166,9 +170,11 @@ export default function Completion() {
         description,
         url: createPageUrl(`Payment?product=${productParam}&price=${price}${isExpress ? '&express=true' : ''}${discountParam ? '&discount=10' : ''}&responseId=${responseId}`),
         buttonText,
-        recommended
+        recommended,
+        sortOrder
       };
-    });
+    })
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 
 
   if (isLoadingProducts) {
