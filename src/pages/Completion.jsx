@@ -83,7 +83,10 @@ export default function Completion() {
     const fetchProducts = async () => {
       try {
         const data = await base44.entities.Product.filter({ active: true });
-        setProducts(data);
+        const completionProducts = data.filter(p => 
+          p.product_type === 'answers_download' || p.product_type === 'full_report'
+        );
+        setProducts(completionProducts);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
