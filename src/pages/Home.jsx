@@ -178,15 +178,12 @@ export default function Home() {
     <div className="min-h-screen bg-white overflow-hidden">
       {/* Hero Section - Modern & Dynamic */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Video */}
+        {/* Background Image */}
         <div className="absolute inset-0">
-          <iframe
-            src="https://www.youtube.com/embed/ukwW8_NJ3hw?autoplay=1&mute=1&loop=1&playlist=ukwW8_NJ3hw&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1"
-            className="absolute top-1/2 left-1/2 w-[177.77777778vh] h-[56.25vw] min-h-screen min-w-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-            allow="autoplay; encrypted-media"
-            frameBorder="0"
-            title="Background Video"
-          />
+          <img
+            src={getContent('hero_background_image', 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2574&auto=format&fit=crop')}
+            alt="Entrepreneurs collaborating"
+            className="w-full h-full object-cover" />
 
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-blue-900/90 to-slate-800/95"></div>
         </div>
