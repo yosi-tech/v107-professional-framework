@@ -8,7 +8,6 @@ import BoosterRegistration from './pages/BoosterRegistration';
 import BoosterThankYou from './pages/BoosterThankYou';
 import Completion from './pages/Completion';
 import EmailTemplates from './pages/EmailTemplates';
-import Home from './pages/Home';
 import MyAccount from './pages/MyAccount';
 import Payment from './pages/Payment';
 import Questionnaire from './pages/Questionnaire';
@@ -17,6 +16,7 @@ import ReportView from './pages/ReportView';
 import Survey from './pages/Survey';
 import TermsOfService from './pages/TermsOfService';
 import ThankYou from './pages/ThankYou';
+import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
@@ -31,7 +31,6 @@ export const PAGES = {
     "BoosterThankYou": BoosterThankYou,
     "Completion": Completion,
     "EmailTemplates": EmailTemplates,
-    "Home": Home,
     "MyAccount": MyAccount,
     "Payment": Payment,
     "Questionnaire": Questionnaire,
@@ -40,6 +39,7 @@ export const PAGES = {
     "Survey": Survey,
     "TermsOfService": TermsOfService,
     "ThankYou": ThankYou,
+    "Home": Home,
 }
 
 export const pagesConfig = {
