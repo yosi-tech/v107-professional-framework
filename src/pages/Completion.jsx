@@ -65,6 +65,8 @@ export default function Completion() {
   const [user, setUser] = useState(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isReportInfoOpen, setIsReportInfoOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -75,6 +77,20 @@ export default function Completion() {
       }
     };
     fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await base44.entities.Product.filter({ active: true });
+        setProducts(data);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+    fetchProducts();
   }, []);
 
   const handleNoPurchase = async () => {
@@ -112,43 +128,53 @@ export default function Completion() {
     }
   };
 
-  const baseFullReportPrice = 299;
-  const baseExpressReportPrice = 378;
-
   const discountMultiplier = discountParam === '10' ? 0.9 : 1;
 
-  const fullReportPrice = Math.round(baseFullReportPrice * discountMultiplier);
-  const expressReportPrice = Math.round(baseExpressReportPrice * discountMultiplier);
+  const productCards = products
+    .sort((a, b) => a.order - b.order)
+    .map((product) => {
+      const price = Math.round(product.price * discountMultiplier);
+      
+      let icon = FileText;
+      let title = product.name_he;
+      let description = product.description_he || "";
+      let buttonText = `רכוש ${product.name_he}`;
+      let recommended = product.featured;
+      
+      if (product.product_type === 'full_report' && product.name_he.includes('מואץ')) {
+        icon = Zap;
+        description = `${description}${discountParam ? ' מחיר מיוחד!' : ''}`;
+        buttonText = 'הפק דו"ח מואץ';
+      } else if (product.product_type === 'full_report') {
+        icon = Star;
+        description = `${description}${discountParam ? ' מחיר מיוחד!' : ''}`;
+        buttonText = 'הפק דו"ח מלא';
+      } else if (product.product_type === 'answers_download') {
+        buttonText = 'רכוש תשובות בלבד';
+      }
+      
+      const productParam = product.product_type === 'answers_download' ? 'answers_download' : 'full_report';
+      const isExpress = product.name_he.includes('מואץ');
+      
+      return {
+        title,
+        price: `${price}₪`,
+        icon,
+        description,
+        url: createPageUrl(`Payment?product=${productParam}&price=${price}${isExpress ? '&express=true' : ''}${discountParam ? '&discount=10' : ''}&responseId=${responseId}`),
+        buttonText,
+        recommended
+      };
+    });
 
-  const products = [
-  {
-    title: "תשובות בלבד",
-    price: "59₪",
-    icon: FileText,
-    description: "יצוא תשובות הטופס למייל, ללא ניתוח. אפשר לשדרג לדו״ח מלא בהמשך ולקבל קיזוז מלא.",
-    url: createPageUrl(`Payment?product=answers_download&price=59&responseId=${responseId}`),
-    buttonText: "רכוש תשובות בלבד",
-    recommended: false
-  },
-  {
-    title: "דו״ח מלא",
-    price: `${fullReportPrice}₪`,
-    icon: Star,
-    description: `דו״ח 4 עמודים עם ניתוח מלא, גרפים והשוואות. אספקה עד 7 ימי עבודה.${discountParam ? ' מחיר מיוחד!' : ''}`,
-    url: createPageUrl(`Payment?product=full_report&price=${fullReportPrice}${discountParam ? '&discount=10' : ''}&responseId=${responseId}`),
-    buttonText: `הפק דו"ח מלא`,
-    recommended: true
-  },
-  {
-    title: "דו״ח מואץ",
-    price: `${expressReportPrice}₪`,
-    icon: Zap,
-    description: `כל מה שבדו״ח המלא, עם אספקה תוך 3 ימי עבודה בלבד.${discountParam ? ' מחיר מיוחד!' : ''}`,
-    url: createPageUrl(`Payment?product=full_report&price=${expressReportPrice}&express=true${discountParam ? '&discount=10' : ''}&responseId=${responseId}`),
-    buttonText: `הפק דו"ח מואץ`,
-    recommended: false
-  }];
 
+  if (isLoadingProducts) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -170,7 +196,7 @@ export default function Completion() {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8 mb-12">
-                    {products.map((product) =>
+                    {productCards.map((product) =>
           <Card
             key={product.title}
             className={`flex flex-col text-center transition-all duration-300 hover:shadow-2xl ${
@@ -244,10 +270,10 @@ export default function Completion() {
                     </p>
                     <p className="mb-2 text-gray-700 font-medium">פירוט תמחור:</p>
                     <ul className="list-disc list-inside mx-auto max-w-sm text-gray-600">
-                        {products.map((product) =>
+                        {productCards.map((product) =>
             <li key={product.title} className="mb-1 text-right">
                                 {product.title}: <strong>{product.price}</strong>
-                                {product.title === "דו״ח מואץ" && " (כולל תוספת לאספקה מהירה)"}
+                                {product.title.includes("מואץ") && " (כולל תוספת לאספקה מהירה)"}
                                 {product.recommended && " (מומלץ)"}
                                 {product.recommended && discountParam && " (מחיר לאחר הנחה)"}
                             </li>
