@@ -58,6 +58,9 @@ export default function ContentManager({ contentItems, onUpdate }) {
     order: 0
   });
 
+  // Coupons state
+  const [coupons, setCoupons] = useState([]);
+
   const pages = [
     { value: 'home', label: 'דף הבית', icon: Home },
     { value: 'about', label: 'אודות', icon: Info },
@@ -66,16 +69,18 @@ export default function ContentManager({ contentItems, onUpdate }) {
     { value: 'terms', label: 'תנאי שימוש', icon: File }
   ];
 
-  // Fetch articles and products on component mount
+  // Fetch articles, products and coupons on component mount
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const [articlesData, productsData] = await Promise.all([
+        const [articlesData, productsData, couponsData] = await Promise.all([
           base44.entities.Article.list('-created_date'),
-          base44.entities.Product.list('order')
+          base44.entities.Product.list('order'),
+          base44.entities.Coupon.list('-created_date')
         ]);
         setArticles(articlesData);
         setProducts(productsData);
+        setCoupons(couponsData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -968,7 +973,13 @@ export default function ContentManager({ contentItems, onUpdate }) {
                                 <Badge variant="outline" className="text-green-600">ניתן להשתמש בקופונים</Badge>
                               )}
                               {product.allowed_coupon_codes?.length > 0 && (
-                                <Badge variant="outline">קופונים ספציפיים: {product.allowed_coupon_codes.join(', ')}</Badge>
+                                <Badge variant="outline">
+                                  קופונים מותרים: {product.allowed_coupon_codes.map(code => {
+                                    const coupon = coupons.find(c => c.code === code);
+                                    const discount = coupon?.discount_amount ? `${coupon.discount_amount}₪` : coupon?.discount_percentage ? `${coupon.discount_percentage}%` : '';
+                                    return discount ? `${code} (${discount})` : code;
+                                  }).join(', ')}
+                                </Badge>
                               )}
                             </div>
                           </div>
