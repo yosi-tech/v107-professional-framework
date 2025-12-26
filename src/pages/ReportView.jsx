@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -69,6 +70,7 @@ const TEXTS = {
 
 
 export default function ReportView() {
+  const navigate = useNavigate();
   const [report, setReport] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -186,12 +188,6 @@ export default function ReportView() {
 
   const prevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handleGoBack = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    window.history.back();
   };
 
   if (isLoading) {
@@ -357,7 +353,7 @@ export default function ReportView() {
                 </div>
               </div>
               <div className="flex gap-2 no-print">
-                <Button onClick={handleGoBack} variant="outline">
+                <Button onClick={() => navigate(-1)} variant="outline">
                   <ArrowRight className="w-4 h-4 ml-2" />
                   {currentLanguage === 'he' ? 'חזור' : 'Back'}
                 </Button>
