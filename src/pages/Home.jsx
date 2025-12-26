@@ -316,19 +316,21 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Video Section */}
-      <section className="w-full relative overflow-hidden">
-        <div className="relative pb-[56.25%]">
-          <iframe
-            className="absolute top-0 left-0 w-full h-full"
-            src="https://www.youtube.com/embed/ukwW8_NJ3hw"
-            title="V107 Video"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-      </section>
+      {/* Video Section - Only for Hebrew */}
+      {language === 'he' && (
+        <section className="w-full relative overflow-hidden">
+          <div className="relative pb-[56.25%]">
+            <iframe
+              className="absolute top-0 left-0 w-full h-full"
+              src="https://www.youtube.com/embed/ukwW8_NJ3hw"
+              title="V107 Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </section>
+      )}
 
       {/* How It Works - Clean & Simple */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
