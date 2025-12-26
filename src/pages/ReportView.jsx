@@ -188,6 +188,12 @@ export default function ReportView() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
+  const handleGoBack = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.history.back();
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -351,7 +357,7 @@ export default function ReportView() {
                 </div>
               </div>
               <div className="flex gap-2 no-print">
-                <Button onClick={() => window.history.back()} variant="outline">
+                <Button onClick={handleGoBack} variant="outline">
                   <ArrowRight className="w-4 h-4 ml-2" />
                   {currentLanguage === 'he' ? 'חזור' : 'Back'}
                 </Button>
