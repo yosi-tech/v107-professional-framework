@@ -31,7 +31,8 @@ import {
   TrendingUp,
   Rocket,
   MessageSquare,
-  Edit3 } from
+  Edit3,
+  Link2 } from
 "lucide-react";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
@@ -1296,6 +1297,16 @@ export default function AdminReports() {
                                       <Eye className="w-4 h-4" />
                                       <span>צפייה בדו"ח</span>
                                     </Link>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem 
+                                    onClick={() => {
+                                      const reportUrl = `${window.location.origin}${createPageUrl(`ReportView?reportId=${existingReport.id}`)}`;
+                                      navigator.clipboard.writeText(reportUrl);
+                                      alert('הלינק לדוח הועתק ללוח');
+                                    }}
+                                    className="flex flex-row-reverse justify-between">
+                                    <Link2 className="w-4 h-4" />
+                                    <span>לינק לדוח</span>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem asChild>
                                     <Link to={createPageUrl(`QuestionnaireExport?responseId=${response.id}`)} className="flex flex-row-reverse justify-between">
