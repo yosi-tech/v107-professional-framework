@@ -98,6 +98,9 @@ export default function AdminReports() {
     language: 'he'
   });
   const [isSimulating, setIsSimulating] = useState(false);
+  const [boosterRegistrationDialog, setBoosterRegistrationDialog] = useState(false);
+  const [boosterRegForm, setBoosterRegForm] = useState({ reportId: '', userEmail: '' });
+  const [isRegisteringBooster, setIsRegisteringBooster] = useState(false);
   const [deletingTemplateId, setDeletingTemplateId] = useState(null);
   const [activeTab, setActiveTab] = useState('reports');
   const [filters, setFilters] = useState({
@@ -954,6 +957,41 @@ export default function AdminReports() {
       alert(`שגיאה בדימוי הרכישה: ${error.message}`);
     } finally {
       setIsSimulating(false);
+    }
+  };
+
+  const handleManualBoosterRegistration = async () => {
+    if (!boosterRegForm.reportId) {
+      alert('יש לבחור דוח');
+      return;
+    }
+
+    setIsRegisteringBooster(true);
+    try {
+      const report = reports.find(r => r.id === boosterRegForm.reportId);
+      if (!report) {
+        alert('דוח לא נמצא');
+        return;
+      }
+
+      const result = await base44.functions.invoke('manualBoosterRegistration', {
+        userEmail: report.user_email,
+        reportId: boosterRegForm.reportId
+      });
+
+      if (result.data.success) {
+        alert(`הרישום בוצע בהצלחה! משימה ראשונה נשלחה ל-${report.user_email}`);
+        setBoosterRegistrationDialog(false);
+        setBoosterRegForm({ reportId: '', userEmail: '' });
+        await loadData();
+      } else {
+        alert('שגיאה: ' + (result.data.error || 'לא ידוע'));
+      }
+    } catch (error) {
+      console.error('Error registering to booster:', error);
+      alert(`שגיאה ברישום: ${error.message}`);
+    } finally {
+      setIsRegisteringBooster(false);
     }
   };
 
@@ -3055,11 +3093,20 @@ export default function AdminReports() {
 
           <TabsContent value="boosters">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-right">מנויי בוסטר</CardTitle>
-                <p className="text-gray-600 text-sm mt-1 text-right">
-                  ניהול הרשמות לתוכניות הבוסטר ל-7 ימים
-                </p>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div className="text-right">
+                  <CardTitle className="text-right">מנויי בוסטר</CardTitle>
+                  <p className="text-gray-600 text-sm mt-1 text-right">
+                    ניהול הרשמות לתוכניות הבוסטר ל-30 ימים
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setBoosterRegistrationDialog(true)}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center gap-2 flex-row-reverse"
+                >
+                  <span>רישום ידני לבוסטר</span>
+                  <Rocket className="w-4 h-4" />
+                </Button>
               </CardHeader>
               <CardContent>
                 {boosterSubscriptions.length === 0 ?
@@ -3601,6 +3648,94 @@ export default function AdminReports() {
             alert('שגיאה בשמירת התבנית');
           }
         }} />
+
+      <Dialog open={boosterRegistrationDialog} onOpenChange={setBoosterRegistrationDialog}>
+        <DialogContent className="sm:max-w-lg" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>רישום ידני לתוכנית בוסטר</DialogTitle>
+            <DialogDescription>
+              בחר דוח כדי לרשום את המשתמש לתוכנית הבוסטר. המייל הראשון יישלח מיד!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label className="text-right block mb-2">בחר דוח</Label>
+              <select
+                value={boosterRegForm.reportId}
+                onChange={(e) => {
+                  const report = reports.find(r => r.id === e.target.value);
+                  setBoosterRegForm({ 
+                    reportId: e.target.value, 
+                    userEmail: report?.user_email || '' 
+                  });
+                }}
+                className="w-full border border-gray-300 rounded-md p-2 text-right"
+                dir="rtl"
+              >
+                <option value="">-- בחר דוח --</option>
+                {reports.map((report) => (
+                  <option key={report.id} value={report.id}>
+                    {report.user_name} ({report.user_email}) - {report.report_id}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 mt-1 text-right">
+                רק דוחות עם מסלול מומלץ יכולים להירשם
+              </p>
+            </div>
+
+            {boosterRegForm.reportId && (() => {
+              const selectedReport = reports.find(r => r.id === boosterRegForm.reportId);
+              return selectedReport && (
+                <div className="bg-blue-50 p-4 rounded-lg text-sm text-right space-y-2">
+                  <p><span className="font-semibold">שם:</span> {selectedReport.user_name}</p>
+                  <p><span className="font-semibold">אימייל:</span> {selectedReport.user_email}</p>
+                  <p><span className="font-semibold">מסלול מומלץ:</span> {selectedReport.recommended_booster_track || 'לא הוגדר'}</p>
+                  <p><span className="font-semibold">שפה:</span> {selectedReport.language === 'he' ? 'עברית' : 'English'}</p>
+                </div>
+              );
+            })()}
+
+            <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 text-sm text-amber-900 text-right">
+              <p className="font-semibold mb-2">⚡ מה יקרה:</p>
+              <ul className="list-disc pr-5 space-y-1">
+                <li>יווצר מנוי בוסטר חדש למשתמש</li>
+                <li>משימה יומית ראשונה תישלח <strong>מיד</strong> למייל</li>
+                <li>מחר ובימים הבאים ישלחו משימות נוספות אוטומטית</li>
+                <li>ביום 7 יישלח שאלון והצעה להמשך</li>
+              </ul>
+            </div>
+
+            <div className="flex gap-3 pt-4 flex-row-reverse">
+              <Button
+                onClick={handleManualBoosterRegistration}
+                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center gap-2 justify-center"
+                disabled={isRegisteringBooster || !boosterRegForm.reportId}
+              >
+                {isRegisteringBooster ? (
+                  <>
+                    <span>רושם...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    <span>רשום לבוסטר ושלח מייל ראשון</span>
+                    <Rocket className="w-4 h-4" />
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={() => setBoosterRegistrationDialog(false)}
+                variant="outline"
+                className="flex-1"
+                disabled={isRegisteringBooster}
+              >
+                ביטול
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       </div>);
 
