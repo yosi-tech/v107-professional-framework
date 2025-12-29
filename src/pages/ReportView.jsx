@@ -280,56 +280,85 @@ export default function ReportView() {
             print-color-adjust: exact; 
             -webkit-print-color-adjust: exact;
           }
-          
+
           header, footer, nav { 
             display: none !important; 
           }
-          
+
           .no-print { 
             display: none !important; 
           }
-          
+
           [class*="ChatBot"], [class*="chat"] {
             display: none !important;
           }
-          
+
           body, html {
             margin: 0 !important;
             padding: 0 !important;
           }
-          
+
           .report-container {
             margin: 0 !important;
             padding: 1cm !important;
             max-width: 100% !important;
           }
-          
+
           .print-break { 
             page-break-after: always; 
+            break-after: always;
           }
-          
+
           .print-avoid-break { 
             page-break-inside: avoid; 
+            break-inside: avoid;
           }
-          
+
           @page { 
             margin: 1.5cm;
             size: A4;
           }
-          
-          .card {
+
+          /* Prevent cards from breaking */
+          .card, [class*="Card"], [class*="bg-gradient"] {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
             box-shadow: none !important;
             border: 1px solid #ddd !important;
           }
-          
+
+          /* Add page breaks between major sections */
+          .mb-8:not(:first-child) {
+            page-break-before: auto;
+            break-before: auto;
+          }
+
+          /* Ensure content doesn't overflow */
+          * {
+            max-width: 100% !important;
+            overflow: visible !important;
+          }
+
+          /* Keep colors */
           .bg-green-500, .bg-orange-500, .bg-blue-500, .bg-amber-500,
           .bg-red-500, .bg-yellow-500, .bg-purple-500,
-          .bg-green-100, .bg-yellow-100, .bg-red-100, .bg-blue-100, .bg-purple-50, .bg-green-50, .bg-amber-50 {
+          .bg-green-100, .bg-yellow-100, .bg-red-100, .bg-blue-100, 
+          .bg-purple-50, .bg-green-50, .bg-amber-50,
+          .bg-gradient-to-br, .bg-gradient-to-r {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
+
+          /* Fix padding and spacing for print */
+          .p-8, .p-6, .p-12 {
+            padding: 1rem !important;
+          }
+
+          .space-y-8 > * + * {
+            margin-top: 1rem !important;
+          }
         }
-        
+
         .report-container {
           max-width: 1200px;
           margin: 0 auto;
