@@ -94,17 +94,15 @@ export default function ReportView() {
     let currentUser = null;
     
     try {
-      // Get current user - MUST be authenticated to view report
+      // Try to get current user (optional)
       try {
         currentUser = await base44.auth.me();
         setUser(currentUser);
         userIsAdmin = (currentUser?.role === 'admin');
         setIsAdmin(userIsAdmin);
       } catch (e) {
-        console.log("User not authenticated - redirecting to login");
-        // Redirect to login if not authenticated
-        base44.auth.redirectToLogin(window.location.href);
-        return;
+        // User not authenticated - continue anyway
+        console.log("User not authenticated - viewing report without user context");
       }
 
       const urlParams = new URLSearchParams(window.location.search);
@@ -117,26 +115,21 @@ export default function ReportView() {
       }
 
       console.log("Fetching report with ID:", reportId);
-      console.log("Current user email:", currentUser.email);
       
-      // Fetch reports - RLS will automatically filter by user_email or admin role
+      // Fetch report by ID directly
       let loadedReport;
       try {
         const allReports = await base44.entities.GeneratedReport.list('-created_date');
-        console.log(`User can access ${allReports.length} reports`);
-        
         loadedReport = allReports.find(r => r.id === reportId);
         
         if (!loadedReport) {
-          console.error(`Report not found or access denied. ID: ${reportId}`);
-          console.log("User email:", currentUser.email);
+          console.error(`Report not found. ID: ${reportId}`);
           setReport(null);
           setIsLoading(false);
           return;
         }
         
         console.log("Report loaded successfully:", loadedReport.report_id);
-        console.log("Report user_email:", loadedReport.user_email);
       } catch (e) {
         console.error("Error fetching reports:", e);
         setReport(null);
