@@ -239,8 +239,8 @@ Deno.serve(async (req) => {
           continue;
         }
 
-        // בדיקה אם ביום 8 - שלח מייל למעבר לתשלום
-        if (currentDay === 8 && !subscription.upgraded_to_paid) {
+        // בדיקה אם ביום 7 - שלח שאלון שביעות רצון והצעת מכירה
+        if (currentDay === 7) {
           const continuationUrl = `${req.headers.get('origin')}/boostercontinuation`;
           const subject = language === 'he' 
             ? '🎉 סיימת את 7 הימים! בואו נמשיך את המסע'
@@ -347,8 +347,8 @@ Deno.serve(async (req) => {
           continue;
         }
 
-        // בדיקה אם ביום 9+ ולא שילם - דלג
-        if (currentDay > 8 && !subscription.upgraded_to_paid) {
+        // בדיקה אם ביום 8+ ולא שילם - דלג
+        if (currentDay > 7 && !subscription.upgraded_to_paid) {
           console.log(`Skipping ${subscription.user_email} - day ${currentDay} but not paid`);
           continue;
         }
