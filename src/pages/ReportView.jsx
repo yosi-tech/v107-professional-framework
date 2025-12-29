@@ -410,10 +410,12 @@ export default function ReportView() {
                   <ArrowRight className="w-4 h-4 ml-2" />
                   {currentLanguage === 'he' ? 'חזור' : 'Back'}
                 </Button>
-                <Button onClick={handlePrintPDF} variant="outline">
-                  <Download className="w-4 h-4 ml-2" />
-                  {getText("exportPdf")}
-                </Button>
+                {isAdmin && (
+                  <Button onClick={handlePrintPDF} variant="outline">
+                    <Download className="w-4 h-4 ml-2" />
+                    {getText("exportPdf")}
+                  </Button>
+                )}
               </div>
             </div>
           </CardHeader>
