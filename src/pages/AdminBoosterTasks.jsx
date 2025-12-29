@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Save, Edit2, CheckCircle, Clock, Send } from "lucide-react";
+import { Loader2, Save, Edit2, CheckCircle, Clock, Send, Sparkles, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { generateTasksForSubscription } from "@/functions/generateTasksForSubscription";
 
 export default function AdminBoosterTasks() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function AdminBoosterTasks() {
   const [editingTask, setEditingTask] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingTasks, setIsGeneratingTasks] = useState(false);
 
   useEffect(() => {
     loadSubscriptions();
@@ -110,6 +112,33 @@ export default function AdminBoosterTasks() {
     }
   };
 
+  const handleGenerateTasks = async () => {
+    if (!selectedSubscription) return;
+    
+    if (!window.confirm('האם ליצור 30 משימות חדשות למנוי זה? (פעולה זו תיקח כ-30 שניות)')) {
+      return;
+    }
+    
+    try {
+      setIsGeneratingTasks(true);
+      const result = await generateTasksForSubscription({
+        subscriptionId: selectedSubscription.id
+      });
+      
+      if (result.data.success) {
+        alert(`נוצרו ${result.data.tasksCreated} משימות בהצלחה!`);
+        await loadTasks(selectedSubscription.id);
+      } else {
+        alert('שגיאה: ' + (result.data.error || 'לא ידוע'));
+      }
+    } catch (error) {
+      console.error('Error generating tasks:', error);
+      alert('שגיאה ביצירת המשימות: ' + error.message);
+    } finally {
+      setIsGeneratingTasks(false);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const config = {
       pending: { color: 'bg-yellow-100 text-yellow-800', icon: Clock, label: 'ממתין' },
@@ -174,7 +203,7 @@ export default function AdminBoosterTasks() {
                 <CardTitle>
                   משימות עבור {selectedSubscription.user_name}
                   <span className="text-sm text-gray-500 mr-2">
-                    (30 משימות)
+                    ({tasks.length} משימות)
                   </span>
                 </CardTitle>
               </CardHeader>
@@ -182,6 +211,29 @@ export default function AdminBoosterTasks() {
                 {isLoading ? (
                   <div className="flex justify-center py-12">
                     <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                  </div>
+                ) : tasks.length === 0 ? (
+                  <div className="text-center py-12">
+                    <AlertCircle className="w-16 h-16 text-orange-500 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">אין משימות למנוי זה</h3>
+                    <p className="text-gray-600 mb-6">המשימות לא נוצרו אוטומטית. ניתן ליצור אותן עכשיו.</p>
+                    <Button
+                      onClick={handleGenerateTasks}
+                      disabled={isGeneratingTasks}
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    >
+                      {isGeneratingTasks ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                          יוצר 30 משימות...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 ml-2" />
+                          צור 30 משימות באמצעות AI
+                        </>
+                      )}
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-[600px] overflow-y-auto">
