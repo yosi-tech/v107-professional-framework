@@ -155,8 +155,14 @@ export default function ReportView() {
     }
   };
 
+  const [isPrinting, setIsPrinting] = useState(false);
+
   const handlePrintPDF = () => {
-    window.print();
+    setIsPrinting(true);
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => setIsPrinting(false), 100);
+    }, 100);
   };
 
   const startEditSection = (sectionName) => {
@@ -319,24 +325,37 @@ export default function ReportView() {
             size: A4;
           }
 
+          /* Show all pages when printing */
+          .print-all-pages {
+            display: block !important;
+          }
+
+          /* Each print page */
+          .print-page {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            margin-bottom: 2rem;
+          }
+
           /* Prevent cards from breaking */
-          .card, [class*="Card"], [class*="bg-gradient"] {
+          .card, [class*="Card"] {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             box-shadow: none !important;
             border: 1px solid #ddd !important;
+            margin-bottom: 1rem !important;
           }
 
-          /* Add page breaks between major sections */
-          .mb-8:not(:first-child) {
-            page-break-before: auto;
-            break-before: auto;
+          /* Gradients - reduce to solid colors for print */
+          [class*="bg-gradient"] {
+            background: #4f46e5 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
 
           /* Ensure content doesn't overflow */
           * {
             max-width: 100% !important;
-            overflow: visible !important;
           }
 
           /* Keep colors */
@@ -344,18 +363,23 @@ export default function ReportView() {
           .bg-red-500, .bg-yellow-500, .bg-purple-500,
           .bg-green-100, .bg-yellow-100, .bg-red-100, .bg-blue-100, 
           .bg-purple-50, .bg-green-50, .bg-amber-50,
-          .bg-gradient-to-br, .bg-gradient-to-r {
+          .bg-indigo-600, .bg-purple-700 {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
 
-          /* Fix padding and spacing for print */
-          .p-8, .p-6, .p-12 {
-            padding: 1rem !important;
+          /* Fix spacing for print */
+          .space-y-8 > * + * {
+            margin-top: 1.5rem !important;
           }
 
-          .space-y-8 > * + * {
-            margin-top: 1rem !important;
+          /* Reduce padding for print */
+          .p-8 {
+            padding: 1.5rem !important;
+          }
+
+          .p-12 {
+            padding: 2rem !important;
           }
         }
 
@@ -439,7 +463,7 @@ export default function ReportView() {
 
         {/* Main Report with Page Navigation */}
         <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-indigo-50 to-purple-50">
-          <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-t-lg">
+          <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-t-lg no-print">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -454,7 +478,7 @@ export default function ReportView() {
                   </p>
                 </div>
               </div>
-              <div className="flex gap-2 no-print">
+              <div className="flex gap-2">
                 <Button
                   onClick={prevPage}
                   disabled={currentPage === 1}
@@ -478,7 +502,7 @@ export default function ReportView() {
           </CardHeader>
           <CardContent className="p-8 min-h-[600px]">
             {/* Page 1-2: Markdown Content */}
-            {(currentPage === 1 || currentPage === 2) && (
+            {(!isPrinting && (currentPage === 1 || currentPage === 2)) && (
               <div className="relative">
                 {isAdmin && (
                   <Button
@@ -506,7 +530,7 @@ export default function ReportView() {
             )}
 
             {/* Page 3: Page 3 Header + Readiness Table + Domain Scores */}
-            {currentPage === 3 && (
+            {(!isPrinting && currentPage === 3) && (
               <div className="space-y-8">
                 {pageContents[2] && (
                   <FullReportSection markdownContent={pageContents[2]} />
@@ -548,7 +572,7 @@ export default function ReportView() {
             )}
 
             {/* Page 4: Action Plan */}
-            {currentPage === 4 && (
+            {(!isPrinting && currentPage === 4) && (
               <div className="relative">
                 {isAdmin && (
                   <Button
@@ -580,7 +604,7 @@ export default function ReportView() {
             )}
 
             {/* Page 5: Booster Offer */}
-            {currentPage === 5 && (
+            {(!isPrinting && currentPage === 5) && (
               <div className="relative space-y-8">
                 {pageContents[4] && (
                   <FullReportSection markdownContent={pageContents[4]} />
@@ -592,6 +616,45 @@ export default function ReportView() {
                     userName={report.user_name}
                   />
                 )}
+              </div>
+            )}
+
+            {/* Print All Pages */}
+            {isPrinting && (
+              <div className="print-all-pages space-y-8">
+                {/* Page 1 */}
+                <div className="print-page print-break">
+                  {pageContents[0] && <FullReportSection markdownContent={pageContents[0]} />}
+                </div>
+
+                {/* Page 2 */}
+                <div className="print-page print-break">
+                  {pageContents[1] && <FullReportSection markdownContent={pageContents[1]} />}
+                </div>
+
+                {/* Page 3 */}
+                <div className="print-page print-break">
+                  {pageContents[2] && <FullReportSection markdownContent={pageContents[2]} />}
+                  <ReadinessTableSection domainScores={report.domain_scores} language={currentLanguage} />
+                  <DomainScoresSection domainScores={report.domain_scores} language={currentLanguage} />
+                </div>
+
+                {/* Page 4 */}
+                <div className="print-page print-break">
+                  {pageContents[3] && <FullReportSection markdownContent={pageContents[3]} />}
+                </div>
+
+                {/* Page 5 */}
+                <div className="print-page">
+                  {pageContents[4] && <FullReportSection markdownContent={pageContents[4]} />}
+                  {report.recommended_booster_track && (
+                    <BoosterOfferSection
+                      recommendedTrack={report.recommended_booster_track}
+                      language={currentLanguage}
+                      userName={report.user_name}
+                    />
+                  )}
+                </div>
               </div>
             )}
 
