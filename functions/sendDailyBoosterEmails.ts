@@ -353,65 +353,41 @@ Deno.serve(async (req) => {
           continue;
         }
 
-        // שלב יצירת המשימה המותאמת אישית
-        
-        // 1. שלוף את הדו"ח והשאלון
-        let report = null;
-        let questionnaireResponse = null;
-        
-        if (subscription.generated_report_id) {
-          const reports = await base44.asServiceRole.entities.GeneratedReport.filter({
-            id: subscription.generated_report_id
+        // שלוף את המשימה המוכנה מראש מה-DB
+        const tasks = await base44.asServiceRole.entities.BoosterTask.filter({
+          subscription_id: subscription.id,
+          day: currentDay,
+          status: 'pending'
+        });
+
+        if (tasks.length === 0) {
+          console.log(`No task found for ${subscription.user_email} day ${currentDay}`);
+          results.push({
+            email: subscription.user_email,
+            day: currentDay,
+            status: 'no_task_found'
           });
-          report = reports[0];
-        }
-        
-        if (subscription.questionnaire_response_id) {
-          const responses = await base44.asServiceRole.entities.QuestionnaireResponse.filter({
-            id: subscription.questionnaire_response_id
-          });
-          questionnaireResponse = responses[0];
+          continue;
         }
 
-        // 2. הכן נתונים למשימה
-        const userGender = detectGender(userName);
-        const domainScores = report?.domain_scores || {};
-        const sentTasks = subscription.sent_tasks || [];
-        const reportAnalysis = report?.report_markdown?.substring(0, 800) || '';
+        const task = tasks[0];
+        const taskData = {
+          subject: task.subject,
+          the_why: task.the_why,
+          the_task: task.the_task,
+          task_title: task.task_title
+        };
 
         const userData = {
           userName,
-          userGender,
           track,
-          currentDay,
-          domainScores,
-          responses: questionnaireResponse?.responses || {},
-          sentTasks,
-          reportAnalysis
+          currentDay
         };
 
-        // 3. צור פרומפט ל-LLM
-        const prompt = createPersonalizedTaskPrompt(userData, language);
-
-        // 4. קרא ל-LLM ליצירת המשימה
-        const taskData = await base44.asServiceRole.integrations.Core.InvokeLLM({
-          prompt: prompt,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              subject: { type: "string" },
-              the_why: { type: "string" },
-              the_task: { type: "string" },
-              task_title: { type: "string" }
-            },
-            required: ["subject", "the_why", "the_task", "task_title"]
-          }
-        });
-
-        // 5. צור HTML למייל
+        // צור HTML למייל
         const emailBody = createEmailHTML(taskData, userData, language);
 
-        // 6. שלח את המייל
+        // שלח את המייל
         await base44.asServiceRole.integrations.Core.SendEmail({
           from_name: 'V107 Booster',
           to: subscription.user_email,
@@ -419,19 +395,25 @@ Deno.serve(async (req) => {
           body: emailBody
         });
 
-        // 7. עדכן את המנוי
-        const newSentTasks = [...sentTasks, taskData.task_title];
-        
+        // עדכן את המשימה לסטטוס "sent"
+        await base44.asServiceRole.entities.BoosterTask.update(
+          task.id,
+          {
+            status: 'sent',
+            sent_date: now.toISOString()
+          }
+        );
+
+        // עדכן את המנוי
         await base44.asServiceRole.entities.OnlineCoachingSubscription.update(
           subscription.id,
           {
             current_day: currentDay + 1,
-            last_email_sent_date: now.toISOString(),
-            sent_tasks: newSentTasks
+            last_email_sent_date: now.toISOString()
           }
         );
 
-        // 8. לוג המייל
+        // לוג המייל
         await base44.asServiceRole.entities.EmailLog.create({
           to_email: subscription.user_email,
           email_type: 'booster_email',
