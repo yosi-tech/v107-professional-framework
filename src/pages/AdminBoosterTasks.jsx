@@ -324,9 +324,20 @@ export default function AdminBoosterTasks() {
                             </div>
                           </div>
                         ) : (
-                          <div className="space-y-2">
+                          <div className="space-y-3">
                             <div className="font-semibold text-sm">{task.task_title}</div>
                             <div className="text-sm text-gray-600">{task.subject}</div>
+                            
+                            <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+                              <div className="text-xs font-semibold text-amber-900 mb-1">למה זה חשוב:</div>
+                              <div className="text-sm text-amber-800">{task.the_why}</div>
+                            </div>
+                            
+                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                              <div className="text-xs font-semibold text-blue-900 mb-1">הפעולה:</div>
+                              <div className="text-sm text-blue-800">{task.the_task}</div>
+                            </div>
+                            
                             {task.sent_date && (
                               <div className="text-xs text-gray-500">
                                 נשלח: {new Date(task.sent_date).toLocaleDateString('he-IL')}
