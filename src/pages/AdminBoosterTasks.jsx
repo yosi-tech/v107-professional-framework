@@ -19,6 +19,14 @@ export default function AdminBoosterTasks() {
 
   useEffect(() => {
     loadSubscriptions();
+    
+    // בדיקה אם יש subscription ID ב-URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const subscriptionId = urlParams.get('subscriptionId');
+    if (subscriptionId) {
+      // נטען את המנוי ספציפי מה-URL
+      loadSpecificSubscription(subscriptionId);
+    }
   }, []);
 
   const loadSubscriptions = async () => {
@@ -38,6 +46,17 @@ export default function AdminBoosterTasks() {
       console.error('Error loading subscriptions:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadSpecificSubscription = async (subscriptionId) => {
+    try {
+      const subs = await base44.entities.OnlineCoachingSubscription.filter({ id: subscriptionId });
+      if (subs.length > 0) {
+        handleSelectSubscription(subs[0]);
+      }
+    } catch (error) {
+      console.error('Error loading specific subscription:', error);
     }
   };
 

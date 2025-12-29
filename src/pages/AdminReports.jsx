@@ -3223,6 +3223,16 @@ export default function AdminReports() {
                                 </div>
                                 
                                 <div className="flex flex-col gap-2">
+                                  <Link to={createPageUrl(`AdminBoosterTasks?subscriptionId=${subscription.id}`)}>
+                                    <Button
+                                      size="sm"
+                                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center gap-2 flex-row-reverse justify-center"
+                                    >
+                                      <span>צפה ב-30 המשימות</span>
+                                      <Edit3 className="w-4 h-4" />
+                                    </Button>
+                                  </Link>
+                                  
                                   {subscription.status === 'active' &&
                               <>
                                       <Button
