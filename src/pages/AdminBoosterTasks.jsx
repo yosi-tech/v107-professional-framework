@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Save, Edit2, CheckCircle, Clock, Send, Sparkles, AlertCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Loader2, Save, Edit2, CheckCircle, Clock, Send, Sparkles, AlertCircle, ArrowRight } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 import { generateTasksForSubscription } from "@/functions/generateTasksForSubscription";
+import { createPageUrl } from "@/utils";
 
 export default function AdminBoosterTasks() {
   const navigate = useNavigate();
@@ -167,7 +168,15 @@ export default function AdminBoosterTasks() {
   return (
     <div className="min-h-screen bg-gray-50 p-6" dir="rtl">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">ניהול משימות בוסטר</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">ניהול משימות בוסטר</h1>
+          <Link to={`${createPageUrl('AdminReports')}#boosters`}>
+            <Button variant="outline" className="flex items-center gap-2">
+              <span>חזור לבוסטרים</span>
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {/* רשימת מנויים */}
