@@ -21,8 +21,8 @@ export default function ReadinessTableSection({ domainScores, language }) {
       readinessLevel = isHebrew ? 'ממוצע' : 'Average';
       status = 'yellow';
     } else if (data.band === 'low') {
-      readinessLevel = isHebrew ? 'ממוצע' : 'Average';
-      status = 'yellow';
+      readinessLevel = isHebrew ? 'טעון שיפור' : 'Needs Improvement';
+      status = 'red';
     }
 
     return {
