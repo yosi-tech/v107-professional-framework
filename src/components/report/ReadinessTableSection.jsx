@@ -13,15 +13,16 @@ export default function ReadinessTableSection({ domainScores, language }) {
     let readinessLevel = 'ממוצע';
     let status = 'yellow';
     
-    if (data.score >= 75 || data.band === 'high') {
+    // Use band as the primary indicator
+    if (data.band === 'high') {
       readinessLevel = isHebrew ? 'מעולה' : 'Excellent';
       status = 'green';
-    } else if (data.score >= 50 || data.band === 'mid') {
+    } else if (data.band === 'mid') {
       readinessLevel = isHebrew ? 'ממוצע' : 'Average';
       status = 'yellow';
-    } else {
-      readinessLevel = isHebrew ? 'טעון שיפור' : 'Needs Improvement';
-      status = 'red';
+    } else if (data.band === 'low') {
+      readinessLevel = isHebrew ? 'ממוצע' : 'Average';
+      status = 'yellow';
     }
 
     return {
