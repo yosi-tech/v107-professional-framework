@@ -108,6 +108,7 @@ export default function AdminReports() {
     hasReport: 'all', // 'all', 'has_report', 'no_report'
     questionnaireStatus: 'all' // 'all', 'completed', 'in_progress', 'abandoned'
   });
+  const [sortBy, setSortBy] = useState('date'); // 'name', 'date', 'urgency', 'hours'
 
   useEffect(() => {
     checkAdminAndLoadData();
@@ -678,7 +679,7 @@ export default function AdminReports() {
     }
   };
 
-  const filteredResponses = responses.filter((r) => {
+  const filteredAndSortedResponses = responses.filter((r) => {
     const fullName = r.personal_info?.full_name || '';
     const email = r.personal_info?.email || '';
     const searchMatch = fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -712,6 +713,36 @@ export default function AdminReports() {
     }
 
     return true;
+  }).sort((a, b) => {
+    // מיון לפי הבחירה
+    if (sortBy === 'name') {
+      const nameA = (a.personal_info?.full_name || '').toLowerCase();
+      const nameB = (b.personal_info?.full_name || '').toLowerCase();
+      return nameA.localeCompare(nameB, 'he');
+    } else if (sortBy === 'date') {
+      return new Date(b.created_date).getTime() - new Date(a.created_date).getTime();
+    } else if (sortBy === 'hours') {
+      const hoursA = Math.floor((Date.now() - new Date(a.created_date).getTime()) / (1000 * 60 * 60));
+      const hoursB = Math.floor((Date.now() - new Date(b.created_date).getTime()) / (1000 * 60 * 60));
+      return hoursB - hoursA;
+    } else if (sortBy === 'urgency') {
+      // דחיפות: אלו שיש להם דוח אבל לא נשלח + זמן ארוך
+      const getUrgencyScore = (r) => {
+        const emails = getEmailsForResponse(r);
+        const reportSent = emails.find(e => e.email_type === 'report_ready');
+        const existingReport = getReportForResponse(r.id);
+        const hoursAgo = Math.floor((Date.now() - new Date(r.created_date).getTime()) / (1000 * 60 * 60));
+        
+        // דירוג דחיפות גבוה יותר = דחוף יותר
+        if (existingReport && !reportSent && hoursAgo >= 96) return 1000;
+        if (existingReport && !reportSent && hoursAgo >= 72) return 500;
+        if (existingReport && !reportSent) return 100;
+        if (!existingReport && r.status === 'completed') return 50;
+        return 0;
+      };
+      return getUrgencyScore(b) - getUrgencyScore(a);
+    }
+    return 0;
   });
 
   const getAbandonedUsers = () => {
@@ -1118,6 +1149,21 @@ export default function AdminReports() {
 
               <div className="flex gap-3 flex-wrap justify-end">
                 <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-gray-700">סדר לפי:</label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-right"
+                    dir="rtl">
+
+                    <option value="date">תאריך</option>
+                    <option value="name">שם</option>
+                    <option value="urgency">דחיפות</option>
+                    <option value="hours">מספר שעות</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2">
                   <label className="text-sm font-medium text-gray-700">רכישה:</label>
                   <select
                     value={filters.hasPurchased}
@@ -1173,7 +1219,7 @@ export default function AdminReports() {
             </div>
 
             <div className="space-y-4">
-              {filteredResponses.map((response) => {
+              {filteredAndSortedResponses.map((response) => {
                 const existingReport = getReportForResponse(response.id);
                 const userInfo = getUserForResponse(response);
                 const emails = getEmailsForResponse(response);
@@ -1406,7 +1452,7 @@ export default function AdminReports() {
 
               })}
 
-              {filteredResponses.length === 0 &&
+              {filteredAndSortedResponses.length === 0 &&
               <Card>
                   <CardContent className="p-12 text-center">
                     <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
