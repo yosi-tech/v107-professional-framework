@@ -498,6 +498,7 @@ export default function Questionnaire() {
   }, [loadExistingResponses]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
 

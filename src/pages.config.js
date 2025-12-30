@@ -1,4 +1,5 @@
 import About from './pages/About';
+import AdminBoosterTasks from './pages/AdminBoosterTasks';
 import AdminReports from './pages/AdminReports';
 import ArticleDetails from './pages/ArticleDetails';
 import Articles from './pages/Articles';
@@ -17,12 +18,12 @@ import ReportView from './pages/ReportView';
 import Survey from './pages/Survey';
 import TermsOfService from './pages/TermsOfService';
 import ThankYou from './pages/ThankYou';
-import AdminBoosterTasks from './pages/AdminBoosterTasks';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
+    "AdminBoosterTasks": AdminBoosterTasks,
     "AdminReports": AdminReports,
     "ArticleDetails": ArticleDetails,
     "Articles": Articles,
@@ -41,7 +42,6 @@ export const PAGES = {
     "Survey": Survey,
     "TermsOfService": TermsOfService,
     "ThankYou": ThankYou,
-    "AdminBoosterTasks": AdminBoosterTasks,
 }
 
 export const pagesConfig = {
