@@ -25,7 +25,7 @@ export default function ReadinessTableSection({ domainScores, language }) {
     }
 
     return {
-      domain: data.name || key,
+      domain: isHebrew ? (data.nameHe || key) : (data.nameEn || key),
       readiness: readinessLevel,
       status: status
     };
