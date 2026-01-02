@@ -1240,7 +1240,6 @@ export default function AdminReports() {
                 const responseIndex = userAllResponses.findIndex((r) => r.id === response.id) + 1;
                 const hasMultipleResponses = userAllResponses.length > 1;
 
-                const userEmail = response.personal_info?.email || response.created_by;
                 const purchasedReport = reports.find((r) => r.user_email === userEmail && r.purchased === true);
                 const hasPurchasedFullReport = userInfo?.has_purchased_full_report === true;
                 const hasPurchasedAnswersDownload = userInfo?.has_purchased_answers_download === true;
