@@ -23,8 +23,20 @@ Deno.serve(async (req) => {
 
     switch (action) {
       case 'list': {
-        const tasks = await base44.asServiceRole.scheduledTasks.list();
-        return Response.json({ success: true, tasks });
+        // קריאה ישירה ל-API של Base44 לקבלת רשימת תזמונים
+        const response = await fetch(`${Deno.env.get('BASE44_API_URL') || 'https://api.base44.com'}/scheduled-tasks`, {
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('BASE44_SERVICE_ROLE_KEY')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch tasks');
+        }
+        
+        const data = await response.json();
+        return Response.json({ success: true, tasks: data.tasks || [] });
       }
 
       case 'create': {
@@ -33,7 +45,7 @@ Deno.serve(async (req) => {
           return Response.json({ error: 'Invalid action type' }, { status: 400 });
         }
 
-        const task = await base44.asServiceRole.scheduledTasks.create({
+        const taskData = {
           name: payload.name,
           function_name: functionName,
           description: payload.description,
@@ -42,8 +54,23 @@ Deno.serve(async (req) => {
           repeat_unit: payload.repeat_unit,
           start_time: payload.start_time,
           is_active: payload.is_active !== false
+        };
+
+        const response = await fetch(`${Deno.env.get('BASE44_API_URL') || 'https://api.base44.com'}/scheduled-tasks`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('BASE44_SERVICE_ROLE_KEY')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(taskData)
         });
 
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to create task');
+        }
+
+        const task = await response.json();
         return Response.json({ success: true, task });
       }
 
@@ -56,17 +83,55 @@ Deno.serve(async (req) => {
           start_time: payload.start_time
         };
 
-        const task = await base44.asServiceRole.scheduledTasks.update(payload.task_id, updateData);
+        const response = await fetch(`${Deno.env.get('BASE44_API_URL') || 'https://api.base44.com'}/scheduled-tasks/${payload.task_id}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('BASE44_SERVICE_ROLE_KEY')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updateData)
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to update task');
+        }
+
+        const task = await response.json();
         return Response.json({ success: true, task });
       }
 
       case 'toggle': {
-        await base44.asServiceRole.scheduledTasks.toggle(payload.task_id);
+        const response = await fetch(`${Deno.env.get('BASE44_API_URL') || 'https://api.base44.com'}/scheduled-tasks/${payload.task_id}/toggle`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('BASE44_SERVICE_ROLE_KEY')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to toggle task');
+        }
+
         return Response.json({ success: true });
       }
 
       case 'delete': {
-        await base44.asServiceRole.scheduledTasks.delete(payload.task_id);
+        const response = await fetch(`${Deno.env.get('BASE44_API_URL') || 'https://api.base44.com'}/scheduled-tasks/${payload.task_id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('BASE44_SERVICE_ROLE_KEY')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to delete task');
+        }
+
         return Response.json({ success: true });
       }
 
