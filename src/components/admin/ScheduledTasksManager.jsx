@@ -57,8 +57,9 @@ export default function ScheduledTasksManager() {
   const loadTasks = async () => {
     try {
       setIsLoading(true);
-      const tasksList = await base44.scheduledTasks.list();
-      setTasks(tasksList);
+      const { listScheduledTasks } = await import('@/functions/listScheduledTasks');
+      const result = await listScheduledTasks();
+      setTasks(result.data || []);
     } catch (error) {
       console.error('Error loading tasks:', error);
     } finally {
@@ -68,7 +69,8 @@ export default function ScheduledTasksManager() {
 
   const handleCreateTask = async () => {
     try {
-      await base44.scheduledTasks.create({
+      const { createScheduledTask } = await import('@/functions/createScheduledTask');
+      await createScheduledTask({
         name: formData.name,
         function_name: formData.function_name,
         description: formData.description,
@@ -90,7 +92,9 @@ export default function ScheduledTasksManager() {
 
   const handleUpdateTask = async () => {
     try {
-      await base44.scheduledTasks.update(editingTask.id, {
+      const { updateScheduledTask } = await import('@/functions/updateScheduledTask');
+      await updateScheduledTask({
+        task_id: editingTask.id,
         name: formData.name,
         description: formData.description,
         repeat_interval: parseInt(formData.repeat_interval),
@@ -110,7 +114,8 @@ export default function ScheduledTasksManager() {
 
   const handleToggleTask = async (taskId) => {
     try {
-      await base44.scheduledTasks.toggle(taskId);
+      const { toggleScheduledTask } = await import('@/functions/toggleScheduledTask');
+      await toggleScheduledTask({ task_id: taskId });
       loadTasks();
     } catch (error) {
       console.error('Error toggling task:', error);
@@ -123,7 +128,8 @@ export default function ScheduledTasksManager() {
     }
 
     try {
-      await base44.scheduledTasks.delete(taskId);
+      const { deleteScheduledTask } = await import('@/functions/deleteScheduledTask');
+      await deleteScheduledTask({ task_id: taskId });
       loadTasks();
     } catch (error) {
       console.error('Error deleting task:', error);
