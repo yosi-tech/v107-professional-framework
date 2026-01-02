@@ -2791,7 +2791,7 @@ export default function AdminReports() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-right text-green-600">
-                      {users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length}
+                      {reports.filter((r) => r.purchased === true).length}
                     </div>
                   </CardContent>
                 </Card>
@@ -2803,7 +2803,7 @@ export default function AdminReports() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-right text-blue-600">
-                      {users.filter((u) => u.has_purchased_full_report).length}
+                      {reports.filter((r) => r.purchased === true).length}
                     </div>
                   </CardContent>
                 </Card>
@@ -2815,7 +2815,7 @@ export default function AdminReports() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-right text-purple-600">
-                      {users.filter((u) => u.has_purchased_answers_download && !u.has_purchased_full_report).length}
+                      {users.filter((u) => u.has_purchased_answers_download === true).length}
                     </div>
                   </CardContent>
                 </Card>
@@ -2828,7 +2828,7 @@ export default function AdminReports() {
                   <CardContent>
                     <div className="text-2xl font-bold text-right text-orange-600">
                       {responses.filter((r) => r.status === 'completed').length > 0 ?
-                      `${Math.round(users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length / responses.filter((r) => r.status === 'completed').length * 100)}%` :
+                      `${Math.round(reports.filter((r) => r.purchased === true).length / responses.filter((r) => r.status === 'completed').length * 100)}%` :
                       '0%'
                       }
                     </div>
@@ -2859,12 +2859,12 @@ export default function AdminReports() {
                           </td>
                           <td className="text-center py-4 px-4">
                             <Badge className="bg-blue-100 text-blue-800">
-                              {users.filter((u) => u.has_purchased_full_report && !u.express_delivery).length}
+                              {users.filter((u) => u.has_purchased_full_report === true && !u.express_delivery).length}
                             </Badge>
                           </td>
                           <td className="text-left py-4 px-4">
                             <div className="text-xl font-bold text-blue-600">
-                              {users.filter((u) => u.has_purchased_full_report && !u.express_delivery).length * 299} ₪
+                              {users.filter((u) => u.has_purchased_full_report === true && !u.express_delivery).length * 299} ₪
                             </div>
                           </td>
                         </tr>
@@ -2876,12 +2876,12 @@ export default function AdminReports() {
                           </td>
                           <td className="text-center py-4 px-4">
                             <Badge className="bg-purple-100 text-purple-800">
-                              {users.filter((u) => u.has_purchased_full_report && u.express_delivery).length}
+                              {users.filter((u) => u.has_purchased_full_report === true && u.express_delivery === true).length}
                             </Badge>
                           </td>
                           <td className="text-left py-4 px-4">
                             <div className="text-xl font-bold text-purple-600">
-                              {users.filter((u) => u.has_purchased_full_report && u.express_delivery).length * 378} ₪
+                              {users.filter((u) => u.has_purchased_full_report === true && u.express_delivery === true).length * 378} ₪
                             </div>
                           </td>
                         </tr>
@@ -2893,12 +2893,12 @@ export default function AdminReports() {
                           </td>
                           <td className="text-center py-4 px-4">
                             <Badge className="bg-green-100 text-green-800">
-                              {users.filter((u) => u.has_purchased_answers_download && !u.has_purchased_full_report).length}
+                              {users.filter((u) => u.has_purchased_answers_download === true).length}
                             </Badge>
                           </td>
                           <td className="text-left py-4 px-4">
                             <div className="text-xl font-bold text-green-600">
-                              {users.filter((u) => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59} ₪
+                              {users.filter((u) => u.has_purchased_answers_download === true).length * 59} ₪
                             </div>
                           </td>
                         </tr>
@@ -2909,15 +2909,15 @@ export default function AdminReports() {
                           </td>
                           <td className="text-center py-4 px-4">
                             <Badge className="bg-gray-800 text-white">
-                              {users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length}
+                              {reports.filter((r) => r.purchased === true).length}
                             </Badge>
                           </td>
                           <td className="text-left py-4 px-4">
                             <div className="text-3xl font-bold text-green-700">
                               {
-                              users.filter((u) => u.has_purchased_full_report && !u.express_delivery).length * 299 +
-                              users.filter((u) => u.has_purchased_full_report && u.express_delivery).length * 378 +
-                              users.filter((u) => u.has_purchased_answers_download && !u.has_purchased_full_report).length * 59
+                              users.filter((u) => u.has_purchased_full_report === true && !u.express_delivery).length * 299 +
+                              users.filter((u) => u.has_purchased_full_report === true && u.express_delivery === true).length * 378 +
+                              users.filter((u) => u.has_purchased_answers_download === true).length * 59
                               } ₪
                             </div>
                           </td>
@@ -2931,17 +2931,17 @@ export default function AdminReports() {
               {/* רשימת רוכשים */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-right">רשימת רוכשים ({users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length})</CardTitle>
+                  <CardTitle className="text-right">רשימת רוכשים ({users.filter((u) => u.has_purchased_full_report === true || u.has_purchased_answers_download === true).length})</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).map((user) => {
+                    {users.filter((u) => u.has_purchased_full_report === true || u.has_purchased_answers_download === true).map((user) => {
                       const userReports = reports.filter((r) => r.user_email === user.email);
-                      const purchaseType = user.has_purchased_full_report ?
-                      user.express_delivery ? 'דו"ח מלא + מואץ (378 ₪)' : 'דו"ח מלא (299 ₪)' :
+                      const purchaseType = user.has_purchased_full_report === true ?
+                      user.express_delivery === true ? 'דו"ח מלא + מואץ (378 ₪)' : 'דו"ח מלא (299 ₪)' :
                       'הורדת תשובות (59 ₪)';
-                      const amount = user.has_purchased_full_report ?
-                      user.express_delivery ? 378 : 299 :
+                      const amount = user.has_purchased_full_report === true ?
+                      user.express_delivery === true ? 378 : 299 :
                       59;
 
                       return (
@@ -2972,7 +2972,7 @@ export default function AdminReports() {
 
                     })}
 
-                    {users.filter((u) => u.has_purchased_full_report || u.has_purchased_answers_download).length === 0 &&
+                    {users.filter((u) => u.has_purchased_full_report === true || u.has_purchased_answers_download === true).length === 0 &&
                     <div className="text-center py-12">
                         <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                         <p className="text-gray-500">אין רכישות עדיין</p>
