@@ -40,6 +40,8 @@ import { createPageUrl } from "@/utils";
 
 import UnifiedSurveyChart from "@/components/admin/UnifiedSurveyChart";
 import ContentManager from "@/components/admin/ContentManager";
+import ReportComparison from "@/components/analytics/ReportComparison";
+import TrendsChart from "@/components/analytics/TrendsChart";
 import {
   Dialog,
   DialogContent,
@@ -109,6 +111,8 @@ export default function AdminReports() {
     questionnaireStatus: 'all' // 'all', 'completed', 'in_progress', 'abandoned'
   });
   const [sortBy, setSortBy] = useState('date'); // 'name', 'date', 'urgency', 'hours'
+  const [selectedReportsForAnalytics, setSelectedReportsForAnalytics] = useState([]);
+  const [analyticsViewMode, setAnalyticsViewMode] = useState('comparison');
 
   useEffect(() => {
     checkAdminAndLoadData();
@@ -776,6 +780,18 @@ export default function AdminReports() {
   const abandonedUsers = getAbandonedUsers();
   const inProgressUsers = getInProgressUsers();
 
+  const handleReportSelectForAnalytics = (reportId) => {
+    setSelectedReportsForAnalytics(prev => {
+      if (prev.includes(reportId)) {
+        return prev.filter(id => id !== reportId);
+      }
+      if (prev.length >= 3) {
+        return [...prev.slice(1), reportId];
+      }
+      return [...prev, reportId];
+    });
+  };
+
   function EmailTemplateCard({ template, onEdit, onDelete }) {
     const [showPreview, setShowPreview] = React.useState(false);
     const [previewLangLocal, setPreviewLangLocal] = React.useState('he');
@@ -1062,9 +1078,13 @@ export default function AdminReports() {
 
         <Tabs defaultValue="reports" className="w-full" value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="flex flex-wrap w-full justify-center mb-8 gap-1 h-auto p-2">
+            <TabsTrigger value="advanced-analytics" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>ניתוח מתקדם</span>
+              <BarChart3 className="w-3 h-3" />
+            </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
               <span>ניתוח</span>
-              <BarChart3 className="w-3 h-3" />
+              <TrendingUp className="w-3 h-3" />
             </TabsTrigger>
             <TabsTrigger value="survey-results" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
               <span>סקר ({surveyResponses.length})</span>
@@ -2776,6 +2796,105 @@ export default function AdminReports() {
                   </div>
                 </TabsContent>
               </Tabs>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="advanced-analytics">
+            <div className="space-y-6">
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="text-2xl flex items-center gap-3">
+                    <BarChart3 className="w-7 h-7 text-blue-600" />
+                    ניתוח מתקדם של דוחות
+                  </CardTitle>
+                  <p className="text-gray-600 mt-2">
+                    השוואה בין דוחות, זיהוי מגמות, וניתוח דפוסים
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-4 mb-6">
+                    <Button
+                      onClick={() => setAnalyticsViewMode('comparison')}
+                      variant={analyticsViewMode === 'comparison' ? 'default' : 'outline'}
+                      className="flex items-center gap-2"
+                    >
+                      <GitCompare className="w-4 h-4" />
+                      השוואת דוחות
+                    </Button>
+                    <Button
+                      onClick={() => setAnalyticsViewMode('trends')}
+                      variant={analyticsViewMode === 'trends' ? 'default' : 'outline'}
+                      className="flex items-center gap-2"
+                    >
+                      <TrendingUp className="w-4 h-4" />
+                      מגמות לאורך זמן
+                    </Button>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-3">בחר דוחות לניתוח (עד 3)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {reports.slice(0, 20).map(report => (
+                        <Card
+                          key={report.id}
+                          className={`cursor-pointer transition-all ${
+                            selectedReportsForAnalytics.includes(report.id)
+                              ? 'border-blue-600 border-2 bg-blue-50'
+                              : 'hover:border-gray-400'
+                          }`}
+                          onClick={() => handleReportSelectForAnalytics(report.id)}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-semibold">{report.user_name}</p>
+                                <p className="text-sm text-gray-600">{report.report_id}</p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  {new Date(report.created_date).toLocaleDateString('he-IL')}
+                                </p>
+                              </div>
+                              {selectedReportsForAnalytics.includes(report.id) && (
+                                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                  {selectedReportsForAnalytics.indexOf(report.id) + 1}
+                                </div>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {selectedReportsForAnalytics.length > 0 && (
+                <div>
+                  {analyticsViewMode === 'comparison' && (
+                    <ReportComparison
+                      reportIds={selectedReportsForAnalytics}
+                      reports={reports.filter(r => selectedReportsForAnalytics.includes(r.id))}
+                    />
+                  )}
+                  
+                  {analyticsViewMode === 'trends' && (
+                    <TrendsChart
+                      reportIds={selectedReportsForAnalytics}
+                      reports={reports.filter(r => selectedReportsForAnalytics.includes(r.id))}
+                    />
+                  )}
+                </div>
+              )}
+              
+              {selectedReportsForAnalytics.length === 0 && (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600 text-lg">
+                      בחר דוחות מהרשימה למעלה כדי להתחיל ניתוח
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </TabsContent>
 
