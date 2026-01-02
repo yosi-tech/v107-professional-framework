@@ -689,8 +689,8 @@ export default function AdminReports() {
 
     // סינון לפי רכישה
     if (filters.hasPurchased !== 'all') {
-      const userInfo = getUserForResponse(r);
-      const hasPurchased = (userInfo?.has_purchased_full_report ?? false) || (userInfo?.has_purchased_answers_download ?? false);
+      const userEmail = r.personal_info?.email || r.created_by;
+      const hasPurchased = reports.some((report) => report.user_email === userEmail && report.purchased === true);
       if (filters.hasPurchased === 'purchased' && !hasPurchased) return false;
       if (filters.hasPurchased === 'not_purchased' && hasPurchased) return false;
     }
@@ -751,7 +751,7 @@ export default function AdminReports() {
       (r.created_by === u.email || r.personal_info?.email === u.email) &&
       r.status === 'completed'
       );
-      const hasPurchased = (u.has_purchased_full_report ?? false) || (u.has_purchased_answers_download ?? false);
+      const hasPurchased = reports.some((r) => r.user_email === u.email && r.purchased === true);
 
       return hasCompletedResponse && !hasPurchased;
     });
@@ -1240,15 +1240,15 @@ export default function AdminReports() {
                 const responseIndex = userAllResponses.findIndex((r) => r.id === response.id) + 1;
                 const hasMultipleResponses = userAllResponses.length > 1;
 
-                const hasPurchasedFullReport = userInfo?.has_purchased_full_report ?? false;
-                const hasPurchasedAnswersDownload = userInfo?.has_purchased_answers_download ?? false;
-                const expressDelivery = userInfo?.express_delivery ?? false;
+                const userEmail = response.personal_info?.email || response.created_by;
+                const purchasedReport = reports.find((r) => r.user_email === userEmail && r.purchased === true);
+                const hasPurchasedFullReport = userInfo?.has_purchased_full_report === true;
+                const hasPurchasedAnswersDownload = userInfo?.has_purchased_answers_download === true;
+                const expressDelivery = userInfo?.express_delivery === true;
                 const paymentAmount = userInfo?.payment_amount ?? 0;
 
-                const purchaseStatus = hasPurchasedFullReport ?
-                `דו"ח מלא${expressDelivery ? ' + מואץ' : ''}` :
-                hasPurchasedAnswersDownload ?
-                'תשובות בלבד' :
+                const purchaseStatus = purchasedReport ? 
+                (hasPurchasedFullReport ? `דו"ח מלא${expressDelivery ? ' + מואץ' : ''}` : 'תשובות בלבד') :
                 'לא רכש';
 
                 // חישוב כמה שעות עברו
