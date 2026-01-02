@@ -43,6 +43,7 @@ import UnifiedSurveyChart from "@/components/admin/UnifiedSurveyChart";
 import ContentManager from "@/components/admin/ContentManager";
 import ReportComparison from "@/components/analytics/ReportComparison";
 import TrendsChart from "@/components/analytics/TrendsChart";
+import ScheduledTasksManager from "@/components/admin/ScheduledTasksManager";
 import {
   Dialog,
   DialogContent,
@@ -1118,6 +1119,10 @@ export default function AdminReports() {
             <TabsTrigger value="seo-settings" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
               <span>SEO</span>
               <Settings className="w-3 h-3" />
+            </TabsTrigger>
+            <TabsTrigger value="scheduled-tasks" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>תזמונים</span>
+              <Clock className="w-3 h-3" />
             </TabsTrigger>
           </TabsList>
 
@@ -3475,6 +3480,10 @@ export default function AdminReports() {
                 }
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="scheduled-tasks">
+            <ScheduledTasksManager />
           </TabsContent>
           </Tabs>
           </div>
