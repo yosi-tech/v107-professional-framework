@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { FileText, Shield, User as UserIcon, Menu, X } from "lucide-react";
+import { FileText, Shield, User as UserIcon, Menu, X, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -316,11 +316,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               )}
 
               {!isLoadingUser && isAdmin && (
-                <Link to={createPageUrl("AdminReports")} className={`text-sm font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
-                  <Shield className="w-4 h-4" />
-                  {language === 'he' ? 'אדמין' : 'Admin'}
-                </Link>
-              )}
+                  <>
+                    <Link to={createPageUrl("AdminReports")} className={`text-sm font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+                      <Shield className="w-4 h-4" />
+                      {language === 'he' ? 'אדמין' : 'Admin'}
+                    </Link>
+                    <Link to={createPageUrl("AdminAnalytics")} className={`text-sm font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminAnalytics") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+                      <BarChart3 className="w-4 h-4" />
+                      {language === 'he' ? 'ניתוח' : 'Analytics'}
+                    </Link>
+                  </>
+                )}
               
               <Link to={createPageUrl("Questionnaire")}>
                   <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5">
@@ -395,14 +401,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 )}
 
                 {!isLoadingUser && isAdmin && (
-                  <Link 
-                    to={createPageUrl("AdminReports")} 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`text-sm font-semibold transition-colors flex items-center gap-2 px-4 py-2 rounded-lg ${location.pathname === createPageUrl("AdminReports") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                  >
-                    <Shield className="w-4 h-4" />
-                    {language === 'he' ? 'אדמין' : 'Admin'}
-                  </Link>
+                  <>
+                    <Link 
+                      to={createPageUrl("AdminReports")} 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`text-sm font-semibold transition-colors flex items-center gap-2 px-4 py-2 rounded-lg ${location.pathname === createPageUrl("AdminReports") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                    >
+                      <Shield className="w-4 h-4" />
+                      {language === 'he' ? 'אדמין' : 'Admin'}
+                    </Link>
+                    <Link 
+                      to={createPageUrl("AdminAnalytics")} 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`text-sm font-semibold transition-colors flex items-center gap-2 px-4 py-2 rounded-lg ${location.pathname === createPageUrl("AdminAnalytics") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                    >
+                      <BarChart3 className="w-4 h-4" />
+                      {language === 'he' ? 'ניתוח' : 'Analytics'}
+                    </Link>
+                  </>
                 )}
                 
                 <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
