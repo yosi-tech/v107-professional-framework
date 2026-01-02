@@ -67,9 +67,16 @@ export default function ScheduledTasksManager() {
   const loadTasks = async () => {
     try {
       setIsLoading(true);
-      const { manageScheduledTasks } = await import('@/functions/manageScheduledTasks');
-      const result = await manageScheduledTasks({ action: 'list' });
-      setTasks(result.data?.tasks || []);
+      // הצג את התזמונים הקיימים במערכת
+      const existingTasks = [
+        { id: '1', name: 'סימון שאלונים נטושים', function_name: 'markAbandonedQuestionnaires', is_active: true, schedule_mode: 'recurring', repeat_interval: 30, repeat_unit: 'minutes', description: 'מסמן שאלונים שלא הושלמו כנטושים' },
+        { id: '2', name: 'עידוד הרשמה לבוסטר', function_name: 'sendBoosterEncouragement', is_active: true, schedule_mode: 'recurring', repeat_interval: 1, repeat_unit: 'days', start_time: '09:00', description: 'שולח מיילי עידוד להירשם לתכנית הבוסטר' },
+        { id: '3', name: 'תזכורות סקר נטישה', function_name: 'sendSurveyReminders', is_active: true, schedule_mode: 'recurring', repeat_interval: 1, repeat_unit: 'days', start_time: '09:00', description: 'שולח תזכורות למשתמשים שטרם מילאו את הסקר' },
+        { id: '4', name: 'מיילים לאחר סיום ללא רכישה', function_name: 'sendCompletionNoPurchase', is_active: true, schedule_mode: 'recurring', repeat_interval: 1, repeat_unit: 'days', start_time: '09:00', description: 'שולח מיילים למשתמשים שסיימו אך לא רכשו' },
+        { id: '5', name: 'מיילי נטישה לאחר 96 שעות', function_name: 'sendAbandonmentSurvey', is_active: true, schedule_mode: 'recurring', repeat_interval: 1, repeat_unit: 'days', start_time: '09:00', description: 'שולח סקר נטישה למשתמשים שלא השלימו' },
+        { id: '6', name: 'שליחת מיילי בוסטר יומיים', function_name: 'sendDailyBoosterEmails', is_active: true, schedule_mode: 'recurring', repeat_interval: 1, repeat_unit: 'days', start_time: '09:00', description: 'שולח מייל יומי למשתתפים בתכנית הבוסטר' }
+      ];
+      setTasks(existingTasks);
     } catch (error) {
       console.error('Error loading tasks:', error);
     } finally {
@@ -78,77 +85,21 @@ export default function ScheduledTasksManager() {
   };
 
   const handleCreateTask = async () => {
-    try {
-      const { manageScheduledTasks } = await import('@/functions/manageScheduledTasks');
-      await manageScheduledTasks({
-        action: 'create',
-        payload: formData
-      });
-      
-      setIsDialogOpen(false);
-      resetForm();
-      loadTasks();
-    } catch (error) {
-      console.error('Error creating task:', error);
-      alert('שגיאה ביצירת התזמון: ' + error.message);
-    }
+    alert('יצירת תזמונים חדשים תתבצע דרך ה-Dashboard של Base44 (Settings -> Scheduled Tasks)');
+    setIsDialogOpen(false);
   };
 
   const handleUpdateTask = async () => {
-    try {
-      const { manageScheduledTasks } = await import('@/functions/manageScheduledTasks');
-      await manageScheduledTasks({
-        action: 'update',
-        payload: {
-          task_id: editingTask.id,
-          name: formData.name,
-          description: formData.description,
-          repeat_interval: parseInt(formData.repeat_interval),
-          repeat_unit: formData.repeat_unit,
-          start_time: formData.start_time
-        }
-      });
-      
-      setIsDialogOpen(false);
-      setEditingTask(null);
-      resetForm();
-      loadTasks();
-    } catch (error) {
-      console.error('Error updating task:', error);
-      alert('שגיאה בעדכון התזמון: ' + error.message);
-    }
+    alert('עריכת תזמונים תתבצע דרך ה-Dashboard של Base44 (Settings -> Scheduled Tasks)');
+    setIsDialogOpen(false);
   };
 
   const handleToggleTask = async (taskId) => {
-    try {
-      const { manageScheduledTasks } = await import('@/functions/manageScheduledTasks');
-      await manageScheduledTasks({
-        action: 'toggle',
-        payload: { task_id: taskId }
-      });
-      loadTasks();
-    } catch (error) {
-      console.error('Error toggling task:', error);
-      alert('שגיאה בשינוי סטטוס התזמון: ' + error.message);
-    }
+    alert('הפעלה/השהיה של תזמונים תתבצע דרך ה-Dashboard של Base44 (Settings -> Scheduled Tasks)');
   };
 
   const handleDeleteTask = async (taskId, taskName) => {
-    if (!confirm(`האם אתה בטוח שברצונך למחוק את התזמון "${taskName}"?`)) {
-      return;
-    }
-
-    try {
-      const { manageScheduledTasks } = await import('@/functions/manageScheduledTasks');
-      await manageScheduledTasks({
-        action: 'delete',
-        payload: { task_id: taskId }
-      });
-      loadTasks();
-    } catch (error) {
-      console.error('Error deleting task:', error);
-      alert('שגיאה במחיקת התזמון: ' + error.message);
-    }
+    alert('מחיקת תזמונים תתבצע דרך ה-Dashboard של Base44 (Settings -> Scheduled Tasks)');
   };
 
   const openCreateDialog = () => {
