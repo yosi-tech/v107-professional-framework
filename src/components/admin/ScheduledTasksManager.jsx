@@ -58,8 +58,8 @@ export default function ScheduledTasksManager() {
     try {
       setIsLoading(true);
       const { listScheduledTasks } = await import('@/functions/listScheduledTasks');
-      const result = await listScheduledTasks();
-      setTasks(result.data || []);
+      const result = await listScheduledTasks({});
+      setTasks(result.data?.tasks || []);
     } catch (error) {
       console.error('Error loading tasks:', error);
     } finally {
