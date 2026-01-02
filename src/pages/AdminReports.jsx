@@ -2801,7 +2801,7 @@ export default function AdminReports() {
           </TabsContent>
 
           <TabsContent value="advanced-analytics">
-            <div className="space-y-6">
+            <div className="space-y-6" dir="rtl">
               <Card className="mb-6">
                 <CardHeader>
                   <CardTitle className="text-2xl flex items-center gap-3">
