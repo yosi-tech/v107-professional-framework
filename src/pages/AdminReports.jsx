@@ -32,7 +32,8 @@ import {
   Rocket,
   MessageSquare,
   Edit3,
-  Link2 } from
+  Link2,
+  GitCompare } from
 "lucide-react";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
