@@ -34,6 +34,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+// אקשנים זמינים למשתמש
+const AVAILABLE_ACTIONS = [
+  { value: 'send_daily_booster_emails', label: 'שליחת מיילי בוסטר יומיים', description: 'שולח מייל יומי למשתתפים בתכנית הבוסטר' },
+  { value: 'mark_abandoned_questionnaires', label: 'סימון שאלונים נטושים', description: 'מסמן שאלונים שלא הושלמו כנטושים' },
+  { value: 'send_abandonment_survey', label: 'מיילי נטישה לאחר 96 שעות', description: 'שולח סקר נטישה למשתמשים שלא השלימו' },
+  { value: 'send_survey_reminders', label: 'תזכורות סקר נטישה', description: 'שולח תזכורות למשתמשים שטרם מילאו את הסקר' },
+  { value: 'send_completion_no_purchase', label: 'מיילים לאחר סיום ללא רכישה', description: 'שולח מיילים למשתמשים שסיימו אך לא רכשו' },
+  { value: 'send_booster_encouragement', label: 'עידוד הרשמה לבוסטר', description: 'שולח מיילי עידוד להירשם לתכנית הבוסטר' }
+];
+
 export default function ScheduledTasksManager() {
   const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -151,7 +161,7 @@ export default function ScheduledTasksManager() {
     setEditingTask(task);
     setFormData({
       name: task.name,
-      function_name: task.function_name,
+      action_type: '',
       description: task.description || '',
       schedule_type: task.schedule_type || 'simple',
       repeat_interval: task.repeat_interval || 1,
@@ -322,24 +332,42 @@ export default function ScheduledTasksManager() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="לדוגמה: שליחת מיילים יומיים"
-                disabled={!!editingTask}
               />
             </div>
 
-            <div>
-              <Label htmlFor="function_name">שם הפונקציה *</Label>
-              <Input
-                id="function_name"
-                value={formData.function_name}
-                onChange={(e) => setFormData({ ...formData, function_name: e.target.value })}
-                placeholder="לדוגמה: sendDailyBoosterEmails"
-                disabled={!!editingTask}
-                className="font-mono"
-              />
-            </div>
+            {!editingTask && (
+              <div>
+                <Label htmlFor="action_type">סוג הפעולה *</Label>
+                <Select
+                  value={formData.action_type}
+                  onValueChange={(value) => {
+                    const selectedAction = AVAILABLE_ACTIONS.find(a => a.value === value);
+                    setFormData({ 
+                      ...formData, 
+                      action_type: value,
+                      description: selectedAction?.description || formData.description
+                    });
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="בחר סוג פעולה" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {AVAILABLE_ACTIONS.map((action) => (
+                      <SelectItem key={action.value} value={action.value}>
+                        {action.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 mt-1">
+                  {formData.action_type && AVAILABLE_ACTIONS.find(a => a.value === formData.action_type)?.description}
+                </p>
+              </div>
+            )}
 
             <div>
-              <Label htmlFor="description">תיאור (אופציונלי)</Label>
+              <Label htmlFor="description">תיאור</Label>
               <Input
                 id="description"
                 value={formData.description}
@@ -398,7 +426,7 @@ export default function ScheduledTasksManager() {
             </Button>
             <Button
               onClick={editingTask ? handleUpdateTask : handleCreateTask}
-              disabled={!formData.name || !formData.function_name}
+              disabled={!formData.name || (!editingTask && !formData.action_type)}
             >
               {editingTask ? 'עדכן' : 'צור תזמון'}
             </Button>
