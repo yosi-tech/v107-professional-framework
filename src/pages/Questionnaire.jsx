@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { QuestionnaireResponse } from "@/entities/QuestionnaireResponse";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTranslation } from "@/components/i18n/useTranslation";
 
 const questionsHe = [
@@ -25,236 +27,119 @@ const questionsHe = [
   "אני שומר/ת על משמעת עצמית מלאה גם ללא פיקוח חיצוני.",
   "אני מצליח/ה להישאר יעיל/ה גם בסביבת עבודה כאוטית.",
   "אני יכול/ה להתמודד ביעילות עם מצבים לא מוגדרים או אמביוולנטיים.",
-  "עד כמה את/ה שולט/ת במיומנויות מקצועיות שיכולות לשמש אותך כיזם/ת?",
-  "עד כמה את/ה מיומן/ת בהפעלת כלים וטכנולוגיות עדכניות?",
-  "עד כמה ההישגים המקצועיים שלך מעידים על יכולת להצליח ביזמות?",
-  "עד כמה את/ה מרגיש/ה בנוח לנהל או לעבוד בצוות?",
-  "עד כמה הניסיון שלך ביזמות או בניהול עסק קודם משמעותי?",
-  "עד כמה את/ה מנוסה בניהול תקציבים וכספים?",
-  "עד כמה את/ה מנוסה בשיווק ומכירות?",
-  "עד כמה את/ה מנוסה בתפעול ובשירות לקוחות?",
-  "עד כמה את/ה מנוסה בפיתוח מוצרים או שירותים חדשים?",
-  "עד כמה את/ה מתנסה בקבלת החלטות תחת אי־ודאות?",
-  "עד כמה יש לך ניסיון במשא ומתן עסקי?",
-  "עד כמה את/ה מנוסה בבניית שותפויות עסקיות?",
-  "עד כמה יש לך ניסיון בעבודה עם גורמים בינלאומיים?",
-  "עד כמה את/ה מנוסה בניהול עובדים ובהובלת צוותים?",
-  "עד כמה צברת ניסיון בניהול פרויקטים מורכבים?",
-  "עד כמה את/ה מנוסה בגיוס הון ממשקיעים/גופים פיננסיים?",
-  "עד כמה את/ה מנוסה בהטמעת טכנולוגיות חדשות בעסק?",
-  "עד כמה יש לך ניסיון בהובלת תהליכי שינוי בארגון/עסק?",
-  "עד כמה הישגיך בעבר מעידים על התמדה מול קשיים?",
   
-  "עד כמה ברור לך באילו תחומים עסקיים היית רוצה לפעול?",
-  "עד כמה חשוב לך שהתחום שבו תפעל/י יהיה בעל ערך חברתי/שליחות?",
-  "עד כמה חשוב לך שהתחום העסקי יבטיח פוטנציאל הכנסה גבוה?",
-  "עד כמה חשוב לך לפעול בתחום עסקי יציב ובטוח?",
-  "עד כמה את/ה מזהה שווקים או ענפים בצמיחה שבהם תרצה/י לפעול?",
-  "עד כמה התחביבים או תחומי העניין שלך קשורים ליזמות או לפיתוח עסקי?",
-  "עד כמה כבר בדקת רעיונות/אפשרויות למיזם פוטנציאלי?",
-  "עד כמה יש לך זמן פנוי קבוע להשקיע ביזמות חדשה?",
-  "עד כמה יש לך הון עצמי נזיל להשקעה?",
-  "עד כמה את/ה פתוח/ה לגייס משקיע/ים חיצוניים?",
-  "עד כמה יש לך קשרים עסקיים רלוונטיים שיכולים לעזור למיזם?",
-  "עד כמה את/ה נהנה/ית מתמיכה סביבתית/חברתית בהקמת עסק?",
-  "עד כמה יש לך שותפים פוטנציאליים מתאימים למיזם?",
-  "עד כמה את/ה מוכן/ה לקחת מימון בנקאי לצורך הקמה/צמיחה?",
-  "עד כמה את/ה זמין/ה לנסיעות/פגישות מחוץ לאזור מגוריך?",
-  "עד כמה יש לך ציוד/נכסים רלוונטיים (משרד, רכב, מחשוב) שמסייעים?",
-  "עד כמה את/ה מיומן/ת בשימוש בכלים דיגיטליים לניהול ושיווק?",
-  "עד כמה יש לך מטרות עסקיות ברורות לשנה הקרובה?",
-  "עד כמה יש לך מטרות אישיות ברורות לשנה הקרובה?",
-  "עד כמה יעד ההכנסה החודשי שלך ברור ומוגדר?",
-  "עד כמה חשוב לך לשמור על איזון בית–עבודה?",
-  "עד כמה ברור לך החזון שלך לטווח 3–5 שנים?",
-  "עד כמה ברור לך מה תיחשב עבורך \"הצלחה גדולה\" בעוד שנה?",
-  "עד כמה החששות שלך מהקמת עסק מעכבים אותך כיום?",
-  "עד כמה ברור לך מהם 2–3 התנאים ההכרחיים שלך לכניסה לעסק חדש?",
-  "עד כמה את/ה מזהה תכונות אישיות שעוזרות לך להצליח?",
-  "עד כמה חולשות מקצועיות שיש לך מעכבות את התקדמותך?",
-  "עד כמה מגבלות זמן משפיעות על יכולתך להתקדם?",
-  "עד כמה מגבלות כלכליות משפיעות על יכולתך להתקדם?",
-  "עד כמה מגבלות משפחתיות/אישיות משפיעות על יכולתך להתקדם?",
+  "אני פתוח/ה לרעיונות חדשים גם אם הם שונים מאוד מהנורמה.",
+  "אני נהנה/ת לנסות גישות חדשות לפתרון בעיות במקום להיצמד לשיטות קונבנציונליות.",
+  "קשה לי לשנות את הגישה שלי אחרי שהחלטתי על כיוון.",
+  "אני מתאים/ה בקלות לשינויים בלתי צפויים בסביבת העבודה.",
+  "כשמתרחש שינוי, אני רואה בו הזדמנות ללמידה ולשיפור.",
+  "אני מעדיף/ה פתרונות יצירתיים על פני \"בטוחים\" או מוכרים.",
+  "אני יוזם/ת באופן יזום דרכים חדשות לשיפור תהליכים קיימים.",
+  "אני מסוגל/ת לחשוב \"מחוץ לקופסה\" מול בעיה.",
+  "אני מוכן/ה לקחת סיכונים מחושבים בעבודה כדי לקדם מטרה.",
+  "אני מתלהב/ת מניסיון כלים או שיטות חדשים, גם ללא הוכחת הצלחה מראש.",
+  "אני נוטה להיצמד להליכים קיימים ולא לחפש לשנות אותם.",
+  "אני מזהה הזדמנויות עסקיות או מקצועיות מוקדם יותר מאחרים.",
+  "בהחלטה אני לוקח/ת בחשבון את ההשלכות האסטרטגיות ארוכות הטווח שלה.",
+  "אני נוטה להתמקד בפרטים קטנים יותר מאשר בתמונה הגדולה.",
+  "אני נהנה/ת לבנות תוכניות עבודה אסטרטגיות ארוכות טווח.",
+  "שינויים פתאומיים גורמים לי אי נוחות ברורה.",
+  "אני מגיב/ה במהירות למצבים חדשים ובלתי צפויים.",
   
-  "עד כמה את/ה מעדיף/ה לעבוד לבד (לעומת בצוות)?",
-  "עד כמה את/ה מעדיף/ה להוביל מיזם חדש מאפס (לעומת להצטרף קיים)?",
-  "עד כמה את/ה מסודר/ת ומאורגן/ת בעבודה היומיומית?",
-  "עד כמה את/ה מוכן/ה לקחת סיכונים מחושבים?",
-  "עד כמה את/ה מתמודד/ת היטב עם מצבי לחץ?",
-  "עד כמה את/ה מקבל/ת החלטות במהירות כשהדבר נדרש?",
-  "עד כמה את/ה יצירתי/ת ביצירת פתרונות חדשים?",
-  "עד כמה את/ה אנליטי/ת בניתוח נתונים והחלטות?",
-  "עד כמה את/ה איש/ת חזון (ראייה קדימה, תפיסה אסטרטגית)?",
-  "עד כמה את/ה איש/ת ביצוע (יישום, הוצאה לפועל)?",
-  "עד כמה חשוב לך לנהל עובדים באופן ישיר?",
-  "עד כמה חשוב לך לעבוד ישירות מול לקוחות?",
-  "עד כמה יש לך ידע בסיסי בניהול פיננסי (תקציב, דוחות)?",
-  "עד כמה יש לך ידע בשיווק דיגיטלי (אתרים, רשתות, קידום ממומן)?",
-  "עד כמה יש לך ידע ומיומנות במכירות (טלפוניות/שטח/און־ליין)?",
-  "עד כמה יש לך ידע בסיסי במשפטים/חוזים עסקיים?",
-  "עד כמה יש לך ידע טכנולוגי/מחשובי המסייע לניהול העסק?",
-  "עד כמה יש לך ידע בתפעול ולוגיסטיקה?",
-  "עד כמה יש לך ניסיון בהדרכה/הנחיה של אחרים?",
-  "עד כמה יש לך ידע בניהול פרויקטים (תכנון, לו״ז, בקרה)?",
-  "עד כמה יש לך ידע בניהול משאבי אנוש/גיוס?",
-  "עד כמה יש לך ידע בעיצוב/UX/פיתוח מוצר?",
-  "עד כמה את/ה מעריך/ה שליווי מקצועי יכול לתרום לך בשנה הקרובה?",
-  "עד כמה את/ה סבור/ה שתוכל/י להסתדר ללא ליווי בתחומים מרכזיים?",
-  "עד כמה חשוב לך שהליווי יהיה קבוע מול אדם יחיד (לעומת רשת מומחים)?",
-  "עד כמה היית רוצה לשמש כמדריך/מלווה לאחרים בתחומך?",
-  "עד כמה ברור לך החזון העסקי שלך לשנים הקרובות?",
-  "עד כמה ברור לך איזה סוג לקוחות תרצה/י לשרת?",
-  "עד כמה ברור לך מי המתחרים העיקריים שלך?",
-  "עד כמה ברור לך מהו היתרון התחרותי העיקרי שלך?",
+  "אני לא מפחד/ת להביע דעה השונה מהרוב או מההנהלה.",
+  "אני מציע/ה שיפורים גם כשיוזמה לא נדרשת במפורש.",
+  "אני מקבל/ת ביקורת באופן פתוח ומנסה ללמוד ממנה.",
+  "אני לוקח/ת אחריות על נושאים שאינם באחריותי הרשמית.",
+  "כשמתעוררת בעיה, אני בין הראשונים לפעול ולמצוא פתרון.",
+  "אני מהסס/ת ליזום פעולות חדשות ללא אישור מפורש מגורם בכיר.",
+  "אני יודע/ת לרתום אחרים סביב רעיון או מטרה שאני מאמין/ה בה.",
+  "אני נהנה/ת להוביל צוות או פרויקט ולנהל ביצוע.",
+  "אני מעדיף/ה לעבוד לבד ולא להסתמך על תרומות של אחרים.",
+  "אני רואה את עצמי כאדם שמניע ומדרבן אחרים לפעולה.",
+  "אני מעדיף/ה שאחרים יקבלו את ההחלטות העיקריות בצוות.",
+  "כשאני טועה, אני מודה בטעות ולומד מהחוויה ללא הסתייגות.",
+  "אני נוטה להאשים גורמים חיצוניים כשדברים לא מצליחים.",
   
-  "עד כמה ברור לך מה מניע אותך לקום ולעבוד בכל יום?",
-  "עד כמה את/ה נחוש/ה בהגשמת החלום המקצועי שלך?",
-  "עד כמה את/ה גאה בהישגיך עד היום (מקצועיים/אישיים)?",
-  "עד כמה את/ה פתוח/ה לשנות הרגלים כדי להצליח?",
-  "עד כמה את/ה פתוח/ה לקבל משוב מקצועי מאחרים?",
-  "עד כמה משוב מאחרים משפיע בפועל על קבלת החלטותיך?",
-  "עד כמה ברור לך התחום המרכזי שבו תרצה/י להשתפר בשנים הקרובות?",
-  "עד כמה החשיבה שלך ארוכת־טווח (מעבר לשנה הקרובה)?",
-  "עד כמה את/ה שואף/ת לפרוץ גבולות קיימים בשוק שלך?",
-  "עד כמה את/ה פתוח/ה לחדשנות ולניסוי פתרונות חדשים?",
-  "עד כמה את/ה פתוח/ה לשיתופי פעולה בינלאומיים?",
-  "עד כמה את/ה פתוח/ה לאמץ טכנולוגיות חדשות בעסק?",
-  "עד כמה את/ה פתוח/ה להקשיב ולשלב רעיונות חדשים מצוות/יועצים?",
-  "עד כמה את/ה מסוגל/ת להגדיר במדויק מדדי הצלחה (KPIs) למיזם?",
-  "עד כמה את/ה נוטה לדחות משימות? (בסעיף זה: 1=תמיד דוחה, 7=כמעט אף פעם)",
-  "עד כמה את/ה מתמיד/ה בביצוע משימות עד סיום מלא?",
-  "עד כמה את/ה מרגיש/ה שהפרופיל שיתקבל מהשאלון ישקף נאמנה את דמותך כיזם/ת?"
+  "אני משקיע/ה אנרגיה בשמירה על שיתוף פעולה טוב בצוות.",
+  "אני נהנה/ת לשתף רעיונות עם אחרים ולשמוע דעות מגוונות.",
+  "אני מאמין/ה בעבודת צוות יותר מהישגים אישיים לבד.",
+  "קשה לי לוותר על שליטה ולהאציל סמכויות לאחרים.",
+  "אני יודע/ת לנהל קונפליקטים מורכבים בין חברי צוות.",
+  "אני דואג/ת שכולם מבינים את התפקיד שלהם ואת המטרות המשותפות.",
+  "אני מעדיף/ה שהדברים ייעשו בדרך שלי גם אם יש דעות שונות בצוות.",
+  "אני מסוגל/ת לזהות חוזקות של אחרים ולהקצות משימות בהתאם.",
+  "אני עומד/ת בהתחייבויות שלי באופן עקבי גם כשזה דורש מאמץ אישי נוסף.",
+  "אני נחשב/ת לאדם שאפשר לסמוך על יושרתו ואמינותו.",
+  "אני דואג/ת להעביר מסרים בצורה ברורה וישירה כדי להימנע מאי הבנות.",
+  "אני מרגיש/ה נוח לדבר מול קבוצות גדולות או מנהלים בכירים.",
+  "אני נמנע/ת מעימותים מילוליים גם כשיש לי ביקורת חשובה.",
+  "אני באמת מקשיב/ה לאחרים, גם כשדעתם שונה באופן מהותי משלי.",
+  "אני יודע/ת לשכנע אנשים בעזרת לוגיקה ועובדות ללא הפעלת לחץ.",
+  "אני לפעמים קוטע/ת אחרים כשיש לי רעיון דחוף.",
+  
+  "אני מתכנן/ת את הזמן שלי מראש כדי לעמוד בכל המטרות שהצבתי.",
+  "אני מסוגל/ת להבחין בין משימות חשובות (ארוכות טווח) לדחופות (מיידיות).",
+  "אני נוטה לדחות עניינים משמעותיים עד הרגע האחרון.",
+  "אני שם/ה לב קפדני לפרטים קטנים בעבודה שלי.",
+  "אני יודע/ת לשמור על איזון יעיל בין משימות מרובות במקביל.",
+  "כשאני עמוס/ה, אני נשאר/ת ממוקד/ת ומתקדם/ת לפי סדרי עדיפויות ברורים.",
+  "אני מנצל/ת את זמני ביעילות רבה ביום עבודה רגיל.",
+  "אני מקדיש/ה זמן ללמידה עצמית מעבר לדרישות התפקיד הישיר.",
+  "אני נשאר/ת מעודכן/ת בהתפתחויות האחרונות בתחומי המומחיות שלי.",
+  "אני שואף/ת להבין את הלוגיקה העמוקה מאחורי החלטות, ולא רק לבצע אותן.",
+  "אני פתוח/ה לקבל משוב מקצועי גם כשזה לא נעים לשמוע.",
+  "אני שואף/ת לשיפור עצמי מתמיד בכל תחום שאני מעורב/ת בו.",
+  "אני מצליח/ה לשמור על איזון טוב בין עבודה לחיים אישיים.",
+  "אני יודע/ת להפחית עומס כשאני מרגיש/ה עייפות או שחיקה נפשית.",
+  "אני מרגיש/ה מוטיבציה פנימית חזקה להצליח ולהשיג הישגים.",
+  "יש לי חזון ברור לגבי הכיוון המקצועי שלי בשנים הקרובות.",
+  "אני מרגיש/ה תחושת משמעות בעבודה שאני עושה כל יום.",
+  "אני מרגיש/ה שהעתיד המקצועי שלי תלוי בעיקר בי ובבחירות שאני עושה.",
+  "אני שם/ה לב קפדני לפרטים קטנים בתוכניות עבודה.",
+  "אני מבצע/ת באופן קבוע תהליכי מעקב ומשוב על הביצועים שלי.",
+  "אני מרגיש/ה מוטיבציה גבוהה להתמודד עם אתגרים הדורשים למידה חדשה.",
+  "אני מסוגל/ת לייצר פתרונות יצירתיים לבעיות מורכבות תחת לחץ זמן.",
+  "אני מעריך/ה זמן איכות עם עצמי לחשיבה אסטרטגית ולצמיחה אישית.",
+  "אני מנצל/ת את הרשת המקצועית שלי כדי לקבל תובנות חדשות ולפרוץ קדימה.",
+  "אני משתמש/ת באופן יזום בטכנולוגיות חדשות כדי לשפר את הפרודוקטיביות שלי.",
+  "אני רואה את עצמי כמוביל/ה טכנולוגי בתחום המקצועי שלי.",
+  "אני נוטה לשקול את ההשלכות של פעולותיי על פני אופק של 3 שנים ומעלה.",
+  "אני יוזם/ת שיחות עם מומחים או מנטורים כדי להרחיב את הידע שלי.",
+  "אני משקיע/ה זמן בלמידה של כלים דיגיטליים חדשים שיכולים לשפר את עבודתי.",
+  "אני מרגיש/ה בנוח לשאול שאלות כדי להבין דברים לעומק.",
+  "אני מצליח/ה לשמור על איזון בין עבודה לחיים פרטיים גם בתקופות עמוסות.",
+  "אני נוטה להקריב זמן אישי כדי לעמוד בדרישות מקצועיות.",
+  "אני מרגיש/ה שחיקה או עייפות נפשית בתקופות של עומס עבודה ממושך.",
+  "אני יודע/ת להגיד \"לא\" למשימות נוספות כשאני כבר עמוס/ה.",
+  "אני שואף/ת להוביל שינויים ארגוניים או מקצועיים משמעותיים.",
+  "אני נוטה להמתין עד שמישהו אחר ייזום שינוי לפני שאצטרף.",
+  "אני משתמש/ת בכלים דיגיטליים כדי לייעל תהליכים בעבודה.",
+  "אני רואה בטכנולוגיה כלי מרכזי להגברת פרודוקטיביות.",
+  "אני יוזם/ת פרויקטים חדשים גם ללא תמיכה ראשונית מההנהלה.",
+  "אני מרגיש/ה נוח להציע רעיונות חדשניים שיכולים לשנות את הסטטוס קוו.",
+  "אני מעדיף/ה להישאר באזור הנוחות שלי ולא לנסות דברים חדשים.",
+  "אני רואה את עצמי כמי שמוביל/ה שינויים במקום העבודה שלי.",
+  "אני מוכן/ה לקחת סיכונים מחושבים כדי לקדם שינוי משמעותי.",
+  "יש לי חזון ברור לעתיד המקצועי שלי.",
+  "אני מצליח/ה להישאר ממוקד/ת ביעדים ארוכי טווח גם כשיש הסחות.",
+  "אני לומד/ת בקלות מיומנויות חדשות הנדרשות לעבודה.",
+  "אני יוזם/ת שינויים בתהליכי עבודה כדי לשפר תוצאות.",
+  "אני פתוח/ה לקבל הכוונה מקצועית או ייעוץ ממומחה חיצוני.",
+  "אני מאמין/ה שהשאלון הזה יסייע לי לחשוף דפוסים חשובים עליי.",
+  "אני מלא מוטיבציה ליישם את המלצות הדו\"ח, מתוך הבנה שהן מהוות כלי משמעותי להצלחתי המקצועית."
 ];
 
-const questionsEn = [
-  "To what extent do you feel your formal education provides a strong foundation for entrepreneurship?",
-  "To what extent are the courses or training you've completed relevant to entrepreneurship and business?",
-  "To what extent does your language proficiency support your ability to operate in international markets?",
-  "To what extent has your accumulated professional experience prepared you to run an independent business?",
-  "To what extent do you receive family or environmental support for an entrepreneurial step?",
-  "To what extent does your overall health condition allow you to run a business?",
-  "To what extent do you feel you have basic financial stability that enables taking an entrepreneurial step?",
-  "To what extent do you receive encouragement and support from those close to you (family/friends)?",
-  "To what extent can you explain what drives you to be independent?",
-  "To what extent does your experience in your current role prepare you for entrepreneurship?",
-  
-  "To what extent do you have significant experience in various professional fields?",
-  "To what extent do you possess professional skills that can serve you as an entrepreneur?",
-  "To what extent are you skilled in operating current tools and technologies?",
-  "To what extent do your professional achievements indicate an ability to succeed in entrepreneurship?",
-  "To what extent do you feel comfortable managing or working in a team?",
-  "To what extent is your experience in entrepreneurship or previous business management significant?",
-  "To what extent are you experienced in budget and financial management?",
-  "To what extent are you experienced in marketing and sales?",
-  "To what extent are you experienced in operations and customer service?",
-  "To what extent are you experienced in developing new products or services?",
-  "To what extent do you experience decision-making under uncertainty?",
-  "To what extent do you have experience in business negotiations?",
-  "To what extent are you experienced in building business partnerships?",
-  "To what extent do you have experience working with international parties?",
-  "To what extent are you experienced in managing employees and leading teams?",
-  "To what extent have you gained experience in managing complex projects?",
-  "To what extent are you experienced in raising capital from investors/financial institutions?",
-  "To what extent are you experienced in implementing new technologies in business?",
-  "To what extent do you have experience leading organizational/business change processes?",
-  "To what extent do your past achievements demonstrate perseverance in the face of challenges?",
-  
-  "To what extent is it clear to you in which business areas you would like to operate?",
-  "To what extent is it important to you that the field you operate in has social value/mission?",
-  "To what extent is it important to you that the business field ensures high income potential?",
-  "To what extent is it important to you to operate in a stable and secure business field?",
-  "To what extent do you identify growing markets or sectors in which you would like to operate?",
-  "To what extent are your hobbies or interests related to entrepreneurship or business development?",
-  "To what extent have you already examined ideas/possibilities for a potential venture?",
-  "To what extent do you have regular free time to invest in new entrepreneurship?",
-  "To what extent do you have liquid equity for investment?",
-  "To what extent are you open to recruiting external investor(s)?",
-  "To what extent do you have relevant business connections that can help the venture?",
-  "To what extent do you enjoy environmental/social support in establishing a business?",
-  "To what extent do you have suitable potential partners for the venture?",
-  "To what extent are you willing to take bank financing for establishment/growth?",
-  "To what extent are you available for travel/meetings outside your residential area?",
-  "To what extent do you have relevant equipment/assets (office, vehicle, computing) that assist?",
-  "To what extent are you skilled in using digital tools for management and marketing?",
-  "To what extent do you have clear business goals for the coming year?",
-  "To what extent do you have clear personal goals for the coming year?",
-  "To what extent is your monthly income target clear and defined?",
-  "To what extent is it important to you to maintain work-life balance?",
-  "To what extent is your vision for the 3-5 year range clear to you?",
-  "To what extent is it clear to you what would be considered a 'big success' for you in a year?",
-  "To what extent do your concerns about starting a business hold you back currently?",
-  "To what extent is it clear to you what are the 2-3 essential conditions for entering a new business?",
-  "To what extent do you identify personal traits that help you succeed?",
-  "To what extent do professional weaknesses you have hinder your progress?",
-  "To what extent do time limitations affect your ability to progress?",
-  "To what extent do financial limitations affect your ability to progress?",
-  "To what extent do family/personal limitations affect your ability to progress?",
-  
-  "To what extent do you prefer to work alone (versus in a team)?",
-  "To what extent do you prefer to lead a new venture from scratch (versus joining an existing one)?",
-  "To what extent are you organized and orderly in daily work?",
-  "To what extent are you willing to take calculated risks?",
-  "To what extent do you cope well with stressful situations?",
-  "To what extent do you make decisions quickly when required?",
-  "To what extent are you creative in creating new solutions?",
-  "To what extent are you analytical in data analysis and decisions?",
-  "To what extent are you a visionary (forward thinking, strategic perception)?",
-  "To what extent are you an executor (implementation, execution)?",
-  "To what extent is it important to you to manage employees directly?",
-  "To what extent is it important to you to work directly with clients?",
-  "To what extent do you have basic knowledge in financial management (budget, reports)?",
-  "To what extent do you have knowledge in digital marketing (websites, networks, paid promotion)?",
-  "To what extent do you have knowledge and skill in sales (phone/field/online)?",
-  "To what extent do you have basic knowledge in legal matters/business contracts?",
-  "To what extent do you have technological/computing knowledge that assists in managing the business?",
-  "To what extent do you have knowledge in operations and logistics?",
-  "To what extent do you have experience in training/coaching others?",
-  "To what extent do you have knowledge in project management (planning, scheduling, control)?",
-  "To what extent do you have knowledge in human resources management/recruitment?",
-  "To what extent do you have knowledge in design/UX/product development?",
-  "To what extent do you estimate that professional guidance could benefit you in the coming year?",
-  "To what extent do you believe you could manage without guidance in key areas?",
-  "To what extent is it important to you that guidance be regular with a single individual (versus a network of experts)?",
-  "To what extent would you like to serve as a mentor/guide to others in your field?",
-  "To what extent is your business vision for the coming years clear to you?",
-  "To what extent is it clear to you what type of customers you wish to serve?",
-  "To what extent is it clear to you who your main competitors are?",
-  "To what extent is it clear to you what your main competitive advantage is?",
-  
-  "To what extent is it clear to you what drives you to get up and work every day?",
-  "To what extent are you determined to realize your professional dream?",
-  "To what extent are you proud of your achievements to date (professional/personal)?",
-  "To what extent are you open to changing habits to succeed?",
-  "To what extent are you open to receiving professional feedback from others?",
-  "To what extent does feedback from others actually influence your decision-making?",
-  "To what extent is it clear to you the main area in which you wish to improve in the coming years?",
-  "To what extent is your thinking long-term (beyond the coming year)?",
-  "To what extent do you aspire to break existing boundaries in your market?",
-  "To what extent are you open to innovation and trying new solutions?",
-  "To what extent are you open to international collaborations?",
-  "To what extent are you open to adopting new technologies in business?",
-  "To what extent are you open to listening and integrating new ideas from team/consultants?",
-  "To what extent are you able to accurately define success metrics (KPIs) for the venture?",
-  "To what extent do you tend to postpone tasks? (In this item: 1=always postpones, 7=almost never)",
-  "To what extent do you persevere in completing tasks to full completion?",
-  "To what extent do you feel the profile obtained from the questionnaire will faithfully reflect your image as an entrepreneur?"
-];
+const questionsEn = questionsHe; // For now, we'll keep the same for both languages
 
 const sectionTitlesHe = [
-  { start: 1, end: 10, title: "חלק א – רקע והכשרה" },
-  { start: 11, end: 30, title: "חלק ב – ניסיון מקצועי וכישורים" },
-  { start: 31, end: 60, title: "חלק ג – תחומי עניין, משאבים ומוטיבציה" },
-  { start: 61, end: 90, title: "חלק ד – סגנון עבודה, נטיות יזמיות וכשירויות ליבה" },
-  { start: 91, end: 107, title: "חלק ה – סיכום אישי, חזון ומדדי הצלחה" }
+  { start: 1, end: 11, title: "מקטע 1: מיקוד, החלטה וחוסן" },
+  { start: 12, end: 28, title: "מקטע 2: גמישות, יצירתיות וחדשנות" },
+  { start: 29, end: 41, title: "מקטע 3: מנהיגות, יוזמה ואחריות" },
+  { start: 42, end: 57, title: "מקטע 4: תקשורת, שיתוף פעולה ויושרה" },
+  { start: 58, end: 107, title: "מקטע 5: תכנון, למידה וצמיחה" }
 ];
 
-const sectionTitlesEn = [
-  { start: 1, end: 10, title: "Part A – Background & Training" },
-  { start: 11, end: 30, title: "Part B – Professional Experience & Skills" },
-  { start: 31, end: 60, title: "Part C – Interests, Resources & Motivation" },
-  { start: 61, end: 90, title: "Part D – Work Style, Entrepreneurial Tendencies & Core Competencies" },
-  { start: 91, end: 107, title: "Part E – Personal Summary, Vision & Success Metrics" }
-];
+const sectionTitlesEn = sectionTitlesHe; // For now, we'll keep the same for both languages
 
 const QuestionnaireIntro = ({ onStart, language }) => {
   return (
@@ -264,34 +149,34 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           <FileText className="w-10 h-10 text-accent" />
         </div>
         <CardTitle className="text-3xl font-bold text-text-primary mb-2">
-          {language === 'he' ? 'אודות שאלון V107 ' : 'V107 About Questionnaire'}
+          {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
         </CardTitle>
         <CardDescription className="text-lg text-text-secondary">
-          {language === 'he' ? 'גרסה B6 · v1.0-LTS' : 'Version B6 · v1.0-LTS'}
+          {language === 'he' ? 'גרסה B7 PRO V4' : 'Version B7 PRO V4'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-text-secondary space-y-4 bg-slate-50 p-4 rounded-lg border`}>
-          <p className="whitespace-pre-wrap leading-relaxed">
-            {language === 'he' ?
-            'שאלון V107 הוא כלי אבחון מתקדם, שנבנה כדי להפיק עבורך דו״ח אישי ומעמיק ברמה הגבוהה ביותר.\n\nמטרת השאלון היא לספק תמונת מצב מלאה ומדויקת ככל האפשר לגבי יכולותיך, חוזקותיך, מגבלותיך ושאיפותיך — ולתרגם זאת לדו״ח מקצועי, ברור ויישומי שתקבל/י לאחר השלמת השאלון ובתוך עד 5 ימי עבודה.' :
-            'The V107 questionnaire is an advanced assessment tool, designed to deliver a highly professional and in-depth personal report.\n\nDeveloped by the Elit team five years ago, it has since been completed by thousands of entrepreneurs and business owners worldwide.\n\nIts purpose is to provide the most accurate possible picture of your abilities, strengths, limitations, and aspirations — translated into a clear, professional, and actionable report delivered within 7 business days.'
-            }
+        <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-text-secondary space-y-4`}>
+          <p className="font-semibold text-lg text-text-primary">
+            {language === 'he' ? 'ברוך הבא לשאלון V107.' : 'Welcome to the V107 Questionnaire.'}
           </p>
+          <ul className="space-y-2 list-disc pr-6">
+            <li>{language === 'he' ? 'כלי אבחון מקצועי זה נועד למפות את היכולות, הדפוסים והנטיות האישיות והמקצועיות שלך בהתבסס על 11 ממדים פסיכומטריים ליבתיים.' : 'This professional diagnostic tool is designed to map your personal and professional abilities, patterns, and tendencies based on 11 core psychometric dimensions.'}</li>
+            <li>{language === 'he' ? 'שאלון V107 ובעקבותיו דו"ח V107 פותחו בתהליך מקצועי רב־שלבי ונמצאים בתהליך ולידציה מתמשך מול קבוצות מיקוד של מומחי קריירה, פסיכולוגיה תעסוקתית ואסטרטגים של התפתחות אישית.' : 'The V107 questionnaire and its subsequent V107 report were developed through a multi-stage professional process and are undergoing continuous validation with focus groups of career experts, occupational psychologists, and personal development strategists.'}</li>
+            <li>{language === 'he' ? 'הבהרה משפטית: הדו"ח המופק מהווה כלי אבחוני בלבד ואינו מהווה ייעוץ משפטי, עסקי או פסיכולוגי מחייב. אין במסקנות הדו"ח משום הבטחה להישגים או לתוצאות כלכליות, והשימוש במידע המוצג בו הוא על דעתו ובאחריותו הבלעדית של המשתמש.' : 'Legal clarification: The generated report is solely a diagnostic tool and does not constitute binding legal, business, or psychological advice. The conclusions of the report do not promise achievements or financial results, and the use of the information presented therein is at the sole discretion and responsibility of the user.'}</li>
+            <li>{language === 'he' ? 'משך המילוי: כ־20 דקות. השאלון כולל 107 שאלות המחולקות ל־5 מקטעים ממוקדים.' : 'Completion time: Approximately 20 minutes. The questionnaire includes 107 questions divided into 5 focused sections.'}</li>
+            <li className="font-semibold">{language === 'he' ? 'ככל שתשובותיך יהיו כנות כך איכות הדו"ח שתקבל תהיה גבוהה יותר.' : 'The more honest your answers, the higher the quality of the report you will receive.'}</li>
+          </ul>
         </div>
-        <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-xs text-text-muted space-y-2 bg-slate-50 p-4 rounded-lg border`}>
-          <p>
-            {language === 'he' ?
-            'השאלון כולל 107 שאלות סגורות בסולם 1–7 (1=כלל לא, 7=במידה רבה מאוד) ושאלה מסכמת אחת אופציונלית.' :
-            'The questionnaire includes 107 closed questions rated on a 1–7 scale (1 = Not at all, 7 = Very much so), plus one optional open question at the end.'
-            }
-          </p>
-          <p>
-            {language === 'he' ?
-            'הדו״ח האישי שלך יעבור ניתוח כמותי ומעמיק, ובקרת איכות אנושית של צוות מומחים בינלאומי, כדי להבטיח תוצאה עדכנית, אמינה ומדויקת.' :
-            'Your personal report undergoes quantitative and qualitative analysis, followed by international expert review, ensuring accuracy, reliability, and relevance.'
-            }
-          </p>
+        
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <h3 className="font-semibold text-lg mb-2">{language === 'he' ? 'סודיות, פרטיות ומחיקת נתונים' : 'Confidentiality, Privacy, and Data Deletion'}</h3>
+          <p className="text-sm text-gray-700">{language === 'he' ? 'אנו מתחייבים לסודיות מלאה:' : 'We commit to full confidentiality:'}</p>
+          <ol className="list-decimal pr-6 text-sm text-gray-700 space-y-1 mt-2">
+            <li>{language === 'he' ? 'פרטי הזיהוי (שם, מייל, גיל) נמחקים מהמערכת 30 יום לאחר הפקת הדו"ח האישי.' : 'Identification details (name, email, age) are deleted from the system 30 days after the personal report is generated.'}</li>
+            <li>{language === 'he' ? 'תשובות השאלון עצמן נשמרות באופן אנונימי לחלוטין לצורך מחקר מתמשך ושיפור דיוק המערכת.' : 'The questionnaire answers themselves are kept completely anonymous for continuous research and system accuracy improvement.'}</li>
+            <li>{language === 'he' ? 'הנתונים לא מועברים לשום גורם שלישי.' : 'Data is not transferred to any third party.'}</li>
+          </ol>
         </div>
         
         <Button
@@ -311,99 +196,162 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
     onChange({ ...data, [field]: value });
   };
 
+  const occupationOptions = [
+    { value: 'marketing', label: 'שיווק' },
+    { value: 'sales', label: 'מכירות' },
+    { value: 'hr', label: 'משאבי אנוש / גיוס' },
+    { value: 'tech', label: 'תכנות/טכנולוגיה' },
+    { value: 'entrepreneurship', label: 'יזמות / ניהול עסק' },
+    { value: 'education', label: 'חינוך והדרכה' },
+    { value: 'finance', label: 'פיננסים / ייעוץ כלכלי' },
+    { value: 'medical', label: 'רפואה / פרא-רפואה' },
+    { value: 'law', label: 'משפטים' },
+    { value: 'design', label: 'עיצוב / UX / UI' },
+    { value: 'logistics', label: 'תפעול ולוגיסטיקה' },
+    { value: 'customer_service', label: 'שירות לקוחות' },
+    { value: 'other', label: 'אחר' }
+  ];
+
+  const interestOptions = [
+    { value: 'art', label: 'אמנות/יצירה' },
+    { value: 'technology', label: 'טכנולוגיה/גאדגטים' },
+    { value: 'education', label: 'חינוך/פיתוח אישי' },
+    { value: 'finance', label: 'פיננסים/השקעות' },
+    { value: 'health', label: 'ספורט/בריאות/תזונה' },
+    { value: 'travel', label: 'טיולים/תרבויות' },
+    { value: 'food', label: 'בישול/קולינריה' },
+    { value: 'social_activism', label: 'אקטיביזם/סביבה' },
+    { value: 'business_dev', label: 'פיתוח עסקי/יזמות' },
+    { value: 'psychology', label: 'פסיכולוגיה/התנהגות' },
+    { value: 'other', label: 'אחר' }
+  ];
+
+  const toggleInterest = (interest) => {
+    const current = data.interests || [];
+    if (current.includes(interest)) {
+      onChange({ ...data, interests: current.filter(i => i !== interest) });
+    } else if (current.length < 3) { // Allow selecting up to 3 interests
+      onChange({ ...data, interests: [...current, interest] });
+    }
+  };
+
   return (
     <Card className="shadow-lg">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <UserIcon className="w-5 h-5 text-accent" />
-          {language === 'he' ? 'פרטים אישיים' : 'Personal Information'}
+          {language === 'he' ? 'פרטי ממלא/ת השאלון' : 'Respondent Information'}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="full_name">{language === 'he' ? 'שם מלא' : 'Full Name'} <span className="text-red-500">*</span></Label>
+            <Label htmlFor="full_name">שם מלא <span className="text-red-500">*</span></Label>
             <Input
               id="full_name"
               value={data.full_name || ""}
               onChange={(e) => handleInputChange("full_name", e.target.value)}
-              placeholder={language === 'he' ? 'ישראל ישראלי' : 'John Doe'}
+              placeholder="ישראל ישראלי"
               required
             />
           </div>
           <div>
-            <Label htmlFor="age">{language === 'he' ? 'גיל' : 'Age'}</Label>
-            <Input
-              id="age"
-              type="number"
-              value={data.age || ""}
-              onChange={(e) => handleInputChange("age", parseInt(e.target.value, 10) || "")}
-              placeholder={language === 'he' ? 'לדוגמה: 35' : 'e.g., 35'}
-              min={16}
-              max={90}
-            />
-          </div>
-        </div>
-        
-        <div>
-          <Label>{language === 'he' ? 'מין' : 'Gender'}</Label>
-          <RadioGroup
-            value={data.gender || ''}
-            onValueChange={(value) => handleInputChange("gender", value)}
-            className="flex gap-4 mt-2"
-          >
-            <div className={`flex items-center ${language === 'he' ? 'space-x-reverse' : ''} space-x-2`}>
-              <RadioGroupItem value="male" id="male" />
-              <Label htmlFor="male">{language === 'he' ? 'זכר' : 'Male'}</Label>
-            </div>
-            <div className={`flex items-center ${language === 'he' ? 'space-x-reverse' : ''} space-x-2`}>
-              <RadioGroupItem value="female" id="female" />
-              <Label htmlFor="female">{language === 'he' ? 'נקבה' : 'Female'}</Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div>
-          <Label htmlFor="marital_status">{language === 'he' ? 'מצב משפחתי' : 'Marital Status'}</Label>
-          <Input
-            id="marital_status"
-            value={data.marital_status || ""}
-            onChange={(e) => handleInputChange("marital_status", e.target.value)}
-            placeholder={language === 'he' ? 'רווק/ה, נשוי/ה, אחר' : 'Single, Married, Other'}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="address">{language === 'he' ? 'כתובת (עיר/אזור מגורים)' : 'Address (City/Region)'}</Label>
-          <Input
-            id="address"
-            value={data.address || ""}
-            onChange={(e) => handleInputChange("address", e.target.value)}
-            placeholder={language === 'he' ? 'תל אביב, ישראל' : 'New York, USA'}
-          />
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="phone">{language === 'he' ? 'טלפון' : 'Phone'}</Label>
-            <Input
-              id="phone"
-              value={data.phone || ""}
-              onChange={(e) => handleInputChange("phone", e.target.value)}
-              placeholder={language === 'he' ? '050-1234567' : '+1-555-1234'}
-            />
-          </div>
-          <div>
-            <Label htmlFor="email">{language === 'he' ? 'דוא"ל' : 'Email'} <span className="text-red-500">*</span></Label>
+            <Label htmlFor="email">כתובת מייל <span className="text-red-500">*</span></Label>
             <Input
               id="email"
               type="email"
               value={data.email || ""}
               onChange={(e) => handleInputChange("email", e.target.value)}
-              placeholder={language === 'he' ? 'example@domain.com' : 'example@domain.com'}
+              placeholder="example@domain.com"
               required
             />
           </div>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="age">גיל</Label>
+            <Input
+              id="age"
+              type="number"
+              value={data.age || ""}
+              onChange={(e) => handleInputChange("age", parseInt(e.target.value, 10) || "")}
+              placeholder="35"
+              min={16}
+              max={90}
+            />
+          </div>
+          <div>
+            <Label>מין</Label>
+            <RadioGroup
+              value={data.gender || ''}
+              onValueChange={(value) => handleInputChange("gender", value)}
+              className="flex gap-4 mt-2"
+            >
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="male" id="male" />
+                <Label htmlFor="male">זכר</Label>
+              </div>
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="female" id="female" />
+                <Label htmlFor="female">נקבה</Label>
+              </div>
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="other" id="other" />
+                <Label htmlFor="other">אחר</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="occupation">תחום עיסוק קיים</Label>
+          <Select value={data.occupation || ''} onValueChange={(value) => handleInputChange("occupation", value)} dir="rtl">
+            <SelectTrigger>
+              <SelectValue placeholder="בחר תחום עיסוק" />
+            </SelectTrigger>
+            <SelectContent>
+              {occupationOptions.map(opt => (
+                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {data.occupation === 'other' && (
+            <Input
+              className="mt-2"
+              value={data.occupation_other || ""}
+              onChange={(e) => handleInputChange("occupation_other", e.target.value)}
+              placeholder="פרט בקצרה"
+              dir="rtl"
+            />
+          )}
+        </div>
+
+        <div>
+          <Label>תחומי עניין (בחר עד 3)</Label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {interestOptions.map(opt => (
+              <Button
+                key={opt.value}
+                type="button"
+                variant={(data.interests || []).includes(opt.value) ? "default" : "outline"}
+                size="sm"
+                onClick={() => toggleInterest(opt.value)}
+                disabled={(data.interests || []).length >= 3 && !(data.interests || []).includes(opt.value)}
+              >
+                {opt.label}
+              </Button>
+            ))}
+          </div>
+          {(data.interests && data.interests.includes('other')) && (
+            <Input
+              className="mt-2"
+              value={data.interests_other || ""}
+              onChange={(e) => handleInputChange("interests_other", e.target.value)}
+              placeholder="פרט תחום עניין אחר"
+              dir="rtl"
+            />
+          )}
         </div>
       </CardContent>
     </Card>
@@ -411,25 +359,14 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
 };
 
 const QuestionCard = ({ questionNumber, questionText, value, onChange, language }) => {
-  const isHebrew = language === 'he';
-  
   return (
     <div className="mb-6 pb-6 border-b last:border-b-0">
       <h3 className="text-lg font-semibold mb-4">
         {questionNumber}. {questionText}
       </h3>
       <div className="flex items-center justify-between mb-4">
-        {isHebrew ? (
-          <>
-            <span className="text-sm text-gray-500">7 (במידה רבה מאוד)</span>
-            <span className="text-sm text-gray-500">1 (כלל לא)</span>
-          </>
-        ) : (
-          <>
-            <span className="text-sm text-gray-500">1 (Not at all)</span>
-            <span className="text-sm text-gray-500">7 (Very much so)</span>
-          </>
-        )}
+        <span className="text-sm text-gray-500">1 (לא מתאר אותי כלל)</span>
+        <span className="text-sm text-gray-500">7 (מתאר אותי מאוד)</span>
       </div>
       <RadioGroup
         value={value ? value.toString() : ''}
@@ -470,7 +407,7 @@ export default function Questionnaire() {
       const existingResponses = await QuestionnaireResponse.filter({
         created_by: currentUser.email,
         status: 'in_progress',
-        version: 'B6_v1.0-LTS'
+        version: 'B7_PRO_V4'
       }, '-updated_date', 1);
 
       if (existingResponses.length > 0) {
@@ -501,19 +438,15 @@ export default function Questionnaire() {
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
 
-  // Set navigation blocking status
   useEffect(() => {
     setShouldBlockNavigation(currentStep >= 0);
   }, [currentStep]);
 
-  // Warning before leaving questionnaire page (browser close/refresh)
   useEffect(() => {
     if (shouldBlockNavigation) {
       const handleBeforeUnload = (e) => {
         e.preventDefault();
-        e.returnValue = language === 'he' ? 
-          'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.' :
-          'Are you sure you want to leave? Your progress has been saved automatically and you can return to continue later.';
+        e.returnValue = 'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.';
         return e.returnValue;
       };
 
@@ -523,67 +456,37 @@ export default function Questionnaire() {
         window.removeEventListener('beforeunload', handleBeforeUnload);
       };
     }
-  }, [shouldBlockNavigation, language]);
+  }, [shouldBlockNavigation]);
 
-  // Intercept all Link clicks and navigation attempts
   useEffect(() => {
     if (!shouldBlockNavigation) return;
 
     const handleClick = (e) => {
-      // Check if clicked element or its parent is a link
       const link = e.target.closest('a');
       if (link && link.href) {
         const targetUrl = new URL(link.href);
         const currentUrl = new URL(window.location.href);
 
-        // If navigating to a different page within the app
         if (targetUrl.origin === currentUrl.origin && targetUrl.pathname !== currentUrl.pathname) {
           e.preventDefault();
           e.stopPropagation();
 
-          const confirmMessage = language === 'he' ?
-            'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.' :
-            'Are you sure you want to leave? Your progress has been saved automatically and you can return to continue later.';
+          const confirmMessage = 'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.';
 
           if (window.confirm(confirmMessage)) {
-            // Mark questionnaire as abandoned and send email - async operation
             (async () => {
               if (savedResponseId && user) {
                 try {
                   await base44.entities.QuestionnaireResponse.update(savedResponseId, {
                     status: 'abandoned'
                   });
-
-                  // Send abandonment email
-                  const { getAbandonmentEmailTemplate } = await import('@/components/email/AbandonmentEmailTemplate');
-                  const surveyUrl = `${window.location.origin}${createPageUrl('Survey')}`;
-                  const userName = personalInfo.full_name || user.full_name || 'משתמש';
-                  const userEmail = personalInfo.email || user.email;
-
-                  const emailTemplate = getAbandonmentEmailTemplate(userName, surveyUrl, language);
-
-                  await base44.integrations.Core.SendEmail({
-                    to: userEmail,
-                    subject: emailTemplate.subject,
-                    body: emailTemplate.html
-                  });
-
-                  // Log the email
-                  await base44.entities.EmailLog.create({
-                    to_email: userEmail,
-                    email_type: 'abandonment_survey',
-                    subject: emailTemplate.subject,
-                    related_user_email: userEmail,
-                    related_questionnaire_response_id: savedResponseId,
-                    sent_manually: false,
-                    language: language
-                  });
+                  // Optionally send abandonment email as in original
+                  // For now, I'm just adapting the exact outline provided, which removed the email sending part
+                  // If email sending is critical, it should be re-added here.
                 } catch (error) {
-                  console.error("Failed to mark as abandoned or send email:", error);
+                  console.error("Failed to mark as abandoned:", error);
                 }
               }
-
-              // Navigate after async operations complete
               window.location.href = link.href;
             })();
           }
@@ -596,7 +499,7 @@ export default function Questionnaire() {
     return () => {
       document.removeEventListener('click', handleClick, true);
     };
-  }, [shouldBlockNavigation, language, savedResponseId, user, personalInfo]);
+  }, [shouldBlockNavigation, savedResponseId, user, personalInfo]);
 
   const autoSaveProgress = useCallback(async () => {
     if (!user) return;
@@ -612,7 +515,7 @@ export default function Questionnaire() {
         responses: responses,
         optional_comment: optionalComment,
         language: language,
-        version: 'B6_v1.0-LTS',
+        version: 'B7_PRO_V4',
         status: 'in_progress'
       };
 
@@ -650,11 +553,11 @@ export default function Questionnaire() {
 
   const validatePersonalInfo = () => {
     if (!personalInfo.full_name?.trim()) {
-      alert(language === 'he' ? 'יש להזין שם מלא' : 'Please enter your full name');
+      alert('יש להזין שם מלא');
       return false;
     }
     if (!personalInfo.email?.trim()) {
-      alert(language === 'he' ? 'יש להזין כתובת דוא"ל' : 'Please enter your email address');
+      alert('יש להזין כתובת דוא"ל');
       return false;
     }
     return true;
@@ -671,10 +574,7 @@ export default function Questionnaire() {
     }
 
     if (unansweredQuestions.length > 0) {
-      alert(language === 'he' ?
-      `יש לענות על כל השאלות. שאלות חסרות: ${unansweredQuestions.join(', ')}` :
-      `Please answer all questions. Missing questions: ${unansweredQuestions.join(', ')}`
-      );
+      alert(`יש לענות על כל השאלות. שאלות חסרות: ${unansweredQuestions.join(', ')}`);
       return false;
     }
 
@@ -691,7 +591,7 @@ export default function Questionnaire() {
         responses: responses,
         optional_comment: optionalComment,
         language: language,
-        version: 'B6_v1.0-LTS',
+        version: 'B7_PRO_V4',
         status: 'completed'
       };
 
@@ -704,14 +604,13 @@ export default function Questionnaire() {
         finalResponseId = newResponse.id;
       }
 
-      // Generate report automatically in background (don't wait for it)
       base44.functions.invoke('generateReportAutomatic', { responseId: finalResponseId })
         .catch(err => console.error('Background report generation failed:', err));
 
       navigate(createPageUrl(`Completion?responseId=${finalResponseId}`));
     } catch (error) {
       console.error('Error submitting questionnaire:', error);
-      alert(language === 'he' ? 'שגיאה בשליחת השאלון' : 'Error submitting questionnaire');
+      alert('שגיאה בשליחת השאלון');
     }
     setIsSubmitting(false);
   };
@@ -720,7 +619,7 @@ export default function Questionnaire() {
     if (currentStep === 0 && !validatePersonalInfo()) {
       return;
     }
-    setCurrentStep((prev) => Math.min(prev + 1, 6)); // 6 for optional comment
+    setCurrentStep((prev) => Math.min(prev + 1, 6));
     window.scrollTo(0, 0);
   };
 
@@ -736,7 +635,6 @@ export default function Questionnaire() {
 
   const getProgress = () => {
     if (currentStep <= 0) return 0;
-    // 8 total steps: 1 personal info + 5 sections + 1 optional + 1 (imaginary complete)
     return (currentStep / 7) * 100;
   };
 
@@ -759,10 +657,7 @@ export default function Questionnaire() {
           <CardHeader className="bg-blue-50">
             <CardTitle className="text-xl">{sectionInfo.title}</CardTitle>
             <CardDescription>
-              {language === 'he' ? 
-                `שאלות ${sectionInfo.start} - ${sectionInfo.end} מתוך 107` :
-                `Questions ${sectionInfo.start} - ${sectionInfo.end} out of 107`
-              }
+              שאלות {sectionInfo.start} - {sectionInfo.end} מתוך 107
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
@@ -786,20 +681,19 @@ export default function Questionnaire() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>
-              {language === 'he' ? 'שאלה מסכמת (אופציונלית)' : 'Final Question (Optional)'}
+              שאלה מסכמת (אופציונלית)
             </CardTitle>
             <CardDescription>
-              {language === 'he' ?
-              'האם יש משהו נוסף שחשוב לך שנדע עליך או על העסק שלך, שלא הופיע בשאלון?' :
-              'Is there anything else you would like us to know about you or your business that was not covered in this questionnaire?'}
+              האם יש משהו נוסף שחשוב לך שנדע עליך או על העסק שלך, שלא הופיע בשאלון?
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
               value={optionalComment}
               onChange={(e) => setOptionalComment(e.target.value)}
-              placeholder={language === 'he' ? 'הכנס הערה אופציונלית...' : 'Enter optional comment...'}
+              placeholder="הכנס הערה אופציונלית..."
               rows={4}
+              dir="rtl"
             />
           </CardContent>
         </Card>
@@ -811,10 +705,10 @@ export default function Questionnaire() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-20 px-4 sm:px-6 lg:px-8 flex justify-center items-center" dir={language === 'he' ? 'rtl' : 'ltr'}>
+      <div className="min-h-screen bg-gray-50 py-20 px-4 sm:px-6 lg:px-8 flex justify-center items-center" dir="rtl">
         <div className="text-center">
           <Loader2 className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" />
-          <p className="text-lg text-gray-600">{language === 'he' ? 'טוען שאלון...' : 'Loading questionnaire...'}</p>
+          <p className="text-lg text-gray-600">טוען שאלון...</p>
         </div>
       </div>
     );
@@ -822,7 +716,7 @@ export default function Questionnaire() {
 
   if (isLoginRequired) {
     return (
-      <div className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
+      <div className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8" dir="rtl">
         <div className="max-w-2xl mx-auto text-center">
           <Card className="shadow-xl border-t-4 border-accent">
             <CardHeader className="pb-6">
@@ -830,12 +724,12 @@ export default function Questionnaire() {
                 <Shield className="w-10 h-10 text-accent" />
               </div>
               <CardTitle className="text-3xl font-bold text-text-primary mb-2">
-                {language === 'he' ? 'נדרשת התחברות למערכת' : 'Login Required'}
+                נדרשת התחברות למערכת
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <p className="text-lg text-text-secondary">
-                {language === 'he' ? 'כדי לשמור את התשובות שלכם בבטחה ולאפשר לכם לחזור ולהמשיך מאוחר יותר, יש להתחבר לחשבון.' : 'To save your answers securely and allow you to return and continue later, please log in.'}
+                כדי לשמור את התשובות שלכם בבטחה ולאפשר לכם לחזור ולהמשיך מאוחר יותר, יש להתחבר לחשבון.
               </p>
               
               <Button
@@ -843,12 +737,12 @@ export default function Questionnaire() {
                 onClick={handleLogin}
                 className="w-full gradient-accent text-white text-lg py-6"
               >
-                <LogIn className={`w-5 h-5 ${language === 'he' ? 'mr-2' : 'ml-2'}`} />
-                {language === 'he' ? 'התחבר עם Google והתחל' : 'Login with Google and Start'}
+                <LogIn className="w-5 h-5 mr-2" />
+                התחבר עם Google והתחל
               </Button>
               
               <p className="text-sm text-text-muted mt-4">
-                {language === 'he' ? 'ההתחברות מאובטחת. אנחנו מכבדים את הפרטיות שלך.' : 'Secure login. We respect your privacy.'}
+                ההתחברות מאובטחת. אנחנו מכבדים את הפרטיות שלך.
               </p>
             </CardContent>
           </Card>
@@ -860,7 +754,7 @@ export default function Questionnaire() {
   if (currentStep === -1) {
     return (
       <div className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <QuestionnaireIntro onStart={() => setCurrentStep(0)} language={language} />
         </div>
       </div>
@@ -887,30 +781,24 @@ export default function Questionnaire() {
             <div className="w-20"></div>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2 text-text-primary">
-            {language === 'he' ? 'שאלון V107 ליזמים' : 'V107 Entrepreneurial Questionnaire'}
+            {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
           </h1>
           
           {currentStep === 0 ? (
-            <p className="text-text-secondary mb-6">
-              {language === 'he' ? 'פרטים אישיים' : 'Personal Information'}
-            </p>
+            <p className="text-text-secondary mb-6">פרטים אישיים</p>
           ) : currentStep >= 1 && currentStep <= 5 ? (
-            <p className="text-text-secondary mb-6">
-              {getCurrentSectionInfo()?.title}
-            </p>
+            <p className="text-text-secondary mb-6">{getCurrentSectionInfo()?.title}</p>
           ) : currentStep === 6 ? (
-            <p className="text-text-secondary mb-6">
-              {language === 'he' ? 'הערה אופציונלית' : 'Optional Comment'}
-            </p>
+            <p className="text-text-secondary mb-6">הערה אופציונלית</p>
           ) : null}
           
           <div className="mb-6">
             <div className="flex justify-between text-sm text-text-secondary mb-2">
-              <span>{language === 'he' ? 'התקדמות' : 'Progress'}</span>
+              <span>התקדמות</span>
               <span>{Math.round(getProgress())}%</span>
             </div>
             <Progress value={getProgress()} className="h-3 [&>div]:bg-accent" />
-            <p className="text-xs text-text-muted mt-2">{language === 'he' ? 'השאלון נשמר אוטומטית' : 'Questionnaire is auto-saved'}</p>
+            <p className="text-xs text-text-muted mt-2">השאלון נשמר אוטומטית</p>
           </div>
         </div>
 
@@ -918,7 +806,6 @@ export default function Questionnaire() {
           {renderCurrentSection()}
         </div>
 
-        {/* Navigation */}
         <div className="flex justify-between items-center">
           <Button
             onClick={prevStep}
@@ -927,12 +814,12 @@ export default function Questionnaire() {
             size="lg"
           >
             {language === 'he' ? <ArrowRight className="w-5 h-5 ml-2" /> : <ArrowLeft className="w-5 h-5 mr-2" />}
-            {language === 'he' ? 'קודם' : 'Previous'}
+            קודם
           </Button>
 
           {currentStep < 6 ? (
             <Button onClick={nextStep} size="lg" className="bg-slate-600 hover:bg-slate-700 text-white">
-              {language === 'he' ? 'הבא' : 'Next'}
+              הבא
               {language === 'he' ? <ArrowLeft className="w-5 h-5 mr-2" /> : <ArrowRight className="w-5 h-5 ml-2" />}
             </Button>
           ) : (
@@ -943,12 +830,26 @@ export default function Questionnaire() {
               className="bg-green-600 hover:bg-green-700"
             >
               {isSubmitting ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : <CheckCircle className="w-5 h-5 mr-2" />}
-              {isSubmitting ?
-                (language === 'he' ? 'שולח...' : 'Submitting...') :
-                (language === 'he' ? 'שלח שאלון' : 'Submit Questionnaire')
-              }
+              {isSubmitting ? 'שולח...' : 'שלח שאלון'}
             </Button>
           )}
+        </div>
+        
+        <div className="mt-8 bg-blue-50 p-6 rounded-lg border border-blue-200 text-center">
+          <h3 className="font-semibold text-lg mb-3">🩵 סיום השאלון: הדרך למפת היכולות האישית שלך</h3>
+          <div className="text-sm text-gray-700 space-y-2 text-right">
+            <p><strong>בדו"ח תקבל:</strong></p>
+            <ul className="list-disc pr-6 space-y-1">
+              <li>ניתוח ממוקד של 11 הממדים המרכזיים של הפרופיל המקצועי שלך.</li>
+              <li>זיהוי חוזקות ליבה וצווארי בקבוק המעכבים את צמיחתך.</li>
+              <li>מפת דרכים אסטרטגית הכוללת המלצות פעולה קונקרטיות לשיפור מידי.</li>
+            </ul>
+            <p className="mt-4"><strong>🚀 השלב הבא: V107-BOOSTER</strong></p>
+            <p>עם קבלת הדו"ח, תוזמן/י להצטרף לתוכנית ה-BOOSTER הייחודית שלנו. זוהי תוכנית ליווי ממוקדת למשך 30 יום, המעניקה לך משימות יומיות קצרות לבניית "שרירים" בתחומים שהדו"ח זיהה כחשובים ביותר עבורך.</p>
+            <p className="font-semibold mt-4">המעבר מתובנה לתוצאה מתחיל כאן.</p>
+            <p className="font-semibold">המעבר מתובנה לתוצאה הוא מחויבות אישית שלך.</p>
+            <p className="mt-2">בהצלחה רבה<br/>צוות V107</p>
+          </div>
         </div>
       </div>
     </div>
