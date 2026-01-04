@@ -1,9 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
-// זיהוי מגדר על בסיס שם פרטי
-function detectGender(fullName) {
+// זיהוי מגדר - קודם מהשאלון/דוח, אחר כך לפי שם
+function detectGender(fullName, personalInfo = null) {
+  // קודם בדוק אם יש מידע מגדר בפרטים האישיים
+  if (personalInfo && personalInfo.gender) {
+    if (personalInfo.gender === 'female') return 'female';
+    if (personalInfo.gender === 'male') return 'male';
+  }
+  
+  // אם אין, נסה לזהות לפי שם
   const maleNames = ['יוסי', 'דוד', 'משה', 'אברהם', 'יצחק', 'יעקב', 'דניאל', 'מיכאל', 'רון', 'עומר', 'תומר', 'נועם', 'איתי', 'אלון', 'גיא'];
-  const femaleNames = ['שרה', 'רחל', 'לאה', 'מרים', 'דבורה', 'רות', 'שירה', 'נועה', 'מיכל', 'תמר', 'יעל', 'דנה', 'מאיה', 'עדי', 'רוני'];
+  const femaleNames = ['שרה', 'רחל', 'לאה', 'מרים', 'דבורה', 'רות', 'שירה', 'נועה', 'מיכל', 'תמר', 'יעל', 'דנה', 'מאיה', 'עדי', 'רוני', 'אפרת'];
   
   const firstName = fullName.split(' ')[0];
   if (femaleNames.some(name => firstName.includes(name))) return 'female';
@@ -92,10 +99,36 @@ Create now a personalized task for ${userName} for day ${currentDay}.`;
   }
 }
 
-// יצירת תבנית HTML למייל
+// קביעת שבוע וכותרת
+function getWeekInfo(day, language) {
+  const weekInfo = {
+    he: [
+      { start: 1, end: 7, title: 'שלב הפריצה (Quick Wins - ללא עלות)' },
+      { start: 8, end: 14, title: 'בניית תשתית אסטרטגית (הטמעה טכנית)' },
+      { start: 15, end: 21, title: 'העמקה וצמצום חסמים (Efficiency Optimization)' },
+      { start: 22, end: 30, title: 'אינטגרציה ומינוף (The New Standard)' }
+    ],
+    en: [
+      { start: 1, end: 7, title: 'Breakthrough Phase (Quick Wins - Free)' },
+      { start: 8, end: 14, title: 'Strategic Infrastructure Building (Technical Integration)' },
+      { start: 15, end: 21, title: 'Deepening & Bottleneck Reduction (Efficiency Optimization)' },
+      { start: 22, end: 30, title: 'Integration & Leverage (The New Standard)' }
+    ]
+  };
+  
+  const weeks = weekInfo[language] || weekInfo.he;
+  for (const week of weeks) {
+    if (day >= week.start && day <= week.end) {
+      return { weekNumber: Math.ceil(day / 7), weekTitle: week.title };
+    }
+  }
+  return { weekNumber: 1, weekTitle: weeks[0].title };
+}
+
+// יצירת תבנית HTML למייל - מבנה חדש בסגנון אפרת
 function createEmailHTML(taskData, userData, language) {
   const { userName, track, currentDay } = userData;
-  const { subject, the_why, the_task, task_title } = taskData;
+  const { subject, the_why, the_task, task_title, closing_encouragement } = taskData;
   
   const trackColors = {
     execution: '#3B82F6',
@@ -107,82 +140,106 @@ function createEmailHTML(taskData, userData, language) {
   };
   
   const color = trackColors[track] || '#667eea';
+  const weekInfo = getWeekInfo(currentDay, language);
   
   if (language === 'he') {
     return `
-      <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
-        <div style="background: linear-gradient(135deg, ${color} 0%, #764ba2 100%); padding: 40px 30px; text-align: center; border-radius: 16px 16px 0 0;">
-          <h1 style="color: white; font-size: 28px; margin: 0;">🚀 V107 BOOSTER</h1>
-          <p style="color: white; font-size: 16px; margin-top: 10px; opacity: 0.9;">יום ${currentDay} מתוך 30</p>
+      <div dir="rtl" style="font-family: 'Assistant', Arial, sans-serif; max-width: 650px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+        <div style="background: linear-gradient(135deg, #1a202c 0%, ${color} 100%); padding: 35px 30px; text-align: right; border-radius: 16px 16px 0 0;">
+          <h1 style="color: white; font-size: 26px; margin: 0; font-weight: bold;">V107 BOOSTER</h1>
+          <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin-top: 8px;">יום ${currentDay} מתוך 30 | ${weekInfo.weekTitle}</p>
         </div>
         
-        <div style="background: white; padding: 40px 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-          <p style="font-size: 18px; color: #374151; font-weight: bold; margin-bottom: 20px;">שלום ${userName},</p>
+        <div style="background: white; padding: 35px 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: right;">
+          <p style="font-size: 17px; color: #374151; margin-bottom: 25px;">שלום ${userName},</p>
           
-          <div style="background: #FEF3C7; border-right: 4px solid #F59E0B; padding: 20px; margin-bottom: 25px; border-radius: 8px;">
-            <h2 style="color: #92400E; font-size: 20px; margin: 0 0 10px 0;">💡 המשימה שלך להיום:</h2>
-            <p style="color: #78350F; font-size: 18px; font-weight: bold; margin: 0;">${task_title}</p>
+          <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-right: 5px solid ${color}; padding: 22px; margin-bottom: 28px; border-radius: 10px;">
+            <h2 style="color: #1a202c; font-size: 22px; margin: 0 0 8px 0; font-weight: bold; line-height: 1.3;">${task_title}</h2>
           </div>
           
-          <div style="margin-bottom: 25px;">
-            <h3 style="color: ${color}; font-size: 18px; margin-bottom: 10px;">🎯 למה זה חשוב ל${userName}?</h3>
-            <p style="font-size: 16px; color: #374151; line-height: 1.8;">${the_why}</p>
+          <div style="margin-bottom: 28px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+            <h3 style="color: ${color}; font-size: 17px; margin: 0 0 12px 0; font-weight: bold;">🎯 הערך האסטרטגי</h3>
+            <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">${the_why}</p>
           </div>
           
-          <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); padding: 25px; border-radius: 12px; margin-bottom: 30px;">
-            <h3 style="color: ${color}; font-size: 18px; margin-bottom: 15px;">✅ הפעולה שלך היום:</h3>
-            <p style="font-size: 16px; color: #1F2937; line-height: 1.8; font-weight: 500;">${the_task}</p>
+          <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); padding: 25px; border-radius: 12px; margin-bottom: 28px; border-right: 4px solid ${color};">
+            <h3 style="color: #1e3a8a; font-size: 17px; margin: 0 0 15px 0; font-weight: bold;">⚡ הפרוטוקול שלך היום</h3>
+            <div style="font-size: 15px; color: #1F2937; line-height: 1.9;">${the_task}</div>
           </div>
           
-          <div style="text-align: center; padding: 20px 0; border-top: 2px solid #E5E7EB; margin-top: 30px;">
-            <p style="font-size: 14px; color: #6B7280; margin: 0;">
+          ${closing_encouragement ? `
+          <div style="background: #f0fdf4; border-right: 3px solid #10b981; padding: 18px; border-radius: 8px; margin-bottom: 25px;">
+            <p style="font-size: 15px; color: #065f46; line-height: 1.7; margin: 0; font-weight: 500;">${closing_encouragement}</p>
+          </div>
+          ` : ''}
+          
+          <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-top: 25px; border: 1px dashed #d97706;">
+            <p style="font-size: 11px; color: #92400e; line-height: 1.6; margin: 0; text-align: right;">
+              <strong>הצהרה משפטית:</strong> דו"ח זה והנחיות תוכנית ה-BOOSTER מהווים כלי ליווי אסטרטגי ותמיכה בקבלת החלטות. המידע המוצג והמשימות המוצעות נועדו לשיפור מיומנויות מקצועיות ואישיות ואינם מהווים תחליף לייעוץ משפטי, פיננסי או פסיכולוגי פרטני. האחריות על יישום המשימות והשלכותיהן מוטלת על המשתמש/ת בלבד, בהתאם לשיקול דעתם המקצועי.
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px 0; margin-top: 25px;">
+            <p style="font-size: 13px; color: #6B7280; margin: 0;">
               ${currentDay <= 7 
                 ? '🎁 התוכנית חינמית לחלוטין ל-7 הימים הראשונים'
-                : '💎 את/ה בתוכנית המלאה - 30 יום של התפתחות'
+                : '💎 את/ה בתוכנית המלאה - 30 יום של התפתחות מקצועית'
               }
             </p>
-            <p style="font-size: 12px; color: #9CA3AF; margin-top: 10px;">
-              V107 Professional Framework | המסגרת המקצועית המובילה בישראל
+            <p style="font-size: 11px; color: #9CA3AF; margin-top: 8px;">
+              V107 Professional Framework | המסגרת המקצועית המובילה
             </p>
           </div>
         </div>
       </div>
     `;
   } else {
+    const weekInfo = getWeekInfo(currentDay, language);
     return `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
-        <div style="background: linear-gradient(135deg, ${color} 0%, #764ba2 100%); padding: 40px 30px; text-align: center; border-radius: 16px 16px 0 0;">
-          <h1 style="color: white; font-size: 28px; margin: 0;">🚀 V107 BOOSTER</h1>
-          <p style="color: white; font-size: 16px; margin-top: 10px; opacity: 0.9;">Day ${currentDay} of 30</p>
+      <div style="font-family: 'Arial', sans-serif; max-width: 650px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+        <div style="background: linear-gradient(135deg, #1a202c 0%, ${color} 100%); padding: 35px 30px; text-align: left; border-radius: 16px 16px 0 0;">
+          <h1 style="color: white; font-size: 26px; margin: 0; font-weight: bold;">V107 BOOSTER</h1>
+          <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin-top: 8px;">Day ${currentDay} of 30 | ${weekInfo.weekTitle}</p>
         </div>
         
-        <div style="background: white; padding: 40px 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-          <p style="font-size: 18px; color: #374151; font-weight: bold; margin-bottom: 20px;">Hello ${userName},</p>
+        <div style="background: white; padding: 35px 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: left;">
+          <p style="font-size: 17px; color: #374151; margin-bottom: 25px;">Hello ${userName},</p>
           
-          <div style="background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 20px; margin-bottom: 25px; border-radius: 8px;">
-            <h2 style="color: #92400E; font-size: 20px; margin: 0 0 10px 0;">💡 Your Task for Today:</h2>
-            <p style="color: #78350F; font-size: 18px; font-weight: bold; margin: 0;">${task_title}</p>
+          <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-left: 5px solid ${color}; padding: 22px; margin-bottom: 28px; border-radius: 10px;">
+            <h2 style="color: #1a202c; font-size: 22px; margin: 0 0 8px 0; font-weight: bold; line-height: 1.3;">${task_title}</h2>
           </div>
           
-          <div style="margin-bottom: 25px;">
-            <h3 style="color: ${color}; font-size: 18px; margin-bottom: 10px;">🎯 Why This Matters for ${userName}?</h3>
-            <p style="font-size: 16px; color: #374151; line-height: 1.8;">${the_why}</p>
+          <div style="margin-bottom: 28px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+            <h3 style="color: ${color}; font-size: 17px; margin: 0 0 12px 0; font-weight: bold;">🎯 Strategic Value</h3>
+            <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">${the_why}</p>
           </div>
           
-          <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); padding: 25px; border-radius: 12px; margin-bottom: 30px;">
-            <h3 style="color: ${color}; font-size: 18px; margin-bottom: 15px;">✅ Your Action Today:</h3>
-            <p style="font-size: 16px; color: #1F2937; line-height: 1.8; font-weight: 500;">${the_task}</p>
+          <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); padding: 25px; border-radius: 12px; margin-bottom: 28px; border-left: 4px solid ${color};">
+            <h3 style="color: #1e3a8a; font-size: 17px; margin: 0 0 15px 0; font-weight: bold;">⚡ Your Protocol Today</h3>
+            <div style="font-size: 15px; color: #1F2937; line-height: 1.9;">${the_task}</div>
           </div>
           
-          <div style="text-align: center; padding: 20px 0; border-top: 2px solid #E5E7EB; margin-top: 30px;">
-            <p style="font-size: 14px; color: #6B7280; margin: 0;">
+          ${closing_encouragement ? `
+          <div style="background: #f0fdf4; border-left: 3px solid #10b981; padding: 18px; border-radius: 8px; margin-bottom: 25px;">
+            <p style="font-size: 15px; color: #065f46; line-height: 1.7; margin: 0; font-weight: 500;">${closing_encouragement}</p>
+          </div>
+          ` : ''}
+          
+          <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-top: 25px; border: 1px dashed #d97706;">
+            <p style="font-size: 11px; color: #92400e; line-height: 1.6; margin: 0; text-align: left;">
+              <strong>Legal Disclaimer:</strong> This report and BOOSTER program guidelines are strategic support tools for decision-making. The information and suggested tasks are intended for professional and personal skill improvement and do not replace personalized legal, financial, or psychological consultation. Responsibility for implementing tasks and their consequences rests solely with the user, according to their professional judgment.
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px 0; margin-top: 25px;">
+            <p style="font-size: 13px; color: #6B7280; margin: 0;">
               ${currentDay <= 7 
                 ? '🎁 The program is completely free for the first 7 days'
-                : '💎 You are on the full program - 30 days of growth'
+                : '💎 You are on the full program - 30 days of professional development'
               }
             </p>
-            <p style="font-size: 12px; color: #9CA3AF; margin-top: 10px;">
-              V107 Professional Framework | Leading Professional Framework
+            <p style="font-size: 11px; color: #9CA3AF; margin-top: 8px;">
+              V107 Professional Framework | Leading Professional Development Framework
             </p>
           </div>
         </div>
