@@ -330,9 +330,10 @@ Deno.serve(async (req) => {
                 subject: { type: "string" },
                 the_why: { type: "string" },
                 the_task: { type: "string" },
-                task_title: { type: "string" }
+                task_title: { type: "string" },
+                closing_encouragement: { type: "string" }
               },
-              required: ["day", "subject", "the_why", "the_task", "task_title"]
+              required: ["day", "subject", "the_why", "the_task", "task_title", "closing_encouragement"]
             }
           }
         },
@@ -353,6 +354,7 @@ Deno.serve(async (req) => {
       task_title: task.task_title,
       the_why: task.the_why,
       the_task: task.the_task,
+      closing_encouragement: task.closing_encouragement || '',
       status: 'pending',
       language: language
     }));
@@ -363,14 +365,22 @@ Deno.serve(async (req) => {
 
     // שלח מייל ברוכים הבאים
     try {
-      // יבוא דינמי של התבנית
-      const { getBoosterWelcomeTemplate } = await import('./components/email/BoosterWelcomeTemplate.js');
       const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, track, language);
       
       await base44.asServiceRole.integrations.Core.SendEmail({
+        from_name: 'V107 Booster',
         to: userEmail,
         subject: emailTemplate.subject,
         body: emailTemplate.html
+      });
+
+      // לוג המייל
+      await base44.asServiceRole.entities.EmailLog.create({
+        to_email: userEmail,
+        email_type: 'booster_welcome',
+        subject: emailTemplate.subject,
+        related_user_email: userEmail,
+        language: language
       });
 
       console.log('Welcome email sent to', userEmail);
@@ -383,6 +393,7 @@ Deno.serve(async (req) => {
       success: true,
       subscription: subscription,
       tasksCreated: tasksToCreate.length,
+      welcomeEmailSent: true,
       message: `Created ${tasksToCreate.length} tasks for ${userName} and sent welcome email`
     });
 
