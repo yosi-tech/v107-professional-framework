@@ -243,28 +243,15 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="full_name">שם מלא <span className="text-red-500">*</span></Label>
-            <Input
-              id="full_name"
-              value={data.full_name || ""}
-              onChange={(e) => handleInputChange("full_name", e.target.value)}
-              placeholder="ישראל ישראלי"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="email">כתובת מייל <span className="text-red-500">*</span></Label>
-            <Input
-              id="email"
-              type="email"
-              value={data.email || ""}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              placeholder="example@domain.com"
-              required
-            />
-          </div>
+        <div>
+          <Label htmlFor="full_name">שם מלא <span className="text-red-500">*</span></Label>
+          <Input
+            id="full_name"
+            value={data.full_name || ""}
+            onChange={(e) => handleInputChange("full_name", e.target.value)}
+            placeholder="ישראל ישראלי"
+            required
+          />
         </div>
         
         <div className="grid md:grid-cols-2 gap-4">
@@ -504,13 +491,13 @@ export default function Questionnaire() {
     if (!user) return;
 
     try {
-      const hasPersonalInfo = personalInfo.full_name || personalInfo.email;
+      const hasPersonalInfo = personalInfo.full_name;
       const hasResponses = Object.keys(responses).length > 0;
 
       if (!hasPersonalInfo && !hasResponses) return;
 
       const data = {
-        personal_info: personalInfo,
+        personal_info: { ...personalInfo, email: user.email },
         responses: responses,
         optional_comment: optionalComment,
         language: language,
@@ -555,10 +542,6 @@ export default function Questionnaire() {
       alert('יש להזין שם מלא');
       return false;
     }
-    if (!personalInfo.email?.trim()) {
-      alert('יש להזין כתובת דוא"ל');
-      return false;
-    }
     return true;
   };
 
@@ -586,7 +569,7 @@ export default function Questionnaire() {
     setIsSubmitting(true);
     try {
       const finalData = {
-        personal_info: personalInfo,
+        personal_info: { ...personalInfo, email: user.email },
         responses: responses,
         optional_comment: optionalComment,
         language: language,
