@@ -305,6 +305,14 @@ Deno.serve(async (req) => {
     const userName = report.user_name;
     const language = report.language || 'he';
     const track = report.recommended_booster_track;
+    
+    if (!track) {
+      return Response.json({ 
+        success: false, 
+        error: 'הדוח לא כולל מסלול בוסטר מומלץ. יש ליצור דוח מחדש עם מסלול.' 
+      }, { status: 400 });
+    }
+    
     const questionnaireResponseId = report.questionnaire_response_id;
 
     // מצא את השאלון המקורי למידע מגדר
