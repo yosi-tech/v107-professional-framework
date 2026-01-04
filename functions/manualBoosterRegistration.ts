@@ -327,7 +327,29 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
     
-    if (!validTracks.includes(track)) {
+    // מיפוי מסלולים ישנים (6 תחומים) למסלולים חדשים (11 ממדים)
+    const oldToNewMapping = {
+      'execution': 'resilience',
+      'digital': 'technology',
+      'finance': 'planning',
+      'marketing': 'networking',
+      'management': 'leadership',
+      'vision': 'vision'
+    };
+    
+    let finalTrack = track;
+    
+    // אם זה מסלול ישן - המר אותו לחדש
+    if (oldToNewMapping[track]) {
+      finalTrack = oldToNewMapping[track];
+      console.log('[DEBUG] Converting old track:', track, '→ new track:', finalTrack);
+      
+      // עדכן את הדוח עם המסלול החדש
+      await base44.asServiceRole.entities.GeneratedReport.update(reportId, {
+        recommended_booster_track: finalTrack
+      });
+      console.log('[DEBUG] Updated report with new track');
+    } else if (!validTracks.includes(track)) {
       console.log('[DEBUG] Invalid track:', track);
       return Response.json({ 
         success: false, 
@@ -335,7 +357,7 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
     
-    console.log('[DEBUG] Valid track confirmed:', track);
+    console.log('[DEBUG] Final track confirmed:', finalTrack);
     
     const questionnaireResponseId = report.questionnaire_response_id;
     console.log('[DEBUG] Questionnaire response ID:', questionnaireResponseId);
@@ -385,7 +407,7 @@ Deno.serve(async (req) => {
       current_day: 1,
       status: 'active',
       language: language,
-      recommended_booster_track: track,
+      recommended_booster_track: finalTrack,
       sent_tasks: []
     };
     
@@ -408,7 +430,7 @@ Deno.serve(async (req) => {
     const userData = {
       userName,
       userGender,
-      track,
+      track: finalTrack,
       domainScores,
       reportAnalysis
     };
@@ -458,7 +480,7 @@ Deno.serve(async (req) => {
       user_email: userEmail,
       user_name: userName,
       day: task.day,
-      track: track,
+      track: finalTrack,
       subject: task.subject,
       task_title: task.task_title,
       the_why: task.the_why,
@@ -476,7 +498,7 @@ Deno.serve(async (req) => {
     // שלח מייל ברוכים הבאים
     console.log('[DEBUG] Sending welcome email...');
     try {
-      const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, track, language);
+      const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, finalTrack, language);
       
       await base44.asServiceRole.integrations.Core.SendEmail({
         from_name: 'V107 Booster',
