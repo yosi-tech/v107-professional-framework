@@ -357,17 +357,17 @@ Deno.serve(async (req) => {
       console.log('[DEBUG] No questionnaire response ID in report');
     }
 
-    // בדוק אם כבר קיים מנוי פעיל
-    console.log('[DEBUG] Checking for existing subscriptions for:', userEmail);
+    // בדוק אם כבר קיים מנוי פעיל עבור השאלון הספציפי
+    console.log('[DEBUG] Checking for existing subscriptions for questionnaire response ID:', questionnaireResponseId);
     const existingSubscriptions = await base44.asServiceRole.entities.OnlineCoachingSubscription.filter({
-      user_email: userEmail,
+      questionnaire_response_id: questionnaireResponseId,
       status: 'active'
     });
     console.log('[DEBUG] Existing subscriptions found:', existingSubscriptions.length);
     
     if (existingSubscriptions.length > 0) {
-      console.log('[DEBUG] User already has active subscription');
-      return Response.json({ error: 'User already has an active subscription' }, { status: 400 });
+      console.log('[DEBUG] Questionnaire already has an active subscription');
+      return Response.json({ error: 'A booster subscription already exists for this questionnaire' }, { status: 400 });
     }
 
     // צור מנוי חדש
