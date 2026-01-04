@@ -276,6 +276,29 @@ Deno.serve(async (req) => {
           
           if (hoursSinceLastEmail < 20) {
             console.log(`Skipping ${subscription.user_email} - email sent recently`);
+            results.push({
+              email: subscription.user_email,
+              day: currentDay,
+              status: 'skipped',
+              reason: 'Email sent less than 20 hours ago'
+            });
+            continue;
+          }
+        }
+
+        // דלג ביום הראשון אם זה אותו יום של ההרשמה (נשלח מייל ברוכים הבאים בלבד)
+        if (currentDay === 1) {
+          const registrationDate = new Date(subscription.start_date);
+          const hoursSinceRegistration = (now - registrationDate) / (1000 * 60 * 60);
+          
+          if (hoursSinceRegistration < 20) {
+            console.log(`Skipping ${subscription.user_email} - first day, welcome email was sent`);
+            results.push({
+              email: subscription.user_email,
+              day: currentDay,
+              status: 'skipped',
+              reason: 'First day - welcome email only'
+            });
             continue;
           }
         }
