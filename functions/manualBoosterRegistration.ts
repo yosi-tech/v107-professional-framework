@@ -327,7 +327,7 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
     
-    // מיפוי מסלולים ישנים (6 תחומים) למסלולים חדשים (11 ממדים)
+    // מיפוי מסלולים ישנים (6 תחומים) למסלולים חדשים (11 ממדים) - לתמיכה בדוחות ישנים
     const oldToNewMapping = {
       'execution': 'resilience',
       'digital': 'technology',
@@ -349,11 +349,14 @@ Deno.serve(async (req) => {
         recommended_booster_track: finalTrack
       });
       console.log('[DEBUG] Updated report with new track');
-    } else if (!validTracks.includes(track)) {
-      console.log('[DEBUG] Invalid track:', track);
+    }
+    
+    // בדיקת תקינות על המסלול הסופי (אחרי המיפוי)
+    if (!validTracks.includes(finalTrack)) {
+      console.log('[DEBUG] Invalid track after mapping:', finalTrack);
       return Response.json({ 
         success: false, 
-        error: `מסלול לא תקף: ${track}. המסלול חייב להיות אחד מ-11 הממדים: ${validTracks.join(', ')}` 
+        error: `מסלול לא תקף: ${finalTrack}. המסלול חייב להיות אחד מ-11 הממדים: ${validTracks.join(', ')}` 
       }, { status: 400 });
     }
     
