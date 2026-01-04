@@ -1306,10 +1306,13 @@ export default function AdminReports() {
                     <CardContent className="p-4 sm:p-6">
                       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div className="flex-1 min-w-0 w-full">
-                          <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-row-reverse">
+                          <div className="flex items-start gap-3 mb-3 flex-row-reverse">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                              <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                            </div>
                             <div className="flex-1 min-w-0 text-right">
-                              <div className="flex items-center gap-2 flex-row-reverse">
-                                <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
+                              <div className="flex items-center gap-2 mb-2 flex-row-reverse flex-wrap">
+                                <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                                   {fullName}
                                 </h3>
                                 {hasMultipleResponses &&
@@ -1318,23 +1321,20 @@ export default function AdminReports() {
                                   </Badge>
                                 }
                               </div>
-                              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 text-xs sm:text-sm text-gray-600">
-                                <span className="flex items-center gap-1 flex-row-reverse truncate max-w-full">
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-gray-600">
+                                <div className="flex items-center gap-1.5 flex-row-reverse">
+                                  <Mail className="w-4 h-4 flex-shrink-0" />
                                   <span className="truncate">{email}</span>
-                                  <Mail className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                                </span>
-                                <span className="flex items-center gap-1 flex-row-reverse">
-                                  {format(new Date(response.created_date), 'dd/MM/yy HH:mm')}
-                                  <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-                                </span>
-                                <span className={`flex items-center gap-1 flex-row-reverse ${timeWarningClass}`}>
-                                  <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                                  {hoursAgo} שעות
-                                </span>
+                                </div>
+                                <div className="flex items-center gap-1.5 flex-row-reverse">
+                                  <Calendar className="w-4 h-4 flex-shrink-0" />
+                                  <span>{format(new Date(response.created_date), 'dd/MM/yy HH:mm')}</span>
+                                </div>
+                                <div className={`flex items-center gap-1.5 flex-row-reverse ${timeWarningClass}`}>
+                                  <Clock className="w-4 h-4 flex-shrink-0" />
+                                  <span>{hoursAgo} שעות</span>
+                                </div>
                               </div>
-                            </div>
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                              <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                             </div>
                           </div>
 
