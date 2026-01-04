@@ -344,11 +344,15 @@ Deno.serve(async (req) => {
       finalTrack = oldToNewMapping[track];
       console.log('[DEBUG] Converting old track:', track, '→ new track:', finalTrack);
       
-      // עדכן את הדוח עם המסלול החדש
-      await base44.asServiceRole.entities.GeneratedReport.update(reportId, {
-        recommended_booster_track: finalTrack
-      });
-      console.log('[DEBUG] Updated report with new track');
+      // נסה לעדכן את הדוח עם המסלול החדש (לא חובה)
+      try {
+        await base44.asServiceRole.entities.GeneratedReport.update(reportId, {
+          recommended_booster_track: finalTrack
+        });
+        console.log('[DEBUG] Updated report with new track');
+      } catch (error) {
+        console.log('[DEBUG] Could not update report track, continuing anyway:', error.message);
+      }
     }
     
     // בדיקת תקינות על המסלול הסופי (אחרי המיפוי)
