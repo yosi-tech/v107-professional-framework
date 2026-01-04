@@ -284,20 +284,28 @@ Deno.serve(async (req) => {
     
     // בדוק הרשאות אדמין
     const user = await base44.auth.me();
+    console.log('[DEBUG] User authenticated:', user?.email, 'Role:', user?.role);
+    
     if (!user || user.role !== 'admin') {
+      console.log('[DEBUG] Unauthorized - not admin');
       return Response.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // קבל את הנתונים מה-body
     const { userEmail, reportId } = await req.json();
+    console.log('[DEBUG] Received payload:', { userEmail, reportId });
     
     if (!userEmail || !reportId) {
+      console.log('[DEBUG] Missing parameters');
       return Response.json({ error: 'Missing userEmail or reportId' }, { status: 400 });
     }
 
     // מצא את הדוח
+    console.log('[DEBUG] Searching for report with ID:', reportId);
     const reports = await base44.asServiceRole.entities.GeneratedReport.filter({ id: reportId });
+    console.log('[DEBUG] Found reports:', reports.length);
     if (reports.length === 0) {
+      console.log('[DEBUG] Report not found');
       return Response.json({ error: 'Report not found' }, { status: 404 });
     }
     
@@ -306,7 +314,10 @@ Deno.serve(async (req) => {
     const language = report.language || 'he';
     const track = report.recommended_booster_track;
     
+    console.log('[DEBUG] Report data:', { userName, language, track });
+    
     if (!track) {
+      console.log('[DEBUG] Missing booster track in report');
       return Response.json({ 
         success: false, 
         error: 'הדוח לא כולל מסלול בוסטר מומלץ. יש ליצור דוח מחדש עם מסלול.' 
@@ -314,6 +325,7 @@ Deno.serve(async (req) => {
     }
     
     const questionnaireResponseId = report.questionnaire_response_id;
+    console.log('[DEBUG] Questionnaire response ID:', questionnaireResponseId);
 
     // מצא את השאלון המקורי למידע מגדר
     let personalInfo = null;
@@ -327,21 +339,25 @@ Deno.serve(async (req) => {
     }
 
     // בדוק אם כבר קיים מנוי פעיל
+    console.log('[DEBUG] Checking for existing subscriptions for:', userEmail);
     const existingSubscriptions = await base44.asServiceRole.entities.OnlineCoachingSubscription.filter({
       user_email: userEmail,
       status: 'active'
     });
+    console.log('[DEBUG] Existing subscriptions found:', existingSubscriptions.length);
     
     if (existingSubscriptions.length > 0) {
+      console.log('[DEBUG] User already has active subscription');
       return Response.json({ error: 'User already has an active subscription' }, { status: 400 });
     }
 
     // צור מנוי חדש
+    console.log('[DEBUG] Creating new subscription...');
     const now = new Date();
     const endDate = new Date(now);
     endDate.setDate(endDate.getDate() + 30);
 
-    const subscription = await base44.asServiceRole.entities.OnlineCoachingSubscription.create({
+    const subscriptionData = {
       user_email: userEmail,
       user_name: userName,
       questionnaire_response_id: questionnaireResponseId,
@@ -353,7 +369,11 @@ Deno.serve(async (req) => {
       language: language,
       recommended_booster_track: track,
       sent_tasks: []
-    });
+    };
+    
+    console.log('[DEBUG] Subscription data:', subscriptionData);
+    const subscription = await base44.asServiceRole.entities.OnlineCoachingSubscription.create(subscriptionData);
+    console.log('[DEBUG] Subscription created with ID:', subscription.id);
 
     // הכן נתונים ליצירת כל 30 המשימות
     const userGender = detectGender(userName, personalInfo);
@@ -369,11 +389,14 @@ Deno.serve(async (req) => {
     };
 
     // צור פרומפט ל-LLM ליצירת כל 30 המשימות
+    console.log('[DEBUG] Creating bulk tasks prompt...');
     const prompt = createBulkTasksPrompt(userData, language);
+    console.log('[DEBUG] Prompt created, length:', prompt.length);
 
-    console.log('Generating 30 tasks for', userName);
+    console.log('[DEBUG] Generating 30 tasks for', userName);
 
     // קרא ל-LLM ליצירת כל 30 המשימות
+    console.log('[DEBUG] Calling LLM to generate tasks...');
     const bulkTasksData = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt: prompt,
       response_json_schema: {
@@ -399,7 +422,8 @@ Deno.serve(async (req) => {
       }
     });
 
-    console.log('Generated tasks, creating records...');
+    console.log('[DEBUG] LLM response received, tasks count:', bulkTasksData?.tasks?.length);
+    console.log('[DEBUG] Creating task records...');
 
     // צור את כל 30 המשימות ב-DB
     const tasksToCreate = bulkTasksData.tasks.map(task => ({
@@ -417,11 +441,13 @@ Deno.serve(async (req) => {
       language: language
     }));
 
+    console.log('[DEBUG] Bulk creating', tasksToCreate.length, 'tasks...');
     await base44.asServiceRole.entities.BoosterTask.bulkCreate(tasksToCreate);
 
-    console.log('All 30 tasks created successfully');
+    console.log('[DEBUG] All 30 tasks created successfully');
 
     // שלח מייל ברוכים הבאים
+    console.log('[DEBUG] Sending welcome email...');
     try {
       const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, track, language);
       
