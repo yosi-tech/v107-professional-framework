@@ -327,44 +327,16 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
     
-    // מיפוי מסלולים ישנים (6 תחומים) למסלולים חדשים (11 ממדים) - לתמיכה בדוחות ישנים
-    const oldToNewMapping = {
-      'execution': 'resilience',
-      'digital': 'technology',
-      'finance': 'planning',
-      'marketing': 'networking',
-      'management': 'leadership',
-      'vision': 'vision'
-    };
-    
-    let finalTrack = track;
-    
-    // אם זה מסלול ישן - המר אותו לחדש
-    if (oldToNewMapping[track]) {
-      finalTrack = oldToNewMapping[track];
-      console.log('[DEBUG] Converting old track:', track, '→ new track:', finalTrack);
-      
-      // נסה לעדכן את הדוח עם המסלול החדש (לא חובה)
-      try {
-        await base44.asServiceRole.entities.GeneratedReport.update(reportId, {
-          recommended_booster_track: finalTrack
-        });
-        console.log('[DEBUG] Updated report with new track');
-      } catch (error) {
-        console.log('[DEBUG] Could not update report track, continuing anyway:', error.message);
-      }
-    }
-    
-    // בדיקת תקינות על המסלול הסופי (אחרי המיפוי)
-    if (!validTracks.includes(finalTrack)) {
-      console.log('[DEBUG] Invalid track after mapping:', finalTrack);
+    // בדיקת תקינות - חייב להיות אחד מ-11 הממדים
+    if (!validTracks.includes(track)) {
+      console.log('[DEBUG] Invalid track:', track);
       return Response.json({ 
         success: false, 
-        error: `מסלול לא תקף: ${finalTrack}. המסלול חייב להיות אחד מ-11 הממדים: ${validTracks.join(', ')}` 
+        error: `מסלול לא תקף: ${track}. המסלול חייב להיות אחד מ-11 הממדים: ${validTracks.join(', ')}` 
       }, { status: 400 });
     }
     
-    console.log('[DEBUG] Final track confirmed:', finalTrack);
+    console.log('[DEBUG] Track confirmed:', track);
     
     const questionnaireResponseId = report.questionnaire_response_id;
     console.log('[DEBUG] Questionnaire response ID:', questionnaireResponseId);
@@ -414,7 +386,7 @@ Deno.serve(async (req) => {
       current_day: 1,
       status: 'active',
       language: language,
-      recommended_booster_track: finalTrack,
+      recommended_booster_track: track,
       sent_tasks: []
     };
     
@@ -437,7 +409,7 @@ Deno.serve(async (req) => {
     const userData = {
       userName,
       userGender,
-      track: finalTrack,
+      track: track,
       domainScores,
       reportAnalysis
     };
@@ -487,7 +459,7 @@ Deno.serve(async (req) => {
       user_email: userEmail,
       user_name: userName,
       day: task.day,
-      track: finalTrack,
+      track: track,
       subject: task.subject,
       task_title: task.task_title,
       the_why: task.the_why,
@@ -505,7 +477,7 @@ Deno.serve(async (req) => {
     // שלח מייל ברוכים הבאים
     console.log('[DEBUG] Sending welcome email...');
     try {
-      const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, finalTrack, language);
+      const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, track, language);
       
       await base44.asServiceRole.integrations.Core.SendEmail({
         from_name: 'V107 Booster',
