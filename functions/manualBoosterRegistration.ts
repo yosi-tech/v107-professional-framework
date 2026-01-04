@@ -330,12 +330,17 @@ Deno.serve(async (req) => {
     // מצא את השאלון המקורי למידע מגדר
     let personalInfo = null;
     if (questionnaireResponseId) {
+      console.log('[DEBUG] Fetching questionnaire response:', questionnaireResponseId);
       const questionnaireResponses = await base44.asServiceRole.entities.QuestionnaireResponse.filter({
         id: questionnaireResponseId
       });
+      console.log('[DEBUG] Questionnaire responses found:', questionnaireResponses.length);
       if (questionnaireResponses.length > 0) {
         personalInfo = questionnaireResponses[0].personal_info;
+        console.log('[DEBUG] Personal info:', personalInfo);
       }
+    } else {
+      console.log('[DEBUG] No questionnaire response ID in report');
     }
 
     // בדוק אם כבר קיים מנוי פעיל
@@ -376,9 +381,16 @@ Deno.serve(async (req) => {
     console.log('[DEBUG] Subscription created with ID:', subscription.id);
 
     // הכן נתונים ליצירת כל 30 המשימות
+    console.log('[DEBUG] Detecting gender for user:', userName);
     const userGender = detectGender(userName, personalInfo);
+    console.log('[DEBUG] Detected gender:', userGender);
+    
     const domainScores = report.domain_scores || {};
     const reportAnalysis = report.report_markdown?.substring(0, 800) || '';
+
+    console.log('[DEBUG] Domain scores:', domainScores);
+    console.log('[DEBUG] Track:', track);
+    console.log('[DEBUG] Track score:', domainScores[track]);
 
     const userData = {
       userName,
@@ -387,6 +399,8 @@ Deno.serve(async (req) => {
       domainScores,
       reportAnalysis
     };
+    
+    console.log('[DEBUG] User data prepared:', userData);
 
     // צור פרומפט ל-LLM ליצירת כל 30 המשימות
     console.log('[DEBUG] Creating bulk tasks prompt...');
