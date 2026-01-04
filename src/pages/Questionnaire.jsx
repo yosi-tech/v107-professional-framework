@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { QuestionnaireResponse } from "@/entities/QuestionnaireResponse";
 import { Button } from "@/components/ui/button";
@@ -835,22 +834,24 @@ export default function Questionnaire() {
           )}
         </div>
         
-        <div className="mt-8 bg-blue-50 p-6 rounded-lg border border-blue-200 text-center">
-          <h3 className="font-semibold text-lg mb-3">🩵 סיום השאלון: הדרך למפת היכולות האישית שלך</h3>
-          <div className="text-sm text-gray-700 space-y-2 text-right">
-            <p><strong>בדו"ח תקבל:</strong></p>
-            <ul className="list-disc pr-6 space-y-1">
-              <li>ניתוח ממוקד של 11 הממדים המרכזיים של הפרופיל המקצועי שלך.</li>
-              <li>זיהוי חוזקות ליבה וצווארי בקבוק המעכבים את צמיחתך.</li>
-              <li>מפת דרכים אסטרטגית הכוללת המלצות פעולה קונקרטיות לשיפור מידי.</li>
-            </ul>
-            <p className="mt-4"><strong>🚀 השלב הבא: V107-BOOSTER</strong></p>
-            <p>עם קבלת הדו"ח, תוזמן/י להצטרף לתוכנית ה-BOOSTER הייחודית שלנו. זוהי תוכנית ליווי ממוקדת למשך 30 יום, המעניקה לך משימות יומיות קצרות לבניית "שרירים" בתחומים שהדו"ח זיהה כחשובים ביותר עבורך.</p>
-            <p className="font-semibold mt-4">המעבר מתובנה לתוצאה מתחיל כאן.</p>
-            <p className="font-semibold">המעבר מתובנה לתוצאה הוא מחויבות אישית שלך.</p>
-            <p className="mt-2">בהצלחה רבה<br/>צוות V107</p>
+        {currentStep === 6 && (
+          <div className="mt-8 bg-blue-50 p-6 rounded-lg border border-blue-200 text-center">
+            <h3 className="font-semibold text-lg mb-3">🩵 סיום השאלון: הדרך למפת היכולות האישית שלך</h3>
+            <div className="text-sm text-gray-700 space-y-2 text-right">
+              <p><strong>בדו"ח תקבל:</strong></p>
+              <ul className="list-disc pr-6 space-y-1">
+                <li>ניתוח ממוקד של 11 הממדים המרכזיים של הפרופיל המקצועי שלך.</li>
+                <li>זיהוי חוזקות ליבה וצווארי בקבוק המעכבים את צמיחתך.</li>
+                <li>מפת דרכים אסטרטגית הכוללת המלצות פעולה קונקרטיות לשיפור מידי.</li>
+              </ul>
+              <p className="mt-4"><strong>🚀 השלב הבא: V107-BOOSTER</strong></p>
+              <p>עם קבלת הדו"ח, תוזמן/י להצטרף לתוכנית ה-BOOSTER הייחודית שלנו. זוהי תוכנית ליווי ממוקדת למשך 30 יום, המעניקה לך משימות יומיות קצרות לבניית "שרירים" בתחומים שהדו"ח זיהה כחשובים ביותר עבורך.</p>
+              <p className="font-semibold mt-4">המעבר מתובנה לתוצאה מתחיל כאן.</p>
+              <p className="font-semibold">המעבר מתובנה לתוצאה הוא מחויבות אישית שלך.</p>
+              <p className="mt-2">בהצלחה רבה<br/>צוות V107</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
