@@ -219,11 +219,29 @@ Deno.serve(async (req) => {
 
     console.log('All 30 tasks created successfully');
 
+    // שלח מייל ברוכים הבאים
+    try {
+      // יבוא דינמי של התבנית
+      const { getBoosterWelcomeTemplate } = await import('./components/email/BoosterWelcomeTemplate.js');
+      const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, track, language);
+      
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: userEmail,
+        subject: emailTemplate.subject,
+        body: emailTemplate.html
+      });
+
+      console.log('Welcome email sent to', userEmail);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // לא נעצור את התהליך בגלל שגיאה במייל
+    }
+
     return Response.json({
       success: true,
       subscription: subscription,
       tasksCreated: tasksToCreate.length,
-      message: `Created ${tasksToCreate.length} tasks for ${userName}`
+      message: `Created ${tasksToCreate.length} tasks for ${userName} and sent welcome email`
     });
 
   } catch (error) {
