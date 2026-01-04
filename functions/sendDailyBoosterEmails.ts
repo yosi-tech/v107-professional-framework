@@ -411,60 +411,20 @@ Deno.serve(async (req) => {
         }
 
         // שלוף את המשימה המוכנה מראש מה-DB
-        let tasks = await base44.asServiceRole.entities.BoosterTask.filter({
+        const tasks = await base44.asServiceRole.entities.BoosterTask.filter({
           subscription_id: subscription.id,
-          day: currentDay
+          day: currentDay,
+          status: 'pending'
         });
 
-        // אם אין משימות בכלל למנוי - נסה ליצור אותן עכשיו
         if (tasks.length === 0) {
-          const allTasksForSubscription = await base44.asServiceRole.entities.BoosterTask.filter({
-            subscription_id: subscription.id
+          console.log(`No task found for ${subscription.user_email} day ${currentDay}`);
+          results.push({
+            email: subscription.user_email,
+            day: currentDay,
+            status: 'no_task_found'
           });
-          
-          if (allTasksForSubscription.length === 0) {
-            console.log(`No tasks exist for ${subscription.user_email}, trying to generate them now...`);
-            
-            try {
-              // קרא לפונקציה שיוצרת משימות
-              await base44.asServiceRole.functions.invoke('generateTasksForSubscription', {
-                subscriptionId: subscription.id
-              });
-              
-              // נסה לשלוף שוב
-              tasks = await base44.asServiceRole.entities.BoosterTask.filter({
-                subscription_id: subscription.id,
-                day: currentDay
-              });
-              
-              if (tasks.length === 0) {
-                console.log(`Still no task after generation for ${subscription.user_email} day ${currentDay}`);
-                results.push({
-                  email: subscription.user_email,
-                  day: currentDay,
-                  status: 'generation_failed'
-                });
-                continue;
-              }
-            } catch (genError) {
-              console.error(`Error generating tasks for ${subscription.user_email}:`, genError);
-              results.push({
-                email: subscription.user_email,
-                day: currentDay,
-                status: 'generation_error',
-                error: genError.message
-              });
-              continue;
-            }
-          } else {
-            console.log(`No task found for ${subscription.user_email} day ${currentDay}`);
-            results.push({
-              email: subscription.user_email,
-              day: currentDay,
-              status: 'no_task_for_day'
-            });
-            continue;
-          }
+          continue;
         }
 
         const task = tasks[0];
