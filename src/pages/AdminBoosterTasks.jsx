@@ -5,10 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Save, Edit2, CheckCircle, Clock, Send, Sparkles, AlertCircle, ArrowRight } from "lucide-react";
+import { Loader2, Save, Edit2, CheckCircle, Clock, Send, Sparkles, AlertCircle, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { generateTasksForSubscription } from "@/functions/generateTasksForSubscription";
 import { createPageUrl } from "@/utils";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export default function AdminBoosterTasks() {
   const navigate = useNavigate();
@@ -19,6 +24,12 @@ export default function AdminBoosterTasks() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingTasks, setIsGeneratingTasks] = useState(false);
+  const [openWeeks, setOpenWeeks] = useState({
+    week1: true,
+    week2: false,
+    week3: false,
+    week4: false
+  });
 
   useEffect(() => {
     loadSubscriptions();
@@ -98,6 +109,7 @@ export default function AdminBoosterTasks() {
         task_title: editingTask.task_title,
         the_why: editingTask.the_why,
         the_task: editingTask.the_task,
+        closing_encouragement: editingTask.closing_encouragement || '',
         status: 'edited'
       });
       
@@ -157,6 +169,31 @@ export default function AdminBoosterTasks() {
     );
   };
 
+  const getWeekInfo = (day) => {
+    if (day >= 1 && day <= 7) return { week: 1, title: 'שלב הפריצה (Quick Wins - ללא עלות)' };
+    if (day >= 8 && day <= 14) return { week: 2, title: 'בניית תשתית אסטרטגית (הטמעה טכנית)' };
+    if (day >= 15 && day <= 21) return { week: 3, title: 'העמקה וצמצום חסמים (Efficiency Optimization)' };
+    if (day >= 22 && day <= 30) return { week: 4, title: 'אינטגרציה ומינוף (The New Standard)' };
+    return { week: 1, title: '' };
+  };
+
+  const toggleAllWeeks = () => {
+    const allOpen = Object.values(openWeeks).every(v => v);
+    setOpenWeeks({
+      week1: !allOpen,
+      week2: !allOpen,
+      week3: !allOpen,
+      week4: !allOpen
+    });
+  };
+
+  const tasksByWeek = {
+    week1: tasks.filter(t => t.day >= 1 && t.day <= 7),
+    week2: tasks.filter(t => t.day >= 8 && t.day <= 14),
+    week3: tasks.filter(t => t.day >= 15 && t.day <= 21),
+    week4: tasks.filter(t => t.day >= 22 && t.day <= 30)
+  };
+
   if (isLoading && !selectedSubscription) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -209,12 +246,34 @@ export default function AdminBoosterTasks() {
           {selectedSubscription && (
             <Card className="md:col-span-2">
               <CardHeader>
-                <CardTitle>
-                  משימות עבור {selectedSubscription.user_name}
-                  <span className="text-sm text-gray-500 mr-2">
-                    ({tasks.length} משימות)
-                  </span>
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle>
+                    משימות עבור {selectedSubscription.user_name}
+                    <span className="text-sm text-gray-500 mr-2">
+                      ({tasks.length} משימות)
+                    </span>
+                  </CardTitle>
+                  {tasks.length > 0 && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={toggleAllWeeks}
+                      className="flex items-center gap-2"
+                    >
+                      {Object.values(openWeeks).every(v => v) ? (
+                        <>
+                          <ChevronUp className="w-4 h-4" />
+                          <span>סגור הכל</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4" />
+                          <span>פתח הכל</span>
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 {isLoading ? (
@@ -245,117 +304,170 @@ export default function AdminBoosterTasks() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                    {tasks.map((task) => (
-                      <div
-                        key={task.id}
-                        className={`p-4 rounded-lg border transition-all ${
-                          editingTask?.id === task.id
-                            ? 'bg-blue-50 border-blue-500'
-                            : 'bg-white border-gray-200'
-                        }`}
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline">יום {task.day}</Badge>
-                            {getStatusBadge(task.status)}
-                          </div>
-                          {editingTask?.id !== task.id && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleEditTask(task)}
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </Button>
-                          )}
-                        </div>
-
-                        {editingTask?.id === task.id ? (
-                          <div className="space-y-3 mt-3">
-                            <div>
-                              <label className="text-sm font-medium">נושא המייל</label>
-                              <Input
-                                value={editingTask.subject}
-                                onChange={(e) =>
-                                  setEditingTask({ ...editingTask, subject: e.target.value })
-                                }
-                              />
-                            </div>
-                            
-                            <div>
-                              <label className="text-sm font-medium">כותרת המשימה</label>
-                              <Input
-                                value={editingTask.task_title}
-                                onChange={(e) =>
-                                  setEditingTask({ ...editingTask, task_title: e.target.value })
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="text-sm font-medium">למה זה חשוב</label>
-                              <Textarea
-                                value={editingTask.the_why}
-                                onChange={(e) =>
-                                  setEditingTask({ ...editingTask, the_why: e.target.value })
-                                }
-                                rows={3}
-                              />
-                            </div>
-
-                            <div>
-                              <label className="text-sm font-medium">הפעולה</label>
-                              <Textarea
-                                value={editingTask.the_task}
-                                onChange={(e) =>
-                                  setEditingTask({ ...editingTask, the_task: e.target.value })
-                                }
-                                rows={3}
-                              />
-                            </div>
-
-                            <div className="flex gap-2">
-                              <Button onClick={handleSaveTask} disabled={isSaving}>
-                                {isSaving ? (
-                                  <Loader2 className="w-4 h-4 animate-spin ml-2" />
-                                ) : (
-                                  <Save className="w-4 h-4 ml-2" />
-                                )}
-                                שמור
-                              </Button>
-                              <Button
-                                variant="outline"
-                                onClick={() => setEditingTask(null)}
-                              >
-                                ביטול
-                              </Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="space-y-3">
-                            <div className="font-semibold text-sm">{task.task_title}</div>
-                            <div className="text-sm text-gray-600">{task.subject}</div>
-                            
-                            <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
-                              <div className="text-xs font-semibold text-amber-900 mb-1">למה זה חשוב:</div>
-                              <div className="text-sm text-amber-800">{task.the_why}</div>
-                            </div>
-                            
-                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                              <div className="text-xs font-semibold text-blue-900 mb-1">הפעולה:</div>
-                              <div className="text-sm text-blue-800">{task.the_task}</div>
-                            </div>
-                            
-                            {task.sent_date && (
-                              <div className="text-xs text-gray-500">
-                                נשלח: {new Date(task.sent_date).toLocaleDateString('he-IL')}
+                  <div className="space-y-4 max-h-[700px] overflow-y-auto">
+                    {/* שבוע 1 */}
+                    <Collapsible
+                      open={openWeeks.week1}
+                      onOpenChange={(open) => setOpenWeeks({...openWeeks, week1: open})}
+                    >
+                      <Card className="border-2 border-blue-300 bg-blue-50">
+                        <CollapsibleTrigger className="w-full">
+                          <CardHeader className="cursor-pointer hover:bg-blue-100 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div className="text-right">
+                                <CardTitle className="text-lg">שבוע 1: שלב הפריצה (Quick Wins)</CardTitle>
+                                <p className="text-sm text-gray-600 mt-1">ימים 1-7 | ללא עלות</p>
                               </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                              <div className="flex items-center gap-2">
+                                <Badge className="bg-blue-600 text-white">
+                                  {tasksByWeek.week1.length} משימות
+                                </Badge>
+                                {openWeeks.week1 ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                              </div>
+                            </div>
+                          </CardHeader>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <CardContent className="space-y-3 pt-0">
+                            {tasksByWeek.week1.map((task) => (
+                              <TaskCard 
+                                key={task.id} 
+                                task={task} 
+                                editingTask={editingTask}
+                                setEditingTask={setEditingTask}
+                                handleEditTask={handleEditTask}
+                                handleSaveTask={handleSaveTask}
+                                isSaving={isSaving}
+                                getStatusBadge={getStatusBadge}
+                              />
+                            ))}
+                          </CardContent>
+                        </CollapsibleContent>
+                      </Card>
+                    </Collapsible>
+
+                    {/* שבוע 2 */}
+                    <Collapsible
+                      open={openWeeks.week2}
+                      onOpenChange={(open) => setOpenWeeks({...openWeeks, week2: open})}
+                    >
+                      <Card className="border-2 border-purple-300 bg-purple-50">
+                        <CollapsibleTrigger className="w-full">
+                          <CardHeader className="cursor-pointer hover:bg-purple-100 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div className="text-right">
+                                <CardTitle className="text-lg">שבוע 2: בניית תשתית אסטרטגית</CardTitle>
+                                <p className="text-sm text-gray-600 mt-1">ימים 8-14 | הטמעה טכנית</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge className="bg-purple-600 text-white">
+                                  {tasksByWeek.week2.length} משימות
+                                </Badge>
+                                {openWeeks.week2 ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                              </div>
+                            </div>
+                          </CardHeader>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <CardContent className="space-y-3 pt-0">
+                            {tasksByWeek.week2.map((task) => (
+                              <TaskCard 
+                                key={task.id} 
+                                task={task} 
+                                editingTask={editingTask}
+                                setEditingTask={setEditingTask}
+                                handleEditTask={handleEditTask}
+                                handleSaveTask={handleSaveTask}
+                                isSaving={isSaving}
+                                getStatusBadge={getStatusBadge}
+                              />
+                            ))}
+                          </CardContent>
+                        </CollapsibleContent>
+                      </Card>
+                    </Collapsible>
+
+                    {/* שבוע 3 */}
+                    <Collapsible
+                      open={openWeeks.week3}
+                      onOpenChange={(open) => setOpenWeeks({...openWeeks, week3: open})}
+                    >
+                      <Card className="border-2 border-green-300 bg-green-50">
+                        <CollapsibleTrigger className="w-full">
+                          <CardHeader className="cursor-pointer hover:bg-green-100 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div className="text-right">
+                                <CardTitle className="text-lg">שבוע 3: העמקה וצמצום חסמים</CardTitle>
+                                <p className="text-sm text-gray-600 mt-1">ימים 15-21 | Efficiency Optimization</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge className="bg-green-600 text-white">
+                                  {tasksByWeek.week3.length} משימות
+                                </Badge>
+                                {openWeeks.week3 ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                              </div>
+                            </div>
+                          </CardHeader>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <CardContent className="space-y-3 pt-0">
+                            {tasksByWeek.week3.map((task) => (
+                              <TaskCard 
+                                key={task.id} 
+                                task={task} 
+                                editingTask={editingTask}
+                                setEditingTask={setEditingTask}
+                                handleEditTask={handleEditTask}
+                                handleSaveTask={handleSaveTask}
+                                isSaving={isSaving}
+                                getStatusBadge={getStatusBadge}
+                              />
+                            ))}
+                          </CardContent>
+                        </CollapsibleContent>
+                      </Card>
+                    </Collapsible>
+
+                    {/* שבוע 4 */}
+                    <Collapsible
+                      open={openWeeks.week4}
+                      onOpenChange={(open) => setOpenWeeks({...openWeeks, week4: open})}
+                    >
+                      <Card className="border-2 border-orange-300 bg-orange-50">
+                        <CollapsibleTrigger className="w-full">
+                          <CardHeader className="cursor-pointer hover:bg-orange-100 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div className="text-right">
+                                <CardTitle className="text-lg">שבוע 4: אינטגרציה ומינוף</CardTitle>
+                                <p className="text-sm text-gray-600 mt-1">ימים 22-30 | The New Standard</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge className="bg-orange-600 text-white">
+                                  {tasksByWeek.week4.length} משימות
+                                </Badge>
+                                {openWeeks.week4 ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                              </div>
+                            </div>
+                          </CardHeader>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <CardContent className="space-y-3 pt-0">
+                            {tasksByWeek.week4.map((task) => (
+                              <TaskCard 
+                                key={task.id} 
+                                task={task} 
+                                editingTask={editingTask}
+                                setEditingTask={setEditingTask}
+                                handleEditTask={handleEditTask}
+                                handleSaveTask={handleSaveTask}
+                                isSaving={isSaving}
+                                getStatusBadge={getStatusBadge}
+                              />
+                            ))}
+                          </CardContent>
+                        </CollapsibleContent>
+                      </Card>
+                    </Collapsible>
                   </div>
                 )}
               </CardContent>
@@ -363,6 +475,137 @@ export default function AdminBoosterTasks() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+// קומפוננטה נפרדת לכרטיס משימה
+function TaskCard({ task, editingTask, setEditingTask, handleEditTask, handleSaveTask, isSaving, getStatusBadge }) {
+  return (
+    <div
+      className={`p-4 rounded-lg border transition-all ${
+        editingTask?.id === task.id
+          ? 'bg-blue-50 border-blue-500'
+          : 'bg-white border-gray-200'
+      }`}
+    >
+      <div className="flex items-start justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="font-bold">יום {task.day}</Badge>
+          {getStatusBadge(task.status)}
+        </div>
+        {editingTask?.id !== task.id && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleEditTask(task)}
+          >
+            <Edit2 className="w-4 h-4" />
+          </Button>
+        )}
+      </div>
+
+      {editingTask?.id === task.id ? (
+        <div className="space-y-3 mt-3">
+          <div>
+            <label className="text-sm font-medium">נושא המייל</label>
+            <Input
+              value={editingTask.subject}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, subject: e.target.value })
+              }
+            />
+          </div>
+          
+          <div>
+            <label className="text-sm font-medium">כותרת המשימה</label>
+            <Input
+              value={editingTask.task_title}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, task_title: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">למה זה חשוב</label>
+            <Textarea
+              value={editingTask.the_why}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, the_why: e.target.value })
+              }
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">הפעולה</label>
+            <Textarea
+              value={editingTask.the_task}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, the_task: e.target.value })
+              }
+              rows={3}
+            />
+          </div>
+          
+          <div>
+            <label className="text-sm font-medium">סיומת מעודדת</label>
+            <Textarea
+              value={editingTask.closing_encouragement || ''}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, closing_encouragement: e.target.value })
+              }
+              rows={2}
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <Button onClick={handleSaveTask} disabled={isSaving}>
+              {isSaving ? (
+                <Loader2 className="w-4 h-4 animate-spin ml-2" />
+              ) : (
+                <Save className="w-4 h-4 ml-2" />
+              )}
+              שמור
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setEditingTask(null)}
+            >
+              ביטול
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <div className="font-semibold text-sm">{task.task_title}</div>
+          <div className="text-sm text-gray-600">{task.subject}</div>
+          
+          <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+            <div className="text-xs font-semibold text-amber-900 mb-1">למה זה חשוב:</div>
+            <div className="text-sm text-amber-800 whitespace-pre-wrap">{task.the_why}</div>
+          </div>
+          
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+            <div className="text-xs font-semibold text-blue-900 mb-1">הפעולה:</div>
+            <div className="text-sm text-blue-800 whitespace-pre-wrap">{task.the_task}</div>
+          </div>
+          
+          {task.closing_encouragement && (
+            <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+              <div className="text-xs font-semibold text-green-900 mb-1">עידוד:</div>
+              <div className="text-sm text-green-800 whitespace-pre-wrap">{task.closing_encouragement}</div>
+            </div>
+          )}
+          
+          {task.sent_date && (
+            <div className="text-xs text-gray-500">
+              נשלח: {new Date(task.sent_date).toLocaleDateString('he-IL')}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
