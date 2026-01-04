@@ -1,134 +1,87 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
-// 6 Booster Track Domains
-const BOOSTER_DOMAINS = {
-  vision: { nameHe: 'חזון', nameEn: 'Vision', questions: [98, 99, 100, 101, 48, 49, 52, 53, 81, 82, 83, 84], criticalQuestions: [98, 52, 53], priority: 6 },
-  finance: { nameHe: 'פיננסים', nameEn: 'Finance', questions: [7, 38, 39, 44, 50, 68, 69, 70], criticalQuestions: [7, 50], priority: 3 },
-  management: { nameHe: 'ניהול', nameEn: 'Management', questions: [25, 73, 74, 75, 76, 77, 85, 86, 87], criticalQuestions: [74, 85], priority: 5 },
-  marketing: { nameHe: 'שיווק', nameEn: 'Marketing', questions: [18, 67, 80, 81, 90, 95], criticalQuestions: [18, 90], priority: 4 },
-  digital: { nameHe: 'דיגיטל', nameEn: 'Digital', questions: [13, 47, 68, 69, 70, 71], criticalQuestions: [68, 70], priority: 2 },
-  execution: { nameHe: 'ביצוע', nameEn: 'Execution', questions: [61, 62, 63, 65, 88, 89, 105, 106], criticalQuestions: [88, 105, 106], priority: 1 }
+// 11 Core Dimensions (V9)
+const CORE_DIMENSIONS = {
+  resilience: { nameHe: 'חוסן', nameEn: 'Resilience', questions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
+  flexibility: { nameHe: 'גמישות', nameEn: 'Flexibility', questions: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28] },
+  leadership: { nameHe: 'מנהיגות', nameEn: 'Leadership', questions: [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41] },
+  communication: { nameHe: 'תקשורת', nameEn: 'Communication', questions: [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57] },
+  planning: { nameHe: 'תכנון', nameEn: 'Planning', questions: [58, 59, 60, 61, 62, 63, 64, 76, 77] },
+  learning: { nameHe: 'למידה', nameEn: 'Learning', questions: [65, 66, 67, 68, 69, 78, 85, 86, 87, 103] },
+  vision: { nameHe: 'חזון', nameEn: 'Vision', questions: [72, 73, 74, 75, 80, 84, 101] },
+  technology: { nameHe: 'טכנולוגיה', nameEn: 'Technology', questions: [82, 83, 94, 95] },
+  networking: { nameHe: 'נטוורקינג', nameEn: 'Networking', questions: [81] },
+  balance: { nameHe: 'איזון', nameEn: 'Balance', questions: [70, 71, 88, 89, 90, 91] },
+  change: { nameHe: 'שינוי', nameEn: 'Change', questions: [96, 97, 98, 99, 100, 104] }
 };
 
-function selectBoosterTrack(boosterScores) {
-  const sortedDomains = Object.entries(boosterScores)
-    .filter(([_, data]) => data && data.score !== undefined)
-    .sort((a, b) => {
-      if (a[1].score !== b[1].score) {
-        return a[1].score - b[1].score;
-      }
-      return BOOSTER_DOMAINS[a[0]].priority - BOOSTER_DOMAINS[b[0]].priority;
-    });
-  
-  if (sortedDomains.length === 0) return 'execution';
-  
-  const lowestScore = sortedDomains[0][1].score;
-  if (lowestScore > 75) {
-    return sortedDomains[0][0];
+// Reversed questions (8-x) - V9
+const REVERSED_QUESTIONS = [4, 8, 14, 22, 25, 27, 34, 37, 39, 41, 45, 48, 54, 57, 60, 89, 90, 93, 98];
+
+function applyReversedLogic(questionNumber, value) {
+  if (REVERSED_QUESTIONS.includes(questionNumber)) {
+    return 8 - value;
   }
-  
-  return sortedDomains[0][0];
+  return value;
 }
 
-const BAND_DESCRIPTIONS_MAP = {
-  'he': {
-    'high': 'גבוה - חזק מאוד',
-    'mid': 'בינוני - יש מקום משמעותי לשיפור',
-    'low': 'נמוך - דורש תשומת לב ופעולה מיידית'
-  },
-  'en': {
-    'high': 'High - Very Strong',
-    'mid': 'Mid - Significant Room for Improvement',
-    'low': 'Low - Requires Immediate Attention and Action'
-  }
-};
-
-function calculateDomainScore(responses, domainConfig) {
-  const questionNumbers = domainConfig.questions;
+function calculateDimensionScore(responses, dimensionConfig) {
+  const questionNumbers = dimensionConfig.questions;
   const scores = questionNumbers
-    .map(q => responses[`q${q}`])
-    .filter(val => val !== undefined && val !== null);
+    .map(q => {
+      const rawValue = responses[`q${q}`];
+      if (rawValue === undefined || rawValue === null) return null;
+      return applyReversedLogic(q, rawValue);
+    })
+    .filter(val => val !== null);
 
   if (scores.length === 0) return null;
 
   const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-  const variance = scores.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / scores.length;
-  const stdDev = Math.sqrt(variance);
-
-  const normalizedScore = ((avg - 1) / 6) * 100;
-  return { score: normalizedScore, stdDev };
+  
+  // V9 Formula: avg × 14.2857
+  const normalizedScore = avg * 14.2857;
+  
+  return { score: normalizedScore, avg };
 }
 
-function checkFlags(responses, domainConfig, domainScore) {
-  const criticalQuestions = domainConfig.criticalQuestions || [];
-  const criticalScores = criticalQuestions.map(q => responses[`q${q}`]).filter(val => val !== undefined && val !== null);
-
-  let redFlag = false;
-  let yellowFlag = false;
-
-  if (criticalScores.some(score => score <= 3)) {
-    redFlag = true;
-  } else if (domainScore.score < 50 || domainScore.stdDev > 1.8) {
-    yellowFlag = true;
-  }
-
-  return { red_flag: redFlag, yellow_flag: yellowFlag };
-}
-
-function determineBand(domainScore, redFlag) {
-  if (redFlag) return 'low';
-  if (domainScore.score >= 70) return 'high';
-  if (domainScore.score >= 50) return 'mid';
-  return 'low';
-}
-
-function calculateBoosterDomains(responses) {
+function calculateAllDimensions(responses) {
   const result = {};
-  for (const [key, config] of Object.entries(BOOSTER_DOMAINS)) {
-    const scoreData = calculateDomainScore(responses, config);
+  for (const [key, config] of Object.entries(CORE_DIMENSIONS)) {
+    const scoreData = calculateDimensionScore(responses, config);
     if (!scoreData) continue;
-
-    const flags = checkFlags(responses, config, scoreData);
-    const band = determineBand(scoreData, flags.red_flag);
 
     result[key] = {
       nameHe: config.nameHe,
       nameEn: config.nameEn,
-      score: scoreData.score,
-      stdDev: scoreData.stdDev,
-      band,
-      ...flags
+      score: scoreData.score
     };
   }
   return result;
 }
 
-function identifyStrengthsAndWeaknesses(domainScores) {
-  const sortedByScore = Object.entries(domainScores)
+function selectBoosterTrack(dimensionScores) {
+  // Find the lowest dimension for booster recommendation
+  const sortedDimensions = Object.entries(dimensionScores)
     .filter(([_, data]) => data && data.score !== undefined)
-    .sort((a, b) => b[1].score - a[1].score);
-
-  const strengths = sortedByScore.slice(0, 3).map(([_, data]) => data.name);
-  const weaknesses = sortedByScore.slice(-3).reverse().map(([_, data]) => data.name);
-
-  return { strengths, weaknesses };
+    .sort((a, b) => a[1].score - b[1].score);
+  
+  if (sortedDimensions.length === 0) return 'execution';
+  
+  return sortedDimensions[0][0];
 }
 
-const getLocalizedDomainName = (hebrewName, language) => {
-  if (language === 'en') {
-    return HEBREW_TO_ENGLISH_DOMAIN_NAMES[hebrewName] || hebrewName;
+function detectGender(personalInfo) {
+  // First check if gender is provided in personal_info
+  if (personalInfo && personalInfo.gender) {
+    if (personalInfo.gender === 'female') return 'female';
+    if (personalInfo.gender === 'male') return 'male';
   }
-  return hebrewName;
-};
-
-const getLocalizedBandDescription = (band, language) => {
-  const map = BAND_DESCRIPTIONS_MAP[language] || BAND_DESCRIPTIONS_MAP['he'];
-  return map[band] || band;
-};
-
-function detectGender(fullName) {
+  
+  // Fallback to name detection
+  const fullName = personalInfo?.full_name || '';
   const maleNames = ['יוסי', 'דוד', 'משה', 'אברהם', 'יצחק', 'יעקב', 'דניאל', 'מיכאל', 'רון', 'עומר', 'תומר', 'נועם', 'איתי', 'אלון', 'גיא'];
-  const femaleNames = ['שרה', 'רחל', 'לאה', 'מרים', 'דבורה', 'רות', 'שירה', 'נועה', 'מיכל', 'תמר', 'יעל', 'דנה', 'מאיה', 'עדי', 'רוני'];
+  const femaleNames = ['שרה', 'רחל', 'לאה', 'מרים', 'דבורה', 'רות', 'שירה', 'נועה', 'מיכל', 'תמר', 'יעל', 'דנה', 'מאיה', 'עדי', 'רוני', 'אפרת'];
   
   const firstName = fullName.split(' ')[0];
   if (femaleNames.some(name => firstName.includes(name))) return 'female';
@@ -136,158 +89,137 @@ function detectGender(fullName) {
   return 'male';
 }
 
-const getMasterPrompt = (language, userName, userGender, boosterScores, selectedTrack, optionalComment) => {
-  const scoresText = Object.entries(boosterScores)
+const getMasterPromptV9 = (language, userName, userGender, dimensionScores, selectedTrack, optionalComment) => {
+  const scoresText = Object.entries(dimensionScores)
     .map(([key, data]) => `- ${language === 'he' ? data.nameHe : data.nameEn}: ${data.score.toFixed(1)}`)
     .join('\n');
   
-  const selectedTrackName = language === 'he' ? BOOSTER_DOMAINS[selectedTrack].nameHe : BOOSTER_DOMAINS[selectedTrack].nameEn;
+  const selectedTrackName = language === 'he' ? CORE_DIMENSIONS[selectedTrack].nameHe : CORE_DIMENSIONS[selectedTrack].nameEn;
   
-  // Find top 3 strengths and bottom 1-2 weaknesses
-  const sortedDomains = Object.entries(boosterScores)
+  // Find top 3 strengths and bottom 2 weaknesses
+  const sortedDimensions = Object.entries(dimensionScores)
     .sort((a, b) => b[1].score - a[1].score);
-  const topStrengths = sortedDomains.slice(0, 3).map(([key, data]) => language === 'he' ? data.nameHe : data.nameEn);
-  const bottomWeaknesses = sortedDomains.slice(-2).map(([key, data]) => language === 'he' ? data.nameHe : data.nameEn);
+  const topStrengths = sortedDimensions.slice(0, 3).map(([key, data]) => language === 'he' ? data.nameHe : data.nameEn);
+  const bottomWeaknesses = sortedDimensions.slice(-2).map(([key, data]) => language === 'he' ? data.nameHe : data.nameEn);
   
   if (language === 'he') {
     const genderSuffix = userGender === 'female' ? 'ה' : '';
     const youAre = userGender === 'female' ? 'את' : 'אתה';
     const youNeed = userGender === 'female' ? 'את צריכה' : 'אתה צריך';
+    const blocked = userGender === 'female' ? 'חוסמת' : 'חוסם';
+    const youCan = userGender === 'female' ? 'את יכולה' : 'אתה יכול';
     
-    return `🎯 תפקיד: יועץ אסטרטגי עסקי ברמה הגבוהה ביותר (בסגנון "יוסי אלון")
-טון: חד, תובנתי, סטטוס-גבוה, ישיר ומעצים
+    return `🎯 SYSTEM PROMPT: V107 MASTER REPORT GENERATOR V9 – FINAL PRODUCTION READY
 
-📊 פרטי המשתמש:
+1. זהות ותפקיד (Identity & Role)
+אתה אסטרטג בכיר ומאבחן תעסוקתי במערך V107. תפקידך לקבל קלט (JSON) הכולל נתוני משתמש ו-107 תשובות (סקאלה 1-7) ולהפיק MASTER REPORT ברמת פרימיום.
+
+הנחיות יסוד:
+• פתיח שיווקי חובה: "אנו שמחים להציג בפניך את דו"ח V107 האישי שלך, אשר מיועד לסייע לך במינוף יכולותיך המקצועיות ופריצת חסמי ההצלחה האישיים שלך."
+• התאמה מגדרית: המשתמש/ת הוא/היא ${userGender === 'female' ? 'נקבה' : 'זכר'}. חובה להתאים את כל הדו"ח למגדר הנכון.
+• טון אסטרטגי: סמכותי, אנליטי, חד ו"לעומתי" (מציב מראה).
+• מטאפורות חובה: מנוע/שלדה, Engine, הון תפקודי, ROI אישי, צוואר בקבוק.
+
+📊 פרטי המשתמש/ת:
 שם: ${userName}
 מגדר: ${userGender === 'female' ? 'נקבה' : 'זכר'}
 ${optionalComment ? `הערה אישית: ${optionalComment}` : ''}
 
-ציוני 6 התחומים:
+ציוני 11 הממדים (V107-V9):
 ${scoresText}
 
 🔥 Engine (שלושת החוזקות): ${topStrengths.join(', ')}
 ⚠️ Paradox (החסמים): ${bottomWeaknesses.join(', ')}
 🎯 בוסטר מומלץ: ${selectedTrackName}
 
-⚡ הנחיות קריטיות:
-
-1. סנכרון מגדרי (קריטי):
-   - המגדר: ${userGender === 'female' ? 'נקבה' : 'זכר'}
-   - חובה מוחלטת: כל פועל, תואר וכינוי חייבים להיות במגדר הנכון
-   - לבדוק מחדש לפני פלט!
-   - שימוש נכון: ${youAre}, ${youNeed}, תעש${genderSuffix}, יכול${genderSuffix}
-
-2. ללא הזיות - רק מהמקורות הבאים:
-   ספרים מותרים:
-   • "Good to Great" מאת Jim Collins
-   • "7 Habits of Highly Effective People" מאת Stephen Covey
-   • "Getting Things Done" מאת David Allen
-   • "Influence" מאת Robert Cialdini
-   • "Profit First" מאת Mike Michalowicz
-   • "The Lean Startup" מאת Eric Ries
-   
-   כלים מותרים:
-   • Miro
-   • Monday.com
-   • Trello
-   • HubSpot
-   
-   ⚠️ אסור להמליץ על ספרים או כלים שאינם ברשימה!
-
-3. טרמינולוגיה אסורה:
-   - אסור: "יזם", "יזמות", "DNA יזמי", "כישלון", "גרוע"
-   - השתמש ב: "פרופיל מקצועי", "יכולות ביצוע", "הובלה ניהולית", "חשיבה אסטרטגית"
-
-4. לוגיקה מרכזית:
-   - Engine מול Paradox
-   - הדגש עלות ROI של הפער
-   - חשוף איך החוזקה הגדולה היא גם החסם הגדול
-
 ---
 
-📄 מבנה הפלט (5 עמודים):
+📄 מבנה הפלט המחייב (5 עמודים - בסגנון אפרת גאוי ויס):
 
 # עמוד 1: תמצית מנהלים (The Wake-up Call)
 
-${userName}, ${youAre} לא סתם [תכונה בסיסית] – ${youAre} [עוצמה אמיתית].
+אנו שמחים להציג בפניך את דו"ח V107 האישי שלך, אשר מיועד לסייע לך במינוף יכולותיך המקצועיות ופריצת חסמי ההצלחה האישיים שלך.
+
+${userName}, ${youAre} לא סתם מנהל/ת עם יכולות ${topStrengths[0]} גבוהות – ${youAre} עוצמה אמיתית.
 
 הניתוח חושף ש-Engine שלך מבוסס על: ${topStrengths.join(', ')}.
-אבל הפרדוקס? ${bottomWeaknesses.join(' ו-')} מעכב${userGender === 'female' ? 'ת' : ''} אותך.
+אבל הפרדוקס? ${bottomWeaknesses.join(' ו-')} ${blocked} אותך.
 
-**תובנת עומק (3-4 משפטים חדים):**
-[חשוף את הפרדוקס המרכזי - מה באמת מונע מהתקדמות. היה אמיץ וחד. הסבר את הקשר בין החוזקות לחסמים.]
+**תובנת עומק:**
+המהות שלך כמשפיע/ה ב-${topStrengths[0]} היא כלי רב-עוצמה, אך היעדר ${bottomWeaknesses[0]} ברור מכשיל את הצעדים הקריטיים לצמיחה. למעשה, כש${youAre} מרוכז/ת בכישוריך, ${youAre} שוכח/ת שהתמונה הרחבה מחייבת להתייחס להיבטים ה-${bottomWeaknesses[0]} ולגיבוש חזון. החוזקה בדרכי פעולה מהירה יכולה להוליך אותך למסקנות לא מושכלות, המונעות ממך לקחת את הצעד הבא בהצלחה.
 
 **ניתוח ROI:**
-הפער בין [החוזקה הגבוהה] ל[החולשה הנמוכה] עולה לך ב[תוצאה ספציפית].
+הפער בין ${topStrengths[0]} ל-${bottomWeaknesses[0]} עולה לך בהזדמנויות שלא מתממשות, שמזיקים לצמיחה הפוטנציאלית שלך. אם תיישר/י את ה-${bottomWeaknesses[0]} לחזון ברור, תוכל/י להעצים את תוצאות ה-${topStrengths[0]} להצלחה ארוכת טווח.
 
-סיכום:
-השלב הבא הוא לא [פעולה טריוויאלית], אלא [הפעולה האמיתית]. הגיע הזמן לעבור מ[מצב נוכחי] ל[מצב רצוי].
-
-הבהרה משפטית: "דוח זה הינו כלי אבחון אסטרטגי שנוצר בסיוע טכנולוגיית בינה מלאכותית. השימוש במידע המוצג בדוח נעשה על אחריות המשתמש בלבד."
+**סיכום:**
+השלב הבא הוא לא בחירה בפעולה על פני פעילות מיידית, אלא בהגדרת חזון ברור ומדויק להפיכת פעולותיך האפקטיביות לנכסים ממשיים. הגיע הזמן לעבור מבעיות ניהוליות ליכולת לבצע עשייה מדויקת.
 
 ---
 
 # עמוד 2: הפרדוקס הפנימי של ${userName}
 
-${userName}, השאלון חושף ש-Engine שלך (${topStrengths.join(', ')}) בעצם חוסם${genderSuffix} אותך בגלל [הסבר הפרדוקס].
+${userName}, השאלון חושף ש-Engine שלך (${topStrengths.join(', ')}) בעצם ${blocked} אותך בגלל היעדר פתרונות ${bottomWeaknesses[0]} ברורים.
 
 **שלוש תובנות מרכזיות:**
 
-• **מלכודת ה"[שם ספציפי]"**: 
-[הסבר מפורט איך הדפוס החיובי הופך להרסני. דוגמה ספציפית לפרופיל. 2-3 משפטים חדים.]
+• **מלכודת ההצלחה:**
+היכן ש${youAre} מצטיין/ת, ${youAre} משקיע/ה אנרגיה רבה, אך מתחיל/ה להתייחס ל-${topStrengths[0]} כאל מובן מאליו. זה מביא אותך לסטגנציה כאשר ${youAre} לא מעודכן/ת בהיבטים ${bottomWeaknesses[0]}, מה שעלול להוביל להשקעות חסרות תועלת או לכשלים אסטרטגיים.
 
-• **[דפוס נוסף]**: 
-[ניתוח סטטיסטי או התנהגותי. חשוף דפוס חוזר. תן דוגמה קונקרטית.]
+• **דפוס ההתקדמות:**
+ככל ה-${topStrengths[0]} מתמתח לקדמת הבמה, ${youAre} מפסיק/ה לקחת בחשבון את הפן ה-${bottomWeaknesses[0]}. משך הזמן ש${youAre} עובר/ת על צרכים פוטנציאליים ולא עונה עליהם מדגיש פערי השקעה משמעותיים.
 
-• **הפרדוקס המקצועי**: 
-[הסבר איך החוזקה הגדולה ביותר היא גם החסם הגדול ביותר. היה ספציפי ומעמיק.]
+• **הפרדוקס המקצועי:**
+החוזקה הגדולה שלך ב-${topStrengths[0]} מספקת תחושת נאמנות לקהל הלקוחות שלך, אך היא גם מחסירה ממך את הצורך בבניית מערכת ${bottomWeaknesses[0]} אחראית, מה שמוביל לקשיים בהשגת יעדים רחבים בעוד גישה פרואקטיבית נדרשת לחזון.
 
 ---
 
 # עמוד 3: השפעה אסטרטגית (The Mirror)
 
 **ניתוח ROI אישי:**
-הפער בין ${topStrengths[0]} (גבוה) ל${bottomWeaknesses[0]} (נמוך) עולה לך ב[תוצאה מדידה קונקרטית - כסף, זמן, הזדמנויות].
+הפער בין ${topStrengths[0]} (גבוה) ל-${bottomWeaknesses[0]} (נמוך) עולה לך בכספים שהם חסרים, הזדמנויות עסקיות שלא ממושות ועיכובים בהתרחבות.
 
-**ציוני הליבה (מילולי בלבד - ללא מספרים!):**
-- ביצוע: [רמה עילית / יציבות מוצקה / דורש חיזוק מיידי]
-- ניהול: [...]
-- אסטרטגיה: [...]
-- פיננסים: [...]
-- דיגיטל: [...]
-- יחסי אנוש: [...]
+**ציוני הליבה (11 ממדים, ממוינים גבוה-נמוך):**
+
+${Object.entries(dimensionScores)
+  .sort((a, b) => b[1].score - a[1].score)
+  .map(([key, data]) => {
+    const barLength = Math.round(data.score / 10);
+    const bar = '█'.repeat(barLength) + '░'.repeat(10 - barLength);
+    return `${data.nameHe}: ${data.score.toFixed(0)} ${bar}`;
+  })
+  .join('\n')}
 
 ---
 
 # עמוד 4: ניווט קריירה והמלצות
 
-${userName}, ${youNeed} לא "[פתרון שגוי]" – ${youNeed} [הפתרון האמיתי].
+${userName}, ${youNeed} לא "לשפר את ה-${topStrengths[0]}" – ${youNeed} לחזק את התחום ה-${bottomWeaknesses[0]} והחזון.
 
 **ארבעה נתיבי מימוש בעבורך:**
 
-1. **[תפקיד/מסלול 1]**: 
-   למה זה מתאים: [...]
-   מה צריך לשנות: [...]
+1. **[תפקיד מותאם 1 - התאם לפי ממדים גבוהים]**
+   למה זה מתאים: [הסבר מבוסס על חוזקות]
+   מה צריך לשנות: [הסבר מבוסס על חולשות]
 
-2. **[תפקיד/מסלול 2]**: 
+2. **[תפקיד מותאם 2]**
    [2-3 משפטים]
 
-3. **[תפקיד/מסלול 3]**: 
+3. **[תפקיד מותאם 3]**
    [2-3 משפטים]
 
-4. **[תפקיד/מסלול 4]**: 
+4. **[תפקיד מותאם 4]**
    [2-3 משפטים]
 
 **ארגז כלים:**
 
-• **ספר מומלץ**: [בחר מהרשימה המותרת בלבד]
-  למה זה רלוונטי: [...]
+• **ספר מומלץ**: [בחר מתוך: "Good to Great" (Jim Collins), "7 Habits" (Covey), "Getting Things Done" (Allen), "Influence" (Cialdini), "Profit First" (Michalowicz), "The Lean Startup" (Ries)]
+  למה זה רלוונטי: [התאם לחסם המרכזי]
 
-• **כלי עבודה**: [בחר מהרשימה המותרת בלבד]
-  איך להשתמש: [...]
+• **כלי עבודה**: [בחר מתוך: Miro, Monday.com, Trello, HubSpot]
+  איך להשתמש: [הנחיה ספציפית]
 
-• **פרוטוקול 24 שעות**:
-  ${userName}, תעש${genderSuffix} [משימה קונקרטית אחת] עד [מועד]. [הנחיה ספציפית].
+• **פרוטוקול 24 שעות:**
+  ${userName}, תעש${genderSuffix} [משימה קונקרטית אחת להתמודדות עם ${bottomWeaknesses[0]}] עד [מועד מחר]. [הנחיה ספציפית וניתנת לביצוע].
 
 ---
 
@@ -296,13 +228,14 @@ ${userName}, ${youNeed} לא "[פתרון שגוי]" – ${youNeed} [הפתרו�
 ניסיוננו מראה: רבים מסתפקים בקריאת הדוח (ידיעה), אך מי שעבר ליישום (פעולה) השיג יעדים טובים יותר.
 
 **מהו V107-BOOSTER?**
-כלי עבודה יומי: 7 ימים, משימות 10-15 דקות, ממוקד ב${selectedTrackName} - התחום הנמוך ביותר בדוח שלך.
+כלי עבודה יומי: 30 יום, משימות 10-15 דקות, ממוקד ב-${selectedTrackName} - הממד הנמוך ביותר בדוח שלך.
 
-המטרה: להפוך מסקנות לדרך חיים ניהולית ותוצאות מוחשיות.
+**המטרה:**
+להפוך מסקנות לדרך חיים ניהולית ותוצאות מוחשיות.
 
 **המודל:**
-- חינם לחלוטין
-- 7 ימים ליווי יומי
+- חינם לחלוטין ל-7 הימים הראשונים
+- 30 ימים ליווי יומי מלא
 - ביום 7: משוב ובדיקת שיפור
 - הפקת${genderSuffix} ערך? → תוכנית שנתית בתשלום
 - לא? → אין חיוב
@@ -310,98 +243,43 @@ ${userName}, ${youNeed} לא "[פתרון שגוי]" – ${youNeed} [הפתרו�
 **קריאה:**
 📌 ${userName}, התחל${genderSuffix} V107-BOOSTER עכשיו (ללא עלות)
 
-אל תסתפק${genderSuffix} בידיעה של מי ש${youAre} – גלה${genderSuffix} מה ${youAre} באמת יכול${genderSuffix} להיות.
+אל תסתפק${genderSuffix} בידיעה של מי ש${youAre} – גלה${genderSuffix} מה ${youCan} להיות באמת.
 
 ---
 
-החזר JSON:
+**הבהרה משפטית:**
+"דו"ח V107 הופק באמצעות אלגוריתם בינה מלאכותית ייחודי שפותח על ידי צוות מומחי V107, זאת בהסתמך על ניתוח אלפי שאלונים ומחקר אנושי מעמיק. הדו"ח מהווה כלי אבחון אסטרטגי בלבד ואינו תחליף לייעוץ מקצועי מוסמך. כל שימוש בתובנותיו – על אחריות המשתמש."
+
+---
+
+החזר JSON בפורמט הבא בלבד:
 {
   "report_markdown": "הדוח המלא (5 עמודים)",
   "selected_booster_track": "${selectedTrack}",
-  "archetype": "כותרת מקצועית קצרה (2-4 מילים)"
+  "archetype": "כותרת מקצועית קצרה (2-4 מילים המתארות את המשתמש/ת)"
 }`;
   } else {
-    return `🎯 V107_Premium_Report_Generator_V3.1
+    // English version placeholder - can be expanded similarly
+    return `V107 REPORT GENERATOR V9 - ENGLISH
 
-1. System Identity:
-You are a Senior Strategic Consultant and Executive Coach with expertise in psychometric and business analysis for V107 Professional Framework™.
-Your task: Strategic analysis and premium professional report generation.
-
-2. Gender and Personal Address (Critical):
-- User gender: ${userGender}
-- Must adapt ALL verbs, adjectives, and references to gender with 100% accuracy
-- Use the first name "${userName}" at the beginning of each paragraph and with high frequency throughout the report to create personal connection
-
-3. Terminology Prohibition:
-- Absolutely forbidden to use: "entrepreneur", "entrepreneurship", "entrepreneurial DNA", "failure", "bad"
-- Use terms: "professional profile", "execution capabilities", "managerial leadership", "strategic mindset"
-
-4. Writing Tone:
-- Professional, sharp, authoritative, and empowering
-- Avoid generic statements
-- Write with confidence and directness
-- Language: English only (except JSON) - Absolutely no slang
-
-📊 Client Data
-Name: ${userName}
+User: ${userName}
 Gender: ${userGender}
-${optionalComment ? `Personal Note: ${optionalComment}` : ''}
+${optionalComment ? `Note: ${optionalComment}` : ''}
 
-6 Domain Scores (0-100):
+Dimensions:
 ${scoresText}
 
-🎯 Selected Booster Track: ${selectedTrackName}
+Top Strengths: ${topStrengths.join(', ')}
+Weaknesses: ${bottomWeaknesses.join(', ')}
+Recommended Track: ${selectedTrackName}
 
-📝 Output Structure (5 Pages)
+Generate a professional 5-page report following the V9 structure.
 
-⚠️ Important: Separate each page using:
----
-# Page [number]
----
-
-**Page 1: Professional Competency Profile Analysis**
-- Title: "Professional Strengths Assessment & Mapping Report – V107"
-- Executive Summary: Paragraph analyzing ${userName}'s "professional mix". Present balanced picture combining prominent strengths alongside identified strategic barriers
-- Legal Notice: "This document is a strategic diagnostic tool based on your responses. The report is generated using artificial intelligence. Use of information is at user's responsibility. External learning recommendations are provided as service only and V107 has no responsibility for this content."
-
-**Page 2: Core Professional Mapping (Detailed Analysis)**
-- Excellence Zone: Analysis of two leading strengths (high scores). Explain how these qualities constitute strategic asset for ${userName}
-- Developmental Focus: Professional and direct analysis of two areas needing improvement (low scores). Explain how these gaps inhibit full professional potential realization
-
-**Page 3: Visual Competency Map**
-- Graphic Specification: Description of horizontal bar chart with rounded edges in pastel colors (#B2AC88, #FDFD96, #FFD1DC)
-- Display Rules: Forbidden to show numbers or percentages. Display only verbal definition next to each bar:
-  * Vision: [Verbal rating]
-  * Finance: [Verbal rating]
-  * Management: [Verbal rating]
-  * Marketing: [Verbal rating]
-  * Digital: [Verbal rating]
-  * Execution: [Verbal rating]
-  Use expressions such as: "Elite Proficiency", "Professional Stability", "Focused Development Area"
-
-**Page 4: Strategic Work Plan (Applied Value)**
-- Gap Analysis: Paragraph analyzing relationship between strength and weakness (how high mobilization ability without financial clarity inhibits results)
-- Action Protocol (The Action Plan): For each of three focuses (strength, ascent, breakthrough), define: concrete action for immediate execution and expected outcome
-- Executive Resources: Premium quality references: academic courses (Stanford, Coursera), classic management literature and technological tools (Notion, Monday, etc.)
-- Marketing Transition to V107-BOOSTER: "As you can see ${userName}, your competency foundation is promising and underutilized in our opinion. For your success, we've developed unique tools within V107-BOOSTER, aimed at real strengthening and improvement in the focuses we identified. We invite you to proceed to page 5 to start strengthening capabilities right now."
-
----
-**⚠️ End of Page 4 - Start new page (5) now**
----
-
-**Page 5: V107-BOOSTER Sub-Brand (Turning Insights into Reality)**
-**This is a completely separate and clean page dedicated to the Booster sales text**
-- Psychological Opening: Explain that many settled for reading the report (knowledge), but those who moved to implementation (action) are those who achieved better goals
-- Tool Definition: V107-BOOSTER is designed to turn conclusions into managerial way of life
-- Track Structure: "7-day accompaniment with short daily task (10-15 minutes) focusing on ${selectedTrackName} - the domain that received the lowest score in your report"
-- Conditional Purchase Model: Present model where access to V107-BOOSTER is free, and only on seventh day, if user is satisfied with improvement, a detailed annual work plan will be offered for payment
-- Call to Action: "Start V107-BOOSTER Track (No Cost)"
-
-Return JSON only with this structure:
+Return JSON:
 {
-  "report_markdown": "Full report in Markdown format (5 separate pages)",
+  "report_markdown": "Full report",
   "selected_booster_track": "${selectedTrack}",
-  "archetype": "Short professional headline describing the client"
+  "archetype": "Short professional headline"
 }`;
   }
 };
@@ -447,19 +325,19 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Calculate Booster domain scores
-    const boosterScores = calculateBoosterDomains(response.responses);
-    const selectedTrack = selectBoosterTrack(boosterScores);
+    // Calculate all 11 dimensions (V9)
+    const dimensionScores = calculateAllDimensions(response.responses);
+    const selectedTrack = selectBoosterTrack(dimensionScores);
 
     const userName = response.personal_info?.full_name || (reportLanguage === 'en' ? 'User' : 'משתמש');
-    const userGender = detectGender(userName);
+    const userGender = detectGender(response.personal_info);
     const optionalComment = response.optional_comment || '';
 
-    const masterPrompt = getMasterPrompt(
+    const masterPrompt = getMasterPromptV9(
       reportLanguage,
       userName,
       userGender,
-      boosterScores,
+      dimensionScores,
       selectedTrack,
       optionalComment
     );
@@ -487,7 +365,7 @@ Deno.serve(async (req) => {
       report_markdown: llmResponse.report_markdown,
       archetype: llmResponse.archetype,
       recommended_booster_track: llmResponse.selected_booster_track,
-      domain_scores: boosterScores,
+      domain_scores: dimensionScores,
       language: reportLanguage,
       status: 'completed'
     });
