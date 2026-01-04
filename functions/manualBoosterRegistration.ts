@@ -316,12 +316,31 @@ Deno.serve(async (req) => {
     
     console.log('[DEBUG] Report data:', { userName, language, track });
     
-    if (!track) {
-      console.log('[DEBUG] Missing booster track in report');
-      return Response.json({ 
-        success: false, 
-        error: 'הדוח לא כולל מסלול בוסטר מומלץ. יש ליצור דוח מחדש עם מסלול.' 
-      }, { status: 400 });
+    // תיקון ומיפוי של מסלולים לא תקפים
+    const validTracks = ['execution', 'digital', 'finance', 'marketing', 'management', 'vision'];
+    let correctedTrack = track;
+    
+    if (!track || !validTracks.includes(track)) {
+      console.log('[DEBUG] Invalid or missing track:', track, '- mapping to valid track');
+      
+      // מיפוי מסלולים ישנים/לא תקפים למסלולים תקפים
+      const trackMapping = {
+        'networking': 'marketing',
+        'communication': 'management',
+        'strategy': 'vision',
+        'operations': 'execution',
+        'technology': 'digital',
+        'money': 'finance'
+      };
+      
+      correctedTrack = trackMapping[track] || 'execution'; // ברירת מחדל: execution
+      console.log('[DEBUG] Corrected track to:', correctedTrack);
+      
+      // עדכן את הדוח עם המסלול המתוקן
+      await base44.asServiceRole.entities.GeneratedReport.update(reportId, {
+        recommended_booster_track: correctedTrack
+      });
+      console.log('[DEBUG] Updated report with corrected track');
     }
     
     const questionnaireResponseId = report.questionnaire_response_id;
@@ -372,7 +391,7 @@ Deno.serve(async (req) => {
       current_day: 1,
       status: 'active',
       language: language,
-      recommended_booster_track: track,
+      recommended_booster_track: correctedTrack,
       sent_tasks: []
     };
     
@@ -395,7 +414,7 @@ Deno.serve(async (req) => {
     const userData = {
       userName,
       userGender,
-      track,
+      track: correctedTrack,
       domainScores,
       reportAnalysis
     };
@@ -445,7 +464,7 @@ Deno.serve(async (req) => {
       user_email: userEmail,
       user_name: userName,
       day: task.day,
-      track: track,
+      track: correctedTrack,
       subject: task.subject,
       task_title: task.task_title,
       the_why: task.the_why,
@@ -463,7 +482,7 @@ Deno.serve(async (req) => {
     // שלח מייל ברוכים הבאים
     console.log('[DEBUG] Sending welcome email...');
     try {
-      const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, track, language);
+      const emailTemplate = getBoosterWelcomeTemplate(userName, userGender, correctedTrack, language);
       
       await base44.asServiceRole.integrations.Core.SendEmail({
         from_name: 'V107 Booster',
