@@ -432,7 +432,8 @@ Deno.serve(async (req) => {
           subject: task.subject,
           the_why: task.the_why,
           the_task: task.the_task,
-          task_title: task.task_title
+          task_title: task.task_title,
+          closing_encouragement: task.closing_encouragement || ''
         };
 
         const userData = {
