@@ -23,12 +23,17 @@ function createBulkTasksPrompt(userData, language) {
   const { userName, userGender, track, domainScores, reportAnalysis } = userData;
   
   const trackNames = {
-    execution: { he: 'ביצוע', en: 'Execution' },
-    digital: { he: 'דיגיטל', en: 'Digital' },
-    finance: { he: 'פיננסים', en: 'Finance' },
-    marketing: { he: 'שיווק', en: 'Marketing' },
-    management: { he: 'ניהול', en: 'Management' },
-    vision: { he: 'חזון', en: 'Vision' }
+    resilience: { he: 'חוסן', en: 'Resilience' },
+    flexibility: { he: 'גמישות', en: 'Flexibility' },
+    leadership: { he: 'מנהיגות', en: 'Leadership' },
+    communication: { he: 'תקשורת', en: 'Communication' },
+    planning: { he: 'תכנון', en: 'Planning' },
+    learning: { he: 'למידה', en: 'Learning' },
+    vision: { he: 'חזון', en: 'Vision' },
+    technology: { he: 'טכנולוגיה', en: 'Technology' },
+    networking: { he: 'נטוורקינג', en: 'Networking' },
+    balance: { he: 'איזון', en: 'Balance' },
+    change: { he: 'שינוי', en: 'Change' }
   };
   
   const trackName = trackNames[track][language];
