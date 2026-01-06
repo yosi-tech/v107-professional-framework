@@ -17,12 +17,50 @@ function AppLayout({ children }) {
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasUnpaidReport, setHasUnpaidReport] = useState(false);
+  const [unpaidReportId, setUnpaidReportId] = useState(null);
+  const [hasAbandonedQuestionnaire, setHasAbandonedQuestionnaire] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
+        
+        // בדוק אם יש דוח שלא שולם
+        try {
+          const reports = await base44.entities.GeneratedReport.filter(
+            { user_email: currentUser.email },
+            '-created_date',
+            1
+          );
+          if (reports.length > 0) {
+            const report = reports[0];
+            const hasPurchased = report.purchased === true || 
+                               currentUser.has_purchased_full_report || 
+                               currentUser.has_purchased_answers_download;
+            if (!hasPurchased) {
+              setHasUnpaidReport(true);
+              setUnpaidReportId(report.questionnaire_response_id);
+            }
+          }
+        } catch (e) {
+          console.log('No reports found');
+        }
+
+        // בדוק אם יש שאלון נזנח או בתהליך
+        try {
+          const responses = await base44.entities.QuestionnaireResponse.filter(
+            { created_by: currentUser.email },
+            '-updated_date',
+            1
+          );
+          if (responses.length > 0 && (responses[0].status === 'in_progress' || responses[0].status === 'abandoned')) {
+            setHasAbandonedQuestionnaire(true);
+          }
+        } catch (e) {
+          console.log('No questionnaires found');
+        }
       } catch (error) {
         // User not logged in or other error
         setUser(null);
@@ -322,11 +360,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 </Link>
               )}
               
-              <Link to={createPageUrl("Questionnaire")}>
-                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5">
-                    {t('layout.start_questionnaire_btn')}
+              {hasUnpaidReport ? (
+                <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
+                  <Button className="bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm px-5 py-2.5 font-bold animate-pulse">
+                    {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
                   </Button>
-              </Link>
+                </Link>
+              ) : (
+                <Link to={createPageUrl("Questionnaire")}>
+                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5">
+                    {hasAbandonedQuestionnaire 
+                      ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
+                      : t('layout.start_questionnaire_btn')
+                    }
+                  </Button>
+                </Link>
+              )}
               
               {!isLoadingUser && !user && (
                 <Button variant="outline" size="sm" onClick={() => base44.auth.redirectToLogin(window.location.href)} className="bg-background text-slate-600 px-3 text-sm font-medium">
@@ -405,11 +454,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   </Link>
                 )}
                 
-                <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
-                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5 w-full">
-                    {t('layout.start_questionnaire_btn')}
-                  </Button>
-                </Link>
+                {hasUnpaidReport ? (
+                  <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
+                    <Button className="bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm px-5 py-2.5 w-full font-bold">
+                      {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
+                    <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5 w-full">
+                      {hasAbandonedQuestionnaire 
+                        ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
+                        : t('layout.start_questionnaire_btn')
+                      }
+                    </Button>
+                  </Link>
+                )}
                 
                 {!isLoadingUser && !user && (
                   <div className="px-4">
