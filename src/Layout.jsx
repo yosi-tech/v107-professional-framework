@@ -572,10 +572,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </div>
 
           {/* Bottom Bar */}
-          <div className="border-t border-slate-700 pt-8 text-center space-y-3">
-            <p className="text-xs text-slate-500">
-              {language === 'he' ? 'כל הזכויות שמורות לעלית' : 'All rights reserved to Elit'}
-            </p>
+          <div className="border-t border-slate-700 pt-8 text-center">
             <p className="text-xs text-slate-400 leading-relaxed max-w-4xl mx-auto">
               {language === 'he' 
                 ? 'V107 | PROFESSIONAL FRAMEWORK © כל הזכויות שמורות ל-V107. חל איסור מוחלט על העתקה, צילום, הפצה או שימוש מסחרי בשם הפעילות, הסלוגן, תכני השאלון, הדו"ח והבוסטר. הפרת זכויות אלו תגרור הליכים משפטיים ודרישה לפיצויים גבוהים כחוק.'
