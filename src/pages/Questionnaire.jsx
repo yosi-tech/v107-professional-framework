@@ -491,10 +491,13 @@ export default function Questionnaire() {
     if (!user) return;
 
     try {
-      const hasPersonalInfo = personalInfo.full_name;
+      const hasPersonalInfo = Object.keys(personalInfo).length > 0;
       const hasResponses = Object.keys(responses).length > 0;
+      const hasComment = optionalComment.trim().length > 0;
 
-      if (!hasPersonalInfo && !hasResponses) return;
+      if (!hasPersonalInfo && !hasResponses && !hasComment) return;
+      
+      console.log('Auto-saving progress:', { hasPersonalInfo, hasResponses, hasComment, savedResponseId });
 
       const data = {
         personal_info: { ...personalInfo, email: user.email },
