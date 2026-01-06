@@ -5,11 +5,12 @@ import { base44 } from "@/api/base44Client";
 import { tranzilaCreateHandshake } from "@/functions/tranzilaCreateHandshake";
 import { getFullReportPurchaseEmailTemplate } from '@/components/email/FullReportPurchaseTemplate';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X } from "lucide-react";
+import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X, Tag } from "lucide-react";
 import { useTranslation } from "@/components/i18n/useTranslation";
 
 const ReportInfoModal = ({ isOpen, onClose }) => {
@@ -107,9 +108,10 @@ export default function Payment() {
 
   const [product, setProduct] = useState(null);
   const [price, setPrice] = useState(0);
+  const [originalPrice, setOriginalPrice] = useState(0);
   const [isExpress, setIsExpress] = useState(false);
   const [responseId, setResponseId] = useState(null);
-  const [termsAccepted, setTermsAccepted] = useState(false); // State for terms acceptance
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [isReportInfoOpen, setIsReportInfoOpen] = useState(false);
 
   const [user, setUser] = useState(null);
@@ -119,10 +121,18 @@ export default function Payment() {
   const [isLoadingHandshake, setIsLoadingHandshake] = useState(false);
   const formRef = useRef(null);
 
+  // Coupon states
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState('');
+  const [isCheckingCoupon, setIsCheckingCoupon] = useState(false);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setProduct(params.get('product'));
-    setPrice(Number(params.get('price')) || 0);
+    const priceFromUrl = Number(params.get('price')) || 0;
+    setPrice(priceFromUrl);
+    setOriginalPrice(priceFromUrl);
     setIsExpress(params.get('express') === 'true');
     setResponseId(params.get('responseId'));
 
@@ -136,6 +146,73 @@ export default function Payment() {
     } catch (error) {
       console.log('User not logged in');
     }
+  };
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError(language === 'he' ? 'יש להזין קוד קופון' : 'Please enter a coupon code');
+      return;
+    }
+
+    setIsCheckingCoupon(true);
+    setCouponError('');
+
+    try {
+      const coupons = await base44.entities.Coupon.filter({ code: couponCode.trim() });
+      
+      if (coupons.length === 0) {
+        setCouponError(language === 'he' ? 'קוד קופון לא תקין' : 'Invalid coupon code');
+        setIsCheckingCoupon(false);
+        return;
+      }
+
+      const coupon = coupons[0];
+
+      // בדיקות תקינות
+      if (coupon.used) {
+        setCouponError(language === 'he' ? 'קוד הקופון כבר נוצל' : 'Coupon code already used');
+        setIsCheckingCoupon(false);
+        return;
+      }
+
+      if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) {
+        setCouponError(language === 'he' ? 'קוד הקופון פג תוקף' : 'Coupon code expired');
+        setIsCheckingCoupon(false);
+        return;
+      }
+
+      if (user && coupon.user_email && coupon.user_email !== user.email) {
+        setCouponError(language === 'he' ? 'קוד הקופון לא תקף עבור המשתמש הזה' : 'Coupon not valid for this user');
+        setIsCheckingCoupon(false);
+        return;
+      }
+
+      // חישוב הנחה
+      let discount = 0;
+      if (coupon.discount_amount) {
+        discount = coupon.discount_amount;
+      } else if (coupon.discount_percentage) {
+        discount = Math.round(originalPrice * (coupon.discount_percentage / 100));
+      }
+
+      const newPrice = Math.max(0, originalPrice - discount);
+      setPrice(newPrice);
+      setAppliedCoupon(coupon);
+      setCouponError('');
+      
+    } catch (error) {
+      console.error('Error applying coupon:', error);
+      setCouponError(language === 'he' ? 'שגיאה בבדיקת הקופון' : 'Error checking coupon');
+    }
+
+    setIsCheckingCoupon(false);
+  };
+
+  const removeCoupon = () => {
+    setPrice(originalPrice);
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError('');
   };
 
   const initializePayment = async () => {
@@ -171,7 +248,6 @@ export default function Payment() {
       });
       
       if (productType === 'full_report') {
-        // בדיקה אם המשתמש כבר השלים את השאלון
         let hasCompletedQuestionnaire = false;
         if (userEmail) { 
           const responses = await base44.entities.QuestionnaireResponse.filter({ created_by: userEmail }, '-created_date', 1);
@@ -196,8 +272,6 @@ export default function Payment() {
           body: emailTemplate.html
         });
       } else if (productType === 'answers_download') {
-        // כאן נשלח מייל פשוט יותר לרכישת התשובות (59 ש"ח)
-        // נעדכן את זה בהמשך עם הטמפלייט המתאים
         const subject = language === 'he' ? 'אישור רכישה - תשובות השאלון' : 'Purchase Confirmation - Questionnaire Answers';
         const body = language === 'he'
           ? `שלום ${userName},<br><br>תודה על רכישת תשובות השאלון. מזהה עסקה: ${transactionId}.<br><br>בברכה,<br>צוות AVENTURA 107`
@@ -243,6 +317,11 @@ export default function Payment() {
           if (responseId && product === 'full_report') {
             await base44.entities.GeneratedReport.update(responseId, { purchased: true });
           }
+
+          // סימון הקופון כמנוצל
+          if (appliedCoupon) {
+            await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
+          }
           
           await sendConfirmationEmail(user.email, user.full_name || '', product, isExpress);
 
@@ -261,7 +340,7 @@ export default function Payment() {
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [user, price, product, isExpress, responseId, navigate, language]);
+  }, [user, price, product, isExpress, responseId, navigate, language, appliedCoupon]);
 
   if (!product) {
     return (
@@ -341,6 +420,65 @@ export default function Payment() {
                       {language === 'he' ? '📋 רוצה לדעת יותר על התהליך המקצועי?' : '📋 Want to know more about the professional process?'}
                     </button>
                   </div>
+
+                  {/* Coupon Section */}
+                  {!appliedCoupon ? (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        {language === 'he' ? 'קוד קופון' : 'Coupon Code'}
+                      </label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="text"
+                          placeholder={language === 'he' ? 'הזן קוד קופון' : 'Enter coupon code'}
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          disabled={isCheckingCoupon}
+                          className="flex-1"
+                        />
+                        <Button
+                          type="button"
+                          onClick={applyCoupon}
+                          disabled={isCheckingCoupon || !couponCode.trim()}
+                          variant="outline"
+                        >
+                          {isCheckingCoupon ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Tag className="w-4 h-4" />
+                          )}
+                          {!isCheckingCoupon && (language === 'he' ? 'החל' : 'Apply')}
+                        </Button>
+                      </div>
+                      {couponError && (
+                        <p className="text-sm text-red-600">{couponError}</p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <div>
+                            <p className="text-sm font-medium text-green-900">
+                              {language === 'he' ? 'קופון הופעל בהצלחה' : 'Coupon applied successfully'}
+                            </p>
+                            <p className="text-xs text-green-700">
+                              {appliedCoupon.code} • {language === 'he' ? 'הנחה:' : 'Discount:'} {appliedCoupon.discount_amount ? `${appliedCoupon.discount_amount}₪` : `${appliedCoupon.discount_percentage}%`}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          onClick={removeCoupon}
+                          variant="ghost"
+                          size="sm"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex items-start space-x-2 space-x-reverse">
                     <Checkbox 
@@ -439,7 +577,7 @@ export default function Payment() {
                     <CurrentProductIcon className="w-5 h-5" />
                     {productDetails[product]?.title}
                   </span>
-                  <span>{product === 'full_report' ? (language === 'he' ? '299₪' : '$79') : (language === 'he' ? '59₪' : '$15')}</span>
+                  <span>{originalPrice}₪</span>
                 </div>
                 
                 {isExpress && (
@@ -448,14 +586,24 @@ export default function Payment() {
                         <Zap className="w-5 h-5" />
                         {language === 'he' ? 'אספקה מואצת (3 ימי עבודה)' : 'Express Delivery (3 business days)'}
                     </span>
-                    <span>{language === 'he' ? '+79₪' : '+$21'}</span>
+                    <span>{language === 'he' ? 'כלול במחיר' : 'Included'}</span>
                     </div>
+                )}
+
+                {appliedCoupon && (
+                  <div className="flex justify-between items-center text-lg text-green-600">
+                    <span className="font-medium flex items-center gap-2">
+                      <Tag className="w-5 h-5" />
+                      {language === 'he' ? 'הנחת קופון' : 'Coupon Discount'}
+                    </span>
+                    <span>-{originalPrice - price}₪</span>
+                  </div>
                 )}
                 
                 <div className="border-t border-gray-300 my-4"></div>
                 <div className="flex justify-between items-center text-3xl font-bold">
                   <span>{language === 'he' ? 'סה"כ לתשלום:' : 'Total:'}</span>
-                  <span>{language === 'he' ? price + '₪' : '$' + Math.round(price / 3.8)}</span>
+                  <span>{price}₪</span>
                 </div>
                 
                 <div className="text-sm text-gray-600 mt-4">
