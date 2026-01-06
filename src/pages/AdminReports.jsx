@@ -1093,10 +1093,6 @@ export default function AdminReports() {
               <span>ניתוח מתקדם</span>
               <BarChart3 className="w-3 h-3" />
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
-              <span>ניתוח</span>
-              <TrendingUp className="w-3 h-3" />
-            </TabsTrigger>
             <TabsTrigger value="survey-results" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
               <span>סקר ({surveyResponses.length})</span>
               <FileSearch className="w-3 h-3" />
@@ -2917,209 +2913,7 @@ export default function AdminReports() {
             </div>
           </TabsContent>
 
-          <TabsContent value="analytics">
-            <div className="space-y-6">
-              {/* סטטיסטיקות כלליות */}
-              <div className="grid md:grid-cols-4 gap-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600 text-right">סה"כ רכישות</CardTitle>
-                    <DollarSign className="w-4 h-4 text-green-600" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-right text-green-600">
-                      {reports.filter((r) => r.purchased === true).length}
-                    </div>
-                  </CardContent>
-                </Card>
 
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600 text-right">דוחות מלאים</CardTitle>
-                    <FileText className="w-4 h-4 text-blue-600" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-right text-blue-600">
-                      {reports.filter((r) => r.purchased === true).length}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600 text-right">הורדות תשובות</CardTitle>
-                    <FileText className="w-4 h-4 text-purple-600" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-right text-purple-600">
-                      {users.filter((u) => u.has_purchased_answers_download === true).length}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600 text-right">שיעור המרה</CardTitle>
-                    <TrendingUp className="w-4 h-4 text-orange-600" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-right text-orange-600">
-                      {responses.filter((r) => r.status === 'completed').length > 0 ?
-                      `${Math.round(reports.filter((r) => r.purchased === true).length / responses.filter((r) => r.status === 'completed').length * 100)}%` :
-                      '0%'
-                      }
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* פילוח רכישות לפי סוג */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-right">פילוח רכישות לפי סוג מוצר</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-right py-3 px-4 font-semibold">סוג מוצר</th>
-                          <th className="text-center py-3 px-4 font-semibold">כמות רכישות</th>
-                          <th className="text-left py-3 px-4 font-semibold">סה"כ הכנסות</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="border-b hover:bg-blue-50">
-                          <td className="py-4 px-4 text-right">
-                            <div className="font-semibold text-blue-900">דו"ח מלא</div>
-                            <div className="text-sm text-gray-600">299 ₪ למוצר</div>
-                          </td>
-                          <td className="text-center py-4 px-4">
-                            <Badge className="bg-blue-100 text-blue-800">
-                              {users.filter((u) => u.has_purchased_full_report === true && !u.express_delivery).length}
-                            </Badge>
-                          </td>
-                          <td className="text-left py-4 px-4">
-                            <div className="text-xl font-bold text-blue-600">
-                              {users.filter((u) => u.has_purchased_full_report === true && !u.express_delivery).length * 299} ₪
-                            </div>
-                          </td>
-                        </tr>
-
-                        <tr className="border-b hover:bg-purple-50">
-                          <td className="py-4 px-4 text-right">
-                            <div className="font-semibold text-purple-900">דו"ח מלא + מואץ</div>
-                            <div className="text-sm text-gray-600">378 ₪ למוצר</div>
-                          </td>
-                          <td className="text-center py-4 px-4">
-                            <Badge className="bg-purple-100 text-purple-800">
-                              {users.filter((u) => u.has_purchased_full_report === true && u.express_delivery === true).length}
-                            </Badge>
-                          </td>
-                          <td className="text-left py-4 px-4">
-                            <div className="text-xl font-bold text-purple-600">
-                              {users.filter((u) => u.has_purchased_full_report === true && u.express_delivery === true).length * 378} ₪
-                            </div>
-                          </td>
-                        </tr>
-
-                        <tr className="border-b hover:bg-green-50">
-                          <td className="py-4 px-4 text-right">
-                            <div className="font-semibold text-green-900">הורדת תשובות</div>
-                            <div className="text-sm text-gray-600">59 ₪ למוצר</div>
-                          </td>
-                          <td className="text-center py-4 px-4">
-                            <Badge className="bg-green-100 text-green-800">
-                              {users.filter((u) => u.has_purchased_answers_download === true).length}
-                            </Badge>
-                          </td>
-                          <td className="text-left py-4 px-4">
-                            <div className="text-xl font-bold text-green-600">
-                              {users.filter((u) => u.has_purchased_answers_download === true).length * 59} ₪
-                            </div>
-                          </td>
-                        </tr>
-
-                        <tr className="bg-gradient-to-l from-green-100 to-blue-100 border-t-2 border-green-500">
-                          <td className="py-4 px-4 text-right">
-                            <div className="text-xl font-bold text-gray-900">סה"כ הכנסות</div>
-                          </td>
-                          <td className="text-center py-4 px-4">
-                            <Badge className="bg-gray-800 text-white">
-                              {reports.filter((r) => r.purchased === true).length}
-                            </Badge>
-                          </td>
-                          <td className="text-left py-4 px-4">
-                            <div className="text-3xl font-bold text-green-700">
-                              {
-                              users.filter((u) => u.has_purchased_full_report === true && !u.express_delivery).length * 299 +
-                              users.filter((u) => u.has_purchased_full_report === true && u.express_delivery === true).length * 378 +
-                              users.filter((u) => u.has_purchased_answers_download === true).length * 59
-                              } ₪
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* רשימת רוכשים */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-right">רשימת רוכשים ({users.filter((u) => u.has_purchased_full_report === true || u.has_purchased_answers_download === true).length})</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {users.filter((u) => u.has_purchased_full_report === true || u.has_purchased_answers_download === true).map((user) => {
-                      const userReports = reports.filter((r) => r.user_email === user.email);
-                      const purchaseType = user.has_purchased_full_report === true ?
-                      user.express_delivery === true ? 'דו"ח מלא + מואץ (378 ₪)' : 'דו"ח מלא (299 ₪)' :
-                      'הורדת תשובות (59 ₪)';
-                      const amount = user.has_purchased_full_report === true ?
-                      user.express_delivery === true ? 378 : 299 :
-                      59;
-
-                      return (
-                        <Card key={user.id} className="border">
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between flex-row-reverse">
-                              <div className="text-right flex-1">
-                                <h4 className="font-semibold">{user.full_name || 'שם לא זמין'}</h4>
-                                <p className="text-sm text-gray-600">{user.email}</p>
-                                <div className="flex gap-2 mt-2 flex-wrap justify-end">
-                                  <Badge className="bg-green-100 text-green-800 text-xs">
-                                    {purchaseType}
-                                  </Badge>
-                                  <Badge variant="outline" className="text-xs">
-                                    {userReports.length} דוחות
-                                  </Badge>
-                                  <Badge variant="outline" className="text-xs">
-                                    הצטרף: {format(new Date(user.created_date), 'dd/MM/yyyy')}
-                                  </Badge>
-                                </div>
-                              </div>
-                              <div className="text-2xl font-bold text-green-600">
-                                {amount} ₪
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>);
-
-                    })}
-
-                    {users.filter((u) => u.has_purchased_full_report === true || u.has_purchased_answers_download === true).length === 0 &&
-                    <div className="text-center py-12">
-                        <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500">אין רכישות עדיין</p>
-                      </div>
-                    }
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
 
           <TabsContent value="seo-settings">
             <div className="space-y-6">
@@ -3500,52 +3294,157 @@ export default function AdminReports() {
           </TabsContent>
 
           <TabsContent value="payments">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-right">היסטוריית תשלומים</CardTitle>
-                <CardDescription className="text-right">
-                  כל ההזמנות והתשלומים במערכת
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-3 gap-4 mb-6">
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                      <CardTitle className="text-sm font-medium text-gray-600 text-right">תשלומים שולמו</CardTitle>
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-right text-green-600">
-                        {paymentOrders.filter(o => o.status === 'paid').length}
-                      </div>
-                    </CardContent>
-                  </Card>
+            <div className="space-y-6">
+              {/* סטטיסטיקות כלליות */}
+              <div className="grid md:grid-cols-4 gap-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">סה"כ רכישות</CardTitle>
+                    <DollarSign className="w-4 h-4 text-green-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-green-600">
+                      {paymentOrders.filter(o => o.status === 'paid').length}
+                    </div>
+                  </CardContent>
+                </Card>
 
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                      <CardTitle className="text-sm font-medium text-gray-600 text-right">ממתינים</CardTitle>
-                      <Clock className="w-4 h-4 text-yellow-600" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-right text-yellow-600">
-                        {paymentOrders.filter(o => o.status === 'pending').length}
-                      </div>
-                    </CardContent>
-                  </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">דוחות מלאים</CardTitle>
+                    <FileText className="w-4 h-4 text-blue-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-blue-600">
+                      {paymentOrders.filter(o => o.status === 'paid' && o.product_type === 'full_report').length}
+                    </div>
+                  </CardContent>
+                </Card>
 
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                      <CardTitle className="text-sm font-medium text-gray-600 text-right">נכשלו</CardTitle>
-                      <AlertCircle className="w-4 h-4 text-red-600" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-right text-red-600">
-                        {paymentOrders.filter(o => o.status === 'failed').length}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">הורדות תשובות</CardTitle>
+                    <FileText className="w-4 h-4 text-purple-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-purple-600">
+                      {paymentOrders.filter(o => o.status === 'paid' && o.product_type === 'answers_download').length}
+                    </div>
+                  </CardContent>
+                </Card>
 
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 text-right">שיעור המרה</CardTitle>
+                    <TrendingUp className="w-4 h-4 text-orange-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-right text-orange-600">
+                      {responses.filter((r) => r.status === 'completed').length > 0 ?
+                      `${Math.round(paymentOrders.filter(o => o.status === 'paid').length / responses.filter((r) => r.status === 'completed').length * 100)}%` :
+                      '0%'
+                      }
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* פילוח רכישות לפי סוג */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right">פילוח רכישות לפי סוג מוצר</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-right py-3 px-4 font-semibold">סוג מוצר</th>
+                          <th className="text-center py-3 px-4 font-semibold">כמות רכישות</th>
+                          <th className="text-left py-3 px-4 font-semibold">סה"כ הכנסות</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b hover:bg-blue-50">
+                          <td className="py-4 px-4 text-right">
+                            <div className="font-semibold text-blue-900">דו"ח מלא</div>
+                            <div className="text-sm text-gray-600">299 ₪ למוצר</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <Badge className="bg-blue-100 text-blue-800">
+                              {paymentOrders.filter(o => o.status === 'paid' && o.product_type === 'full_report' && !o.is_express).length}
+                            </Badge>
+                          </td>
+                          <td className="text-left py-4 px-4">
+                            <div className="text-xl font-bold text-blue-600">
+                              ₪ {paymentOrders.filter(o => o.status === 'paid' && o.product_type === 'full_report' && !o.is_express).reduce((sum, o) => sum + o.amount, 0)}
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr className="border-b hover:bg-purple-50">
+                          <td className="py-4 px-4 text-right">
+                            <div className="font-semibold text-purple-900">דו"ח מלא + מואץ</div>
+                            <div className="text-sm text-gray-600">378 ₪ למוצר</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <Badge className="bg-purple-100 text-purple-800">
+                              {paymentOrders.filter(o => o.status === 'paid' && o.product_type === 'full_report' && o.is_express).length}
+                            </Badge>
+                          </td>
+                          <td className="text-left py-4 px-4">
+                            <div className="text-xl font-bold text-purple-600">
+                              ₪ {paymentOrders.filter(o => o.status === 'paid' && o.product_type === 'full_report' && o.is_express).reduce((sum, o) => sum + o.amount, 0)}
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr className="border-b hover:bg-green-50">
+                          <td className="py-4 px-4 text-right">
+                            <div className="font-semibold text-green-900">הורדת תשובות</div>
+                            <div className="text-sm text-gray-600">59 ₪ למוצר</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <Badge className="bg-green-100 text-green-800">
+                              {paymentOrders.filter(o => o.status === 'paid' && o.product_type === 'answers_download').length}
+                            </Badge>
+                          </td>
+                          <td className="text-left py-4 px-4">
+                            <div className="text-xl font-bold text-green-600">
+                              ₪ {paymentOrders.filter(o => o.status === 'paid' && o.product_type === 'answers_download').reduce((sum, o) => sum + o.amount, 0)}
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr className="bg-gradient-to-l from-green-100 to-blue-100 border-t-2 border-green-500">
+                          <td className="py-4 px-4 text-right">
+                            <div className="text-xl font-bold text-gray-900">סה"כ הכנסות</div>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <Badge className="bg-gray-800 text-white">
+                              {paymentOrders.filter(o => o.status === 'paid').length}
+                            </Badge>
+                          </td>
+                          <td className="text-left py-4 px-4">
+                            <div className="text-3xl font-bold text-green-700">
+                              ₪ {paymentOrders.filter(o => o.status === 'paid').reduce((sum, o) => sum + o.amount, 0)}
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-right">היסטוריית תשלומים</CardTitle>
+                  <CardDescription className="text-right">
+                    כל ההזמנות והתשלומים במערכת
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
                 {paymentOrders.length === 0 ? (
                   <div className="text-center py-12">
                     <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -3614,6 +3513,7 @@ export default function AdminReports() {
                 )}
               </CardContent>
             </Card>
+            </div>
           </TabsContent>
           </Tabs>
           </div>
