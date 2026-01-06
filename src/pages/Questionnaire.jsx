@@ -351,8 +351,8 @@ const QuestionCard = ({ questionNumber, questionText, value, onChange, language 
         {questionNumber}. {questionText}
       </h3>
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-gray-500">1 (לא מתאר אותי כלל)</span>
         <span className="text-sm text-gray-500">7 (מתאר אותי מאוד)</span>
+        <span className="text-sm text-gray-500">1 (לא מתאר אותי כלל)</span>
       </div>
       <RadioGroup
         value={value ? value.toString() : ''}
