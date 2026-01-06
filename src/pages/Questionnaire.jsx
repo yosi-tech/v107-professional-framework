@@ -517,14 +517,20 @@ export default function Questionnaire() {
   }, [user, personalInfo, responses, optionalComment, language, savedResponseId]);
 
   useEffect(() => {
-    if (user && (Object.keys(responses).length > 0 || personalInfo.full_name)) {
-      const timeoutId = setTimeout(() => {
-        autoSaveProgress();
-      }, 2000);
+    if (user && currentStep >= 0) {
+      const hasData = Object.keys(responses).length > 0 || 
+                     Object.keys(personalInfo).length > 0 || 
+                     optionalComment.trim().length > 0;
+      
+      if (hasData) {
+        const timeoutId = setTimeout(() => {
+          autoSaveProgress();
+        }, 2000);
 
-      return () => clearTimeout(timeoutId);
+        return () => clearTimeout(timeoutId);
+      }
     }
-  }, [user, responses, personalInfo, autoSaveProgress]);
+  }, [user, responses, personalInfo, optionalComment, currentStep, autoSaveProgress]);
 
   const handleLogin = () => {
     base44.auth.redirectToLogin(window.location.href);
