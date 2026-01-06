@@ -27,15 +27,6 @@ function AppLayout({ children }) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         
-        console.log('🔍 User data:', {
-          email: currentUser.email,
-          has_purchased_full_report: currentUser.has_purchased_full_report,
-          has_purchased_answers_download: currentUser.has_purchased_answers_download
-        });
-        
-        // בדוק אם המשתמש שילם
-        const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
-        
         // בדוק אם יש שאלון שהושלם
         try {
           const responses = await base44.entities.QuestionnaireResponse.filter(
@@ -44,21 +35,36 @@ function AppLayout({ children }) {
             1
           );
           
-          console.log('📋 Completed questionnaires:', responses.length);
-          console.log('💰 Has purchased:', hasPurchased);
-          
-          if (responses.length > 0 && !hasPurchased) {
-            console.log('✅ Setting hasUnpaidReport to TRUE');
-            setHasUnpaidReport(true);
-            setUnpaidReportId(responses[0].id);
-          } else {
-            console.log('❌ NOT showing banner:', { 
-              hasCompletedQuestionnaire: responses.length > 0, 
-              hasPurchased 
-            });
+          if (responses.length > 0) {
+            // בדוק אם יש תשלום מוצלח עבור השאלון הזה
+            try {
+              const paidOrders = await base44.entities.PaymentOrder.filter(
+                { 
+                  user_email: currentUser.email,
+                  questionnaire_response_id: responses[0].id,
+                  status: 'paid'
+                },
+                '-created_date',
+                1
+              );
+              
+              const hasPaidForThisQuestionnaire = paidOrders.length > 0;
+              
+              if (!hasPaidForThisQuestionnaire) {
+                setHasUnpaidReport(true);
+                setUnpaidReportId(responses[0].id);
+              }
+            } catch (e) {
+              // אם אין PaymentOrder, בדוק את הדגלים ביוזר
+              const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
+              if (!hasPurchased) {
+                setHasUnpaidReport(true);
+                setUnpaidReportId(responses[0].id);
+              }
+            }
           }
         } catch (e) {
-          console.log('No completed questionnaires found', e);
+          console.log('No completed questionnaires found');
         }
 
         // בדוק אם יש שאלון נזנח או בתהליך
