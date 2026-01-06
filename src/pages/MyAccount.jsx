@@ -18,6 +18,7 @@ export default function MyAccount() {
   const [surveyResponses, setSurveyResponses] = useState([]);
   const [coupons, setCoupons] = useState([]);
   const [boosterSubscription, setBoosterSubscription] = useState(null);
+  const [paymentOrders, setPaymentOrders] = useState([]);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -76,6 +77,17 @@ export default function MyAccount() {
           }
         } catch (e) {
           console.log('No booster subscription found');
+        }
+
+        // טען הזמנות תשלום
+        try {
+          const orders = await base44.entities.PaymentOrder.filter(
+            { user_email: currentUser.email },
+            '-created_date'
+          );
+          setPaymentOrders(orders);
+        } catch (e) {
+          console.log('No payment orders found');
         }
 
       } catch (error) {
@@ -474,6 +486,80 @@ export default function MyAccount() {
                           {language === 'he' ? 'קוד קופון:' : 'Coupon code:'} <span className="font-mono font-semibold">{survey.coupon_code}</span>
                         </p>
                       )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* הזמנות תשלום */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShoppingCart className="w-5 h-5 text-blue-600" />
+                {language === 'he' ? 'הרכישות שלי' : 'My Purchases'}
+              </CardTitle>
+              <CardDescription>
+                {language === 'he' 
+                  ? `${paymentOrders.length} הזמנות` 
+                  : `${paymentOrders.length} orders`}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {paymentOrders.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">
+                    {language === 'he' ? 'לא מצאנו הזמנות' : 'No orders found'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {paymentOrders.map((order) => (
+                    <div
+                      key={order.id}
+                      className={`p-4 border rounded-lg transition-colors ${
+                        order.status === 'paid' ? 'bg-green-50 border-green-200' : 
+                        order.status === 'failed' ? 'bg-red-50 border-red-200' : 
+                        'bg-yellow-50 border-yellow-200'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          {order.status === 'paid' && <CheckCircle className="w-5 h-5 text-green-600" />}
+                          {order.status === 'pending' && <Clock className="w-5 h-5 text-yellow-600" />}
+                          {order.status === 'failed' && <AlertCircle className="w-5 h-5 text-red-600" />}
+                          <span className="font-medium">
+                            {order.product_type === 'full_report' && (language === 'he' ? 'דו"ח מלא' : 'Full Report')}
+                            {order.product_type === 'answers_download' && (language === 'he' ? 'הורדת תשובות' : 'Answers Download')}
+                            {order.product_type === 'online_coaching_7days' && (language === 'he' ? 'ליווי 7 ימים' : '7-day Coaching')}
+                          </span>
+                        </div>
+                        <Badge className={
+                          order.status === 'paid' ? 'bg-green-600' : 
+                          order.status === 'failed' ? 'bg-red-600' : 
+                          'bg-yellow-600'
+                        }>
+                          {order.status === 'paid' && (language === 'he' ? 'שולם' : 'Paid')}
+                          {order.status === 'pending' && (language === 'he' ? 'ממתין' : 'Pending')}
+                          {order.status === 'failed' && (language === 'he' ? 'נכשל' : 'Failed')}
+                        </Badge>
+                      </div>
+                      <div className="text-sm text-gray-600 space-y-1">
+                        <p>{language === 'he' ? 'סכום:' : 'Amount:'} {order.amount}₪</p>
+                        {order.is_express && <p>{language === 'he' ? '⚡ אספקה מואצת' : '⚡ Express Delivery'}</p>}
+                        {order.coupon_code && <p>{language === 'he' ? 'קופון:' : 'Coupon:'} {order.coupon_code}</p>}
+                        {order.tranzila_reference && <p>{language === 'he' ? 'מזהה עסקה:' : 'Transaction ID:'} {order.tranzila_reference}</p>}
+                        <p className="text-xs text-gray-500">
+                          {new Date(order.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>

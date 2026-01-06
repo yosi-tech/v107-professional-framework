@@ -82,6 +82,7 @@ export default function AdminReports() {
   const [siteSettings, setSiteSettings] = useState([]);
   const [boosterSubscriptions, setBoosterSubscriptions] = useState([]);
   const [contentItems, setContentItems] = useState([]);
+  const [paymentOrders, setPaymentOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingTemplate, setEditingTemplate] = useState(null);
   const [templateDialog, setTemplateDialog] = useState(false);
@@ -139,7 +140,7 @@ export default function AdminReports() {
 
   const loadData = async () => {
     try {
-      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses, allSiteSettings, allBoosterSubscriptions, allContentItems] = await Promise.all([
+      const [completedResponses, inProgressResponses, allReports, allUsers, allEmailLogs, allEmailTemplates, allSurveyResponses, allSiteSettings, allBoosterSubscriptions, allContentItems, allPaymentOrders] = await Promise.all([
       base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date'),
       base44.entities.QuestionnaireResponse.filter({ status: 'in_progress' }, '-created_date'),
       base44.entities.GeneratedReport.list('-created_date'),
@@ -149,7 +150,8 @@ export default function AdminReports() {
       base44.entities.SurveyResponse.list('-created_date'),
       base44.entities.SiteSettings.list().catch(() => []),
       base44.entities.OnlineCoachingSubscription.list('-created_date').catch(() => []),
-      base44.entities.ContentItem.list().catch(() => [])]
+      base44.entities.ContentItem.list().catch(() => []),
+      base44.entities.PaymentOrder.list('-created_date').catch(() => [])]
       );
       setResponses([...completedResponses, ...inProgressResponses]);
       setReports(allReports);
@@ -160,6 +162,7 @@ export default function AdminReports() {
       setSiteSettings(allSiteSettings);
       setBoosterSubscriptions(allBoosterSubscriptions);
       setContentItems(allContentItems);
+      setPaymentOrders(allPaymentOrders);
     } catch (error) {
       console.error("Error loading data:", error);
     }
@@ -1123,6 +1126,10 @@ export default function AdminReports() {
             <TabsTrigger value="scheduled-tasks" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
               <span>תזמונים</span>
               <Clock className="w-3 h-3" />
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2">
+              <span>תשלומים ({paymentOrders.length})</span>
+              <ShoppingCart className="w-3 h-3" />
             </TabsTrigger>
           </TabsList>
 
@@ -3484,6 +3491,123 @@ export default function AdminReports() {
 
           <TabsContent value="scheduled-tasks">
             <ScheduledTasksManager />
+          </TabsContent>
+
+          <TabsContent value="payments">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-right">היסטוריית תשלומים</CardTitle>
+                <CardDescription className="text-right">
+                  כל ההזמנות והתשלומים במערכת
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                      <CardTitle className="text-sm font-medium text-gray-600 text-right">תשלומים שולמו</CardTitle>
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-right text-green-600">
+                        {paymentOrders.filter(o => o.status === 'paid').length}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                      <CardTitle className="text-sm font-medium text-gray-600 text-right">ממתינים</CardTitle>
+                      <Clock className="w-4 h-4 text-yellow-600" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-right text-yellow-600">
+                        {paymentOrders.filter(o => o.status === 'pending').length}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                      <CardTitle className="text-sm font-medium text-gray-600 text-right">נכשלו</CardTitle>
+                      <AlertCircle className="w-4 h-4 text-red-600" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-right text-red-600">
+                        {paymentOrders.filter(o => o.status === 'failed').length}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {paymentOrders.length === 0 ? (
+                  <div className="text-center py-12">
+                    <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">אין הזמנות תשלום במערכת</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {paymentOrders.map((order) => (
+                      <Card key={order.id} className={`${
+                        order.status === 'paid' ? 'border-green-300 bg-green-50' : 
+                        order.status === 'failed' ? 'border-red-300 bg-red-50' : 
+                        'border-yellow-300 bg-yellow-50'
+                      }`}>
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between flex-row-reverse">
+                            <div className="flex-1 text-right">
+                              <div className="flex items-center gap-2 mb-2 flex-row-reverse">
+                                <h4 className="font-semibold">{order.user_name}</h4>
+                                <Badge className={
+                                  order.status === 'paid' ? 'bg-green-600' : 
+                                  order.status === 'failed' ? 'bg-red-600' : 
+                                  'bg-yellow-600'
+                                }>
+                                  {order.status === 'paid' && 'שולם'}
+                                  {order.status === 'pending' && 'ממתין'}
+                                  {order.status === 'failed' && 'נכשל'}
+                                </Badge>
+                              </div>
+                              
+                              <p className="text-sm text-gray-600 mb-2">{order.user_email}</p>
+                              
+                              <div className="space-y-1 text-sm">
+                                <p>
+                                  <span className="font-medium">מוצר:</span>{' '}
+                                  {order.product_type === 'full_report' && 'דו"ח מלא'}
+                                  {order.product_type === 'answers_download' && 'הורדת תשובות'}
+                                  {order.product_type === 'online_coaching_7days' && 'ליווי 7 ימים'}
+                                  {order.is_express && ' + מואץ'}
+                                </p>
+                                <p><span className="font-medium">סכום:</span> {order.amount}₪</p>
+                                {order.coupon_code && (
+                                  <p><span className="font-medium">קופון:</span> {order.coupon_code}</p>
+                                )}
+                                {order.tranzila_reference && (
+                                  <p><span className="font-medium">מזהה טרנזילה:</span> {order.tranzila_reference}</p>
+                                )}
+                                {order.confirmation_code && (
+                                  <p><span className="font-medium">קוד אישור:</span> {order.confirmation_code}</p>
+                                )}
+                                <p className="text-xs text-gray-500">
+                                  {new Date(order.created_date).toLocaleDateString('he-IL', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
           </Tabs>
           </div>
