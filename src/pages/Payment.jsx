@@ -560,6 +560,7 @@ export default function Payment() {
                     <input type="hidden" name="trTextColor" value="1a202c" />
                     <input type="hidden" name="trButtonColor" value="2563eb" />
                     <input type="hidden" name="pdesc" value={productDetails[product]?.title || ''} />
+                    <input type="hidden" name="success_url_address" value={`${window.location.origin}${createPageUrl("ThankYou")}`} />
                     {user && (
                       <>
                         <input type="hidden" name="contact" value={user.full_name || ''} />
