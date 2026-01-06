@@ -29,13 +29,13 @@ function AppLayout({ children }) {
         
         // בדוק אם יש דוח שלא שולם
         try {
-          const reports = await base44.entities.GeneratedReport.filter(
-            { user_email: currentUser.email },
-            '-created_date',
-            1
+          const allReports = await base44.entities.GeneratedReport.list('-created_date');
+          const userReports = allReports.filter(r => 
+            r.user_email === currentUser.email || r.created_by === currentUser.email
           );
-          if (reports.length > 0) {
-            const report = reports[0];
+          
+          if (userReports.length > 0) {
+            const report = userReports[0];
             const hasPurchased = report.purchased === true || 
                                currentUser.has_purchased_full_report || 
                                currentUser.has_purchased_answers_download;
@@ -45,7 +45,7 @@ function AppLayout({ children }) {
             }
           }
         } catch (e) {
-          console.log('No reports found');
+          console.log('No reports found', e);
         }
 
         // בדוק אם יש שאלון נזנח או בתהליך
