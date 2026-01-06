@@ -27,25 +27,23 @@ function AppLayout({ children }) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         
-        // בדוק אם יש דוח שלא שולם
+        // בדוק אם המשתמש שילם
+        const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
+        
+        // בדוק אם יש שאלון שהושלם
         try {
-          const allReports = await base44.entities.GeneratedReport.list('-created_date');
-          const userReports = allReports.filter(r => 
-            r.user_email === currentUser.email || r.created_by === currentUser.email
+          const responses = await base44.entities.QuestionnaireResponse.filter(
+            { created_by: currentUser.email, status: 'completed' },
+            '-updated_date',
+            1
           );
           
-          if (userReports.length > 0) {
-            const report = userReports[0];
-            const hasPurchased = report.purchased === true || 
-                               currentUser.has_purchased_full_report || 
-                               currentUser.has_purchased_answers_download;
-            if (!hasPurchased) {
-              setHasUnpaidReport(true);
-              setUnpaidReportId(report.questionnaire_response_id);
-            }
+          if (responses.length > 0 && !hasPurchased) {
+            setHasUnpaidReport(true);
+            setUnpaidReportId(responses[0].id);
           }
         } catch (e) {
-          console.log('No reports found', e);
+          console.log('No completed questionnaires found');
         }
 
         // בדוק אם יש שאלון נזנח או בתהליך
@@ -59,7 +57,7 @@ function AppLayout({ children }) {
             setHasAbandonedQuestionnaire(true);
           }
         } catch (e) {
-          console.log('No questionnaires found');
+          console.log('No in-progress questionnaires found');
         }
       } catch (error) {
         // User not logged in or other error
@@ -521,6 +519,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           )}
         </div>
       </header>
+
+      {/* Banner for unpaid report */}
+      {!isLoadingUser && hasUnpaidReport && (
+        <div className="bg-gradient-to-r from-green-600 to-green-700 text-white py-4 px-4 sm:px-6 lg:px-8 shadow-lg">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-center sm:text-right">
+              <span className="text-2xl">🎯</span>
+              <span className="font-bold text-lg">
+                {language === 'he' ? 'נותר לך רק לרכוש את הדוח המקצועי שלך!' : 'Only one step left - Purchase your professional report!'}
+              </span>
+            </div>
+            <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
+              <Button className="bg-white text-green-700 hover:bg-gray-100 font-bold px-8 py-3 rounded-lg shadow-lg">
+                {language === 'he' ? 'לרכישת הדוח' : 'Purchase Report'}
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       <main className="flex-1 relative z-10">
         {children}
