@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { getFullReportPurchaseEmailTemplate } from '../components/email/FullReportPurchaseTemplate.js';
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") {
@@ -121,22 +120,29 @@ Deno.serve(async (req) => {
           );
           const hasCompletedQuestionnaire = responses.length > 0 && responses[0].status === 'completed';
           
-          const questionnaireUrl = `https://${req.headers.get('host')}/page/Questionnaire`;
-          
-          const emailTemplate = getFullReportPurchaseEmailTemplate(
-            order.user_name,
-            transactionId,
-            date,
-            hasCompletedQuestionnaire,
-            questionnaireUrl,
-            order.is_express,
-            'he' // Default to Hebrew
-          );
+          const subject = `אישור רכישה - דו"ח Ventura-107 המלא`;
+          const body = `
+            <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #2563eb;">שלום ${order.user_name},</h2>
+              <p>תודה על רכישת דו"ח Ventura-107 המלא!</p>
+              <p><strong>מזהה עסקה:</strong> ${transactionId}</p>
+              <p><strong>תאריך:</strong> ${date}</p>
+              <p><strong>זמן אספקה:</strong> ${order.is_express ? '3 ימי עבודה' : '7 ימי עבודה'}</p>
+              ${!hasCompletedQuestionnaire ? `
+                <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                  <p style="margin: 0;"><strong>שים לב:</strong> לא זיהינו שאלון שהושלם עבורך. כדי לקבל את הדו"ח המלא, יש להשלים את השאלון:</p>
+                  <a href="https://${req.headers.get('host')}/page/Questionnaire" style="display: inline-block; background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px;">השלם שאלון</a>
+                </div>
+              ` : ''}
+              <p>הדו"ח האישי שלך יישלח אלייך במייל ברגע שיהיה מוכן.</p>
+              <p>בברכה,<br>צוות V107</p>
+            </div>
+          `;
 
           await base44.asServiceRole.integrations.Core.SendEmail({
             to: order.user_email,
-            subject: emailTemplate.subject,
-            body: emailTemplate.html
+            subject: subject,
+            body: body
           });
           
           console.log('Confirmation email sent to:', order.user_email);
