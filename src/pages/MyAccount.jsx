@@ -37,7 +37,8 @@ export default function MyAccount() {
         try {
           const allReports = await base44.entities.GeneratedReport.list('-created_date');
           const myReports = allReports.filter(report => 
-            report.user_email === currentUser.email && report.purchased === true
+            report.user_email === currentUser.email && 
+            (report.purchased === true || currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download)
           );
           setReports(myReports);
         } catch (e) {

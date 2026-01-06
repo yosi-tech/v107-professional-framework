@@ -700,7 +700,10 @@ export default function AdminReports() {
     // סינון לפי רכישה
     if (filters.hasPurchased !== 'all') {
       const userEmail = r.personal_info?.email || r.created_by;
-      const hasPurchased = reports.some((report) => report.user_email === userEmail && report.purchased === true);
+      const userInfo = users.find(u => u.email === userEmail);
+      const hasPurchased = reports.some((report) => report.user_email === userEmail && report.purchased === true) ||
+                          userInfo?.has_purchased_full_report === true ||
+                          userInfo?.has_purchased_answers_download === true;
       if (filters.hasPurchased === 'purchased' && !hasPurchased) return false;
       if (filters.hasPurchased === 'not_purchased' && hasPurchased) return false;
     }
@@ -761,7 +764,9 @@ export default function AdminReports() {
       (r.created_by === u.email || r.personal_info?.email === u.email) &&
       r.status === 'completed'
       );
-      const hasPurchased = reports.some((r) => r.user_email === u.email && r.purchased === true);
+      const hasPurchased = reports.some((r) => r.user_email === u.email && r.purchased === true) ||
+                          u.has_purchased_full_report === true ||
+                          u.has_purchased_answers_download === true;
 
       return hasCompletedResponse && !hasPurchased;
     });
@@ -1280,7 +1285,7 @@ export default function AdminReports() {
                 const expressDelivery = userInfo?.express_delivery === true;
                 const paymentAmount = userInfo?.payment_amount ?? 0;
 
-                const purchaseStatus = purchasedReport ? 
+                const purchaseStatus = (purchasedReport || hasPurchasedFullReport || hasPurchasedAnswersDownload) ? 
                 (hasPurchasedFullReport ? `דו"ח מלא${expressDelivery ? ' + מואץ' : ''}` : 'תשובות בלבד') :
                 'לא רכש';
 
