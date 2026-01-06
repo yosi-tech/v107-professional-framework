@@ -27,6 +27,12 @@ function AppLayout({ children }) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         
+        console.log('🔍 User data:', {
+          email: currentUser.email,
+          has_purchased_full_report: currentUser.has_purchased_full_report,
+          has_purchased_answers_download: currentUser.has_purchased_answers_download
+        });
+        
         // בדוק אם המשתמש שילם
         const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
         
@@ -38,12 +44,21 @@ function AppLayout({ children }) {
             1
           );
           
+          console.log('📋 Completed questionnaires:', responses.length);
+          console.log('💰 Has purchased:', hasPurchased);
+          
           if (responses.length > 0 && !hasPurchased) {
+            console.log('✅ Setting hasUnpaidReport to TRUE');
             setHasUnpaidReport(true);
             setUnpaidReportId(responses[0].id);
+          } else {
+            console.log('❌ NOT showing banner:', { 
+              hasCompletedQuestionnaire: responses.length > 0, 
+              hasPurchased 
+            });
           }
         } catch (e) {
-          console.log('No completed questionnaires found');
+          console.log('No completed questionnaires found', e);
         }
 
         // בדוק אם יש שאלון נזנח או בתהליך
