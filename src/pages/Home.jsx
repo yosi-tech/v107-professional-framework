@@ -71,7 +71,7 @@ export default function Home() {
     if (testimonials.length === 0) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+    }, 7000);
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
@@ -318,16 +318,21 @@ export default function Home() {
 
       {/* Video Section - Only for Hebrew */}
       {language === 'he' && (
-        <section className="w-full relative overflow-hidden">
-          <div className="relative pb-[56.25%]">
-            <iframe
-              className="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/ukwW8_NJ3hw"
-              title="V107 Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+        <section className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-black mb-12 text-center text-transparent bg-gradient-to-r from-amber-500 to-amber-600 bg-clip-text">
+              הכירו את V107
+            </h2>
+            <div className="relative pb-[42.1875%] w-3/4 mx-auto rounded-2xl overflow-hidden shadow-2xl">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/ukwW8_NJ3hw"
+                title="V107 Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
           </div>
         </section>
       )}
@@ -350,7 +355,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {getContent('how_it_works_title', language === 'he' ? 'איך זה עובד?' : 'How Does It Work?')}
+                {getContent('how_it_works_title', language === 'he' ? 'איך זה עובד מקצועית?' : 'How Does It Work Professionally?')}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                 {getContent('how_it_works_subtitle', language === 'he' ?
@@ -502,7 +507,7 @@ export default function Home() {
 
             <div className="inline-block mb-4">
               <span className="bg-amber-500/20 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold">
-                אודות V107
+                אודות V107 המקצועי
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-6 text-white leading-tight">
@@ -525,7 +530,7 @@ export default function Home() {
             </p>
 
             <h3 className="text-2xl md:text-3xl font-bold mb-6 text-amber-400">
-              מה כולל הדו"ח האישי שלך?
+              מה כולל הדוח המקצועי האישי שלך?
             </h3>
             <p className="text-gray-300 mb-6">
               עם סיום השאלון, המערכת תייצר ותעביר לידיעתך ניתוח פרימיום בתוך עד 5 ימי עסקים.
@@ -535,27 +540,27 @@ export default function Home() {
               {[
               {
                 icon: Target,
-                title: 'אבחון חוזקות וחסמים',
+                title: 'אבחון מקצועי של חוזקות וחסמים',
                 desc: 'זיהוי מוקדי העוצמה שלך לצד החסמים המבניים המעכבים את צמיחתך המקצועית.'
               },
               {
                 icon: BarChart3,
-                title: 'מפת יכולות ויזואלית',
+                title: 'מפת יכולות מקצועית ויזואלית',
                 desc: 'תמונת מצב גרפית נקייה ומקצועית המציגה את רמת המיומנות שלך ב-6 צירי כוח מרכזיים: ניהול, פיננסים, שיווק, דיגיטל, ביצוע וחזון.'
               },
               {
                 icon: TrendingUp,
-                title: 'ניתוח פערים אסטרטגי (Gap Analysis)',
+                title: 'ניתוח פערים מקצועי אסטרטגי (Gap Analysis)',
                 desc: 'הבנה עמוקה של הקשר בין היכולות שלך – כיצד חיזוק חולשה ספציפית ימנף את החוזקות הקיימות שלך ויכפיל את האימפקט המקצועי שלך.'
               },
               {
                 icon: CheckCircle,
-                title: 'פרוטוקול פעולה (The Action Matrix)',
+                title: 'פרוטוקול פעולה מקצועי (The Action Matrix)',
                 desc: 'צעדים מעשיים לביצוע מיידי (Quick Wins) לצד "מרשם" עבודה המותאמת אישית לפרופיל שלך.'
               },
               {
                 icon: BookOpen,
-                title: 'ספריית משאבי פרימיום',
+                title: 'ספריית משאבי פרימיום מקצועיים',
                 desc: 'הפניות ממוקדות למקורות ידע מהשורה הראשונה בעולם – קורסים אקדמיים, ספרות ניהול מתקדמת וכלים טכנולוגיים מובילים.'
               }].
               map((item, index) =>
@@ -764,8 +769,8 @@ export default function Home() {
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-white leading-tight">
                 {getContent('section_title', language === 'he' ?
-                'מוכן לקחת את הצעד הבא?' :
-                'Ready to Take the Next Step?'
+                'מוכן לקחת את הצעד המקצועי הבא?' :
+                'Ready to Take the Next Professional Step?'
                 )}
               </h2>
 
@@ -775,6 +780,21 @@ export default function Home() {
                 '10 minutes now can save you years of trial and error. Get your personal report and start building your successful business.'
                 )}
               </p>
+
+              <div className="grid sm:grid-cols-3 gap-6 mb-10">
+                <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+                  <h4 className="font-bold text-white mb-2">דיוק מקצועי</h4>
+                  <p className="text-gray-300 text-sm">ניתוח מבוסס נתונים ומומחיות</p>
+                </div>
+                <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+                  <h4 className="font-bold text-white mb-2">תובנות מקצועיות</h4>
+                  <p className="text-gray-300 text-sm">המלצות מעשיות ליישום מיידי</p>
+                </div>
+                <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+                  <h4 className="font-bold text-white mb-2">ליווי מקצועי</h4>
+                  <p className="text-gray-300 text-sm">תמיכה והכוונה לאורך כל הדרך</p>
+                </div>
+              </div>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
                 <Link to={createPageUrl("Questionnaire")}>
