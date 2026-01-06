@@ -381,7 +381,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               
               {hasUnpaidReport ? (
                 <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
-                  <Button className="bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm px-5 py-2.5 font-bold animate-pulse">
+                  <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm px-5 py-2.5 font-bold animate-pulse">
                     {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
                   </Button>
                 </Link>
@@ -475,7 +475,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 
                 {hasUnpaidReport ? (
                   <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
-                    <Button className="bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm px-5 py-2.5 w-full font-bold">
+                    <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm px-5 py-2.5 w-full font-bold">
                       {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
                     </Button>
                   </Link>
@@ -543,7 +543,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
       {/* Banner for unpaid report */}
       {!isLoadingUser && hasUnpaidReport && (
-        <div className="bg-gradient-to-r from-green-600 to-green-700 text-white py-4 px-4 sm:px-6 lg:px-8 shadow-lg">
+        <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white py-4 px-4 sm:px-6 lg:px-8 shadow-lg">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 text-center sm:text-right">
               <span className="text-2xl">🎯</span>
@@ -552,7 +552,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               </span>
             </div>
             <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
-              <Button className="bg-white text-green-700 hover:bg-gray-100 font-bold px-8 py-3 rounded-lg shadow-lg">
+              <Button className="bg-white text-amber-700 hover:bg-gray-100 font-bold px-8 py-3 rounded-lg shadow-lg">
                 {language === 'he' ? 'לרכישת הדוח' : 'Purchase Report'}
               </Button>
             </Link>
