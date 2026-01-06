@@ -221,8 +221,35 @@ export default function Payment() {
       return;
     }
 
+    if (!user) {
+      alert(language === 'he' ? 'יש להתחבר למערכת תחילה' : 'Please login first');
+      return;
+    }
+
     setIsLoadingHandshake(true);
     try {
+      // Create PaymentOrder with pending status
+      const orderData = {
+        status: 'pending',
+        amount: price,
+        user_email: user.email,
+        user_name: user.full_name || '',
+        product_type: product,
+        is_express: isExpress,
+        questionnaire_response_id: responseId || null,
+        coupon_code: appliedCoupon?.code || null,
+        coupon_id: appliedCoupon?.id || null
+      };
+
+      const createdOrder = await base44.entities.PaymentOrder.create(orderData);
+      console.log('PaymentOrder created:', createdOrder.id);
+
+      // Mark coupon as used immediately to prevent reuse
+      if (appliedCoupon) {
+        await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
+        console.log('Coupon marked as used:', appliedCoupon.code);
+      }
+
       const { data } = await tranzilaCreateHandshake({ sum: price });
       setHandshakeData(data);
       
@@ -318,10 +345,7 @@ export default function Payment() {
             await base44.entities.GeneratedReport.update(responseId, { purchased: true });
           }
 
-          // סימון הקופון כמנוצל
-          if (appliedCoupon) {
-            await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
-          }
+          // Coupon already marked as used during payment initialization
           
           await sendConfirmationEmail(user.email, user.full_name || '', product, isExpress);
 
