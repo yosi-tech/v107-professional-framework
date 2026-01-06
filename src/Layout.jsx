@@ -381,7 +381,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               
               {hasUnpaidReport ? (
                 <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
-                  <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm px-5 py-2.5 font-bold animate-pulse">
+                  <Button className="text-white rounded-lg text-sm px-5 py-2.5 font-bold animate-pulse" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
                     {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
                   </Button>
                 </Link>
@@ -475,7 +475,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 
                 {hasUnpaidReport ? (
                   <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
-                    <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm px-5 py-2.5 w-full font-bold">
+                    <Button className="text-white rounded-lg text-sm px-5 py-2.5 w-full font-bold" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
                       {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
                     </Button>
                   </Link>
@@ -543,16 +543,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
       {/* Banner for unpaid report */}
       {!isLoadingUser && hasUnpaidReport && (
-        <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white py-4 px-4 sm:px-6 lg:px-8 shadow-lg">
+        <div className="py-4 px-4 sm:px-6 lg:px-8 shadow-lg" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 text-center sm:text-right">
               <span className="text-2xl">🎯</span>
-              <span className="font-bold text-lg">
+              <span className="font-bold text-lg text-white">
                 {language === 'he' ? 'נותר לך רק לרכוש את הדוח המקצועי שלך!' : 'Only one step left - Purchase your professional report!'}
               </span>
             </div>
             <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
-              <Button className="bg-white text-amber-700 hover:bg-gray-100 font-bold px-8 py-3 rounded-lg shadow-lg">
+              <Button className="bg-white hover:bg-gray-100 font-bold px-8 py-3 rounded-lg shadow-lg" style={{ color: '#b8a46e' }}>
                 {language === 'he' ? 'לרכישת הדוח' : 'Purchase Report'}
               </Button>
             </Link>
