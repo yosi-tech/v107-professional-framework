@@ -660,9 +660,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           {/* Bottom Bar */}
           <div className="border-t border-slate-700 pt-8 text-center">
             <p className="text-xs text-slate-400 leading-relaxed max-w-4xl mx-auto">
-              {language === 'he' 
-                ? 'V107 | PROFESSIONAL FRAMEWORK © כל הזכויות שמורות ל-V107. חל איסור מוחלט על העתקה, צילום, הפצה או שימוש מסחרי בשם הפעילות, הסלוגן, תכני השאלון, הדו"ח והבוסטר. הפרת זכויות אלו תגרור הליכים משפטיים ודרישה לפיצויים גבוהים כחוק.'
-                : 'V107 | PROFESSIONAL FRAMEWORK © All rights reserved to V107. Unauthorized copying, photographing, distribution, or commercial use of the business name, slogan, questionnaire content, report, and booster is strictly prohibited. Violation of these rights will result in legal proceedings and demands for high compensation as required by law.'}
+              Confidential - Proprietary Logic of V107 Framework - ©️  All Rights Reserved
             </p>
           </div>
         </div>
