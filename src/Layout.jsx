@@ -99,6 +99,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-N68LLCXP');`;
     document.head.appendChild(script);
+
+    // Facebook Domain Verification
+    const fbMeta = document.createElement('meta');
+    fbMeta.name = 'facebook-domain-verification';
+    fbMeta.content = 'tveby14q8yq1a5y44dkkk1tsx84np6';
+    document.head.appendChild(fbMeta);
   }, []);
 
   const toggleLanguage = () => {
