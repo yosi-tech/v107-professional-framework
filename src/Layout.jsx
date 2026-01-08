@@ -413,10 +413,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   {language === 'he' ? 'התנתק' : 'Logout'}
                 </Button>
               )}
-              
-              <Button variant="outline" size="sm" onClick={toggleLanguage} className="bg-background text-slate-600 px-3 text-sm font-medium inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border h-9 rounded-md border-accent hover:bg-accent hover:text-white">
-                {t('layout.lang_switcher')}
-              </Button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -527,20 +523,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     </Button>
                   </div>
                 )}
-                
-                <div className="px-4">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => {
-                      toggleLanguage();
-                      setIsMobileMenuOpen(false);
-                    }} 
-                    className="w-full"
-                  >
-                    {t('layout.lang_switcher')}
-                  </Button>
-                </div>
               </nav>
             </div>
           )}
