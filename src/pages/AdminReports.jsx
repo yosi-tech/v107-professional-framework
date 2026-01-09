@@ -1341,7 +1341,16 @@ export default function AdminReports() {
                                 </div>
                                 <div className={`flex items-center gap-1.5 flex-row-reverse ${timeWarningClass}`}>
                                   <Clock className="w-4 h-4 flex-shrink-0" />
-                                  <span>{hoursAgo} שעות</span>
+                                  <span>
+                                    {(() => {
+                                      const days = Math.floor(hoursAgo / 24);
+                                      const hours = hoursAgo % 24;
+                                      if (days > 0) {
+                                        return `${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                      }
+                                      return `${hours} שעות`;
+                                    })()}
+                                  </span>
                                 </div>
                               </div>
                             </div>
