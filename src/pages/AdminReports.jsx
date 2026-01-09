@@ -1341,12 +1341,14 @@ export default function AdminReports() {
                                 </div>
                                 <div className={`flex items-center gap-1.5 flex-row-reverse ${timeWarningClass}`}>
                                   <Clock className="w-4 h-4 flex-shrink-0" />
-                                  <span>
+                                  <span dir="rtl">
                                     {(() => {
                                       const days = Math.floor(hoursAgo / 24);
                                       const hours = hoursAgo % 24;
                                       if (days > 0) {
-                                        return `${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                        return hours > 0 
+                                          ? `${days} ימים ו-${hours} שעות`
+                                          : `${days} ימים`;
                                       }
                                       return `${hours} שעות`;
                                     })()}
@@ -1583,13 +1585,15 @@ export default function AdminReports() {
                                       <p className="text-xs text-gray-500 mt-1">
                                         התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                       </p>
-                                      <p className="text-xs font-semibold text-yellow-700 mt-1">
+                                      <p className="text-xs font-semibold text-yellow-700 mt-1" dir="rtl">
                                         {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
                                           const days = Math.floor(hoursAgo / 24);
                                           const hours = hoursAgo % 24;
                                           if (days > 0) {
-                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                            return hours > 0 
+                                              ? `עברו ${days} ימים ו-${hours} שעות`
+                                              : `עברו ${days} ימים`;
                                           }
                                           return `עברו ${hours} שעות`;
                                         })()}
@@ -1700,13 +1704,15 @@ export default function AdminReports() {
                                       <p className="text-xs text-gray-500 mt-1">
                                         התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                       </p>
-                                      <p className="text-xs font-semibold text-yellow-700 mt-1">
+                                      <p className="text-xs font-semibold text-yellow-700 mt-1" dir="rtl">
                                         {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
                                           const days = Math.floor(hoursAgo / 24);
                                           const hours = hoursAgo % 24;
                                           if (days > 0) {
-                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                            return hours > 0 
+                                              ? `עברו ${days} ימים ו-${hours} שעות`
+                                              : `עברו ${days} ימים`;
                                           }
                                           return `עברו ${hours} שעות`;
                                         })()}
@@ -1813,13 +1819,15 @@ export default function AdminReports() {
                                       <p className="text-xs text-gray-500 mt-1">
                                         התחיל: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                       </p>
-                                      <p className="text-xs font-semibold text-yellow-700 mt-1">
+                                      <p className="text-xs font-semibold text-yellow-700 mt-1" dir="rtl">
                                         {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
                                           const days = Math.floor(hoursAgo / 24);
                                           const hours = hoursAgo % 24;
                                           if (days > 0) {
-                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                            return hours > 0 
+                                              ? `עברו ${days} ימים ו-${hours} שעות`
+                                              : `עברו ${days} ימים`;
                                           }
                                           return `עברו ${hours} שעות`;
                                         })()}
@@ -1942,13 +1950,15 @@ export default function AdminReports() {
                                     <p className="text-xs text-gray-500 mt-1">
                                       סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                     </p>
-                                    <p className="text-xs font-semibold text-orange-600 mt-1">
+                                    <p className="text-xs font-semibold text-orange-600 mt-1" dir="rtl">
                                       {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
                                           const days = Math.floor(hoursAgo / 24);
                                           const hours = hoursAgo % 24;
                                           if (days > 0) {
-                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                            return hours > 0 
+                                              ? `עברו ${days} ימים ו-${hours} שעות`
+                                              : `עברו ${days} ימים`;
                                           }
                                           return `עברו ${hours} שעות`;
                                         })()}
@@ -2075,13 +2085,15 @@ export default function AdminReports() {
                                     <p className="text-xs text-gray-500 mt-1">
                                       סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                     </p>
-                                    <p className="text-xs font-semibold text-orange-600 mt-1">
+                                    <p className="text-xs font-semibold text-orange-600 mt-1" dir="rtl">
                                       {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
                                           const days = Math.floor(hoursAgo / 24);
                                           const hours = hoursAgo % 24;
                                           if (days > 0) {
-                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                            return hours > 0 
+                                              ? `עברו ${days} ימים ו-${hours} שעות`
+                                              : `עברו ${days} ימים`;
                                           }
                                           return `עברו ${hours} שעות`;
                                         })()}
@@ -2195,13 +2207,15 @@ export default function AdminReports() {
                                     <p className="text-xs text-gray-500 mt-1">
                                       סיים שאלון: {format(new Date(userResponse.created_date), 'dd/MM/yy HH:mm')}
                                     </p>
-                                    <p className="text-xs font-semibold text-orange-600 mt-1">
+                                    <p className="text-xs font-semibold text-orange-600 mt-1" dir="rtl">
                                       {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
                                           const days = Math.floor(hoursAgo / 24);
                                           const hours = hoursAgo % 24;
                                           if (days > 0) {
-                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                            return hours > 0 
+                                              ? `עברו ${days} ימים ו-${hours} שעות`
+                                              : `עברו ${days} ימים`;
                                           }
                                           return `עברו ${hours} שעות`;
                                         })()}
