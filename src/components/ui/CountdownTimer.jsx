@@ -6,8 +6,13 @@ export default function CountdownTimer({ deadline }) {
     let timeLeft = {};
 
     if (difference > 0) {
+      const totalHours = Math.floor(difference / (1000 * 60 * 60));
+      const days = Math.floor(totalHours / 24);
+      const hours = totalHours % 24;
+      
       timeLeft = {
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        days: days,
+        hours: hours,
         minutes: Math.floor((difference / 1000 / 60) % 60),
         seconds: Math.floor((difference / 1000) % 60),
       };
@@ -38,7 +43,9 @@ export default function CountdownTimer({ deadline }) {
         <div className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-black">
           {String(timeLeft[interval]).padStart(2, '0')}
         </div>
-        <div className="text-xs text-gray-500 uppercase">{interval === 'hours' ? 'שעות' : interval === 'minutes' ? 'דקות' : 'שניות'}</div>
+        <div className="text-xs text-gray-500 uppercase">
+          {interval === 'days' ? 'ימים' : interval === 'hours' ? 'שעות' : interval === 'minutes' ? 'דקות' : 'שניות'}
+        </div>
       </div>
     );
   });
