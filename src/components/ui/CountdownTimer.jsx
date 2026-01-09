@@ -34,7 +34,8 @@ export default function CountdownTimer({ deadline }) {
   const timerComponents = [];
 
   Object.keys(timeLeft).forEach((interval) => {
-    if (!timeLeft[interval] && timeLeft[interval] !== 0) {
+    // Skip if value doesn't exist, but show 0 for existing intervals
+    if (timeLeft[interval] === undefined) {
       return;
     }
 
