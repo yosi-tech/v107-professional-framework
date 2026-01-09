@@ -1586,7 +1586,12 @@ export default function AdminReports() {
                                       <p className="text-xs font-semibold text-yellow-700 mt-1">
                                         {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                          return `עברו ${hoursAgo} שעות`;
+                                          const days = Math.floor(hoursAgo / 24);
+                                          const hours = hoursAgo % 24;
+                                          if (days > 0) {
+                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                          }
+                                          return `עברו ${hours} שעות`;
                                         })()}
                                       </p>
                                     </>
@@ -1698,7 +1703,12 @@ export default function AdminReports() {
                                       <p className="text-xs font-semibold text-yellow-700 mt-1">
                                         {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                          return `עברו ${hoursAgo} שעות`;
+                                          const days = Math.floor(hoursAgo / 24);
+                                          const hours = hoursAgo % 24;
+                                          if (days > 0) {
+                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                          }
+                                          return `עברו ${hours} שעות`;
                                         })()}
                                       </p>
                                     </>
@@ -1806,7 +1816,12 @@ export default function AdminReports() {
                                       <p className="text-xs font-semibold text-yellow-700 mt-1">
                                         {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                          return `עברו ${hoursAgo} שעות`;
+                                          const days = Math.floor(hoursAgo / 24);
+                                          const hours = hoursAgo % 24;
+                                          if (days > 0) {
+                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                          }
+                                          return `עברו ${hours} שעות`;
                                         })()}
                                       </p>
                                     </>
@@ -1930,7 +1945,12 @@ export default function AdminReports() {
                                     <p className="text-xs font-semibold text-orange-600 mt-1">
                                       {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                          return `עברו ${hoursAgo} שעות`;
+                                          const days = Math.floor(hoursAgo / 24);
+                                          const hours = hoursAgo % 24;
+                                          if (days > 0) {
+                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                          }
+                                          return `עברו ${hours} שעות`;
                                         })()}
                                     </p>
                                   </>
@@ -2058,7 +2078,12 @@ export default function AdminReports() {
                                     <p className="text-xs font-semibold text-orange-600 mt-1">
                                       {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                          return `עברו ${hoursAgo} שעות`;
+                                          const days = Math.floor(hoursAgo / 24);
+                                          const hours = hoursAgo % 24;
+                                          if (days > 0) {
+                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                          }
+                                          return `עברו ${hours} שעות`;
                                         })()}
                                     </p>
                                   </>
@@ -2173,7 +2198,12 @@ export default function AdminReports() {
                                     <p className="text-xs font-semibold text-orange-600 mt-1">
                                       {(() => {
                                           const hoursAgo = Math.floor((Date.now() - new Date(userResponse.created_date).getTime()) / (1000 * 60 * 60));
-                                          return `עברו ${hoursAgo} שעות`;
+                                          const days = Math.floor(hoursAgo / 24);
+                                          const hours = hoursAgo % 24;
+                                          if (days > 0) {
+                                            return `עברו ${days} ימים${hours > 0 ? ` ו-${hours} שעות` : ''}`;
+                                          }
+                                          return `עברו ${hours} שעות`;
                                         })()}
                                     </p>
                                   </>
