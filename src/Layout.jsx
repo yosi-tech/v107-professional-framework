@@ -411,19 +411,25 @@ function AppLayout({ children }) {
 
             {/* Mobile Quick Actions */}
             <div className="lg:hidden flex items-center gap-2">
-              {!isLoadingUser && user && (hasUnpaidReport || hasAbandonedQuestionnaire) && (
-                <Link to={hasUnpaidReport ? createPageUrl(`Completion?responseId=${unpaidReportId}`) : createPageUrl("Questionnaire")}>
+              {!isLoadingUser && user && hasUnpaidReport && (
+                <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
                   <Button 
                     size="sm" 
-                    className={hasUnpaidReport ? "text-white text-xs px-3 py-1.5" : "gradient-accent text-white text-xs px-3 py-1.5"}
-                    style={hasUnpaidReport ? { background: 'linear-gradient(to right, #b8a46e, #d4af37)' } : {}}
+                    className="text-white text-xs px-2 py-1.5"
+                    style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}
                   >
-                    {hasUnpaidReport 
-                      ? (language === 'he' ? '🎯 רכישה' : '🎯 Buy')
-                      : hasAbandonedQuestionnaire 
-                        ? (language === 'he' ? 'המשך' : 'Continue')
-                        : (language === 'he' ? 'שאלון' : 'Start')
-                    }
+                    {language === 'he' ? '🎯 רכישה' : '🎯 Buy'}
+                  </Button>
+                </Link>
+              )}
+              
+              {!isLoadingUser && user && hasAbandonedQuestionnaire && (
+                <Link to={createPageUrl("Questionnaire")}>
+                  <Button 
+                    size="sm" 
+                    className="gradient-accent text-white text-xs px-2 py-1.5"
+                  >
+                    {language === 'he' ? 'המשך' : 'Continue'}
                   </Button>
                 </Link>
               )}
