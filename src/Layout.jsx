@@ -409,17 +409,36 @@ function AppLayout({ children }) {
               )}
             </div>
 
-            {/* Mobile Menu Button */}
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6 text-slate-700" />
-              ) : (
-                <Menu className="w-6 h-6 text-slate-700" />
+            {/* Mobile Quick Actions */}
+            <div className="lg:hidden flex items-center gap-2">
+              {!isLoadingUser && user && (hasUnpaidReport || hasAbandonedQuestionnaire) && (
+                <Link to={hasUnpaidReport ? createPageUrl(`Completion?responseId=${unpaidReportId}`) : createPageUrl("Questionnaire")}>
+                  <Button 
+                    size="sm" 
+                    className={hasUnpaidReport ? "text-white text-xs px-3 py-1.5" : "gradient-accent text-white text-xs px-3 py-1.5"}
+                    style={hasUnpaidReport ? { background: 'linear-gradient(to right, #b8a46e, #d4af37)' } : {}}
+                  >
+                    {hasUnpaidReport 
+                      ? (language === 'he' ? '🎯 רכישה' : '🎯 Buy')
+                      : hasAbandonedQuestionnaire 
+                        ? (language === 'he' ? 'המשך' : 'Continue')
+                        : (language === 'he' ? 'שאלון' : 'Start')
+                    }
+                  </Button>
+                </Link>
               )}
-            </button>
+              
+              <button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6 text-slate-700" />
+                ) : (
+                  <Menu className="w-6 h-6 text-slate-700" />
+                )}
+              </button>
+            </div>
           </div>
           
           {/* Mobile Menu */}
