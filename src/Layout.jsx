@@ -64,7 +64,7 @@ function AppLayout({ children }) {
             }
           }
         } catch (e) {
-          console.log('No completed questionnaires found');
+          // No completed questionnaires found
         }
 
         // בדוק אם יש שאלון נזנח או בתהליך
@@ -78,7 +78,7 @@ function AppLayout({ children }) {
             setHasAbandonedQuestionnaire(true);
           }
         } catch (e) {
-          console.log('No in-progress questionnaires found');
+          // No in-progress questionnaires found
         }
       } catch (error) {
         // User not logged in or other error

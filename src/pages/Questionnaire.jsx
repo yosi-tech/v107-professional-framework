@@ -492,7 +492,7 @@ export default function Questionnaire() {
                     status: 'in_progress'
                   });
                 } catch (error) {
-                  console.error("Failed to save progress:", error);
+                  // Silently fail on navigation to avoid console logging
                 }
               }
               window.location.href = link.href;
@@ -518,8 +518,6 @@ export default function Questionnaire() {
       const hasComment = optionalComment.trim().length > 0;
 
       if (!hasPersonalInfo && !hasResponses && !hasComment) return;
-      
-      console.log('Auto-saving progress:', { hasPersonalInfo, hasResponses, hasComment, savedResponseId });
 
       const data = {
         personal_info: { ...personalInfo, email: user.email },
@@ -537,7 +535,7 @@ export default function Questionnaire() {
         setSavedResponseId(newResponse.id);
       }
     } catch (error) {
-      console.error('Error auto-saving progress:', error);
+      // Silently fail auto-save to avoid console logging
     }
   }, [user, personalInfo, responses, optionalComment, language, savedResponseId]);
 
@@ -622,7 +620,6 @@ export default function Questionnaire() {
 
       navigate(createPageUrl(`Completion?responseId=${finalResponseId}`));
     } catch (error) {
-      console.error('Error submitting questionnaire:', error);
       alert('שגיאה בשליחת השאלון');
     }
     setIsSubmitting(false);
