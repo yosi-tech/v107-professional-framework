@@ -73,7 +73,7 @@ export default function Completion() {
       try {
         setUser(await base44.auth.me());
       } catch (e) {
-        console.error("User not logged in");
+        // User not logged in
       }
     };
     fetchUser();

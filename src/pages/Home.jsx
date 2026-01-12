@@ -57,8 +57,6 @@ export default function Home() {
         });
         setContent(contentMap);
         setTestimonials(data);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
       } finally {
         setIsLoadingContent(false);
         setIsLoadingTestimonials(false);

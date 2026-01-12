@@ -42,7 +42,7 @@ export default function MyAccount() {
           );
           setReports(myReports);
         } catch (e) {
-          console.log('No reports found');
+          // No reports found
         }
 
         // טען סקרים
@@ -53,7 +53,7 @@ export default function MyAccount() {
           );
           setSurveyResponses(surveys);
         } catch (e) {
-          console.log('No surveys found');
+          // No surveys found
         }
 
         // טען קופונים
@@ -64,7 +64,7 @@ export default function MyAccount() {
           );
           setCoupons(userCoupons);
         } catch (e) {
-          console.log('No coupons found');
+          // No coupons found
         }
 
         // טען מנוי בוסטר
@@ -77,7 +77,7 @@ export default function MyAccount() {
             setBoosterSubscription(subscriptions[0]);
           }
         } catch (e) {
-          console.log('No booster subscription found');
+          // No booster subscription found
         }
 
         // טען הזמנות תשלום
@@ -88,7 +88,7 @@ export default function MyAccount() {
           );
           setPaymentOrders(orders);
         } catch (e) {
-          console.log('No payment orders found');
+          // No payment orders found
         }
 
       } catch (error) {
