@@ -678,10 +678,7 @@ function AppLayout({ children }) {
 
           {/* Bottom Bar */}
           <div className="border-t border-slate-700 pt-8 text-center">
-            <p className="text-xs text-slate-400 leading-relaxed max-w-4xl mx-auto">
-              Confidential - Proprietary Logic of V107 Framework - ©️  All Rights Reserved
-            </p>
-            <p className="text-xs text-slate-500 leading-relaxed max-w-4xl mx-auto mt-2 select-none" style={{ userSelect: 'none' }}>
+            <p className="text-xs text-slate-500 leading-relaxed max-w-4xl mx-auto select-none" style={{ userSelect: 'none' }}>
               V107™ Professional Framework | © 2026 V107 Global Strategist | Registered Intellectual Property
             </p>
           </div>
