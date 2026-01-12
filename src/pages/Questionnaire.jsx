@@ -420,9 +420,12 @@ export default function Questionnaire() {
   }, [loadExistingResponses]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [currentStep]);
 
   useEffect(() => {
     setShouldBlockNavigation(currentStep >= 0);

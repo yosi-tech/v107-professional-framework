@@ -418,7 +418,7 @@ function AppLayout({ children }) {
                     className="text-white text-xs px-2 py-1.5"
                     style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}
                   >
-                    {language === 'he' ? '🎯 רכישה' : '🎯 Buy'}
+                    {language === 'he' ? 'רכישה' : 'Buy'}
                   </Button>
                 </Link>
               )}
