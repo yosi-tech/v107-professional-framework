@@ -371,7 +371,23 @@ const QuestionCard = ({ questionNumber, questionText, value, onChange, language 
 };
 
 export default function Questionnaire() {
-  const { language } = useTranslation();
+        const { language } = useTranslation();
+
+        // הגנת IP: חסימת אינטראקציית טקסט
+        useEffect(() => {
+          const handleContextMenu = (e) => e.preventDefault();
+          const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')) e.preventDefault();
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U')) e.preventDefault();
+            if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) e.preventDefault();
+          };
+          document.addEventListener('contextmenu', handleContextMenu);
+          document.addEventListener('keydown', handleKeyDown);
+          return () => {
+            document.removeEventListener('contextmenu', handleContextMenu);
+            document.removeEventListener('keydown', handleKeyDown);
+          };
+        }, []);
   const [currentStep, setCurrentStep] = useState(-1); // -1 for intro, 0 for personal info, 1-5 for sections, 6 for optional comment
   const [responses, setResponses] = useState({});
   const [personalInfo, setPersonalInfo] = useState({});
@@ -759,8 +775,21 @@ export default function Questionnaire() {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-slate-100" dir={language === 'he' ? 'rtl' : 'ltr'}>
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-slate-100 select-none" dir={language === 'he' ? 'rtl' : 'ltr'} style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
+      <style>{`
+        .questionnaire-container, .questionnaire-container * {
+          user-select: none !important;
+          -webkit-user-select: none !important;
+          -moz-user-select: none !important;
+          -ms-user-select: none !important;
+        }
+        @media print {
+          .questionnaire-container {
+            display: none !important;
+          }
+        }
+      `}</style>
+      <div className="max-w-4xl mx-auto questionnaire-container">
         <div className="text-center mb-8">
           <div className="flex justify-between items-center mb-4">
             <Button 
