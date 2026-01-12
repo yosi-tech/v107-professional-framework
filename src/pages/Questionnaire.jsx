@@ -463,17 +463,20 @@ export default function Questionnaire() {
           const confirmMessage = 'האם אתה בטוח שברצונך לעזוב? התקדמותך נשמרה אוטומטית ותוכל לחזור ולהמשיך מאוחר יותר.';
 
           if (window.confirm(confirmMessage)) {
+            // שמור את כל הנתונים האחרונים לפני היציאה
             (async () => {
-              if (savedResponseId && user) {
+              if (user && savedResponseId) {
                 try {
                   await base44.entities.QuestionnaireResponse.update(savedResponseId, {
-                    status: 'abandoned'
+                    personal_info: { ...personalInfo, email: user.email },
+                    responses: responses,
+                    optional_comment: optionalComment,
+                    language: language,
+                    version: 'B7_PRO_V4',
+                    status: 'in_progress'
                   });
-                  // Optionally send abandonment email as in original
-                  // For now, I'm just adapting the exact outline provided, which removed the email sending part
-                  // If email sending is critical, it should be re-added here.
                 } catch (error) {
-                  console.error("Failed to mark as abandoned:", error);
+                  console.error("Failed to save progress:", error);
                 }
               }
               window.location.href = link.href;
