@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, FileText, Award, ShoppingCart, Gift, CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle, Lock, Rocket } from 'lucide-react';
+import { Loader2, FileText, Award, ShoppingCart, Gift, CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle, Lock, Rocket, Trash2 } from 'lucide-react';
 import { useTranslation } from '@/components/i18n/useTranslation';
 
 export default function MyAccount() {
@@ -105,6 +105,23 @@ export default function MyAccount() {
 
   const handleLogout = () => {
     base44.auth.logout(createPageUrl('Home'));
+  };
+
+  const handleDeleteQuestionnaire = async (questionnaireId) => {
+    const confirmDelete = window.confirm(
+      language === 'he' 
+        ? 'האם אתה בטוח שברצונך למחוק את השאלון? לא ניתן לשחזר אותו.'
+        : 'Are you sure you want to delete this questionnaire? This action cannot be undone.'
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await base44.entities.QuestionnaireResponse.delete(questionnaireId);
+      setQuestionnaireResponses(prev => prev.filter(q => q.id !== questionnaireId));
+    } catch (error) {
+      alert(language === 'he' ? 'שגיאה במחיקת השאלון' : 'Error deleting questionnaire');
+    }
   };
 
   const getStatusIcon = (status) => {
@@ -282,9 +299,18 @@ export default function MyAccount() {
                           {getStatusIcon(response.status)}
                           <span className="font-medium">{getStatusText(response.status)}</span>
                         </div>
-                        <span className="text-sm text-gray-500">
-                          {new Date(response.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-gray-500">
+                            {new Date(response.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
+                          </span>
+                          <button
+                            onClick={() => handleDeleteQuestionnaire(response.id)}
+                            className="p-1 hover:bg-red-100 rounded transition-colors text-red-600"
+                            title={language === 'he' ? 'מחק שאלון' : 'Delete questionnaire'}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                       <p className="text-sm text-gray-600 mb-3">
                         {response.personal_info?.full_name || user?.full_name}
