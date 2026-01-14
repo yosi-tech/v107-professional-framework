@@ -22,6 +22,9 @@ function AppLayout({ children }) {
   const [hasAbandonedQuestionnaire, setHasAbandonedQuestionnaire] = useState(false);
 
   useEffect(() => {
+    // Initialize dataLayer before GTM loads
+    window.dataLayer = window.dataLayer || [];
+    
     // Google Tag Manager
     const script = document.createElement('script');
     script.innerHTML = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
