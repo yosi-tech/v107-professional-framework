@@ -695,6 +695,12 @@ function AppLayout({ children }) {
             <p className="text-xs text-slate-500 leading-relaxed max-w-4xl mx-auto select-none" style={{ userSelect: 'none' }}>
               V107™ Professional Framework | © 2026 V107 Global Strategist | Registered Intellectual Property
             </p>
+            <p className="text-xs text-slate-400 mt-2">
+              {language === 'he' ? 'האתר נבנה על ידי ' : 'Website built by '}
+              <a href="https://roeielba.com/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
+                {language === 'he' ? 'רועי אלבה' : 'Roei Elba'}
+              </a>
+            </p>
           </div>
         </div>
       </footer>
