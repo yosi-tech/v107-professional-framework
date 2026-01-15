@@ -204,11 +204,11 @@ export default function Completion() {
                     </button>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8 mb-12">
+                <div className="flex flex-wrap justify-center gap-8 mb-12">
                     {productCards.map((product) =>
           <Card
             key={product.title}
-            className={`flex flex-col text-center transition-all duration-300 hover:shadow-2xl ${
+            className={`flex flex-col text-center transition-all duration-300 hover:shadow-2xl max-w-sm w-full ${
             product.recommended ? 'border-2 border-blue-600 shadow-xl scale-105' : 'shadow-lg'}`
             }>
 
