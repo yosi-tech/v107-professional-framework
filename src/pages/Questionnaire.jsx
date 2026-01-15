@@ -162,10 +162,18 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           <ul className="space-y-2 list-disc pr-6">
             <li>{language === 'he' ? 'כלי אבחון מקצועי זה נועד למפות את היכולות, הדפוסים והנטיות האישיות והמקצועיות שלך בהתבסס על 11 ממדים פסיכומטריים ליבתיים.' : 'This professional diagnostic tool is designed to map your personal and professional abilities, patterns, and tendencies based on 11 core psychometric dimensions.'}</li>
             <li>{language === 'he' ? 'שאלון V107 ובעקבותיו דו"ח V107 פותחו בתהליך מקצועי רב־שלבי ונמצאים בתהליך ולידציה מתמשך מול קבוצות מיקוד של מומחי קריירה, פסיכולוגיה תעסוקתית ואסטרטגים של התפתחות אישית.' : 'The V107 questionnaire and its subsequent V107 report were developed through a multi-stage professional process and are undergoing continuous validation with focus groups of career experts, occupational psychologists, and personal development strategists.'}</li>
-            <li>{language === 'he' ? 'הבהרה משפטית: הדו"ח המופק מהווה כלי אבחוני בלבד ואינו מהווה ייעוץ משפטי, עסקי או פסיכולוגי מחייב. אין במסקנות הדו"ח משום הבטחה להישגים או לתוצאות כלכליות, והשימוש במידע המוצג בו הוא על דעתו ובאחריותו הבלעדית של המשתמש.' : 'Legal clarification: The generated report is solely a diagnostic tool and does not constitute binding legal, business, or psychological advice. The conclusions of the report do not promise achievements or financial results, and the use of the information presented therein is at the sole discretion and responsibility of the user.'}</li>
             <li>{language === 'he' ? 'משך המילוי: כ־20 דקות. השאלון כולל 107 שאלות המחולקות ל־5 מקטעים ממוקדים.' : 'Completion time: Approximately 20 minutes. The questionnaire includes 107 questions divided into 5 focused sections.'}</li>
             <li className="font-semibold">{language === 'he' ? 'ככל שתשובותיך יהיו כנות כך איכות הדו"ח שתקבל תהיה גבוהה יותר.' : 'The more honest your answers, the higher the quality of the report you will receive.'}</li>
           </ul>
+        </div>
+
+        <div className="bg-amber-50 p-4 rounded-lg border-2 border-amber-300 mt-6">
+          <h3 className="font-semibold text-lg mb-2 text-amber-900">⚠️ הצהרה חשובה</h3>
+          <p className="text-sm text-amber-800">
+            {language === 'he' 
+              ? 'שאלון V107 הוא כלי אינפורמטיבי בלבד לצורכי אבחון והערכה עצמית. הדו"ח המופק אינו מהווה ייעוץ מקצועי, רפואי, פסיכולוגי או משפטי. התוצאות מבוססות על תשובותיך ומיועדות למתן תובנות כלליות בלבד. השימוש במידע הוא באחריותך המלאה.' 
+              : 'The V107 questionnaire is an informative tool for diagnostic and self-assessment purposes only. The generated report does not constitute professional, medical, psychological, or legal advice. Results are based on your responses and are intended to provide general insights only. Use of this information is at your own responsibility.'}
+          </p>
         </div>
         
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -176,6 +184,15 @@ const QuestionnaireIntro = ({ onStart, language }) => {
             <li>{language === 'he' ? 'תשובות השאלון עצמן נשמרות באופן אנונימי לחלוטין לצורך מחקר מתמשך ושיפור דיוק המערכת.' : 'The questionnaire answers themselves are kept completely anonymous for continuous research and system accuracy improvement.'}</li>
             <li>{language === 'he' ? 'הנתונים לא מועברים לשום גורם שלישי.' : 'Data is not transferred to any third party.'}</li>
           </ol>
+          <p className="text-sm text-gray-700 mt-3">
+            {language === 'he' 
+              ? 'למידע נוסף, עיין ב' 
+              : 'For more information, see our '}
+            <Link to={createPageUrl("TermsOfService")} className="text-blue-600 hover:underline font-medium">
+              {language === 'he' ? 'תנאי השימוש' : 'Terms of Use'}
+            </Link>
+            {language === 'he' ? ' ובמדיניות הפרטיות שלנו.' : ' and Privacy Policy.'}
+          </p>
         </div>
         
         <Button
@@ -193,6 +210,10 @@ const QuestionnaireIntro = ({ onStart, language }) => {
 const PersonalInfoForm = ({ data, onChange, language }) => {
   const handleInputChange = (field, value) => {
     onChange({ ...data, [field]: value });
+  };
+
+  const handleConsentChange = (checked) => {
+    onChange({ ...data, data_usage_consent: checked });
   };
 
   const occupationOptions = [
@@ -337,12 +358,31 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
               placeholder="פרט תחום עניין אחר"
               dir="rtl"
             />
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+            )}
+            </div>
+
+            <div className="border-t pt-4 mt-6">
+            <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="data_consent"
+              checked={data.data_usage_consent || false}
+              onChange={(e) => handleConsentChange(e.target.checked)}
+              className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              required
+            />
+            <label htmlFor="data_consent" className="text-sm text-gray-700">
+              {language === 'he' 
+                ? 'אני מאשר/ת שימוש בנתונים שאספק לצורך אבחון והפקת דוח מקצועי. הנתונים ישמרו בהתאם למדיניות הפרטיות ולתנאי השימוש של V107.' 
+                : 'I consent to the use of the data I provide for diagnostic purposes and professional report generation. Data will be stored in accordance with V107\'s Privacy Policy and Terms of Use.'}
+              <span className="text-red-500"> *</span>
+            </label>
+            </div>
+            </div>
+            </CardContent>
+            </Card>
+            );
+            };
 
 const QuestionCard = ({ questionNumber, questionText, value, onChange, language }) => {
   return (
@@ -523,6 +563,7 @@ export default function Questionnaire() {
         personal_info: { ...personalInfo, email: user.email },
         responses: responses,
         optional_comment: optionalComment,
+        data_usage_consent: personalInfo.data_usage_consent || false,
         language: language,
         version: 'B7_PRO_V4',
         status: 'in_progress'
@@ -568,7 +609,11 @@ export default function Questionnaire() {
 
   const validatePersonalInfo = () => {
     if (!personalInfo.full_name?.trim()) {
-      alert('יש להזין שם מלא');
+      alert(language === 'he' ? 'יש להזין שם מלא' : 'Please enter your full name');
+      return false;
+    }
+    if (!personalInfo.data_usage_consent) {
+      alert(language === 'he' ? 'יש לאשר את תנאי השימוש בנתונים' : 'Please consent to data usage terms');
       return false;
     }
     return true;
@@ -601,6 +646,7 @@ export default function Questionnaire() {
         personal_info: { ...personalInfo, email: user.email },
         responses: responses,
         optional_comment: optionalComment,
+        data_usage_consent: personalInfo.data_usage_consent || false,
         language: language,
         version: 'B7_PRO_V4',
         status: 'completed'
