@@ -2728,11 +2728,12 @@ export default function AdminReports() {
                               </div>
                             </div>
                           </CardContent>
-                        </Card>);
-
-                  })}
-                  </div>
-                }
+                        </Card>
+                      );
+                    })}
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           </TabsContent>
