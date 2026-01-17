@@ -12,13 +12,14 @@ import EmailTemplates from './pages/EmailTemplates';
 import Home from './pages/Home';
 import MyAccount from './pages/MyAccount';
 import Payment from './pages/Payment';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import Questionnaire from './pages/Questionnaire';
 import QuestionnaireExport from './pages/QuestionnaireExport';
 import ReportView from './pages/ReportView';
 import Survey from './pages/Survey';
 import TermsOfService from './pages/TermsOfService';
 import ThankYou from './pages/ThankYou';
-import PrivacyPolicy from './pages/PrivacyPolicy';
+import Accessibility from './pages/Accessibility';
 import __Layout from './Layout.jsx';
 
 
@@ -37,13 +38,14 @@ export const PAGES = {
     "Home": Home,
     "MyAccount": MyAccount,
     "Payment": Payment,
+    "PrivacyPolicy": PrivacyPolicy,
     "Questionnaire": Questionnaire,
     "QuestionnaireExport": QuestionnaireExport,
     "ReportView": ReportView,
     "Survey": Survey,
     "TermsOfService": TermsOfService,
     "ThankYou": ThankYou,
-    "PrivacyPolicy": PrivacyPolicy,
+    "Accessibility": Accessibility,
 }
 
 export const pagesConfig = {

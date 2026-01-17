@@ -680,6 +680,11 @@ function AppLayout({ children }) {
                     {language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy'}
                   </Link>
                 </li>
+                <li>
+                  <Link to={createPageUrl("Accessibility")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {language === 'he' ? 'הסדרי נגישות' : 'Accessibility'}
+                  </Link>
+                </li>
               </ul>
             </div>
 
