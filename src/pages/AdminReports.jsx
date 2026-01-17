@@ -2646,6 +2646,12 @@ export default function AdminReports() {
                       other: userEmails.filter(e => !['abandonment_survey', 'abandonment_reminder_96h', 'abandonment_after_completion', 'report_ready', 'full_report_purchase', 'answers_download_purchase', 'booster_email'].includes(e.email_type)).length
                     };
                     const totalEmails = userEmails.length;
+                    
+                    // מציאת תבניות שנשלחו למשתמש
+                    const userTemplates = emailTemplates.filter(template => 
+                      userEmails.some(email => email.email_type === template.template_type)
+                    );
+                    const templatesSummary = userTemplates.map(t => t.name_he).join(', ') || 'אין';
 
                     return (
                       <Card key={user.id} className="border">
@@ -2685,6 +2691,7 @@ export default function AdminReports() {
                                       size="sm"
                                       onClick={() => setViewingEmails(userEmails)}
                                       className="h-6 text-xs flex items-center gap-1 flex-row-reverse px-2 bg-purple-50 border-purple-300 text-purple-800 hover:bg-purple-100"
+                                      title={`תבניות שנשלחו: ${templatesSummary}`}
                                     >
                                       <Mail className="w-3 h-3" />
                                       {totalEmails} מיילים
@@ -2700,6 +2707,23 @@ export default function AdminReports() {
                                       אין מיילים
                                     </Badge>
                                   )}
+                                  
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      const userResponse = userResponses[0];
+                                      if (userResponse) {
+                                        setTemplateSelectionDialog({ open: true, response: userResponse });
+                                      } else {
+                                        alert('לא נמצא שאלון למשתמש זה');
+                                      }
+                                    }}
+                                    className="h-6 text-xs flex items-center gap-1 flex-row-reverse px-2"
+                                  >
+                                    <Send className="w-3 h-3" />
+                                    שלח תבנית
+                                  </Button>
                                 </div>
                                 <div className="mt-3">
                                   <Label className="text-xs mb-2 block">סטטוס תשלום:</Label>
@@ -3624,15 +3648,22 @@ export default function AdminReports() {
               {viewingEmails.length === 0 ?
             <p className="text-center text-gray-500 py-4">אין מיילים שנשלחו למשתמש זה.</p> :
 
-            viewingEmails.map((log) =>
-            <Card key={log.id} className="border">
+            viewingEmails.map((log) => {
+              const matchingTemplate = emailTemplates.find(t => t.template_type === log.email_type);
+              return (
+                <Card key={log.id} className="border">
                     <CardContent className="p-4 text-right">
                       <div className="flex items-start justify-between flex-row-reverse">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2 flex-row-reverse">
+                          <div className="flex items-center gap-2 mb-2 flex-row-reverse flex-wrap">
                             <Badge variant={log.sent_manually ? "outline" : "default"} className={log.sent_manually ? 'border-purple-300 text-purple-700' : 'bg-gray-200 text-gray-700'}>
                               {log.sent_manually ? 'ידני' : 'אוטומטי'}
                             </Badge>
+                            {matchingTemplate && (
+                              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+                                תבנית: {matchingTemplate.name_he}
+                              </Badge>
+                            )}
                             <span className="text-sm font-medium">{log.subject}</span>
                           </div>
                           <div className="text-xs text-gray-600">
@@ -3644,7 +3675,8 @@ export default function AdminReports() {
                       </div>
                     </CardContent>
                   </Card>
-            )
+              );
+            })
             }
             </div>
           }
