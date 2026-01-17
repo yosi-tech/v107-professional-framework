@@ -1,21 +1,23 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // חישוב זמן - 96 שעות אחורה
+    // חישוב זמן - 24 שעות אחורה (יממה)
     const now = new Date();
-    const cutoffTime = new Date(now.getTime() - (96 * 60 * 60 * 1000));
+    const oneDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+    const twoDaysAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000));
     
-    // מצא שאלונים שהושלמו לפני 96 שעות
+    // מצא שאלונים שהושלמו לפני 24-48 שעות (חלון של יממה)
     const allResponses = await base44.asServiceRole.entities.QuestionnaireResponse.filter({
       status: 'completed'
-    }, '-created_date');
+    }, '-updated_date');
     
-    const eligibleResponses = allResponses.filter(response => 
-      new Date(response.created_date) < cutoffTime
-    );
+    const eligibleResponses = allResponses.filter(response => {
+      const completionDate = new Date(response.updated_date);
+      return completionDate >= twoDaysAgo && completionDate <= oneDayAgo;
+    });
     
     let emailsSent = 0;
     const errors = [];
@@ -35,16 +37,15 @@ Deno.serve(async (req) => {
           continue; // כבר נשלח
         }
         
-        // בדיקה אם המשתמש רכש דוח
-        const users = await base44.asServiceRole.entities.User.filter({
-          email: userEmail
+        // בדיקה אם המשתמש רכש משהו (בדיקת PaymentOrder)
+        const paidOrders = await base44.asServiceRole.entities.PaymentOrder.filter({
+          user_email: userEmail,
+          questionnaire_response_id: response.id,
+          status: 'paid'
         }, '', 1);
         
-        const user = users && users.length > 0 ? users[0] : null;
-        const hasPurchasedReport = user?.has_purchased_full_report ?? false;
-        
-        if (hasPurchasedReport) {
-          continue; // רכש דוח - לא צריך את המייל הזה
+        if (paidOrders && paidOrders.length > 0) {
+          continue; // רכש - לא צריך את המייל הזה
         }
         
         // יצירת קוד קופון
