@@ -114,6 +114,8 @@ export default function AdminReports() {
     hasReport: 'all', // 'all', 'has_report', 'no_report'
     questionnaireStatus: 'all' // 'all', 'completed', 'in_progress', 'abandoned'
   });
+  const [userDateFilter, setUserDateFilter] = useState('all'); // 'all', 'today', 'week', 'month', 'year', 'custom'
+  const [customDateRange, setCustomDateRange] = useState({ from: '', to: '' });
   const [sortBy, setSortBy] = useState('date'); // 'name', 'date', 'urgency', 'hours'
   const [selectedReportsForAnalytics, setSelectedReportsForAnalytics] = useState([]);
   const [analyticsViewMode, setAnalyticsViewMode] = useState('comparison');
@@ -2521,14 +2523,108 @@ export default function AdminReports() {
                 </p>
               </CardHeader>
               <CardContent>
-                {users.length === 0 ?
-                <div className="text-center py-12">
-                    <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg">אין משתמשים רשומים</p>
-                  </div> :
+                <div className="mb-6 space-y-4">
+                  <div className="flex gap-3 flex-wrap justify-end items-end">
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm font-medium text-gray-700">סנן לפי תאריך:</label>
+                      <select
+                        value={userDateFilter}
+                        onChange={(e) => setUserDateFilter(e.target.value)}
+                        className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-right"
+                        dir="rtl"
+                      >
+                        <option value="all">כל הזמן</option>
+                        <option value="today">היום</option>
+                        <option value="week">7 ימים אחרונים</option>
+                        <option value="month">חודש אחרון</option>
+                        <option value="year">שנה אחרונה</option>
+                        <option value="custom">מותאם אישית</option>
+                      </select>
+                    </div>
 
-                <div className="space-y-3">
-                    {users.map((user) => {
+                    {userDateFilter === 'custom' && (
+                      <div className="flex gap-2 items-center">
+                        <Input
+                          type="date"
+                          value={customDateRange.to}
+                          onChange={(e) => setCustomDateRange({ ...customDateRange, to: e.target.value })}
+                          className="w-40 text-sm"
+                          placeholder="עד"
+                        />
+                        <span className="text-sm text-gray-600">עד</span>
+                        <Input
+                          type="date"
+                          value={customDateRange.from}
+                          onChange={(e) => setCustomDateRange({ ...customDateRange, from: e.target.value })}
+                          className="w-40 text-sm"
+                          placeholder="מ"
+                        />
+                        <span className="text-sm text-gray-600">מ</span>
+                      </div>
+                    )}
+
+                    {userDateFilter !== 'all' && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setUserDateFilter('all');
+                          setCustomDateRange({ from: '', to: '' });
+                        }}
+                        className="text-xs"
+                      >
+                        נקה סינון תאריך
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {(() => {
+                  const filteredUsers = users.filter((user) => {
+                    if (userDateFilter === 'all') return true;
+                    
+                    const userDate = new Date(user.created_date);
+                    const now = new Date();
+                    
+                    if (userDateFilter === 'today') {
+                      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                      return userDate >= today;
+                    } else if (userDateFilter === 'week') {
+                      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                      return userDate >= weekAgo;
+                    } else if (userDateFilter === 'month') {
+                      const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                      return userDate >= monthAgo;
+                    } else if (userDateFilter === 'year') {
+                      const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                      return userDate >= yearAgo;
+                    } else if (userDateFilter === 'custom') {
+                      if (customDateRange.from && customDateRange.to) {
+                        const fromDate = new Date(customDateRange.from);
+                        const toDate = new Date(customDateRange.to);
+                        toDate.setHours(23, 59, 59, 999);
+                        return userDate >= fromDate && userDate <= toDate;
+                      } else if (customDateRange.from) {
+                        const fromDate = new Date(customDateRange.from);
+                        return userDate >= fromDate;
+                      } else if (customDateRange.to) {
+                        const toDate = new Date(customDateRange.to);
+                        toDate.setHours(23, 59, 59, 999);
+                        return userDate <= toDate;
+                      }
+                    }
+                    
+                    return true;
+                  });
+
+                  return filteredUsers.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <p className="text-gray-500 text-lg">אין משתמשים בטווח התאריכים שנבחר</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {filteredUsers.map((user) => {
                     const userResponses = responses.filter((r) =>
                     r.created_by === user.email || r.personal_info?.email === user.email
                     );
@@ -2538,6 +2634,22 @@ export default function AdminReports() {
                     const activeBoosterSubscription = boosterSubscriptions.find((s) =>
                     s.user_email === user.email && s.status === 'active'
                     );
+                    
+                    // איסוף מיילים של המשתמש
+                    const userEmails = emailLogs.filter((log) => 
+                      log.to_email === user.email || 
+                      log.related_user_email === user.email
+                    );
+                    
+                    // סיווג מיילים לפי סוג
+                    const emailsByType = {
+                      abandonment: userEmails.filter(e => e.email_type === 'abandonment_survey' || e.email_type === 'abandonment_reminder_96h' || e.email_type === 'abandonment_after_completion').length,
+                      report_ready: userEmails.filter(e => e.email_type === 'report_ready').length,
+                      purchase: userEmails.filter(e => e.email_type === 'full_report_purchase' || e.email_type === 'answers_download_purchase').length,
+                      booster: userEmails.filter(e => e.email_type === 'booster_email').length,
+                      other: userEmails.filter(e => !['abandonment_survey', 'abandonment_reminder_96h', 'abandonment_after_completion', 'report_ready', 'full_report_purchase', 'answers_download_purchase', 'booster_email'].includes(e.email_type)).length
+                    };
+                    const totalEmails = userEmails.length;
 
                     return (
                       <Card key={user.id} className="border">
@@ -2570,6 +2682,28 @@ export default function AdminReports() {
                                   <Badge variant="outline" className="text-xs">
                                     {userReports.length} דוחות
                                   </Badge>
+                                  
+                                  {totalEmails > 0 ? (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setViewingEmails(userEmails)}
+                                      className="h-6 text-xs flex items-center gap-1 flex-row-reverse px-2 bg-purple-50 border-purple-300 text-purple-800 hover:bg-purple-100"
+                                    >
+                                      <Mail className="w-3 h-3" />
+                                      {totalEmails} מיילים
+                                      {emailsByType.abandonment > 0 && ` (${emailsByType.abandonment} נטישה`}
+                                      {emailsByType.report_ready > 0 && `${emailsByType.abandonment > 0 ? ', ' : ' ('}${emailsByType.report_ready} דוח`}
+                                      {emailsByType.purchase > 0 && `${emailsByType.abandonment > 0 || emailsByType.report_ready > 0 ? ', ' : ' ('}${emailsByType.purchase} רכישה`}
+                                      {emailsByType.booster > 0 && `${emailsByType.abandonment > 0 || emailsByType.report_ready > 0 || emailsByType.purchase > 0 ? ', ' : ' ('}${emailsByType.booster} בוסטר`}
+                                      {(emailsByType.abandonment > 0 || emailsByType.report_ready > 0 || emailsByType.purchase > 0 || emailsByType.booster > 0) && ')'}
+                                    </Button>
+                                  ) : (
+                                    <Badge variant="outline" className="text-xs bg-gray-50 text-gray-500">
+                                      <Mail className="w-3 h-3 ml-1" />
+                                      אין מיילים
+                                    </Badge>
+                                  )}
                                 </div>
                                 <div className="mt-3">
                                   <Label className="text-xs mb-2 block">סטטוס תשלום:</Label>
