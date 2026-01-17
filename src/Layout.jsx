@@ -49,6 +49,45 @@ function AppLayout({ children }) {
     document.body.insertBefore(noscript, document.body.firstChild);
   }, []);
 
+  // Initialize Accessibility Widget (EqualWeb/Nagich)
+  useEffect(() => {
+    window.interdeal = {
+      get sitekey() { return "f2598de0436f0d3058ec35949030669f" },
+      get domains() {
+        return {
+          "js": "https://cdn.nagich.co.il/",
+          "acc": "https://access.nagich.co.il/"
+        }
+      },
+      "Position": "left",
+      "Menulang": "AUTO",
+      "draggable": true,
+      "btnStyle": {
+        "vPosition": ["80%", "80%"],
+        "margin": ["0", "0"],
+        "scale": ["0.5", "0.5"],
+        "color": {
+          "main": "#243669",
+          "second": "#ffffff"
+        },
+        "icon": {
+          "outline": true,
+          "outlineColor": "#beac7b",
+          "type": 11,
+          "shape": "circle"
+        }
+      }
+    };
+
+    const coreCall = document.createElement('script');
+    coreCall.src = window.interdeal.domains.js + 'core/5.2.0/accessibility.js';
+    coreCall.defer = true;
+    coreCall.integrity = 'sha512-fHF4rKIzByr1XeM6stpnVdiHrJUOZsKN2/Pm0jikdTQ9uZddgq15F92kUptMnyYmjIVNKeMIa67HRFnBNTOXsQ==';
+    coreCall.crossOrigin = 'anonymous';
+    coreCall.setAttribute('data-cfasync', true);
+    document.body.appendChild(coreCall);
+  }, []);
+
 
 
   useEffect(() => {
