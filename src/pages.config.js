@@ -18,6 +18,7 @@ import ReportView from './pages/ReportView';
 import Survey from './pages/Survey';
 import TermsOfService from './pages/TermsOfService';
 import ThankYou from './pages/ThankYou';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import __Layout from './Layout.jsx';
 
 
@@ -42,6 +43,7 @@ export const PAGES = {
     "Survey": Survey,
     "TermsOfService": TermsOfService,
     "ThankYou": ThankYou,
+    "PrivacyPolicy": PrivacyPolicy,
 }
 
 export const pagesConfig = {

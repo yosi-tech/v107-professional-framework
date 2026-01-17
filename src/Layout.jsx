@@ -675,6 +675,11 @@ function AppLayout({ children }) {
                     {t('layout.footer_terms')}
                   </Link>
                 </li>
+                <li>
+                  <Link to={createPageUrl("PrivacyPolicy")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy'}
+                  </Link>
+                </li>
               </ul>
             </div>
 
