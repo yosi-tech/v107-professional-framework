@@ -20,6 +20,7 @@ import Survey from './pages/Survey';
 import TermsOfService from './pages/TermsOfService';
 import ThankYou from './pages/ThankYou';
 import Accessibility from './pages/Accessibility';
+import AccessibilityStatement from './pages/AccessibilityStatement';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "ThankYou": ThankYou,
     "Accessibility": Accessibility,
+    "AccessibilityStatement": AccessibilityStatement,
 }
 
 export const pagesConfig = {
