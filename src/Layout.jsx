@@ -681,8 +681,8 @@ function AppLayout({ children }) {
                   </Link>
                 </li>
                 <li>
-                  <Link to={createPageUrl("Accessibility")} className="text-slate-400 hover:text-white transition-colors text-sm">
-                    {language === 'he' ? 'הסדרי נגישות' : 'Accessibility'}
+                  <Link to={createPageUrl("AccessibilityStatement")} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    {language === 'he' ? 'הסדרי נגישות' : 'Accessibility Statement'}
                   </Link>
                 </li>
               </ul>
