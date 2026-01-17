@@ -84,7 +84,7 @@ export default function Completion() {
       try {
         const data = await base44.entities.Product.filter({ active: true });
         const completionProducts = data.filter(p => 
-          p.product_type === 'answers_download' || p.product_type === 'full_report'
+          p.product_type === 'full_report'
         );
         setProducts(completionProducts);
       } catch (error) {
