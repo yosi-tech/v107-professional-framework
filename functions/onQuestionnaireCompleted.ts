@@ -47,7 +47,17 @@ Deno.serve(async (req) => {
     
     const language = responseData.language || 'he';
     const userName = responseData.personal_info?.full_name || userEmail.split('@')[0];
-    const purchaseUrl = `${Deno.env.get('BASE44_APP_URL') || 'https://v107.base44.app'}/Completion?responseId=${responseId}`;
+    
+    // בניית URL מלא
+    const baseUrl = Deno.env.get('BASE44_APP_URL');
+    let purchaseUrl;
+    if (baseUrl) {
+      purchaseUrl = `${baseUrl}/Completion?responseId=${responseId}`;
+    } else {
+      // אם אין BASE44_APP_URL, נשתמש ב-origin מה-request
+      const url = new URL(req.url);
+      purchaseUrl = `${url.origin}/Completion?responseId=${responseId}`;
+    }
     
     const subject = language === 'he'
       ? '✅ השאלון הושלם בהצלחה! הצעד הבא - רכוש את הדו"ח המלא'
