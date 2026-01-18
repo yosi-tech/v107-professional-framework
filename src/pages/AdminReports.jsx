@@ -3561,13 +3561,7 @@ export default function AdminReports() {
                                   <p><span className="font-medium">קוד אישור:</span> {order.confirmation_code}</p>
                                 )}
                                 <p className="text-xs text-gray-500">
-                                  {new Date(order.created_date).toLocaleDateString('he-IL', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                  })}
+                                  {format(new Date(order.created_date), 'dd/MM/yyyy HH:mm')}
                                 </p>
                               </div>
                             </div>
