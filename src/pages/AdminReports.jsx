@@ -2631,6 +2631,11 @@ export default function AdminReports() {
                     s.user_email === user.email && s.status === 'active'
                     );
                     
+                    // בדיקה אם יש שאלון נטוש
+                    const hasAbandonedQuestionnaire = userResponses.some((r) =>
+                      r.status === 'in_progress' || r.status === 'abandoned'
+                    );
+                    
                     // איסוף מיילים של המשתמש
                     const userEmails = emailLogs.filter((log) => 
                       log.to_email === user.email || 
@@ -2669,6 +2674,12 @@ export default function AdminReports() {
                                 <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs flex items-center gap-1">
                                       <Rocket className="w-3 h-3" />
                                       בוסטר יום {activeBoosterSubscription.current_day}/7
+                                    </Badge>
+                                }
+                                  {hasAbandonedQuestionnaire &&
+                                <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300 text-xs flex items-center gap-1">
+                                      <AlertTriangle className="w-3 h-3" />
+                                      נטש שאלון
                                     </Badge>
                                 }
                                 </div>

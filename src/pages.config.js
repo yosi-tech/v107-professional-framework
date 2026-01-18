@@ -1,4 +1,6 @@
 import About from './pages/About';
+import Accessibility from './pages/Accessibility';
+import AccessibilityStatement from './pages/AccessibilityStatement';
 import AdminBoosterTasks from './pages/AdminBoosterTasks';
 import AdminReports from './pages/AdminReports';
 import ArticleDetails from './pages/ArticleDetails';
@@ -19,13 +21,13 @@ import ReportView from './pages/ReportView';
 import Survey from './pages/Survey';
 import TermsOfService from './pages/TermsOfService';
 import ThankYou from './pages/ThankYou';
-import Accessibility from './pages/Accessibility';
-import AccessibilityStatement from './pages/AccessibilityStatement';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
+    "Accessibility": Accessibility,
+    "AccessibilityStatement": AccessibilityStatement,
     "AdminBoosterTasks": AdminBoosterTasks,
     "AdminReports": AdminReports,
     "ArticleDetails": ArticleDetails,
@@ -46,8 +48,6 @@ export const PAGES = {
     "Survey": Survey,
     "TermsOfService": TermsOfService,
     "ThankYou": ThankYou,
-    "Accessibility": Accessibility,
-    "AccessibilityStatement": AccessibilityStatement,
 }
 
 export const pagesConfig = {
