@@ -183,7 +183,8 @@ export default function Payment() {
         return;
       }
 
-      if (user && coupon.user_email && coupon.user_email !== user.email) {
+      // בדוק אם הקופון מוגבל למשתמש ספציפי
+      if (coupon.is_user_specific && user && coupon.user_email && coupon.user_email !== user.email) {
         setCouponError(language === 'he' ? 'קוד הקופון לא תקף עבור המשתמש הזה' : 'Coupon not valid for this user');
         setIsCheckingCoupon(false);
         return;
