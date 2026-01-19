@@ -169,7 +169,9 @@ export default function Payment() {
       const coupon = coupons[0];
 
       // בדיקות תקינות
-      if (coupon.used) {
+      // בדוק אם הקופון נוצל רק אם הוא חד פעמי
+      const isSingleUse = coupon.is_single_use !== false; // default is true
+      if (isSingleUse && coupon.used) {
         setCouponError(language === 'he' ? 'קוד הקופון כבר נוצל' : 'Coupon code already used');
         setIsCheckingCoupon(false);
         return;
@@ -244,10 +246,13 @@ export default function Payment() {
       const createdOrder = await base44.entities.PaymentOrder.create(orderData);
       console.log('PaymentOrder created:', createdOrder.id);
 
-      // Mark coupon as used immediately to prevent reuse
+      // Mark coupon as used immediately to prevent reuse (only if single-use)
       if (appliedCoupon) {
-        await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
-        console.log('Coupon marked as used:', appliedCoupon.code);
+        const isSingleUse = appliedCoupon.is_single_use !== false; // default is true
+        if (isSingleUse) {
+          await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
+          console.log('Coupon marked as used:', appliedCoupon.code);
+        }
       }
 
       const { data } = await tranzilaCreateHandshake({ sum: price });
