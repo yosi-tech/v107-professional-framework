@@ -109,7 +109,7 @@ export default function PurchaseConfirmationTemplate({ user_name, user_email, pu
                 <ul style="margin-right: 20px;">
                     <li><strong>היום:</strong> המומחים שלנו מתחילים בניתוח התשובות שלך</li>
                     <li><strong>תוך 3-5 ימים:</strong> ניתוח ראשוני וגיבוש המלצות</li>
-                    <li><strong>תוך 7-10 ימי עבודה:</strong> הדו"ח המלא יישלח אליך במייל</li>
+                    <li><strong>תוך 5-7 ימי עבודה:</strong> הדו"ח המלא יישלח אליך במייל</li>
                 </ul>
             </div>
             
