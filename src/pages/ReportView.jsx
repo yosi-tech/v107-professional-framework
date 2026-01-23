@@ -479,7 +479,7 @@ export default function ReportView() {
         {/* Main Report with Page Navigation */}
         <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-indigo-50 to-purple-50">
           <CardHeader className="bg-white border-b no-print">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4" dir="ltr">
               <Button
                 onClick={prevPage}
                 disabled={currentPage === 1}
@@ -490,7 +490,7 @@ export default function ReportView() {
                 <ChevronRight className="w-5 h-5 text-gray-600" />
               </Button>
               
-              <div className="flex items-center justify-center gap-2 flex-wrap min-w-0">
+              <div className="flex items-center justify-center gap-2 flex-wrap min-w-0" dir="ltr">
                 {[1, 2, 3, 4, 5].map((page) => (
                   <button
                     key={page}
@@ -676,7 +676,7 @@ export default function ReportView() {
             )}
 
             {/* Page Navigation - Bottom */}
-            <div className="flex items-center justify-center gap-4 mt-8 no-print">
+            <div className="flex items-center justify-center gap-4 mt-8 no-print" dir="ltr">
               <Button
                 onClick={prevPage}
                 disabled={currentPage === 1}
@@ -687,7 +687,7 @@ export default function ReportView() {
                 <ChevronRight className="w-5 h-5 text-gray-600" />
               </Button>
               
-              <div className="flex gap-2">
+              <div className="flex gap-2" dir="ltr">
                 {[1, 2, 3, 4, 5].map((page) => (
                   <button
                     key={page}
