@@ -545,7 +545,7 @@ export default function Payment() {
                     id="tranzila-frame"
                     title="Tranzila Payment"
                     allowpaymentrequest="true"
-                    src={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php?sum=${handshakeData.sum}&currency=1&cred_type=1&tranmode=A&new_process=1&thtk=${handshakeData.thtk}&lang=${language === 'he' ? 'il' : 'us'}&buttonLabel=${encodeURIComponent(language === 'he' ? 'שלם עכשיו' : 'Pay Now')}&trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb&pdesc=${encodeURIComponent(productDetails[product]?.title || '')}&success_url_address=${encodeURIComponent(`${window.location.origin}/api/functions/tranzilaSuccess`)}&contact=${encodeURIComponent(user?.full_name || '')}&email=${encodeURIComponent(user?.email || '')}`}
+                    src={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php?sum=${handshakeData.sum}&currency=1&cred_type=1&tranmode=A&new_process=1&thtk=${handshakeData.thtk}&lang=${language === 'he' ? 'il' : 'us'}&buttonLabel=${encodeURIComponent(language === 'he' ? 'שלם עכשיו' : 'Pay Now')}&trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb&pdesc=${encodeURIComponent(productDetails[product]?.title || '')}&success_url_address=${encodeURIComponent(`${window.location.origin}/functions/tranzilaSuccess`)}&contact=${encodeURIComponent(user?.full_name || '')}&email=${encodeURIComponent(user?.email || '')}`}
                     style={{
                       width: '100%',
                       height: '600px',
