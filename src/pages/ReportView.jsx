@@ -479,7 +479,7 @@ export default function ReportView() {
         {/* Main Report with Page Navigation */}
         <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-indigo-50 to-purple-50">
           <CardHeader className="bg-white border-b no-print">
-            <div className="flex items-center justify-between px-4" dir="ltr">
+            <div className="flex items-center justify-center gap-2 flex-wrap" dir="ltr">
               <Button
                 onClick={prevPage}
                 disabled={currentPage === 1}
@@ -490,33 +490,19 @@ export default function ReportView() {
                 <ChevronRight className="w-5 h-5 text-gray-600" />
               </Button>
               
-              <div className="flex flex-col items-center justify-center gap-3" dir="ltr">
-                <div className="flex items-center justify-center gap-2">
-                  {[1, 2, 3, 4].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => goToPage(page)}
-                      className={`w-8 h-8 rounded-full font-semibold text-sm transition-all ${
-                        currentPage === page
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
+              {[1, 2, 3, 4, 5].map((page) => (
                 <button
-                  onClick={() => goToPage(5)}
+                  key={page}
+                  onClick={() => goToPage(page)}
                   className={`w-8 h-8 rounded-full font-semibold text-sm transition-all ${
-                    currentPage === 5
+                    currentPage === page
                       ? 'bg-indigo-600 text-white'
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
-                  5
+                  {page}
                 </button>
-              </div>
+              ))}
               
               <Button
                 onClick={nextPage}
@@ -688,7 +674,7 @@ export default function ReportView() {
             )}
 
             {/* Page Navigation - Bottom */}
-            <div className="flex items-center justify-between mt-8 no-print px-4" dir="ltr">
+            <div className="flex items-center justify-center gap-2 flex-wrap mt-8 no-print" dir="ltr">
               <Button
                 onClick={prevPage}
                 disabled={currentPage === 1}
@@ -699,33 +685,19 @@ export default function ReportView() {
                 <ChevronRight className="w-5 h-5 text-gray-600" />
               </Button>
               
-              <div className="flex flex-col items-center justify-center gap-3">
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => goToPage(page)}
-                      className={`w-8 h-8 rounded-full font-semibold text-sm transition-all ${
-                        currentPage === page
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
+              {[1, 2, 3, 4, 5].map((page) => (
                 <button
-                  onClick={() => goToPage(5)}
+                  key={page}
+                  onClick={() => goToPage(page)}
                   className={`w-8 h-8 rounded-full font-semibold text-sm transition-all ${
-                    currentPage === 5
+                    currentPage === page
                       ? 'bg-indigo-600 text-white'
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
-                  5
+                  {page}
                 </button>
-              </div>
+              ))}
               
               <Button
                 onClick={nextPage}
