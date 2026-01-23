@@ -676,39 +676,41 @@ export default function ReportView() {
             )}
 
             {/* Page Navigation - Bottom */}
-            <div className="flex items-center justify-between mt-8 no-print">
+            <div className="flex items-center justify-center gap-4 mt-8 no-print">
               <Button
                 onClick={prevPage}
                 disabled={currentPage === 1}
-                variant="outline"
-                className="disabled:opacity-50"
+                variant="ghost"
+                size="sm"
+                className="disabled:opacity-30"
               >
-                <ChevronRight className="w-5 h-5 ml-2" />
-                {getText('previousPage')}
+                <ChevronRight className="w-5 h-5 text-gray-600" />
               </Button>
-              <div className="flex gap-2 flex-wrap justify-center">
+              
+              <div className="flex gap-2">
                 {[1, 2, 3, 4, 5].map((page) => (
                   <button
                     key={page}
                     onClick={() => goToPage(page)}
-                    className={`w-10 h-10 rounded-full font-bold transition-all ${
+                    className={`w-8 h-8 rounded-full font-semibold text-sm transition-all ${
                       currentPage === page
-                        ? 'bg-indigo-600 text-white shadow-lg scale-110'
-                        : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
                     {page}
                   </button>
                 ))}
               </div>
+              
               <Button
                 onClick={nextPage}
                 disabled={currentPage === totalPages}
-                variant="outline"
-                className="disabled:opacity-50"
+                variant="ghost"
+                size="sm"
+                className="disabled:opacity-30"
               >
-                {getText('nextPage')}
-                <ChevronLeft className="w-5 h-5 mr-2" />
+                <ChevronLeft className="w-5 h-5 text-gray-600" />
               </Button>
             </div>
           </CardContent>
