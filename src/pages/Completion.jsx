@@ -204,12 +204,12 @@ export default function Completion() {
                     </button>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-8 mb-12">
+                <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-6 sm:gap-8 mb-12">
                     {productCards.map((product) =>
           <Card
             key={product.title}
-            className={`flex flex-col text-center transition-all duration-300 hover:shadow-2xl max-w-sm w-full ${
-            product.recommended ? 'border-2 border-blue-600 shadow-xl scale-105' : 'shadow-lg'}`
+            className={`flex flex-col text-center transition-all duration-300 hover:shadow-2xl w-full sm:max-w-sm ${
+            product.recommended ? 'border-2 border-blue-600 shadow-xl sm:scale-105' : 'shadow-lg'}`
             }>
 
                             {product.recommended &&
