@@ -264,97 +264,13 @@ export default function Payment() {
     setIsLoadingHandshake(false);
   };
 
-  const sendConfirmationEmail = async (userEmail, userName, productType, isExpress) => {
-    try {
-      const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
-      const date = new Date().toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      });
-      
-      if (productType === 'full_report') {
-        let hasCompletedQuestionnaire = false;
-        if (userEmail) { 
-          const responses = await base44.entities.QuestionnaireResponse.filter({ created_by: userEmail }, '-created_date', 1);
-          hasCompletedQuestionnaire = responses.length > 0 && responses[0].status === 'completed';
-        }
-        
-        const questionnaireUrl = `${window.location.origin}${createPageUrl("Questionnaire")}`;
-        
-        const emailTemplate = getFullReportPurchaseEmailTemplate(
-          userName,
-          transactionId,
-          date,
-          hasCompletedQuestionnaire,
-          questionnaireUrl,
-          isExpress,
-          language
-        );
-
-        await base44.integrations.Core.SendEmail({
-          to: userEmail,
-          subject: emailTemplate.subject,
-          body: emailTemplate.html
-        });
-      } else if (productType === 'answers_download') {
-        const subject = language === 'he' ? 'אישור רכישה - תשובות השאלון' : 'Purchase Confirmation - Questionnaire Answers';
-        const body = language === 'he'
-          ? `שלום ${userName},<br><br>תודה על רכישת תשובות השאלון. מזהה עסקה: ${transactionId}.<br><br>בברכה,<br>צוות AVENTURA 107`
-          : `Dear ${userName},<br><br>Thank you for purchasing the questionnaire answers. Transaction ID: ${transactionId}.<br><br>Best regards,<br>AVENTURA 107 Team`;
-        
-        await base44.integrations.Core.SendEmail({
-          to: userEmail,
-          subject: subject,
-          body: body
-        });
-      }
-    } catch (error) {
-      console.error('Error sending confirmation email:', error);
-    }
-  };
-
   useEffect(() => {
     const handleMessage = async (event) => {
       if (event.data && event.data.iframe_message === 'success') {
         setIsProcessing(false);
         setPaymentSuccess(true);
-
-        try {
-          if (!user) {
-            await base44.auth.redirectToLogin(window.location.href);
-            return;
-          }
-          
-          const userDataUpdate = {
-            purchase_date: new Date().toISOString(),
-            payment_amount: price,
-          };
-
-          if (product === 'full_report') {
-            userDataUpdate.has_purchased_full_report = true;
-            userDataUpdate.express_delivery = isExpress;
-          } else if (product === 'answers_download') {
-            userDataUpdate.has_purchased_answers_download = true;
-          }
-
-          await base44.auth.updateMe(userDataUpdate);
-          
-          if (responseId && product === 'full_report') {
-            await base44.entities.GeneratedReport.update(responseId, { purchased: true });
-          }
-
-          // Coupon already marked as used during payment initialization
-          
-          await sendConfirmationEmail(user.email, user.full_name || '', product, isExpress);
-
-          setTimeout(() => {
-            navigate(createPageUrl("ThankYou"));
-          }, 2000);
-
-        } catch (error) {
-          console.error('Post-payment error:', error);
-        }
+        // Note: All processing happens via tranzilaNotify webhook
+        // Just show success message to user
       } else if (event.data && event.data.iframe_message === 'error') {
         setIsProcessing(false);
         alert(language === 'he' ? 'התשלום נכשל. נסה שוב.' : 'Payment failed. Try again.');
@@ -363,7 +279,7 @@ export default function Payment() {
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [user, price, product, isExpress, responseId, navigate, language, appliedCoupon]);
+  }, [language]);
 
   if (!product) {
     return (
@@ -383,9 +299,11 @@ export default function Payment() {
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-4">{language === 'he' ? 'התשלום בוצע בהצלחה!' : 'Payment Successful!'}</h1>
           <p className="text-lg text-gray-600 mb-4">
-            {language === 'he' ? 'תודה על הרכישה. אתה מועבר לעמוד אישור והמשך.' : 'Thank you for your purchase. Redirecting...'}
+            {language === 'he' ? 'תודה על הרכישה. הרכישה שלך עברה בהצלחה!' : 'Thank you for your purchase. Your purchase was successful!'}
           </p>
-          <Loader2 className="animate-spin h-8 w-8 text-blue-600 mx-auto" />
+          <Button onClick={() => navigate(createPageUrl("ThankYou"))} className="mt-4">
+            {language === 'he' ? 'המשך' : 'Continue'}
+          </Button>
         </div>
       </div>
     );
@@ -545,7 +463,7 @@ export default function Payment() {
                     id="tranzila-frame"
                     title="Tranzila Payment"
                     allowpaymentrequest="true"
-                    src={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php?sum=${handshakeData.sum}&currency=1&cred_type=1&tranmode=A&new_process=1&thtk=${handshakeData.thtk}&lang=${language === 'he' ? 'il' : 'us'}&buttonLabel=${encodeURIComponent(language === 'he' ? 'שלם עכשיו' : 'Pay Now')}&trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb&pdesc=${encodeURIComponent(productDetails[product]?.title || '')}&success_url_address=${encodeURIComponent(`${window.location.origin}/functions/tranzilaSuccess`)}&contact=${encodeURIComponent(user?.full_name || '')}&email=${encodeURIComponent(user?.email || '')}`}
+                    src={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php?sum=${handshakeData.sum}&currency=1&cred_type=1&tranmode=A&new_process=1&thtk=${handshakeData.thtk}&lang=${language === 'he' ? 'il' : 'us'}&buttonLabel=${encodeURIComponent(language === 'he' ? 'שלם עכשיו' : 'Pay Now')}&trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb&pdesc=${encodeURIComponent(productDetails[product]?.title || '')}&contact=${encodeURIComponent(user?.full_name || '')}&email=${encodeURIComponent(user?.email || '')}`}
                     style={{
                       width: '100%',
                       height: '600px',
