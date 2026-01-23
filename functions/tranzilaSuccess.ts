@@ -4,10 +4,10 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // Parse Tranzila form-data
-    const formData = await req.formData();
+    // Parse URL parameters (Tranzila redirects with GET parameters)
+    const url = new URL(req.url);
     const notify = {};
-    for (const [key, value] of formData.entries()) {
+    for (const [key, value] of url.searchParams.entries()) {
       notify[key] = value;
     }
 
