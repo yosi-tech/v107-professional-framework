@@ -192,7 +192,7 @@ export default function Completion() {
                 <div className="fixed top-0 left-0 right-0 sm:hidden z-40 bg-gradient-to-b from-white/95 to-white/80 backdrop-blur-sm p-3 border-b border-blue-200 flex justify-between items-center">
                   <h2 className="text-lg font-bold text-gray-900">לרכישת הדוח</h2>
                   <button
-                    onClick={() => productCards[1] && window.location.href = productCards[1].url}
+                    onClick={() => productCards[1] && navigate(productCards[1].url)}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg transition-colors text-sm"
                   >
                     קנה עכשיו
