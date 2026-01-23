@@ -227,7 +227,7 @@ export default function Completion() {
                             {product.recommended &&
             <div className="bg-blue-600 text-white text-sm font-bold py-1">הכי מומלץ</div>
             }
-                            <CardHeader className="pt-8">
+                            <CardHeader className="pt-6 sm:pt-8">
                                 <product.icon className={`w-12 h-12 mx-auto ${product.recommended ? 'text-blue-600' : 'text-gray-500'}`} />
                                 <CardTitle className="text-3xl font-bold mt-4">
                                     {product.title}
