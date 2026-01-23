@@ -186,13 +186,25 @@ export default function Completion() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto text-center">
-                <Award className="w-16 h-16 mx-auto text-yellow-500 mb-4" />
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">כל הכבוד! סיימת את השאלון.</h1>
-                <p className="text-lg text-gray-600 mb-6">
-                    עשית צעד משמעותי במסע היזמי שלך. כעת, בחר את הדרך המתאימה לך להמשיך:
-                </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+                {/* Sticky Purchase Button for Mobile */}
+                <div className="fixed top-0 left-0 right-0 sm:hidden z-40 bg-gradient-to-b from-white/95 to-white/80 backdrop-blur-sm p-3 border-b border-blue-200 flex justify-between items-center">
+                  <h2 className="text-lg font-bold text-gray-900">לרכישת הדוח</h2>
+                  <button
+                    onClick={() => productCards[1] && window.location.href = productCards[1].url}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg transition-colors text-sm"
+                  >
+                    קנה עכשיו
+                  </button>
+                </div>
+                
+                <div className="pt-16 sm:pt-0 text-center">
+                    <Award className="w-16 h-16 mx-auto text-yellow-500 mb-4" />
+                    <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">כל הכבוד! סיימת את השאלון.</h1>
+                    <p className="text-base sm:text-lg text-gray-600 mb-6">
+                        עשית צעד משמעותי במסע היזמי שלך. כעת, בחר את הדרך המתאימה לך להמשיך:
+                    </p>
                 
                 <div className="mb-8">
                     <button
@@ -241,6 +253,8 @@ export default function Completion() {
                             </CardContent>
                         </Card>
           )}
+                </div>
+
                 </div>
 
                 <div className="mt-12 p-6 bg-white rounded-xl shadow-lg border-2 border-dashed border-gray-300">
