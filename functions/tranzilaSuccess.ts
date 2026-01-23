@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
           }
         }
 
-        // Send postMessage to iframe parent
+        // Redirect to ThankYou page (outside iframe)
         const html = `
           <!DOCTYPE html>
           <html>
@@ -90,11 +90,12 @@ Deno.serve(async (req) => {
             <title>Payment Success</title>
           </head>
           <body>
+            <h2>תשלום בוצע בהצלחה!</h2>
+            <p>מעביר אותך לדף אישור...</p>
             <script>
-              if (window.parent) {
-                window.parent.postMessage({ iframe_message: 'success' }, '*');
-              }
-              window.location.href = '${req.headers.get('origin')}/page/ThankYou';
+              setTimeout(function() {
+                window.top.location.href = '${req.headers.get('origin')}/page/ThankYou';
+              }, 2000);
             </script>
           </body>
           </html>
@@ -117,12 +118,12 @@ Deno.serve(async (req) => {
         <title>Payment Failed</title>
       </head>
       <body>
+        <h2>התשלום נכשל</h2>
+        <p>מעביר אותך בחזרה לדף התשלום...</p>
         <script>
-          if (window.parent) {
-            window.parent.postMessage({ iframe_message: 'error' }, '*');
-          }
-          alert('Payment failed. Please try again.');
-          window.location.href = '${req.headers.get('origin')}/page/Payment';
+          setTimeout(function() {
+            window.top.location.href = '${req.headers.get('origin')}/page/Payment';
+          }, 2000);
         </script>
       </body>
       </html>
@@ -145,12 +146,12 @@ Deno.serve(async (req) => {
         <title>Error</title>
       </head>
       <body>
+        <h2>שגיאה</h2>
+        <p>אירעה שגיאה. אנא פנה לתמיכה.</p>
         <script>
-          if (window.parent) {
-            window.parent.postMessage({ iframe_message: 'error' }, '*');
-          }
-          alert('An error occurred. Please contact support.');
-          window.location.href = '${req.headers.get('origin')}/page/Home';
+          setTimeout(function() {
+            window.top.location.href = '${req.headers.get('origin')}/page/Home';
+          }, 2000);
         </script>
       </body>
       </html>
