@@ -1,12 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
-  if (req.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
+  // Only accept POST requests
+  if (req.method !== 'POST') {
+    return new Response('Method Not Allowed', { status: 405 });
   }
 
   try {
-    // Parse Tranzila form-data
+    const base44 = createClientFromRequest(req);
+    
+    // Parse Tranzila form-data (application/x-www-form-urlencoded)
     const formData = await req.formData();
     const notify = {};
     for (const [key, value] of formData.entries()) {
@@ -18,17 +21,17 @@ Deno.serve(async (req) => {
     // Extract fields from notification
     const responseCode = notify["Response"]; // "000" or "0" = success
     const amount = parseFloat(notify["sum"] || 0);
+    const roundedAmount = Math.round(amount);
     const isSuccess = responseCode === "000" || responseCode === "0";
 
-    // Initialize Base44 client with service role
-    const base44 = createClientFromRequest(req);
+    console.log('Payment result:', { responseCode, amount: roundedAmount, isSuccess });
 
     // Match by amount + pending status + recent timestamp (last 30 minutes)
     const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
     
     const orders = await base44.asServiceRole.entities.PaymentOrder.filter({
       status: 'pending',
-      amount: Math.round(amount)
+      amount: roundedAmount
     }, '-created_date', 10);
 
     // Filter by timestamp manually (created in last 30 minutes)
@@ -37,127 +40,77 @@ Deno.serve(async (req) => {
       return orderDate >= new Date(thirtyMinutesAgo);
     });
 
-    if (recentOrders.length === 0) {
-      console.log('No matching pending order found for amount:', amount);
-      return new Response("OK", { status: 200 });
-    }
+    if (recentOrders.length > 0) {
+      const order = recentOrders[0];
+      console.log('Matched order:', order.id);
 
-    const order = recentOrders[0];
-    console.log('Matched order:', order.id);
-
-    // Update order status
-    const updateData = {
-      status: isSuccess ? "paid" : "failed",
-      tranzila_reference: notify["TranzilaTK"] || null,
-      confirmation_code: notify["ConfirmationCode"] || null,
-      raw_data: JSON.stringify(notify)
-    };
-
-    await base44.asServiceRole.entities.PaymentOrder.update(order.id, updateData);
-    console.log('Order status updated to:', updateData.status);
-
-    // If payment successful, update user and related entities
-    if (isSuccess) {
-      // Update user data
-      const userUpdateData = {
-        purchase_date: new Date().toISOString(),
-        payment_amount: order.amount
+      // Update order status
+      const updateData = {
+        status: isSuccess ? "paid" : "failed",
+        tranzila_reference: notify["TranzilaTK"] || null,
+        confirmation_code: notify["ConfirmationCode"] || null,
+        raw_data: JSON.stringify(notify)
       };
 
-      if (order.product_type === 'full_report') {
-        userUpdateData.has_purchased_full_report = true;
-        userUpdateData.express_delivery = order.is_express;
-      } else if (order.product_type === 'answers_download') {
-        userUpdateData.has_purchased_answers_download = true;
-      } else if (order.product_type === 'online_coaching_7days') {
-        userUpdateData.has_purchased_online_coaching = true;
-      }
+      await base44.asServiceRole.entities.PaymentOrder.update(order.id, updateData);
+      console.log('Order status updated to:', updateData.status);
 
-      // Find user by email and update
-      const users = await base44.asServiceRole.entities.User.filter({ email: order.user_email });
-      if (users.length > 0) {
-        await base44.asServiceRole.entities.User.update(users[0].id, userUpdateData);
-        console.log('User data updated for:', order.user_email);
-      }
-
-      // Update GeneratedReport if exists
-      if (order.questionnaire_response_id && order.questionnaire_response_id !== 'null' && order.product_type === 'full_report') {
-        try {
-          await base44.asServiceRole.entities.GeneratedReport.update(order.questionnaire_response_id, { 
-            purchased: true 
-          });
-          console.log('GeneratedReport marked as purchased');
-        } catch (error) {
-          console.log('Could not update GeneratedReport (might not exist yet):', error.message);
-        }
-      }
-
-      // Mark coupon as used
-      if (order.coupon_id) {
-        try {
-          await base44.asServiceRole.entities.Coupon.update(order.coupon_id, { used: true });
-          console.log('Coupon marked as used');
-        } catch (error) {
-          console.log('Could not mark coupon as used:', error.message);
-        }
-      }
-
-      // Send confirmation email
-      try {
-        const transactionId = notify["TranzilaTK"] || `TXN-${Date.now()}`;
-        const date = new Date().toLocaleDateString('he-IL', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        });
+      // Only process post-payment actions if payment succeeded
+      if (isSuccess) {
+        // Update user data
+        const userUpdateData = {
+          purchase_date: new Date().toISOString(),
+          payment_amount: order.amount
+        };
 
         if (order.product_type === 'full_report') {
-          // Check if user completed questionnaire
-          const responses = await base44.asServiceRole.entities.QuestionnaireResponse.filter(
-            { created_by: order.user_email },
-            '-created_date',
-            1
-          );
-          const hasCompletedQuestionnaire = responses.length > 0 && responses[0].status === 'completed';
-          
-          const subject = `אישור רכישה - דו"ח Ventura-107 המלא`;
-          const body = `
-            <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #2563eb;">שלום ${order.user_name},</h2>
-              <p>תודה על רכישת דו"ח Ventura-107 המלא!</p>
-              <p><strong>מזהה עסקה:</strong> ${transactionId}</p>
-              <p><strong>תאריך:</strong> ${date}</p>
-              <p><strong>זמן אספקה:</strong> ${order.is_express ? '3 ימי עבודה' : '7 ימי עבודה'}</p>
-              ${!hasCompletedQuestionnaire ? `
-                <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                  <p style="margin: 0;"><strong>שים לב:</strong> לא זיהינו שאלון שהושלם עבורך. כדי לקבל את הדו"ח המלא, יש להשלים את השאלון:</p>
-                  <a href="https://${req.headers.get('host')}/page/Questionnaire" style="display: inline-block; background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px;">השלם שאלון</a>
-                </div>
-              ` : ''}
-              <p>הדו"ח האישי שלך יישלח אלייך במייל ברגע שיהיה מוכן.</p>
-              <p>בברכה,<br>צוות V107</p>
-            </div>
-          `;
-
-          await base44.asServiceRole.integrations.Core.SendEmail({
-            to: order.user_email,
-            subject: subject,
-            body: body
-          });
-          
-          console.log('Confirmation email sent to:', order.user_email);
+          userUpdateData.has_purchased_full_report = true;
+          userUpdateData.express_delivery = order.is_express || false;
+        } else if (order.product_type === 'answers_download') {
+          userUpdateData.has_purchased_answers_download = true;
+        } else if (order.product_type === 'online_coaching_7days') {
+          userUpdateData.has_purchased_online_coaching = true;
         }
-      } catch (error) {
-        console.error('Error sending confirmation email:', error);
+
+        // Find user by email and update
+        const users = await base44.asServiceRole.entities.User.filter({ email: order.user_email });
+        if (users.length > 0) {
+          await base44.asServiceRole.entities.User.update(users[0].id, userUpdateData);
+          console.log('User data updated for:', order.user_email);
+        }
+
+        // Update GeneratedReport if exists
+        if (order.questionnaire_response_id && order.questionnaire_response_id !== 'null' && order.product_type === 'full_report') {
+          try {
+            await base44.asServiceRole.entities.GeneratedReport.update(order.questionnaire_response_id, { 
+              purchased: true 
+            });
+            console.log('GeneratedReport marked as purchased');
+          } catch (error) {
+            console.log('Could not update GeneratedReport (might not exist yet):', error.message);
+          }
+        }
+
+        // Mark coupon as used if applicable
+        if (order.coupon_id) {
+          try {
+            await base44.asServiceRole.entities.Coupon.update(order.coupon_id, { used: true });
+            console.log('Coupon marked as used:', order.coupon_id);
+          } catch (error) {
+            console.log('Could not mark coupon as used:', error.message);
+          }
+        }
       }
+    } else {
+      console.log('No matching order found for amount:', roundedAmount);
     }
 
-    // Always return OK to Tranzila
-    return new Response("OK", { status: 200 });
+    // Always return OK to Tranzila (prevents retries)
+    return new Response('OK', { status: 200 });
 
   } catch (error) {
-    console.error("Tranzila Notify Error:", error);
-    // Still return OK to prevent Tranzila from retrying
-    return new Response("OK", { status: 200 });
+    console.error('Tranzila Notify Error:', error);
+    // Still return OK to prevent Tranzila retries
+    return new Response('OK', { status: 200 });
   }
 });
