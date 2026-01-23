@@ -182,11 +182,31 @@ export default function ReportView() {
   };
 
   const nextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      // Scroll to top of content after navigation
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 0);
+    }
   };
 
   const prevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      // Scroll to top of content after navigation
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 0);
+    }
+  };
+
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    // Scroll to top of content after navigation
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
   };
 
   if (isLoading) {
@@ -495,7 +515,7 @@ export default function ReportView() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-8 min-h-[600px]">
+          <CardContent className="p-4 sm:p-8 min-h-[600px] overflow-x-hidden">
             {/* Page 1-2: Markdown Content */}
             {(!isPrinting && (currentPage === 1 || currentPage === 2)) && (
               <div className="relative">
@@ -568,7 +588,7 @@ export default function ReportView() {
 
             {/* Page 4: Action Plan */}
             {(!isPrinting && currentPage === 4) && (
-              <div className="relative">
+              <div className="relative w-full overflow-x-auto">
                 {isAdmin && (
                   <Button
                     onClick={() => startEditSection('page4_content')}
@@ -600,7 +620,7 @@ export default function ReportView() {
 
             {/* Page 5: Booster Offer */}
             {(!isPrinting && currentPage === 5) && (
-              <div className="relative space-y-8">
+              <div className="relative space-y-8 w-full" id="page-5-top">
                 {pageContents[4] && (
                   <FullReportSection markdownContent={pageContents[4]} />
                 )}
@@ -664,11 +684,11 @@ export default function ReportView() {
                 <ChevronRight className="w-5 h-5 ml-2" />
                 {getText('previousPage')}
               </Button>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap justify-center">
                 {[1, 2, 3, 4, 5].map((page) => (
                   <button
                     key={page}
-                    onClick={() => setCurrentPage(page)}
+                    onClick={() => goToPage(page)}
                     className={`w-10 h-10 rounded-full font-bold transition-all ${
                       currentPage === page
                         ? 'bg-indigo-600 text-white shadow-lg scale-110'
