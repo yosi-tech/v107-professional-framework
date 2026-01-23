@@ -60,7 +60,7 @@ function AppLayout({ children }) {
         }
       },
       "Position": "left",
-      "Menulang": "AUTO",
+      "Menulang": "he",
       "draggable": true,
       "btnStyle": {
         "vPosition": ["80%", "80%"],
