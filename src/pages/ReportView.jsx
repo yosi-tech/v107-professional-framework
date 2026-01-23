@@ -478,41 +478,43 @@ export default function ReportView() {
 
         {/* Main Report with Page Navigation */}
         <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-indigo-50 to-purple-50">
-          <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-t-lg no-print">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                  <FileText className="w-7 h-7" />
-                </div>
-                <div>
-                  <CardTitle className="text-3xl font-black">
-                    {currentLanguage === 'he' ? 'דוח V107 מקצועי' : 'V107 Professional Report'}
-                  </CardTitle>
-                  <p className="text-white/90 text-sm mt-1">
-                    {getText('page')} {currentPage} {getText('of')} {totalPages}
-                  </p>
-                </div>
+          <CardHeader className="bg-white border-b no-print">
+            <div className="flex items-center justify-between gap-4">
+              <Button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                variant="ghost"
+                size="sm"
+                className="disabled:opacity-30"
+              >
+                <ChevronRight className="w-5 h-5 text-gray-600" />
+              </Button>
+              
+              <div className="flex items-center justify-center gap-2 flex-wrap min-w-0">
+                {[1, 2, 3, 4, 5].map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => goToPage(page)}
+                    className={`w-8 h-8 rounded-full font-semibold text-sm transition-all ${
+                      currentPage === page
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
               </div>
-              <div className="flex gap-2">
-                <Button
-                  onClick={prevPage}
-                  disabled={currentPage === 1}
-                  variant="outline"
-                  size="sm"
-                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 disabled:opacity-50"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </Button>
-                <Button
-                  onClick={nextPage}
-                  disabled={currentPage === totalPages}
-                  variant="outline"
-                  size="sm"
-                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 disabled:opacity-50"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </Button>
-              </div>
+              
+              <Button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                variant="ghost"
+                size="sm"
+                className="disabled:opacity-30"
+              >
+                <ChevronLeft className="w-5 h-5 text-gray-600" />
+              </Button>
             </div>
           </CardHeader>
           <CardContent className="p-4 sm:p-8 min-h-[600px] overflow-x-hidden">
