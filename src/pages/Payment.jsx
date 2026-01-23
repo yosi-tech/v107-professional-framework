@@ -119,7 +119,6 @@ export default function Payment() {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [handshakeData, setHandshakeData] = useState(null);
   const [isLoadingHandshake, setIsLoadingHandshake] = useState(false);
-  const formRef = useRef(null);
 
   // Coupon states
   const [couponCode, setCouponCode] = useState('');
@@ -258,12 +257,6 @@ export default function Payment() {
 
       const { data } = await tranzilaCreateHandshake({ sum: price });
       setHandshakeData(data);
-      
-      setTimeout(() => {
-        if (formRef.current) {
-          formRef.current.submit();
-        }
-      }, 100);
     } catch (error) {
       console.error('Failed to initialize payment:', error);
       alert(language === 'he' ? 'שגיאה ביצירת תשלום. נסה שוב.' : 'Error initializing payment. Try again.');
@@ -547,39 +540,12 @@ export default function Payment() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <form
-                    ref={formRef}
-                    action={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php`}
-                    target="tranzila-frame"
-                    method="POST"
-                    style={{ display: 'none' }}
-                  >
-                    <input type="hidden" name="sum" value={handshakeData.sum} />
-                    <input type="hidden" name="currency" value="1" />
-                    <input type="hidden" name="cred_type" value="1" />
-                    <input type="hidden" name="tranmode" value="A" />
-                    <input type="hidden" name="new_process" value="1" />
-                    <input type="hidden" name="thtk" value={handshakeData.thtk} />
-                    <input type="hidden" name="lang" value={language === 'he' ? 'il' : 'us'} />
-                    <input type="hidden" name="buttonLabel" value={language === 'he' ? 'שלם עכשיו' : 'Pay Now'} />
-                    <input type="hidden" name="trBgColor" value="f7fafc" />
-                    <input type="hidden" name="trTextColor" value="1a202c" />
-                    <input type="hidden" name="trButtonColor" value="2563eb" />
-                    <input type="hidden" name="pdesc" value={productDetails[product]?.title || ''} />
-                    <input type="hidden" name="success_url_address" value={`${window.location.origin}${createPageUrl("ThankYou")}`} />
-                    {user && (
-                      <>
-                        <input type="hidden" name="contact" value={user.full_name || ''} />
-                        <input type="hidden" name="email" value={user.email || ''} />
-                      </>
-                    )}
-                  </form>
-
                   <iframe
                     name="tranzila-frame"
                     id="tranzila-frame"
                     title="Tranzila Payment"
                     allowpaymentrequest="true"
+                    src={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php?sum=${handshakeData.sum}&currency=1&cred_type=1&tranmode=A&new_process=1&thtk=${handshakeData.thtk}&lang=${language === 'he' ? 'il' : 'us'}&buttonLabel=${encodeURIComponent(language === 'he' ? 'שלם עכשיו' : 'Pay Now')}&trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb&pdesc=${encodeURIComponent(productDetails[product]?.title || '')}&success_url_address=${encodeURIComponent(`${window.location.origin}${createPageUrl("ThankYou")}`)}&contact=${encodeURIComponent(user?.full_name || '')}&email=${encodeURIComponent(user?.email || '')}`}
                     style={{
                       width: '100%',
                       height: '600px',
