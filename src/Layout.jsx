@@ -408,39 +408,39 @@ function AppLayout({ children }) {
 
             {/* Desktop Navigation - completely hidden on mobile */}
             <div className="hidden lg:flex items-center gap-4 sm:gap-6">
-              <Link to={createPageUrl("Home")} className={`text-sm font-semibold transition-colors ${location.pathname === createPageUrl("Home") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+              <Link to={createPageUrl("Home")} className={`text-xl font-semibold transition-colors ${location.pathname === createPageUrl("Home") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
                 {t('layout.nav_home')}
               </Link>
-              <Link to={createPageUrl("Articles")} className={`text-sm font-semibold transition-colors ${location.pathname.startsWith(createPageUrl("Articles")) || location.pathname.startsWith(createPageUrl("ArticleDetails")) ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+              <Link to={createPageUrl("Articles")} className={`text-xl font-semibold transition-colors ${location.pathname.startsWith(createPageUrl("Articles")) || location.pathname.startsWith(createPageUrl("ArticleDetails")) ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
                 {t('layout.nav_articles')}
               </Link>
-              <Link to={createPageUrl("About")} className={`text-sm font-semibold transition-colors ${location.pathname === createPageUrl("About") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+              <Link to={createPageUrl("About")} className={`text-xl font-semibold transition-colors ${location.pathname === createPageUrl("About") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
                 {t('layout.nav_about')}
               </Link>
-              
+
               {!isLoadingUser && user && (
-                <Link to={createPageUrl("MyAccount")} className={`text-sm font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("MyAccount") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
-                  <UserIcon className="w-4 h-4" />
+                <Link to={createPageUrl("MyAccount")} className={`text-xl font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("MyAccount") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+                  <UserIcon className="w-5 h-5" />
                   {language === 'he' ? 'האזור שלי' : 'My Account'}
                 </Link>
               )}
 
               {!isLoadingUser && isAdmin && (
-                <Link to={createPageUrl("AdminReports")} className={`text-sm font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
-                  <Shield className="w-4 h-4" />
+                <Link to={createPageUrl("AdminReports")} className={`text-xl font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+                  <Shield className="w-5 h-5" />
                   {language === 'he' ? 'אדמין' : 'Admin'}
                 </Link>
               )}
-              
+
               {hasUnpaidReport ? (
                 <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
-                  <Button className="text-white rounded-lg text-sm px-5 py-2.5 font-bold animate-pulse" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
+                  <Button className="text-white rounded-lg text-base px-6 py-3 font-bold animate-pulse" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
                     {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
                   </Button>
                 </Link>
               ) : (
                 <Link to={createPageUrl("Questionnaire")}>
-                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5">
+                  <Button className="gradient-accent text-white rounded-lg text-base px-6 py-3">
                     {hasAbandonedQuestionnaire 
                       ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
                       : t('layout.start_questionnaire_btn')
@@ -448,15 +448,15 @@ function AppLayout({ children }) {
                   </Button>
                 </Link>
               )}
-              
+
               {!isLoadingUser && !user && (
-                <Button variant="outline" size="sm" onClick={() => base44.auth.redirectToLogin(window.location.href)} className="bg-background text-slate-600 px-3 text-sm font-medium">
+                <Button variant="outline" size="sm" onClick={() => base44.auth.redirectToLogin(window.location.href)} className="bg-background text-slate-600 px-4 text-base font-medium">
                   {language === 'he' ? 'התחבר' : 'Login'}
                 </Button>
               )}
-              
+
               {!isLoadingUser && user && (
-                <Button variant="outline" size="sm" onClick={() => base44.auth.logout(createPageUrl('Home'))} className="bg-background text-slate-600 px-3 text-sm font-medium">
+                <Button variant="outline" size="sm" onClick={() => base44.auth.logout(createPageUrl('Home'))} className="bg-background text-slate-600 px-4 text-base font-medium">
                   {language === 'he' ? 'התנתק' : 'Logout'}
                 </Button>
               )}
