@@ -479,7 +479,7 @@ export default function ReportView() {
         {/* Main Report with Page Navigation */}
         <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-indigo-50 to-purple-50">
           <CardHeader className="bg-white border-b no-print">
-            <div className="flex items-center justify-center gap-2 flex-wrap" dir="ltr">
+            <div className="flex items-center justify-center gap-2 flex-wrap" dir={report.language === 'en' ? 'ltr' : 'rtl'}>
               <Button
                 onClick={prevPage}
                 disabled={currentPage === 1}
@@ -674,7 +674,7 @@ export default function ReportView() {
             )}
 
             {/* Page Navigation - Bottom */}
-            <div className="flex items-center justify-center gap-2 flex-wrap mt-8 no-print" dir="ltr">
+            <div className="flex items-center justify-center gap-2 flex-wrap mt-8 no-print" dir={report.language === 'en' ? 'ltr' : 'rtl'}>
               <Button
                 onClick={prevPage}
                 disabled={currentPage === 1}
