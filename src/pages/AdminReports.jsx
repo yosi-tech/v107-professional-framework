@@ -1435,11 +1435,11 @@ export default function AdminReports() {
                                     <Link2 className="w-4 h-4" />
                                     <span>לינק לדוח</span>
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem asChild>
-                                    <Link to={createPageUrl(`QuestionnaireExport?responseId=${response.id}`)} className="flex flex-row-reverse justify-between">
-                                      <FileText className="w-4 h-4" />
-                                      <span>שאלון מלא</span>
-                                    </Link>
+                                  <DropdownMenuItem 
+                                    onClick={() => navigate(createPageUrl(`QuestionnaireExport?responseId=${response.id}`))}
+                                    className="flex flex-row-reverse justify-between">
+                                    <FileText className="w-4 h-4" />
+                                    <span>שאלון מלא</span>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                   onClick={() => generateReport(response, true)}
