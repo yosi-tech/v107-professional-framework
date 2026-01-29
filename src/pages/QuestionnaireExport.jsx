@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from "react";
-import { QuestionnaireResponse } from "@/entities/QuestionnaireResponse";
-import { User } from "@/entities/User";
+import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Loader2, AlertCircle, FileText } from "lucide-react";
 import { format } from "date-fns";
+import { createPageUrl } from "@/utils";
 
 const questionsHe = [
   // חלק א – רקע והכשרה (1–10)
@@ -145,9 +144,9 @@ export default function QuestionnaireExport() {
 
   const checkAdminAndLoadQuestionnaire = async () => {
     try {
-      const currentUser = await User.me();
+      const currentUser = await base44.auth.me();
       if (currentUser.role !== 'admin') {
-        window.location.href = "/";
+        window.location.href = createPageUrl("Home");
         return;
       }
       setUser(currentUser);
@@ -160,13 +159,15 @@ export default function QuestionnaireExport() {
         return;
       }
 
-      const responseData = await QuestionnaireResponse.filter({ id: responseId }, '', 1);
-      if (responseData.length === 0) {
+      const allResponses = await base44.entities.QuestionnaireResponse.list();
+      const responseData = allResponses.find(r => r.id === responseId);
+      
+      if (!responseData) {
         alert("שאלון לא נמצא");
         return;
       }
 
-      setQuestionnaireResponse(responseData[0]);
+      setQuestionnaireResponse(responseData);
     } catch (error) {
       console.error("Error loading questionnaire:", error);
       alert("שגיאה בטעינת השאלון");
