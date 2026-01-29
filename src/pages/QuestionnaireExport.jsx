@@ -343,6 +343,28 @@ export default function QuestionnaireExport() {
                 <p className="text-sm text-gray-600">טלפון</p>
                 <p className="font-medium">{questionnaireResponse.personal_info.phone || "לא צוין"}</p>
               </div>
+              <div>
+                <p className="text-sm text-gray-600">עיסוק</p>
+                <p className="font-medium">{questionnaireResponse.personal_info.occupation || "לא צוין"}</p>
+              </div>
+              {questionnaireResponse.personal_info.occupation_other && (
+                <div>
+                  <p className="text-sm text-gray-600">עיסוק אחר</p>
+                  <p className="font-medium">{questionnaireResponse.personal_info.occupation_other}</p>
+                </div>
+              )}
+              {questionnaireResponse.personal_info.interests && questionnaireResponse.personal_info.interests.length > 0 && (
+                <div className="md:col-span-2">
+                  <p className="text-sm text-gray-600">תחומי עניין</p>
+                  <p className="font-medium">{questionnaireResponse.personal_info.interests.join(', ')}</p>
+                </div>
+              )}
+              {questionnaireResponse.personal_info.interests_other && (
+                <div className="md:col-span-2">
+                  <p className="text-sm text-gray-600">תחומי עניין אחרים</p>
+                  <p className="font-medium">{questionnaireResponse.personal_info.interests_other}</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
