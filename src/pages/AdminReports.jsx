@@ -1436,7 +1436,7 @@ export default function AdminReports() {
                                     <span>לינק לדוח</span>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem 
-                                    onClick={() => navigate(createPageUrl(`QuestionnaireExport?responseId=${response.id}`))}
+                                    onClick={() => navigate(createPageUrl("QuestionnaireExport") + `?responseId=${response.id}`)}
                                     className="flex flex-row-reverse justify-between">
                                     <FileText className="w-4 h-4" />
                                     <span>שאלון מלא</span>
