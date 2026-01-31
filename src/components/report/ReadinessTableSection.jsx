@@ -9,28 +9,36 @@ export default function ReadinessTableSection({ domainScores, language }) {
   const isHebrew = language === 'he';
 
   // Convert domain scores to readiness format
-  const readinessData = Object.entries(domainScores).map(([key, data]) => {
-    let readinessLevel = 'ממוצע';
-    let status = 'yellow';
-    
-    // Use band as the primary indicator
-    if (data.band === 'high') {
-      readinessLevel = isHebrew ? 'מעולה' : 'Excellent';
-      status = 'green';
-    } else if (data.band === 'mid') {
-      readinessLevel = isHebrew ? 'ממוצע' : 'Average';
-      status = 'yellow';
-    } else if (data.band === 'low') {
-      readinessLevel = isHebrew ? 'טעון שיפור' : 'Needs Improvement';
-      status = 'red';
-    }
+  const readinessData = Object.entries(domainScores)
+    .sort((a, b) => b[1].score - a[1].score) // Sort by score descending
+    .map(([key, data]) => {
+      let readinessLevel = isHebrew ? 'ממוצע' : 'Average';
+      let status = 'yellow';
+      const score = data.score;
+      
+      // Determine band based on score thresholds (Top 10% / Top 50% / Bottom 30%)
+      // Assuming score > 80 is roughly Top 10%
+      // Assuming 60 < score <= 80 is Average/Top 50%
+      // Assuming score <= 60 is Low/Bottom 30%
+      
+      if (score >= 80) {
+        readinessLevel = isHebrew ? 'גבוה' : 'High'; // Was 'מעולה'
+        status = 'green';
+      } else if (score >= 60) {
+        readinessLevel = isHebrew ? 'ממוצע' : 'Average';
+        status = 'yellow';
+      } else {
+        readinessLevel = isHebrew ? 'נמוך' : 'Low'; // Was 'טעון שיפור'
+        status = 'red';
+      }
 
-    return {
-      domain: isHebrew ? (data.nameHe || key) : (data.nameEn || key),
-      readiness: readinessLevel,
-      status: status
-    };
-  });
+      return {
+        domain: isHebrew ? (data.nameHe || key) : (data.nameEn || key),
+        readiness: readinessLevel,
+        status: status,
+        score: score
+      };
+    });
 
   const getStatusIcon = (status) => {
     if (status === 'green') {
