@@ -231,63 +231,69 @@ export default function ReportView() {
     );
   }
 
-  // Split markdown into 5 pages using string search
+  // Split markdown into 5 pages using robust regex matching
   let pageContents = ['', '', '', '', ''];
   if (report.report_markdown) {
     const fullText = report.report_markdown;
     
-    // Find markers - look for the line containing the page marker
-    const findLineStart = (text, searchText) => {
-      const index = text.indexOf(searchText);
-      if (index === -1) return -1;
-      // Find the start of the line containing the search text
-      const lineStart = text.lastIndexOf('\n', index);
-      return lineStart === -1 ? 0 : lineStart;
-    };
+    // Regex to find page headers: supports #, ##, ###, and "עמוד" or "Page" or "PAGE"
+    // Captures the page number
+    const pageRegex = /(?:^|\n)#+\s*(?:עמוד|Page)\s*([1-5])/gi;
     
-    const page3Marker = findLineStart(fullText, 'עמוד 3');
-    const page4Marker = findLineStart(fullText, 'עמוד 4');
-    
-    // For page 5, try multiple markers
-    let page5Marker = findLineStart(fullText, 'עמוד 5');
-    if (page5Marker === -1) page5Marker = findLineStart(fullText, 'V107-BOOSTER');
-    if (page5Marker === -1) page5Marker = findLineStart(fullText, 'V107 BOOSTER');
-    
-    // Split content based on markers
-    if (page3Marker >= 0) {
-      // Everything before page 3
-      const beforePage3 = fullText.substring(0, page3Marker);
-      const beforeSections = beforePage3.split(/(?=^# )/m).filter(s => s.trim());
-      pageContents[0] = beforeSections[0] || '';
-      pageContents[1] = beforeSections.slice(1).join('\n\n') || '';
-      
-      // Page 3 content
-      if (page4Marker >= 0) {
-        pageContents[2] = fullText.substring(page3Marker, page4Marker).trim();
-      } else if (page5Marker >= 0) {
-        pageContents[2] = fullText.substring(page3Marker, page5Marker).trim();
-      } else {
-        pageContents[2] = fullText.substring(page3Marker).trim();
-      }
-      
-      // Page 4 content
-      if (page4Marker >= 0) {
-        if (page5Marker >= 0) {
-          pageContents[3] = fullText.substring(page4Marker, page5Marker).trim();
-        } else {
-          pageContents[3] = fullText.substring(page4Marker).trim();
+    const matches = [];
+    let match;
+    while ((match = pageRegex.exec(fullText)) !== null) {
+      matches.push({
+        page: parseInt(match[1]),
+        index: match.index,
+        fullMatch: match[0]
+      });
+    }
+
+    if (matches.length > 0) {
+      // Sort matches by index just in case (though regex exec usually goes in order)
+      matches.sort((a, b) => a.index - b.index);
+
+      // Assign content
+      for (let i = 0; i < matches.length; i++) {
+        const currentMatch = matches[i];
+        const pageNum = currentMatch.page;
+        
+        // Start index is the match index (we include the header in the content)
+        // If it's not the start of the line (matched \n), add 1 to skip the newline
+        const startIndex = currentMatch.fullMatch.startsWith('\n') ? currentMatch.index + 1 : currentMatch.index;
+        
+        // End index is the start of the next match, or end of string
+        const nextMatch = matches[i + 1];
+        const endIndex = nextMatch ? nextMatch.index : fullText.length;
+        
+        // Map page 1..5 to index 0..4
+        if (pageNum >= 1 && pageNum <= 5) {
+          pageContents[pageNum - 1] = fullText.substring(startIndex, endIndex).trim();
         }
       }
       
-      // Page 5 content
-      if (page5Marker >= 0) {
-        pageContents[4] = fullText.substring(page5Marker).trim();
+      // Handle content before Page 1 (if any significant content exists before the first marker)
+      if (matches[0].page > 1 && matches[0].index > 10) {
+         // If there's content before the first detected page (and it's not Page 1),
+         // put it in the previous page slot or Page 1 if logical.
+         // For now, let's assume valid reports start with Page 1 or have minimal preamble.
+         // If Page 1 marker is missing but Page 2 is found, content before Page 2 goes to Page 1.
+         pageContents[0] = fullText.substring(0, matches[0].index).trim();
+      } else if (matches[0].page === 1 && matches[0].index > 0) {
+          // If Page 1 marker exists but isn't at 0, check if there's content before it.
+          // Usually we can just ignore preamble if it's just whitespace, but let's be safe.
+          // Actually, we want the header included, so we start from the match.
       }
+
     } else {
-      // No page markers found, split into sections
-      const sections = fullText.split(/(?=^# )/m).filter(s => s.trim());
-      pageContents[0] = sections[0] || '';
-      pageContents[1] = sections.slice(1).join('\n\n') || '';
+       // Fallback: No page markers found? Try splitting by any header #
+       // This mimics the old behavior for backward compatibility or unstructured reports
+       const sections = fullText.split(/(?=^# )/m).filter(s => s.trim());
+       // Fill as many pages as sections found (up to 5)
+       sections.forEach((sec, idx) => {
+         if (idx < 5) pageContents[idx] = sec;
+       });
     }
   }
 
