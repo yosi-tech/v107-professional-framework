@@ -279,20 +279,20 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="mt-20 mb-32 grid grid-cols-2 md:grid-cols-4 gap-6">
 
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 min-h-[140px] flex flex-col justify-center items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat1_number', '5,000+')}</div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{getContent('stat1_number', '5,000+')}</div>
               <div className="text-sm text-gray-300">{getContent('stat1_label', language === 'he' ? 'אנשים השתמשו בשאלון' : 'People Used')}</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 min-h-[140px] flex flex-col justify-center items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat2_number', '107')}</div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{getContent('stat2_number', '107')}</div>
               <div className="text-sm text-gray-300">{getContent('stat2_label', language === 'he' ? 'נקודות מידה' : 'Data Points')}</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 min-h-[140px] flex flex-col justify-center items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat3_number', '11')}</div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{getContent('stat3_number', '11')}</div>
               <div className="text-sm text-gray-300">{getContent('stat3_label', language === 'he' ? 'ממדים קריטיים' : 'Critical Dimensions')}</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 min-h-[140px] flex flex-col justify-center items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-2">{getContent('stat4_number', '7')}</div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{getContent('stat4_number', '7')}</div>
               <div className="text-sm text-gray-300">{getContent('stat4_label', language === 'he' ? 'ימים לקבלת דוח' : 'Days to Report')}</div>
             </div>
           </motion.div>
