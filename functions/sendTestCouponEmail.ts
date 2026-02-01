@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     
     const emailBody = language === 'he' ? `
       <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9fafb; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 40px 30px; border-radius: 15px 15px 0 0; text-align: center;">
+        <div style="background-color: #1e3a8a; padding: 40px 30px; border-radius: 15px 15px 0 0; text-align: center;">
           <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold;">ממשיכים במסע המקצועי שלך!</h1>
           <p style="color: #e0e7ff; margin-top: 10px; font-size: 16px;">${userName}, בוא/י נגשים את הפוטנציאל שלך</p>
         </div>
@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
           </p>
           
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${purchaseUrl}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);">
+            <a href="${purchaseUrl}" style="display: inline-block; background-color: #1e3a8a; color: white; padding: 16px 40px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 6px rgba(30, 58, 138, 0.3);">
               למימוש ההטבה ורכישת הדוח 🎁
             </a>
           </div>
@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
       </div>
     ` : `
       <div dir="ltr" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9fafb; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 40px 30px; border-radius: 15px 15px 0 0; text-align: center;">
+        <div style="background-color: #1e3a8a; padding: 40px 30px; border-radius: 15px 15px 0 0; text-align: center;">
           <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold;">Continuing Your Professional Journey</h1>
           <p style="color: #e0e7ff; margin-top: 10px; font-size: 16px;">${userName}, Let's realize your potential</p>
         </div>
@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
           </p>
           
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${purchaseUrl}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);">
+            <a href="${purchaseUrl}" style="display: inline-block; background-color: #1e3a8a; color: white; padding: 16px 40px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 6px rgba(30, 58, 138, 0.3);">
               Redeem Offer & Purchase Report 🎁
             </a>
           </div>
