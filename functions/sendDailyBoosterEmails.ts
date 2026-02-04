@@ -440,33 +440,62 @@ Deno.serve(async (req) => {
           status: 'pending'
         });
 
+        let taskData;
+        let emailBody;
+
         if (tasks.length === 0) {
-          console.log(`No task found for ${subscription.user_email} day ${currentDay}`);
-          results.push({
-            email: subscription.user_email,
-            day: currentDay,
-            status: 'no_task_found'
-          });
-          continue;
+          // אין משימה במאגר - צור באמצעות הפונקציה החדשה
+          console.log(`No pre-generated task found for ${subscription.user_email} day ${currentDay}, generating dynamically...`);
+          
+          try {
+            const generatedContent = await base44.asServiceRole.functions.invoke('generateBoosterDailyContent', {
+              subscriptionId: subscription.id,
+              day: currentDay
+            });
+
+            if (!generatedContent.success) {
+              throw new Error(generatedContent.error || 'Failed to generate content');
+            }
+
+            // השתמש בתוכן שנוצר
+            emailBody = generatedContent.content;
+            taskData = {
+              subject: generatedContent.subject,
+              task_title: '',
+              the_why: '',
+              the_task: ''
+            };
+
+          } catch (genError) {
+            console.error(`Failed to generate content for ${subscription.user_email}:`, genError);
+            results.push({
+              email: subscription.user_email,
+              day: currentDay,
+              status: 'generation_failed',
+              error: genError.message
+            });
+            continue;
+          }
+        } else {
+          // יש משימה מוכנה
+          const task = tasks[0];
+          taskData = {
+            subject: task.subject,
+            the_why: task.the_why,
+            the_task: task.the_task,
+            task_title: task.task_title,
+            closing_encouragement: task.closing_encouragement || ''
+          };
+
+          const userData = {
+            userName,
+            track,
+            currentDay
+          };
+
+          // צור HTML למייל
+          emailBody = createEmailHTML(taskData, userData, language);
         }
-
-        const task = tasks[0];
-        const taskData = {
-          subject: task.subject,
-          the_why: task.the_why,
-          the_task: task.the_task,
-          task_title: task.task_title,
-          closing_encouragement: task.closing_encouragement || ''
-        };
-
-        const userData = {
-          userName,
-          track,
-          currentDay
-        };
-
-        // צור HTML למייל
-        const emailBody = createEmailHTML(taskData, userData, language);
 
         // שלח את המייל
         await base44.asServiceRole.integrations.Core.SendEmail({
