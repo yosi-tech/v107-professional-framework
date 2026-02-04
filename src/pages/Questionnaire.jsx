@@ -151,28 +151,27 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
         </CardTitle>
         <CardDescription className="text-lg text-text-secondary">
-          {language === 'he' ? 'גרסה B7 PRO V4' : 'Version B7 PRO V4'}
+          {language === 'he' ? 'גרסה V6 PRO' : 'Version V6 PRO'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-text-secondary space-y-4`}>
           <p className="font-semibold text-lg text-text-primary">
-            {language === 'he' ? 'ברוך הבא לשאלון V107.' : 'Welcome to the V107 Questionnaire.'}
+            {language === 'he' ? 'ברוך הבא ל-V107 QUESTIONNAIRE V6 PRO' : 'Welcome to V107 QUESTIONNAIRE V6 PRO'}
           </p>
           <ul className="space-y-2 list-disc pr-6">
             <li>{language === 'he' ? 'כלי אבחון מקצועי זה נועד למפות את היכולות, הדפוסים והנטיות האישיות והמקצועיות שלך בהתבסס על 11 ממדים פסיכומטריים ליבתיים.' : 'This professional diagnostic tool is designed to map your personal and professional abilities, patterns, and tendencies based on 11 core psychometric dimensions.'}</li>
-            <li>{language === 'he' ? 'שאלון V107 ובעקבותיו דו"ח V107 פותחו בתהליך מקצועי רב־שלבי ונמצאים בתהליך ולידציה מתמשך מול קבוצות מיקוד של מומחי קריירה, פסיכולוגיה תעסוקתית ואסטרטגים של התפתחות אישית.' : 'The V107 questionnaire and its subsequent V107 report were developed through a multi-stage professional process and are undergoing continuous validation with focus groups of career experts, occupational psychologists, and personal development strategists.'}</li>
-            <li>{language === 'he' ? 'משך המילוי: כ־20 דקות. השאלון כולל 107 שאלות המחולקות ל־5 מקטעים ממוקדים.' : 'Completion time: Approximately 20 minutes. The questionnaire includes 107 questions divided into 5 focused sections.'}</li>
-            <li className="font-semibold">{language === 'he' ? 'ככל שתשובותיך יהיו כנות כך איכות הדו"ח שתקבל תהיה גבוהה יותר.' : 'The more honest your answers, the higher the quality of the report you will receive.'}</li>
+            <li>{language === 'he' ? 'V107 QUESTIONNAIRE V6 PRO ובעקבותיו V107 REPORT V6 PRO פותחו בתהליך מקצועי רב-שלבי ונמצאים בתהליך ולידציה מתמשך מול קבוצות מיקוד של מומחי קריירה, פסיכולוגיה תעסוקתית ואסטרטגים של התפתחות אישית.' : 'V107 QUESTIONNAIRE V6 PRO and the subsequent V107 REPORT V6 PRO were developed through a multi-stage professional process and are undergoing continuous validation with focus groups of career experts, occupational psychologists, and personal development strategists.'}</li>
+            <li className="font-semibold">{language === 'he' ? 'ככל שתשובותיך יהיו כנות וספונטניות, כך איכות הדו"ח שתקבל תהיה גבוהה ומדויקת יותר.' : 'The more honest and spontaneous your answers, the higher and more accurate the quality of the report you will receive.'}</li>
           </ul>
         </div>
 
         <div className="bg-amber-50 p-4 rounded-lg border-2 border-amber-300 mt-6">
-          <h3 className="font-semibold text-lg mb-2 text-amber-900">⚠️ הצהרה חשובה</h3>
+          <h3 className="font-semibold text-lg mb-2 text-amber-900">⚠️ {language === 'he' ? 'הבהרה משפטית' : 'Legal Disclaimer'}</h3>
           <p className="text-sm text-amber-800">
             {language === 'he' 
-              ? 'שאלון V107 הוא כלי אינפורמטיבי בלבד לצורכי אבחון והערכה עצמית. הדו"ח המופק אינו מהווה ייעוץ מקצועי, רפואי, פסיכולוגי או משפטי. התוצאות מבוססות על תשובותיך ומיועדות למתן תובנות כלליות בלבד. השימוש במידע הוא באחריותך המלאה.' 
-              : 'The V107 questionnaire is an informative tool for diagnostic and self-assessment purposes only. The generated report does not constitute professional, medical, psychological, or legal advice. Results are based on your responses and are intended to provide general insights only. Use of this information is at your own responsibility.'}
+              ? 'הדו"ח המופק מהווה כלי אבחוני בלבד ואינו מהווה ייעוץ משפטי, עסקי או פסיכולוגי מחייב. אין במסקנות הדו"ח משום הבטחה להישגים או לתוצאות כלכליות, והשימוש במידע המוצג בו הוא על דעתו ובאחריותו הבלעדית של המשתמש.' 
+              : 'The generated report is a diagnostic tool only and does not constitute binding legal, business, or psychological advice. The report\'s conclusions do not constitute a guarantee of achievements or financial results, and the use of the information presented is at the user\'s sole discretion and responsibility.'}
           </p>
         </div>
         
@@ -216,42 +215,34 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
     onChange({ ...data, data_usage_consent: checked });
   };
 
-  const occupationOptions = [
+  const occupationFieldOptions = [
     { value: 'marketing', label: 'שיווק' },
     { value: 'sales', label: 'מכירות' },
-    { value: 'hr', label: 'משאבי אנוש / גיוס' },
-    { value: 'tech', label: 'תכנות/טכנולוגיה' },
-    { value: 'entrepreneurship', label: 'יזמות / ניהול עסק' },
-    { value: 'education', label: 'חינוך והדרכה' },
-    { value: 'finance', label: 'פיננסים / ייעוץ כלכלי' },
-    { value: 'medical', label: 'רפואה / פרא-רפואה' },
-    { value: 'law', label: 'משפטים' },
-    { value: 'design', label: 'עיצוב / UX / UI' },
-    { value: 'logistics', label: 'תפעול ולוגיסטיקה' },
-    { value: 'customer_service', label: 'שירות לקוחות' },
+    { value: 'hr', label: 'HR / משאבי אנוש' },
+    { value: 'technology', label: 'טכנולוגיה' },
+    { value: 'entrepreneurship', label: 'יזמות' },
+    { value: 'education', label: 'חינוך' },
+    { value: 'management', label: 'ניהול' },
     { value: 'other', label: 'אחר' }
   ];
 
-  const interestOptions = [
-    { value: 'art', label: 'אמנות/יצירה' },
-    { value: 'technology', label: 'טכנולוגיה/גאדגטים' },
-    { value: 'education', label: 'חינוך/פיתוח אישי' },
-    { value: 'finance', label: 'פיננסים/השקעות' },
-    { value: 'health', label: 'ספורט/בריאות/תזונה' },
-    { value: 'travel', label: 'טיולים/תרבויות' },
-    { value: 'food', label: 'בישול/קולינריה' },
-    { value: 'social_activism', label: 'אקטיביזם/סביבה' },
-    { value: 'business_dev', label: 'פיתוח עסקי/יזמות' },
-    { value: 'psychology', label: 'פסיכולוגיה/התנהגות' },
+  const interestAreaOptions = [
+    { value: 'art', label: 'אמנות / יצירה' },
+    { value: 'technology', label: 'טכנולוגיה' },
+    { value: 'education', label: 'חינוך / הכשרה' },
+    { value: 'finance', label: 'פיננסים / עסקים' },
+    { value: 'health', label: 'ספורט / בריאות' },
+    { value: 'science', label: 'מדע / מחקר' },
+    { value: 'culture', label: 'תרבות / תקשורת' },
     { value: 'other', label: 'אחר' }
   ];
 
-  const toggleInterest = (interest) => {
-    const current = data.interests || [];
+  const toggleInterestArea = (interest) => {
+    const current = data.interest_areas || [];
     if (current.includes(interest)) {
-      onChange({ ...data, interests: current.filter(i => i !== interest) });
-    } else if (current.length < 3) { // Allow selecting up to 3 interests
-      onChange({ ...data, interests: [...current, interest] });
+      onChange({ ...data, interest_areas: current.filter(i => i !== interest) });
+    } else if (current.length < 3) {
+      onChange({ ...data, interest_areas: [...current, interest] });
     }
   };
 
@@ -262,104 +253,193 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
           <UserIcon className="w-5 h-5 text-accent" />
           {language === 'he' ? 'פרטי ממלא/ת השאלון' : 'Respondent Information'}
         </CardTitle>
+        <CardDescription>
+          {language === 'he' ? 'חלק זה עוזר לנו להתאים את הדו"ח במדויק לפרופיל שלך' : 'This section helps us tailor the report precisely to your profile'}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor="full_name">שם מלא <span className="text-red-500">*</span></Label>
-          <Input
-            id="full_name"
-            value={data.full_name || ""}
-            onChange={(e) => handleInputChange("full_name", e.target.value)}
-            placeholder="ישראל ישראלי"
-            required
-          />
-        </div>
-        
-        <div className="grid md:grid-cols-2 gap-4">
+      <CardContent className="space-y-6">
+        {/* פרטים אישיים */}
+        <div className="space-y-4">
+          <h3 className="font-bold text-lg border-b pb-2">{language === 'he' ? 'פרטים אישיים' : 'Personal Information'}</h3>
+          
           <div>
-            <Label htmlFor="age">גיל</Label>
+            <Label htmlFor="full_name">{language === 'he' ? 'שם מלא' : 'Full Name'} <span className="text-red-500">*</span></Label>
             <Input
-              id="age"
-              type="number"
-              value={data.age || ""}
-              onChange={(e) => handleInputChange("age", parseInt(e.target.value, 10) || "")}
-              placeholder="35"
-              min={16}
-              max={90}
+              id="full_name"
+              value={data.full_name || ""}
+              onChange={(e) => handleInputChange("full_name", e.target.value)}
+              placeholder={language === 'he' ? 'ישראל ישראלי' : 'John Doe'}
+              required
             />
           </div>
+          
           <div>
-            <Label>מין</Label>
+            <Label htmlFor="email">{language === 'he' ? 'כתובת מייל' : 'Email Address'} <span className="text-red-500">*</span></Label>
+            <Input
+              id="email"
+              type="email"
+              value={data.email || ""}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              placeholder={language === 'he' ? 'example@email.com' : 'example@email.com'}
+              required
+            />
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="age">{language === 'he' ? 'גיל' : 'Age'}</Label>
+              <Input
+                id="age"
+                type="number"
+                value={data.age || ""}
+                onChange={(e) => handleInputChange("age", parseInt(e.target.value, 10) || "")}
+                placeholder="35"
+                min={16}
+                max={90}
+              />
+            </div>
+            <div>
+              <Label>{language === 'he' ? 'מין' : 'Gender'}</Label>
+              <RadioGroup
+                value={data.gender || ''}
+                onValueChange={(value) => handleInputChange("gender", value)}
+                className="flex gap-4 mt-2"
+              >
+                <div className="flex items-center space-x-reverse space-x-2">
+                  <RadioGroupItem value="male" id="male" />
+                  <Label htmlFor="male">{language === 'he' ? 'זכר' : 'Male'}</Label>
+                </div>
+                <div className="flex items-center space-x-reverse space-x-2">
+                  <RadioGroupItem value="female" id="female" />
+                  <Label htmlFor="female">{language === 'he' ? 'נקבה' : 'Female'}</Label>
+                </div>
+                <div className="flex items-center space-x-reverse space-x-2">
+                  <RadioGroupItem value="other" id="other" />
+                  <Label htmlFor="other">{language === 'he' ? 'אחר' : 'Other'}</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+        </div>
+
+        {/* רקע מקצועי */}
+        <div className="space-y-4">
+          <h3 className="font-bold text-lg border-b pb-2">{language === 'he' ? 'רקע מקצועי' : 'Professional Background'}</h3>
+          
+          <div>
+            <Label>{language === 'he' ? 'שנות ניסיון בעבודה' : 'Years of Experience'}</Label>
             <RadioGroup
-              value={data.gender || ''}
-              onValueChange={(value) => handleInputChange("gender", value)}
-              className="flex gap-4 mt-2"
+              value={data.years_of_experience || ''}
+              onValueChange={(value) => handleInputChange("years_of_experience", value)}
+              className="flex flex-col gap-2 mt-2"
             >
               <div className="flex items-center space-x-reverse space-x-2">
-                <RadioGroupItem value="male" id="male" />
-                <Label htmlFor="male">זכר</Label>
+                <RadioGroupItem value="0-3" id="exp_0_3" />
+                <Label htmlFor="exp_0_3">{language === 'he' ? '0-3 שנים' : '0-3 years'}</Label>
               </div>
               <div className="flex items-center space-x-reverse space-x-2">
-                <RadioGroupItem value="female" id="female" />
-                <Label htmlFor="female">נקבה</Label>
+                <RadioGroupItem value="4-10" id="exp_4_10" />
+                <Label htmlFor="exp_4_10">{language === 'he' ? '4-10 שנים' : '4-10 years'}</Label>
               </div>
               <div className="flex items-center space-x-reverse space-x-2">
-                <RadioGroupItem value="other" id="other" />
-                <Label htmlFor="other">אחר</Label>
+                <RadioGroupItem value="11-20" id="exp_11_20" />
+                <Label htmlFor="exp_11_20">{language === 'he' ? '11-20 שנים' : '11-20 years'}</Label>
+              </div>
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="21+" id="exp_21_plus" />
+                <Label htmlFor="exp_21_plus">{language === 'he' ? '21+ שנים' : '21+ years'}</Label>
               </div>
             </RadioGroup>
           </div>
-        </div>
 
-        <div>
-          <Label htmlFor="occupation">תחום עיסוק קיים</Label>
-          <Select value={data.occupation || ''} onValueChange={(value) => handleInputChange("occupation", value)} dir="rtl">
-            <SelectTrigger>
-              <SelectValue placeholder="בחר תחום עיסוק" />
-            </SelectTrigger>
-            <SelectContent>
-              {occupationOptions.map(opt => (
-                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {data.occupation === 'other' && (
-            <Input
-              className="mt-2"
-              value={data.occupation_other || ""}
-              onChange={(e) => handleInputChange("occupation_other", e.target.value)}
-              placeholder="פרט בקצרה"
-              dir="rtl"
-            />
-          )}
-        </div>
-
-        <div>
-          <Label>תחומי עניין (בחר עד 3)</Label>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {interestOptions.map(opt => (
-              <Button
-                key={opt.value}
-                type="button"
-                variant={(data.interests || []).includes(opt.value) ? "default" : "outline"}
-                size="sm"
-                onClick={() => toggleInterest(opt.value)}
-                disabled={(data.interests || []).length >= 3 && !(data.interests || []).includes(opt.value)}
-              >
-                {opt.label}
-              </Button>
-            ))}
+          <div>
+            <Label>{language === 'he' ? 'סטטוס מקצועי נוכחי' : 'Current Professional Status'}</Label>
+            <RadioGroup
+              value={data.current_professional_status || ''}
+              onValueChange={(value) => handleInputChange("current_professional_status", value)}
+              className="flex flex-col gap-2 mt-2"
+            >
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="employee" id="status_employee" />
+                <Label htmlFor="status_employee">{language === 'he' ? 'שכיר/ה' : 'Employee'}</Label>
+              </div>
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="freelancer" id="status_freelancer" />
+                <Label htmlFor="status_freelancer">{language === 'he' ? 'עצמאי/ת / פרילנסר/ית' : 'Freelancer'}</Label>
+              </div>
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="entrepreneur" id="status_entrepreneur" />
+                <Label htmlFor="status_entrepreneur">{language === 'he' ? 'יזם/ית / בעל/ת עסק' : 'Entrepreneur / Business Owner'}</Label>
+              </div>
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="student" id="status_student" />
+                <Label htmlFor="status_student">{language === 'he' ? 'סטודנט/ית' : 'Student'}</Label>
+              </div>
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="job_seeker" id="status_job_seeker" />
+                <Label htmlFor="status_job_seeker">{language === 'he' ? 'מחפש/ת עבודה' : 'Job Seeker'}</Label>
+              </div>
+              <div className="flex items-center space-x-reverse space-x-2">
+                <RadioGroupItem value="active_retiree" id="status_retiree" />
+                <Label htmlFor="status_retiree">{language === 'he' ? 'פנסיונר/ית פעיל/ה' : 'Active Retiree'}</Label>
+              </div>
+            </RadioGroup>
           </div>
-          {(data.interests && data.interests.includes('other')) && (
-            <Input
-              className="mt-2"
-              value={data.interests_other || ""}
-              onChange={(e) => handleInputChange("interests_other", e.target.value)}
-              placeholder="פרט תחום עניין אחר"
-              dir="rtl"
-            />
+
+          <div>
+            <Label htmlFor="occupation_field">{language === 'he' ? 'תחום עיסוק קיים' : 'Current Occupation Field'} ({language === 'he' ? 'בחר אחד' : 'choose one'})</Label>
+            <Select value={data.occupation_field || ''} onValueChange={(value) => handleInputChange("occupation_field", value)} dir="rtl">
+              <SelectTrigger>
+                <SelectValue placeholder={language === 'he' ? 'בחר תחום עיסוק' : 'Choose occupation field'} />
+              </SelectTrigger>
+              <SelectContent>
+                {occupationFieldOptions.map(opt => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {data.occupation_field === 'other' && (
+              <Input
+                className="mt-2"
+                value={data.occupation_field_other || ""}
+                onChange={(e) => handleInputChange("occupation_field_other", e.target.value)}
+                placeholder={language === 'he' ? 'פרט בקצרה' : 'Please specify'}
+                dir="rtl"
+              />
             )}
+          </div>
+
+          <div>
+            <Label>{language === 'he' ? 'תחומי עניין' : 'Areas of Interest'} ({language === 'he' ? 'בחר עד 3 תחומים שמעניינים אותך' : 'choose up to 3 areas'})</Label>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {interestAreaOptions.map(opt => (
+                <Button
+                  key={opt.value}
+                  type="button"
+                  variant={(data.interest_areas || []).includes(opt.value) ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => toggleInterestArea(opt.value)}
+                  disabled={(data.interest_areas || []).length >= 3 && !(data.interest_areas || []).includes(opt.value)}
+                >
+                  {opt.label}
+                </Button>
+              ))}
             </div>
+            {(data.interest_areas && data.interest_areas.includes('other')) && (
+              <Input
+                className="mt-2"
+                value={data.interest_areas_other || ""}
+                onChange={(e) => handleInputChange("interest_areas_other", e.target.value)}
+                placeholder={language === 'he' ? 'פרט תחום עניין אחר' : 'Specify other interest'}
+                dir="rtl"
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="pt-4 border-t">
+          <h3 className="font-bold text-sm mb-3">{language === 'he' ? 'סיום חלק הזיהוי' : 'End of Identification Section'}</h3>
+        </div>
 
             <div className="border-t pt-4 mt-6">
             <div className="flex items-start gap-3">
@@ -528,7 +608,7 @@ export default function Questionnaire() {
                     responses: responses,
                     optional_comment: optionalComment,
                     language: language,
-                    version: 'B7_PRO_V4',
+                    version: 'V6_PRO',
                     status: 'in_progress'
                   });
                 } catch (error) {
@@ -565,7 +645,7 @@ export default function Questionnaire() {
         optional_comment: optionalComment,
         data_usage_consent: personalInfo.data_usage_consent || false,
         language: language,
-        version: 'B7_PRO_V4',
+        version: 'V6_PRO',
         status: 'in_progress'
       };
 
@@ -648,7 +728,7 @@ export default function Questionnaire() {
         optional_comment: optionalComment,
         data_usage_consent: personalInfo.data_usage_consent || false,
         language: language,
-        version: 'B7_PRO_V4',
+        version: 'V6_PRO',
         status: 'completed'
       };
 
@@ -709,26 +789,55 @@ export default function Questionnaire() {
       }
 
       return (
-        <Card className="shadow-lg">
-          <CardHeader className="bg-blue-50">
-            <CardTitle className="text-xl">{sectionInfo.title}</CardTitle>
-            <CardDescription>
-              שאלות {sectionInfo.start} - {sectionInfo.end} מתוך 107
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            {questionsInSection.map((questionNumber) => (
-              <QuestionCard
-                key={questionNumber}
-                questionNumber={questionNumber}
-                questionText={questions[questionNumber - 1]}
-                value={responses[`q${questionNumber}`]}
-                onChange={(value) => updateResponse(questionNumber, value)}
-                language={language}
-              />
-            ))}
-          </CardContent>
-        </Card>
+        <div className="space-y-6">
+          {currentStep === 1 && (
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-3">📝 {language === 'he' ? 'הנחיות למילוי השאלון' : 'Questionnaire Instructions'}</h3>
+                <p className="mb-3 font-medium">
+                  {language === 'he' 
+                    ? 'בכל שאלה, סמן/י את המספר שמתאר אותך בצורה הטובה ביותר על סקאלה של 1 עד 7:'
+                    : 'For each question, select the number that best describes you on a scale of 1 to 7:'}
+                </p>
+                <ul className="text-sm space-y-1 pr-4">
+                  <li>1 – {language === 'he' ? 'לא מתאר אותי כלל' : 'Does not describe me at all'}</li>
+                  <li>2 – {language === 'he' ? 'מתאר אותי במעט' : 'Describes me slightly'}</li>
+                  <li>3 – {language === 'he' ? 'מתאר אותי במידה מסוימת' : 'Describes me somewhat'}</li>
+                  <li>4 – {language === 'he' ? 'מתאר אותי חלקית / ניטרלי' : 'Describes me partially / Neutral'}</li>
+                  <li>5 – {language === 'he' ? 'מתאר אותי במידה רבה' : 'Describes me considerably'}</li>
+                  <li>6 – {language === 'he' ? 'מתאר אותי מאוד' : 'Describes me very much'}</li>
+                  <li>7 – {language === 'he' ? 'מתאר אותי בצורה מושלמת' : 'Describes me perfectly'}</li>
+                </ul>
+                <p className="mt-4 text-sm font-semibold text-blue-800">
+                  💡 {language === 'he' 
+                    ? 'טיפ: אין תשובות נכונות או שגויות - השב/י בספונטניות לפי האינטואיציה הראשונה שלך.'
+                    : 'Tip: There are no right or wrong answers - respond spontaneously according to your first intuition.'}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+          
+          <Card className="shadow-lg">
+            <CardHeader className="bg-blue-50">
+              <CardTitle className="text-xl">{sectionInfo.title}</CardTitle>
+              <CardDescription>
+                {language === 'he' ? 'שאלות' : 'Questions'} {sectionInfo.start} - {sectionInfo.end} {language === 'he' ? 'מתוך' : 'of'} 107
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
+              {questionsInSection.map((questionNumber) => (
+                <QuestionCard
+                  key={questionNumber}
+                  questionNumber={questionNumber}
+                  questionText={questions[questionNumber - 1]}
+                  value={responses[`q${questionNumber}`]}
+                  onChange={(value) => updateResponse(questionNumber, value)}
+                  language={language}
+                />
+              ))}
+            </CardContent>
+          </Card>
+        </div>
       );
     }
 
