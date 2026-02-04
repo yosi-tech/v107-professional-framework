@@ -273,18 +273,6 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
             />
           </div>
           
-          <div>
-            <Label htmlFor="email">{language === 'he' ? 'כתובת מייל' : 'Email Address'} <span className="text-red-500">*</span></Label>
-            <Input
-              id="email"
-              type="email"
-              value={data.email || ""}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              placeholder={language === 'he' ? 'example@email.com' : 'example@email.com'}
-              required
-            />
-          </div>
-          
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="age">{language === 'he' ? 'גיל' : 'Age'}</Label>
