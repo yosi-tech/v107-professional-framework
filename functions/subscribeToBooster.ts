@@ -80,20 +80,47 @@ Deno.serve(async (req) => {
 
         // שלח מייל ברוכים הבאים
         try {
+            const trackNames = {
+                resilience: language === 'he' ? 'חוסן' : 'Resilience',
+                flexibility: language === 'he' ? 'גמישות' : 'Flexibility',
+                leadership: language === 'he' ? 'מנהיגות' : 'Leadership',
+                communication: language === 'he' ? 'תקשורת' : 'Communication',
+                planning: language === 'he' ? 'תכנון' : 'Planning',
+                learning: language === 'he' ? 'למידה' : 'Learning',
+                vision: language === 'he' ? 'חזון' : 'Vision',
+                technology: language === 'he' ? 'טכנולוגיה' : 'Technology',
+                networking: language === 'he' ? 'נטוורקינג' : 'Networking',
+                balance: language === 'he' ? 'איזון' : 'Balance',
+                change: language === 'he' ? 'שינוי' : 'Change'
+            };
+
+            const trackName = trackNames[trackToUse] || trackToUse;
+            
             const welcomeEmailResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
-                prompt: `צור מייל ברוכים הבאים ל-${user.full_name} שנרשם לתוכנית V107 BOOSTER.
+                prompt: `צור מייל HTML מעוצב ויפה לברוכים הבאים ל-${user.full_name} שנרשם לתוכנית V107 BOOSTER.
 
-התוכנית: 7 ימים חינמיים של משימות יומיות מותאמות אישית לשיפור ${trackToUse}.
+התוכנית: 30 ימים של משימות יומיות מותאמות אישית לשיפור ${trackName}.
 
-בסגנון: חם, מעודד, מקצועי.
+דרישות עיצוב:
+- HTML מלא עם inline CSS (כל הסטיילים בתוך style attributes)
+- רקע לבן נקי עם גבולות מעוגלים
+- צבעים מקצועיים: כחול כהה (#1a365d), זהב (#d4af37)
+- כותרת גדולה ומרשימה עם אייקון 🎯
+- פסקאות קצרות וברורות
+- עיצוב responsive למובייל
+- ${language === 'he' ? 'dir="rtl" ומיושר לימין' : 'left-to-right layout'}
+
+תוכן המייל:
+1. כותרת חגיגית "ברוכים הבאים ל-V107 BOOSTER!"
+2. פיסקת פתיחה מעודדת ואישית
+3. הסבר קצר על התוכנית (30 ימים, משימות יומיות, מתמקד ב-${trackName})
+4. מה יקרה מחר (מייל ראשון עם המשימה)
+5. עידוד אישי לסיום
+6. חתימה: "בהצלחה, צוות V107"
 
 השפה: ${language === 'he' ? 'עברית' : 'אנגלית'}
 
-הכלל HTML מלא למייל עם:
-- כותרת מרשימה
-- הסבר קצר על התוכנית
-- מה יקרה מחר (תקבל את המשימה הראשונה)
-- עידוד אישי`,
+החזר JSON עם subject ו-html מעוצבים לחלוטין.`,
                 response_json_schema: {
                     type: "object",
                     properties: {
