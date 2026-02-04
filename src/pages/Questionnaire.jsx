@@ -332,20 +332,21 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
               value={data.years_of_experience || ''}
               onValueChange={(value) => handleInputChange("years_of_experience", value)}
               className="flex flex-col gap-2 mt-2"
+              dir={language === 'he' ? 'rtl' : 'ltr'}
             >
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="0-3" id="exp_0_3" />
                 <Label htmlFor="exp_0_3">{language === 'he' ? '0-3 שנים' : '0-3 years'}</Label>
               </div>
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="4-10" id="exp_4_10" />
                 <Label htmlFor="exp_4_10">{language === 'he' ? '4-10 שנים' : '4-10 years'}</Label>
               </div>
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="11-20" id="exp_11_20" />
                 <Label htmlFor="exp_11_20">{language === 'he' ? '11-20 שנים' : '11-20 years'}</Label>
               </div>
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="21+" id="exp_21_plus" />
                 <Label htmlFor="exp_21_plus">{language === 'he' ? '21+ שנים' : '21+ years'}</Label>
               </div>
@@ -358,28 +359,29 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
               value={data.current_professional_status || ''}
               onValueChange={(value) => handleInputChange("current_professional_status", value)}
               className="flex flex-col gap-2 mt-2"
+              dir={language === 'he' ? 'rtl' : 'ltr'}
             >
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="employee" id="status_employee" />
                 <Label htmlFor="status_employee">{language === 'he' ? 'שכיר/ה' : 'Employee'}</Label>
               </div>
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="freelancer" id="status_freelancer" />
                 <Label htmlFor="status_freelancer">{language === 'he' ? 'עצמאי/ת / פרילנסר/ית' : 'Freelancer'}</Label>
               </div>
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="entrepreneur" id="status_entrepreneur" />
                 <Label htmlFor="status_entrepreneur">{language === 'he' ? 'יזם/ית / בעל/ת עסק' : 'Entrepreneur / Business Owner'}</Label>
               </div>
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="student" id="status_student" />
                 <Label htmlFor="status_student">{language === 'he' ? 'סטודנט/ית' : 'Student'}</Label>
               </div>
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="job_seeker" id="status_job_seeker" />
                 <Label htmlFor="status_job_seeker">{language === 'he' ? 'מחפש/ת עבודה' : 'Job Seeker'}</Label>
               </div>
-              <div className="flex items-center space-x-reverse space-x-2">
+              <div className="flex items-center gap-2">
                 <RadioGroupItem value="active_retiree" id="status_retiree" />
                 <Label htmlFor="status_retiree">{language === 'he' ? 'פנסיונר/ית פעיל/ה' : 'Active Retiree'}</Label>
               </div>
