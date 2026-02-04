@@ -247,7 +247,7 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
   };
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg" dir={language === 'he' ? 'rtl' : 'ltr'}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <UserIcon className="w-5 h-5 text-accent" />
@@ -257,7 +257,7 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
           {language === 'he' ? 'חלק זה עוזר לנו להתאים את הדו"ח במדויק לפרופיל שלך' : 'This section helps us tailor the report precisely to your profile'}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6" dir={language === 'he' ? 'rtl' : 'ltr'}>
         {/* פרטים אישיים */}
         <div className="space-y-4">
           <h3 className="font-bold text-lg border-b pb-2">{language === 'he' ? 'פרטים אישיים' : 'Personal Information'}</h3>
@@ -466,18 +466,19 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
 
 const QuestionCard = ({ questionNumber, questionText, value, onChange, language }) => {
   return (
-    <div className="mb-6 pb-6 border-b last:border-b-0">
+    <div className="mb-6 pb-6 border-b last:border-b-0" dir={language === 'he' ? 'rtl' : 'ltr'}>
       <h3 className="text-lg font-semibold mb-4">
         {questionNumber}. {questionText}
       </h3>
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-gray-500">7 (מתאר אותי מאוד)</span>
-        <span className="text-sm text-gray-500">1 (לא מתאר אותי כלל)</span>
+        <span className="text-sm text-gray-500">{language === 'he' ? '1 (לא מתאר אותי כלל)' : '1 (Not at all)'}</span>
+        <span className="text-sm text-gray-500">{language === 'he' ? '7 (מתאר אותי בצורה מושלמת)' : '7 (Perfectly)'}</span>
       </div>
       <RadioGroup
         value={value ? value.toString() : ''}
         onValueChange={(val) => onChange(parseInt(val, 10))}
         className="flex justify-between"
+        dir="ltr"
       >
         {[1, 2, 3, 4, 5, 6, 7].map((num) => (
           <div key={num} className="flex flex-col items-center">
@@ -817,14 +818,14 @@ export default function Questionnaire() {
             </Card>
           )}
           
-          <Card className="shadow-lg">
+          <Card className="shadow-lg" dir={language === 'he' ? 'rtl' : 'ltr'}>
             <CardHeader className="bg-blue-50">
               <CardTitle className="text-xl">{sectionInfo.title}</CardTitle>
               <CardDescription>
                 {language === 'he' ? 'שאלות' : 'Questions'} {sectionInfo.start} - {sectionInfo.end} {language === 'he' ? 'מתוך' : 'of'} 107
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent className="p-6" dir={language === 'he' ? 'rtl' : 'ltr'}>
               {questionsInSection.map((questionNumber) => (
                 <QuestionCard
                   key={questionNumber}
@@ -843,22 +844,24 @@ export default function Questionnaire() {
 
     if (currentStep === 6) {
       return (
-        <Card className="shadow-lg">
+        <Card className="shadow-lg" dir={language === 'he' ? 'rtl' : 'ltr'}>
           <CardHeader>
             <CardTitle>
-              שאלה מסכמת (אופציונלית)
+              {language === 'he' ? 'שאלה מסכמת (אופציונלית)' : 'Final Comment (Optional)'}
             </CardTitle>
             <CardDescription>
-              האם יש משהו נוסף שחשוב לך שנדע עליך או על העסק שלך, שלא הופיע בשאלון?
+              {language === 'he' 
+                ? 'האם יש משהו נוסף שחשוב לך שנדע עליך או על העסק שלך, שלא הופיע בשאלון?'
+                : 'Is there anything else important for us to know about you or your business that wasn\'t covered in the questionnaire?'}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
               value={optionalComment}
               onChange={(e) => setOptionalComment(e.target.value)}
-              placeholder="הכנס הערה אופציונלית..."
+              placeholder={language === 'he' ? 'הכנס הערה אופציונלית...' : 'Enter optional comment...'}
               rows={4}
-              dir="rtl"
+              dir={language === 'he' ? 'rtl' : 'ltr'}
             />
           </CardContent>
         </Card>
