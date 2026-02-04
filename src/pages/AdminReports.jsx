@@ -119,6 +119,7 @@ export default function AdminReports() {
   const [sortBy, setSortBy] = useState('date'); // 'name', 'date', 'urgency', 'hours'
   const [selectedReportsForAnalytics, setSelectedReportsForAnalytics] = useState([]);
   const [analyticsViewMode, setAnalyticsViewMode] = useState('comparison');
+  const [reportGenerationMode, setReportGenerationMode] = useState('v6_pro_ultimate'); // 'original' or 'v6_pro_ultimate'
 
   useEffect(() => {
     checkAdminAndLoadData();
@@ -200,7 +201,11 @@ export default function AdminReports() {
       }
 
       // Call the backend function to generate the report
-      const result = await base44.functions.invoke('generateReportAutomatic', {
+      const functionName = reportGenerationMode === 'v6_pro_ultimate' 
+        ? 'generateReportV6ProUltimate' 
+        : 'generateReportAutomatic';
+      
+      const result = await base44.functions.invoke(functionName, {
         responseId: response.id
       });
 
@@ -1072,6 +1077,18 @@ export default function AdminReports() {
             <p className="text-sm sm:text-base text-gray-600">ניהול שאלונים, דו"חות ומשתמשים</p>
           </div>
           <div className="flex gap-2 flex-wrap w-full sm:w-auto order-1 sm:order-2">
+            <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-lg px-3 py-2">
+              <label className="text-xs font-medium text-gray-700 whitespace-nowrap">מנוע דוחות:</label>
+              <select
+                value={reportGenerationMode}
+                onChange={(e) => setReportGenerationMode(e.target.value)}
+                className="border-0 bg-transparent text-xs font-semibold text-blue-600 focus:outline-none cursor-pointer"
+                dir="rtl"
+              >
+                <option value="v6_pro_ultimate">V6 PRO Ultimate ⚡</option>
+                <option value="original">Original (ישן)</option>
+              </select>
+            </div>
             <Button
               onClick={() => setSimulationDialog(true)}
               className="bg-purple-600 hover:bg-purple-700 flex-1 sm:flex-initial text-sm flex items-center gap-2 flex-row-reverse">
