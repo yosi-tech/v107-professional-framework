@@ -38,11 +38,19 @@ Deno.serve(async (req) => {
             1
         );
 
-        // אם יש דוח עם המלצה, השתמש בה; אחרת השתמש במה שנשלח בבקשה
-        let trackToUse = recommended_booster_track;
-        if (userReports.length > 0 && userReports[0].recommended_booster_track) {
-            trackToUse = userReports[0].recommended_booster_track;
+        if (userReports.length === 0) {
+            return Response.json({ 
+                success: false, 
+                message: language === 'he' 
+                    ? 'לא נמצא דוח עבורך. יש להשלים את השאלון תחילה.'
+                    : 'No report found for you. Please complete the questionnaire first.' 
+            }, { status: 400 });
         }
+
+        const report = userReports[0];
+
+        // אם יש דוח עם המלצה, השתמש בה; אחרת השתמש במה שנשלח בבקשה
+        let trackToUse = report.recommended_booster_track || recommended_booster_track;
 
         if (!trackToUse) {
             return Response.json({ 
@@ -54,75 +62,64 @@ Deno.serve(async (req) => {
         // Create new subscription
         const startDate = new Date();
         const endDate = new Date();
-        endDate.setDate(endDate.getDate() + 7);
+        endDate.setDate(endDate.getDate() + 30);
 
         const subscription = await base44.asServiceRole.entities.OnlineCoachingSubscription.create({
             user_email: user.email,
             user_name: user.full_name,
+            questionnaire_response_id: report.questionnaire_response_id,
+            generated_report_id: report.id,
             start_date: startDate.toISOString(),
             end_date: endDate.toISOString(),
             current_day: 1,
-            last_email_sent_date: startDate.toISOString(),
+            last_email_sent_date: null,
             status: 'active',
             language: language,
             recommended_booster_track: trackToUse
         });
 
-        // Get the email template for day 1
-        const emailTemplates = await base44.asServiceRole.entities.EmailTemplate.filter({
-            template_type: 'booster_email',
-            booster_track: trackToUse,
-            booster_day: 1,
-            active: true
-        });
+        // שלח מייל ברוכים הבאים
+        try {
+            const welcomeEmailResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
+                prompt: `צור מייל ברוכים הבאים ל-${user.full_name} שנרשם לתוכנית V107 BOOSTER.
 
-        if (emailTemplates.length > 0) {
-            const template = emailTemplates[0];
-            let subject = language === 'he' ? template.subject_he : template.subject_en;
-            let content = language === 'he' ? template.content_he : template.content_en;
+התוכנית: 7 ימים חינמיים של משימות יומיות מותאמות אישית לשיפור ${trackToUse}.
 
-            // החלף פלייסהולדרים
-            const trackNames = {
-                execution: language === 'he' ? 'ביצוע' : 'Execution',
-                digital: language === 'he' ? 'דיגיטל' : 'Digital',
-                finance: language === 'he' ? 'פיננסים' : 'Finance',
-                marketing: language === 'he' ? 'שיווק' : 'Marketing',
-                management: language === 'he' ? 'ניהול' : 'Management',
-                vision: language === 'he' ? 'חזון' : 'Vision'
-            };
+בסגנון: חם, מעודד, מקצועי.
 
-            const replacements = {
-                '{userName}': user.full_name,
-                '{trackName}': trackNames[trackToUse] || trackToUse,
-                '{day}': '1',
-                '{currentDay}': '1'
-            };
+השפה: ${language === 'he' ? 'עברית' : 'אנגלית'}
 
-            for (const [placeholder, value] of Object.entries(replacements)) {
-                subject = subject.replace(new RegExp(placeholder, 'g'), value);
-                content = content.replace(new RegExp(placeholder, 'g'), value);
-            }
+הכלל HTML מלא למייל עם:
+- כותרת מרשימה
+- הסבר קצר על התוכנית
+- מה יקרה מחר (תקבל את המשימה הראשונה)
+- עידוד אישי`,
+                response_json_schema: {
+                    type: "object",
+                    properties: {
+                        subject: { type: "string" },
+                        html: { type: "string" }
+                    }
+                }
+            });
 
-            // עטוף בתבנית RTL אם עברית
-            if (language === 'he') {
-                content = `<div dir="rtl" style="text-align: right;">${content}</div>`;
-            }
-
-            // Send the first email
             await base44.asServiceRole.integrations.Core.SendEmail({
+                from_name: 'V107 Booster',
                 to: user.email,
-                subject: subject,
-                body: content
+                subject: welcomeEmailResponse.subject,
+                body: welcomeEmailResponse.html
             });
 
             // Log the email
             await base44.asServiceRole.entities.EmailLog.create({
                 to_email: user.email,
                 email_type: 'booster_email',
-                subject: subject,
+                subject: welcomeEmailResponse.subject,
                 related_user_email: user.email,
                 language: language
             });
+        } catch (emailError) {
+            console.error('Failed to send welcome email:', emailError);
         }
 
         return Response.json({
