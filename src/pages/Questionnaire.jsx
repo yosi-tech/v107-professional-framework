@@ -461,8 +461,8 @@ const QuestionCard = ({ questionNumber, questionText, value, onChange, language 
         {questionNumber}. {questionText}
       </h3>
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-gray-500">{language === 'he' ? '1 (לא מתאר אותי כלל)' : '1 (Not at all)'}</span>
         <span className="text-sm text-gray-500">{language === 'he' ? '7 (מתאר אותי בצורה מושלמת)' : '7 (Perfectly)'}</span>
+        <span className="text-sm text-gray-500">{language === 'he' ? '1 (לא מתאר אותי כלל)' : '1 (Not at all)'}</span>
       </div>
       <RadioGroup
         value={value ? value.toString() : ''}
@@ -951,6 +951,49 @@ export default function Questionnaire() {
             </p>
             <div className="w-20"></div>
           </div>
+
+          {/* Navigation buttons at top */}
+          {currentStep > 0 && (
+            <div className="flex justify-center items-center gap-4 mb-6">
+              <Button
+                onClick={prevStep}
+                disabled={currentStep <= 0}
+                variant="outline"
+                size="sm"
+              >
+                {language === 'he' ? <ArrowRight className="w-4 h-4 ml-1" /> : <ArrowLeft className="w-4 h-4 mr-1" />}
+                קודם
+              </Button>
+
+              {/* Page selector */}
+              <div className="flex gap-2">
+                {[0, 1, 2, 3, 4, 5, 6].map((step) => (
+                  <button
+                    key={step}
+                    onClick={() => setCurrentStep(step)}
+                    disabled={step === currentStep}
+                    className={`w-8 h-8 rounded-full text-sm font-medium transition-all ${
+                      step === currentStep
+                        ? 'bg-slate-600 text-white'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    } ${step === currentStep ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  >
+                    {step === 0 ? 'פ' : step}
+                  </button>
+                ))}
+              </div>
+
+              <Button
+                onClick={nextStep}
+                disabled={currentStep >= 6}
+                size="sm"
+                className="bg-slate-600 hover:bg-slate-700 text-white"
+              >
+                הבא
+                {language === 'he' ? <ArrowLeft className="w-4 h-4 mr-1" /> : <ArrowRight className="w-4 h-4 ml-1" />}
+              </Button>
+            </div>
+          )}
           <h1 className="text-3xl md:text-4xl font-bold mb-2 text-text-primary">
             {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
           </h1>
