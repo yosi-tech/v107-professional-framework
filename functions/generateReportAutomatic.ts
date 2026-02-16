@@ -28,8 +28,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Call generateReportV6ProUltimate function
-    const generateResult = await base44.asServiceRole.functions.invoke('generateReportV6ProUltimate', { 
+    // Call generateReportV8Pro function
+    const generateResult = await base44.asServiceRole.functions.invoke('generateReportV8Pro', { 
       responseId: responseId 
     });
 
