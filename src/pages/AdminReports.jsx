@@ -1151,6 +1151,15 @@ export default function AdminReports() {
           </TabsList>
 
           <TabsContent value="reports">
+            <div className="flex justify-end mb-4">
+              <Link to={createPageUrl("AdminQuestionnaireExport")}>
+                <Button className="bg-green-600 hover:bg-green-700 flex items-center gap-2 flex-row-reverse">
+                  <span>ייצוא כל השאלונים לקובץ</span>
+                  <Download className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+            
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
