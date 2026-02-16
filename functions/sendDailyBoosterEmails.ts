@@ -448,7 +448,7 @@ Deno.serve(async (req) => {
           console.log(`No pre-generated task found for ${subscription.user_email} day ${currentDay}, generating dynamically...`);
           
           try {
-            const generatedContent = await base44.asServiceRole.functions.invoke('generateBoosterDailyContent', {
+            const generatedContent = await base44.asServiceRole.functions.invoke('generateBoosterDailyContentV8', {
               subscriptionId: subscription.id,
               day: currentDay
             });
