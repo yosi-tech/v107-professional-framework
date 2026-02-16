@@ -34,7 +34,8 @@ import {
   Edit3,
   Link2,
   GitCompare,
-  ShoppingCart } from
+  ShoppingCart,
+  Download } from
 "lucide-react";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
