@@ -38,6 +38,7 @@ const questionsHe = [
   "אני מוכן/ה לקחת סיכונים מחושבים בעבודה כדי לקדם מטרה.",
   "אני מתלהב/ת מניסיון כלים או שיטות חדשים, גם ללא הוכחת הצלחה מראש.",
   "אני נוטה להיצמד להליכים קיימים ולא לחפש לשנות אותם.",
+  
   "אני מזהה הזדמנויות עסקיות או מקצועיות מוקדם יותר מאחרים.",
   "בהחלטה אני לוקח/ת בחשבון את ההשלכות האסטרטגיות ארוכות הטווח שלה.",
   "אני נוטה להתמקד בפרטים קטנים יותר מאשר בתמונה הגדולה.",
@@ -94,6 +95,7 @@ const questionsHe = [
   "יש לי חזון ברור לגבי הכיוון המקצועי שלי בשנים הקרובות.",
   "אני מרגיש/ה תחושת משמעות בעבודה שאני עושה כל יום.",
   "אני מרגיש/ה שהעתיד המקצועי שלי תלוי בעיקר בי ובבחירות שאני עושה.",
+  
   "אני שם/ה לב קפדני לפרטים קטנים בתוכניות עבודה.",
   "אני מבצע/ת באופן קבוע תהליכי מעקב ומשוב על הביצועים שלי.",
   "אני מרגיש/ה מוטיבציה גבוהה להתמודד עם אתגרים הדורשים למידה חדשה.",
@@ -132,10 +134,12 @@ const questionsEn = questionsHe; // For now, we'll keep the same for both langua
 
 const sectionTitlesHe = [
   { start: 1, end: 11, title: "מקטע 1: מיקוד, החלטה וחוסן" },
-  { start: 12, end: 28, title: "מקטע 2: גמישות, יצירתיות וחדשנות" },
-  { start: 29, end: 41, title: "מקטע 3: מנהיגות, יוזמה ואחריות" },
-  { start: 42, end: 57, title: "מקטע 4: תקשורת, שיתוף פעולה ויושרה" },
-  { start: 58, end: 107, title: "מקטע 5: תכנון, למידה וצמיחה" }
+  { start: 12, end: 22, title: "מקטע 2: גמישות, יצירתיות וחדשנות" },
+  { start: 23, end: 28, title: "מקטע 3: חשיבה אסטרטגית ותכנון" },
+  { start: 29, end: 42, title: "מקטע 4: מנהיגות, יוזמה ואחריות" },
+  { start: 43, end: 58, title: "מקטע 5: תקשורת, שיתוף פעולה ויושרה" },
+  { start: 59, end: 77, title: "מקטע 6: תכנון וניהול זמן" },
+  { start: 78, end: 107, title: "מקטע 7: למידה, צמיחה ואיזון אישי" }
 ];
 
 const sectionTitlesEn = sectionTitlesHe; // For now, we'll keep the same for both languages
@@ -151,17 +155,17 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
         </CardTitle>
         <CardDescription className="text-lg text-text-secondary">
-          {language === 'he' ? 'גרסה V6 PRO' : 'Version V6 PRO'}
+          {language === 'he' ? 'גרסה V8 B2B' : 'Version V8 B2B'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-text-secondary space-y-4`}>
           <p className="font-semibold text-lg text-text-primary">
-            {language === 'he' ? 'ברוך הבא ל-V107 QUESTIONNAIRE V6 PRO' : 'Welcome to V107 QUESTIONNAIRE V6 PRO'}
+            {language === 'he' ? 'ברוך הבא ל-V107 QUESTIONNAIRE V8 B2B' : 'Welcome to V107 QUESTIONNAIRE V8 B2B'}
           </p>
           <ul className="space-y-2 list-disc pr-6">
             <li>{language === 'he' ? 'כלי אבחון מקצועי זה נועד למפות את היכולות, הדפוסים והנטיות האישיות והמקצועיות שלך בהתבסס על 11 ממדים פסיכומטריים ליבתיים.' : 'This professional diagnostic tool is designed to map your personal and professional abilities, patterns, and tendencies based on 11 core psychometric dimensions.'}</li>
-            <li>{language === 'he' ? 'V107 QUESTIONNAIRE V6 PRO ובעקבותיו V107 REPORT V6 PRO פותחו בתהליך מקצועי רב-שלבי ונמצאים בתהליך ולידציה מתמשך מול קבוצות מיקוד של מומחי קריירה, פסיכולוגיה תעסוקתית ואסטרטגים של התפתחות אישית.' : 'V107 QUESTIONNAIRE V6 PRO and the subsequent V107 REPORT V6 PRO were developed through a multi-stage professional process and are undergoing continuous validation with focus groups of career experts, occupational psychologists, and personal development strategists.'}</li>
+            <li>{language === 'he' ? 'V107 QUESTIONNAIRE V8 B2B ובעקבותיו V107 REPORT V8 B2B פותחו בתהליך מקצועי רב-שלבי ונמצאים בתהליך ולידציה מתמשך מול קבוצות מיקוד של מומחי קריירה, פסיכולוגיה תעסוקתית ואסטרטגים של התפתחות אישית.' : 'V107 QUESTIONNAIRE V8 B2B and the subsequent V107 REPORT V8 B2B were developed through a multi-stage professional process and are undergoing continuous validation with focus groups of career experts, occupational psychologists, and personal development strategists.'}</li>
             <li className="font-semibold">{language === 'he' ? 'ככל שתשובותיך יהיו כנות וספונטניות, כך איכות הדו"ח שתקבל תהיה גבוהה ומדויקת יותר.' : 'The more honest and spontaneous your answers, the higher and more accurate the quality of the report you will receive.'}</li>
           </ul>
         </div>
@@ -427,6 +431,48 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
           </div>
         </div>
 
+        {/* תפקיד מטרה והעלאת קורות חיים */}
+        <div className="space-y-4">
+          <h3 className="font-bold text-lg border-b pb-2">{language === 'he' ? 'התאמה ארגונית' : 'Organizational Fit'}</h3>
+          
+          <div>
+            <Label htmlFor="target_position">{language === 'he' ? 'התפקיד אליו הוגשה המועמדות' : 'Target Position'}</Label>
+            <Input
+              id="target_position"
+              value={data.target_position || ""}
+              onChange={(e) => handleInputChange("target_position", e.target.value)}
+              placeholder={language === 'he' ? 'לדוגמה: מנהל מוצר בכיר' : 'e.g. Senior Product Manager'}
+              dir="rtl"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="cv_upload">{language === 'he' ? 'העלאת קורות חיים (אופציונלי)' : 'Upload CV (Optional)'}</Label>
+            <Input
+              id="cv_upload"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  try {
+                    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                    handleInputChange("cv_file_url", file_url);
+                  } catch (error) {
+                    alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
+                  }
+                }
+              }}
+              className="cursor-pointer"
+            />
+            {data.cv_file_url && (
+              <p className="text-xs text-green-600 mt-1">
+                ✓ {language === 'he' ? 'קובץ הועלה בהצלחה' : 'File uploaded successfully'}
+              </p>
+            )}
+          </div>
+        </div>
+
         <div className="pt-4 border-t">
           <h3 className="font-bold text-sm mb-3">{language === 'he' ? 'סיום חלק הזיהוי' : 'End of Identification Section'}</h3>
         </div>
@@ -520,7 +566,7 @@ export default function Questionnaire() {
       const existingResponses = await QuestionnaireResponse.filter({
         created_by: currentUser.email,
         status: 'in_progress',
-        version: 'B7_PRO_V4'
+        version: 'V8_B2B'
       }, '-updated_date', 1);
 
       if (existingResponses.length > 0) {
@@ -599,7 +645,7 @@ export default function Questionnaire() {
                     responses: responses,
                     optional_comment: optionalComment,
                     language: language,
-                    version: 'V6_PRO',
+                    version: 'V8_B2B',
                     status: 'in_progress'
                   });
                 } catch (error) {
@@ -636,7 +682,7 @@ export default function Questionnaire() {
         optional_comment: optionalComment,
         data_usage_consent: personalInfo.data_usage_consent || false,
         language: language,
-        version: 'V6_PRO',
+        version: 'V8_B2B',
         status: 'in_progress'
       };
 
@@ -719,7 +765,7 @@ export default function Questionnaire() {
         optional_comment: optionalComment,
         data_usage_consent: personalInfo.data_usage_consent || false,
         language: language,
-        version: 'V6_PRO',
+        version: 'V8_B2B',
         status: 'completed'
       };
 
@@ -746,7 +792,7 @@ export default function Questionnaire() {
     if (currentStep === 0 && !validatePersonalInfo()) {
       return;
     }
-    setCurrentStep((prev) => Math.min(prev + 1, 6));
+    setCurrentStep((prev) => Math.min(prev + 1, 8));
     window.scrollTo(0, 0);
   };
 
@@ -756,13 +802,13 @@ export default function Questionnaire() {
   };
 
   const getCurrentSectionInfo = () => {
-    if (currentStep <= 0 || currentStep > 5) return null;
+    if (currentStep <= 0 || currentStep > 7) return null;
     return sectionTitles[currentStep - 1];
   };
 
   const getProgress = () => {
     if (currentStep <= 0) return 0;
-    return (currentStep / 7) * 100;
+    return (currentStep / 9) * 100;
   };
 
   const renderCurrentSection = () => {
@@ -770,7 +816,7 @@ export default function Questionnaire() {
       return <PersonalInfoForm data={personalInfo} onChange={setPersonalInfo} language={language} />;
     }
     
-    if (currentStep >= 1 && currentStep <= 5) {
+    if (currentStep >= 1 && currentStep <= 7) {
       const sectionInfo = getCurrentSectionInfo();
       if (!sectionInfo) return null;
       
@@ -832,7 +878,7 @@ export default function Questionnaire() {
       );
     }
 
-    if (currentStep === 6) {
+    if (currentStep === 8) {
       return (
         <Card className="shadow-lg" dir={language === 'he' ? 'rtl' : 'ltr'}>
           <CardHeader>
@@ -967,7 +1013,7 @@ export default function Questionnaire() {
 
               {/* Page selector */}
               <div className="flex gap-2">
-                {[0, 1, 2, 3, 4, 5, 6].map((step) => (
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((step) => (
                   <button
                     key={step}
                     onClick={() => setCurrentStep(step)}
@@ -985,7 +1031,7 @@ export default function Questionnaire() {
 
               <Button
                 onClick={nextStep}
-                disabled={currentStep >= 6}
+                disabled={currentStep >= 8}
                 size="sm"
                 className="bg-slate-600 hover:bg-slate-700 text-white"
               >
@@ -1000,9 +1046,9 @@ export default function Questionnaire() {
           
           {currentStep === 0 ? (
             <p className="text-text-secondary mb-6">פרטים אישיים</p>
-          ) : currentStep >= 1 && currentStep <= 5 ? (
+          ) : currentStep >= 1 && currentStep <= 7 ? (
             <p className="text-text-secondary mb-6">{getCurrentSectionInfo()?.title}</p>
-          ) : currentStep === 6 ? (
+          ) : currentStep === 8 ? (
             <p className="text-text-secondary mb-6">הערה אופציונלית</p>
           ) : null}
           
@@ -1031,7 +1077,7 @@ export default function Questionnaire() {
             קודם
           </Button>
 
-          {currentStep < 6 ? (
+          {currentStep < 8 ? (
             <Button onClick={nextStep} size="lg" className="bg-slate-600 hover:bg-slate-700 text-white">
               הבא
               {language === 'he' ? <ArrowLeft className="w-5 h-5 mr-2" /> : <ArrowRight className="w-5 h-5 ml-2" />}
@@ -1049,7 +1095,7 @@ export default function Questionnaire() {
           )}
         </div>
         
-        {currentStep === 6 && (
+        {currentStep === 8 && (
           <div className="mt-8 bg-blue-50 p-6 rounded-lg border border-blue-200 text-center">
             <h3 className="font-semibold text-lg mb-3">🩵 סיום השאלון: הדרך למפת היכולות האישית שלך</h3>
             <div className="text-sm text-gray-700 space-y-2 text-right">
