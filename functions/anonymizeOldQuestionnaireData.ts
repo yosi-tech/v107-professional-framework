@@ -39,18 +39,23 @@ Deno.serve(async (req) => {
         }
 
         // Check if already anonymized
-        if (!response.personal_info?.full_name && !response.personal_info?.email) {
+        if (response.personal_info?.full_name === '[מחוק]' || 
+            response.personal_info?.email === 'anonymized@deleted.local') {
           skippedCount++;
           continue;
         }
 
-        // Anonymize the personal info
+        // Anonymize the personal info - replace with anonymized values
         const updatedPersonalInfo = {
           ...response.personal_info,
-          full_name: null,
-          email: null,
-          phone: null
+          full_name: '[מחוק]',
+          email: 'anonymized@deleted.local'
         };
+        
+        // Remove phone if exists
+        if (updatedPersonalInfo.phone) {
+          delete updatedPersonalInfo.phone;
+        }
 
         // Update the record
         await base44.asServiceRole.entities.QuestionnaireResponse.update(
