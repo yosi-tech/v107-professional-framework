@@ -111,23 +111,23 @@ export default function Home() {
   const benefitsData = language === 'he' ? [
   {
     icon: Target,
-    title: "כותרת יתרון 1",
-    desc: "תיאור יתרון ראשון"
+    title: "פרופיל יכולות מקצועי מפורט",
+    desc: "מיפוי חוזקות ויכולות טעונות שיפור"
   },
   {
     icon: TrendingUp,
-    title: "כותרת יתרון 2",
-    desc: "תיאור יתרון שני"
+    title: "דוח סינון יכולות מהיר",
+    desc: "24 שעות ממילוי השאלון"
   },
   {
     icon: Zap,
-    title: "כותרת יתרון 3",
-    desc: "תיאור יתרון שלישי"
+    title: "סטנדרט הערכה אחיד",
+    desc: "כלי אובייקטיבי"
   },
   {
     icon: Award,
-    title: "כותרת יתרון 4",
-    desc: "תיאור יתרון רביעי"
+    title: 'דוח פערים',
+    desc: "הפער בין קורות החיים ליכולות בפועל"
   }] :
   [
   {
