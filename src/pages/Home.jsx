@@ -716,13 +716,12 @@ export default function Home() {
             transition={{ duration: 0.6 }}>
 
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-2xl">
-              <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="flex items-center justify-center mb-6">
                 <Sparkles className="w-16 h-16 text-amber-400" />
-                <span className="text-6xl">🌸</span>
               </div>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-white leading-tight">
-                {language === 'he' ? 'המהפכה בניהול ההון האנושי התחילה, קבלו הזמנה להצטרפות' : 'The HR Management Revolution Has Begun, Get Your Invitation to Join'}
+                {language === 'he' ? 'המהפכה בניהול ההון האנושי התחילה,\nקבלו הזמנה להצטרפות 🌸' : 'The HR Management Revolution Has Begun,\nGet Your Invitation to Join 🌸'}
               </h2>
 
               <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
