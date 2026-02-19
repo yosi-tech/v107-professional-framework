@@ -235,19 +235,16 @@ export default function Home() {
 
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
               <span className="text-white">
-                {getContent('hero_title_part1', language === 'he' ? 'כותרת ראשית חלק 1' : 'Main Title Part 1')}
+                {language === 'he' ? 'כותרת ראשית' : 'Main Headline'}
               </span>
               <br />
               <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-                {getContent('hero_title_part2', language === 'he' ? 'כותרת ראשית חלק 2' : 'Main Title Part 2')}
+                {language === 'he' ? 'חלק שני של הכותרת' : 'Second Part of Headline'}
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {getContent('hero_subtitle', language === 'he' ?
-              'תיאור תמציתי של השירות והערך שהוא מספק' :
-              'Brief description of the service and value proposition'
-              )}
+              {language === 'he' ? 'תיאור כללי של המוצר או השירות שלך' : 'General description of your product or service'}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-12">
@@ -258,7 +255,7 @@ export default function Home() {
 
                   <span className="relative z-10 flex items-center gap-2 sm:gap-3">
                     <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
-                    <span className="text-sm sm:text-xl">{getContent('hero_cta_button', language === 'he' ? 'התחל את השאלון עכשיו!' : 'Start Questionnaire Now!')}</span>
+                    <span className="text-sm sm:text-xl">{language === 'he' ? 'לחצן פעולה ראשי' : 'Main Call to Action'}</span>
                     {React.createElement(currentArrowIcon, { className: "w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform" })}
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -268,7 +265,7 @@ export default function Home() {
 
             <div className="inline-flex items-center gap-2 text-sm text-white/80">
               <CheckCircle className="w-4 h-4 text-green-400" />
-              <span>{getContent('hero_trust_text', language === 'he' ? 'חינם לחלוטין · ללא התחייבות · 10 דקות בלבד' : 'Completely Free · No Commitment · Just 10 Minutes')}</span>
+              <span>{language === 'he' ? 'טקסט אמון' : 'Trust message'}</span>
             </div>
           </motion.div>
 
@@ -353,13 +350,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {getContent('how_it_works_title', language === 'he' ? 'כותרת סעיף איך זה עובד' : 'How It Works Section Title')}
+                {language === 'he' ? 'כותרת סעיף' : 'Section Title'}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {getContent('how_it_works_subtitle', language === 'he' ?
-                'תת כותרת של סעיף איך זה עובד' :
-                'How it works section subtitle'
-                )}
+                {language === 'he' ? 'תת כותרת של הסעיף' : 'Section subtitle'}
               </p>
             </motion.div>
           </div>
@@ -445,13 +439,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {getContent('section_title', language === 'he' ? 'כותרת סעיף יתרונות' : 'Benefits Section Title')}
+                {language === 'he' ? 'כותרת סעיף' : 'Section Title'}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {getContent('section_subtitle', language === 'he' ?
-                'תת כותרת של סעיף היתרונות' :
-                'Benefits section subtitle'
-                )}
+                {language === 'he' ? 'תת כותרת' : 'Subtitle'}
               </p>
             </motion.div>
           </div>
@@ -509,10 +500,10 @@ export default function Home() {
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-6 text-white leading-tight">
-              {language === 'he' ? 'כותרת סעיף אודות' : 'About Section Title'}
+              {language === 'he' ? 'כותרת' : 'Title'}
             </h2>
             <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-              {language === 'he' ? 'תיאור כללי על המוצר והשירות' : 'General description of the product and service'}
+              {language === 'he' ? 'תיאור' : 'Description'}
             </p>
           </motion.div>
 
@@ -524,18 +515,14 @@ export default function Home() {
             className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 border border-white/20 mb-12">
 
             <p className="text-lg text-gray-200 leading-relaxed mb-8">
-              {language === 'he' 
-                ? 'תיאור מפורט של המתודולוגיה והגישה המקצועית'
-                : 'Detailed description of methodology and professional approach'}
+              {language === 'he' ? 'תיאור' : 'Description'}
             </p>
 
             <h3 className="text-2xl md:text-3xl font-bold mb-6 text-amber-400">
-              {language === 'he' ? 'כותרת משנה - מה כולל' : 'Subheading - What\'s Included'}
+              {language === 'he' ? 'כותרת משנה' : 'Subheading'}
             </h3>
             <p className="text-gray-300 mb-6">
-              {language === 'he' 
-                ? 'תיאור של התהליך וזמני האספקה'
-                : 'Description of process and delivery times'}
+              {language === 'he' ? 'תיאור' : 'Description'}
             </p>
 
             <div className="space-y-4 mb-12">
@@ -586,7 +573,7 @@ export default function Home() {
             </div>
 
             <h3 className="text-2xl md:text-3xl font-bold mb-6 text-amber-400">
-              התרומות המקצועיות של V107 עבורך:
+              {language === 'he' ? 'כותרת נוספת' : 'Additional Title'}
             </h3>
             <div className="grid md:grid-cols-3 gap-6 mb-12">
               {[
@@ -613,22 +600,18 @@ export default function Home() {
 
             <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-2xl p-8 border border-amber-400/30">
               <h3 className="text-2xl md:text-3xl font-bold mb-4 text-amber-400">
-                {language === 'he' ? 'כותרת מוצר נוסף/שירות משלים' : 'Additional Product/Service Title'}
+                {language === 'he' ? 'כותרת' : 'Title'}
               </h3>
               <p className="text-gray-200 leading-relaxed mb-4">
-                {language === 'he' 
-                  ? 'תיאור המוצר או השירות המשלים - מה הוא מספק'
-                  : 'Description of complementary product/service - what it provides'}
+                {language === 'he' ? 'תיאור' : 'Description'}
               </p>
               <p className="text-gray-200 leading-relaxed mb-6">
-                {language === 'he'
-                  ? 'פסקה נוספת המסבירה את היתרונות והערך המוסף'
-                  : 'Additional paragraph explaining benefits and added value'}
+                {language === 'he' ? 'פסקה נוספת' : 'Additional paragraph'}
               </p>
               <div className="flex items-center gap-2 text-white">
                 <Rocket className="w-6 h-6 text-amber-400" />
                 <p className="font-bold text-lg">
-                  לכן, אל תסתפק בידיעה של מי שאתה – גלה מה אתה באמת יכול להיות.
+                  {language === 'he' ? 'טקסט מוטיבציה' : 'Motivational text'}
                 </p>
               </div>
             </div>
@@ -648,7 +631,7 @@ export default function Home() {
 
                 <span className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
-                  מלא את השאלון עכשיו!
+                  {language === 'he' ? 'כפתור פעולה' : 'Action Button'}
                   <ArrowLeft className="w-4 h-4" />
                 </span>
               </Button>
@@ -774,31 +757,25 @@ export default function Home() {
               <Sparkles className="w-16 h-16 text-amber-400 mx-auto mb-6" />
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-white leading-tight">
-                {getContent('section_title', language === 'he' ?
-                'כותרת קריאה לפעולה סופית' :
-                'Final Call to Action Title'
-                )}
+                {language === 'he' ? 'כותרת סופית' : 'Final Title'}
               </h2>
 
               <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-                {getContent('section_description', language === 'he' ?
-                'תיאור מעורר השראה הקורא למשתמש לפעול' :
-                'Inspiring description calling user to action'
-                )}
+                {language === 'he' ? 'תיאור קריאה לפעולה' : 'Call to action description'}
               </p>
 
               <div className="grid sm:grid-cols-3 gap-6 mb-10">
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">דיוק מקצועי</h4>
-                  <p className="text-gray-300 text-sm">ניתוח מבוסס נתונים ומומחיות</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'יתרון 1' : 'Benefit 1'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'תיאור' : 'Description'}</p>
                 </div>
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">תובנות מקצועיות</h4>
-                  <p className="text-gray-300 text-sm">המלצות מעשיות ליישום מיידי</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'יתרון 2' : 'Benefit 2'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'תיאור' : 'Description'}</p>
                 </div>
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">ליווי מקצועי</h4>
-                  <p className="text-gray-300 text-sm">תמיכה והכוונה לאורך כל הדרך</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'יתרון 3' : 'Benefit 3'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'תיאור' : 'Description'}</p>
                 </div>
               </div>
 
@@ -810,17 +787,14 @@ export default function Home() {
 
                     <span className="flex items-center gap-3">
                       <Play className="w-7 h-7" />
-                      {getContent('cta_button_text', language === 'he' ? 'התחל עכשיו - חינם!' : 'Start Now - Free!')}
+                      {language === 'he' ? 'כפתור פעולה ראשי' : 'Main Action Button'}
                     </span>
                   </Button>
                 </Link>
               </div>
 
               <p className="mt-8 text-sm text-gray-300">
-                {language === 'he' ?
-                '✓ ללא כרטיס אשראי  ✓ ללא התחייבות  ✓ תוצאות מיידיות' :
-                '✓ No Credit Card  ✓ No Commitment  ✓ Immediate Results'
-                }
+                {language === 'he' ? '✓ טקסט אמון' : '✓ Trust text'}
               </p>
             </div>
           </motion.div>

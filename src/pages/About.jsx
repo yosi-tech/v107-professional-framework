@@ -163,13 +163,10 @@ export default function About() {
             <Building2 className="w-10 h-10" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            {getContent('hero_title', language === 'he' ? 'כותרת עמוד אודות' : 'About Page Title')}
+            {language === 'he' ? 'אודות' : 'About'}
           </h1>
           <p className="text-xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
-            {getContent('hero_subtitle', language === 'he' 
-              ? 'תיאור כללי של החברה, השירות והגישה המקצועית'
-              : 'General description of the company, service and professional approach'
-            )}
+            {language === 'he' ? 'תיאור החברה' : 'Company description'}
           </p>
         </div>
       </section>
@@ -187,32 +184,23 @@ export default function About() {
             </div>
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-                {getContent('yossi_name', language === 'he' ? 'שם המייסד/מנכ"ל' : 'Founder/CEO Name')}
+                {language === 'he' ? 'שם המייסד' : 'Founder Name'}
               </h2>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
-                {getContent('yossi_bio_paragraph1', language === 'he'
-                  ? 'פסקה ראשונה - רקע מקצועי וניסיון'
-                  : 'First paragraph - professional background and experience'
-                )}
+                {language === 'he' ? 'פסקה ראשונה על הרקע המקצועי' : 'First paragraph about professional background'}
               </p>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
-                {getContent('yossi_bio_paragraph2', language === 'he'
-                  ? 'פסקה שנייה - תחומי התמחות ופרויקטים'
-                  : 'Second paragraph - areas of expertise and projects'
-                )}
+                {language === 'he' ? 'פסקה שנייה על תחומי התמחות' : 'Second paragraph about expertise areas'}
               </p>
               <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
                 <p className="text-gray-800 font-semibold">
-                  {getContent('yossi_approach_title', language === 'he' ? 'כותרת הגישה המקצועית' : 'Professional Approach Title')}
+                  {language === 'he' ? 'כותרת גישה מקצועית' : 'Professional Approach'}
                 </p>
                 <p className="text-gray-700 mt-2">
-                  {getContent('yossi_approach_subtitle', language === 'he' ? 'סלוגן או משפט מפתח' : 'Slogan or key phrase')}
+                  {language === 'he' ? 'סלוגן' : 'Slogan'}
                 </p>
                 <p className="text-gray-600 mt-3 text-sm">
-                  {getContent('yossi_approach_description', language === 'he'
-                    ? 'תיאור הגישה והמתודולוגיה'
-                    : 'Description of approach and methodology'
-                  )}
+                  {language === 'he' ? 'תיאור' : 'Description'}
                 </p>
                 <p className="text-gray-800 font-semibold mt-4">
                   {language === 'he' ? 'צור קשר:' : 'Contact:'}
@@ -240,13 +228,10 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-              {getContent('categories_title', language === 'he' ? 'כותרת סעיף קטגוריות/תחומים' : 'Categories/Sectors Section Title')}
+              {language === 'he' ? 'כותרת סעיף' : 'Section Title'}
             </h2>
             <p className="text-lg text-gray-600">
-              {getContent('categories_subtitle', language === 'he'
-                ? 'תת כותרת לסעיף הקטגוריות'
-                : 'Categories section subtitle'
-              )}
+              {language === 'he' ? 'תת כותרת' : 'Subtitle'}
             </p>
           </div>
 
@@ -272,13 +257,10 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-              {getContent('portfolio_title', language === 'he' ? 'כותרת סעיף דוגמאות/תיק עבודות' : 'Examples/Portfolio Section Title')}
+              {language === 'he' ? 'כותרת סעיף' : 'Section Title'}
             </h2>
             <p className="text-lg text-gray-600">
-              {getContent('portfolio_subtitle', language === 'he'
-                ? 'תת כותרת לסעיף הדוגמאות'
-                : 'Examples section subtitle'
-              )}
+              {language === 'he' ? 'תת כותרת' : 'Subtitle'}
             </p>
           </div>
 
