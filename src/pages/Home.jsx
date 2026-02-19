@@ -429,12 +429,7 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {[
-            { icon: Target, titleKey: 'benefit1_title', descKey: 'benefit1_description' },
-            { icon: TrendingUp, titleKey: 'benefit2_title', descKey: 'benefit2_description' },
-            { icon: Zap, titleKey: 'benefit3_title', descKey: 'benefit3_description' },
-            { icon: Award, titleKey: 'benefit4_title', descKey: 'benefit4_description' }].
-            map((benefit, index) =>
+            {benefitsData.map((benefit, index) =>
             <motion.div
               key={index}
               initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
@@ -449,8 +444,8 @@ export default function Home() {
                         <benefit.icon className="w-7 h-7 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-3 text-gray-900">{getContent(benefit.titleKey, benefitsData[index]?.title || '')}</h3>
-                        <p className="text-gray-600 leading-relaxed">{getContent(benefit.descKey, benefitsData[index]?.desc || '')}</p>
+                        <h3 className="text-xl font-bold mb-3 text-gray-900">{benefit.title}</h3>
+                        <p className="text-gray-600 leading-relaxed">{benefit.desc}</p>
                       </div>
                     </div>
                   </CardContent>
