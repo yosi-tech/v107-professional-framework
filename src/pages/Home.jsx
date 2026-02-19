@@ -523,10 +523,6 @@ export default function Home() {
                 title: language === 'he' ? 'V107 BOOSTER - כלי מקצועי לשיפור יכולות וביצועים של המועמד ושל עובדים קיימים' : 'V107 BOOSTER',
                 desc: language === 'he' ? '' : 'Professional tool for improving candidate and existing employee capabilities and performance'
               },
-              {
-                icon: BookOpen,
-                title: language === 'he' ? 'כותרת פיצ׳ר 5' : 'Feature Title 5',
-                desc: language === 'he' ? 'תיאור פיצ׳ר חמישי - מה הוא כולל ומה היתרונות' : 'Description of fifth feature - what it includes and benefits'
               }].
               map((item, index) =>
               <motion.div
@@ -549,13 +545,13 @@ export default function Home() {
             </div>
 
             <h3 className="text-2xl md:text-3xl font-bold mb-6 text-amber-400">
-              {language === 'he' ? 'כותרת נוספת' : 'Additional Title'}
+              {language === 'he' ? 'התאמה מלאה לצרכי הארגון שלכם' : 'Full Adaptation to Your Organization\'s Needs'}
             </h3>
             <div className="grid md:grid-cols-3 gap-6 mb-12">
               {[
-              { title: language === 'he' ? 'תרומה מקצועית 1' : 'Professional Contribution 1', desc: language === 'he' ? 'תיאור התרומה הראשונה' : 'Description of first contribution' },
-              { title: language === 'he' ? 'תרומה מקצועית 2' : 'Professional Contribution 2', desc: language === 'he' ? 'תיאור התרומה השנייה' : 'Description of second contribution' },
-              { title: language === 'he' ? 'תרומה מקצועית 3' : 'Professional Contribution 3', desc: language === 'he' ? 'תיאור התרומה השלישית' : 'Description of third contribution' }].
+              { title: language === 'he' ? 'יכולת לקיים אינטגרציה עם מערכות קיימות' : 'Integration with Existing Systems', desc: language === 'he' ? '' : '' },
+              { title: language === 'he' ? 'בניית מודלי אבחון יעודיים לארגון' : 'Building Dedicated Diagnostic Models', desc: language === 'he' ? '' : '' },
+              { title: language === 'he' ? 'V107 WHITE LABEL SOLUTION - הטמעת V107 בארגון' : 'V107 WHITE LABEL SOLUTION', desc: language === 'he' ? '' : 'V107 implementation in organization' }].
               map((item, index) =>
               <motion.div
                 key={index}
