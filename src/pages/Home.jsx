@@ -229,7 +229,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-white/20">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="text-sm text-white/90 font-medium">
-                {language === 'he' ? 'טקסט תג' : 'Badge text'}
+                {language === 'he' ? 'מאוד חברות ניסו' : 'Many companies tried'}
               </span>
             </div>
 
