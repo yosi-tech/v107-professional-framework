@@ -393,7 +393,7 @@ export default function Home() {
                 className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xl px-12 py-7 rounded-2xl shadow-xl font-bold group">
 
                 <span className="flex items-center gap-3">
-                  {language === 'he' ? 'התחל עכשיו - חינם!' : 'Start Now - Free!'}
+                  {language === 'he' ? 'התחילו פיילוט עכשיו' : 'Start a Pilot Now'}
                   {React.createElement(currentArrowIcon, { className: "w-6 h-6 group-hover:translate-x-1 transition-transform" })}
                 </span>
               </Button>
