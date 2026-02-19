@@ -277,20 +277,20 @@ export default function Home() {
             className="mt-20 mb-32 grid grid-cols-2 md:grid-cols-4 gap-6">
 
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '0' : '0'}</div>
-              <div className="text-sm text-gray-300">{language === 'he' ? 'סטטיסטיקה 1' : 'Statistic 1'}</div>
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '₪39' : '₪39'}</div>
+              <div className="text-sm text-gray-300">{language === 'he' ? 'החל מ 39 ש"ח לדוח' : 'Starting from ₪39 per report'}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '0' : '0'}</div>
-              <div className="text-sm text-gray-300">{language === 'he' ? 'סטטיסטיקה 2' : 'Statistic 2'}</div>
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '24' : '24'}</div>
+              <div className="text-sm text-gray-300">{language === 'he' ? 'שעות והדוח אצלכם' : 'hours and the report is yours'}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '0' : '0'}</div>
-              <div className="text-sm text-gray-300">{language === 'he' ? 'סטטיסטיקה 3' : 'Statistic 3'}</div>
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '11' : '11'}</div>
+              <div className="text-sm text-gray-300">{language === 'he' ? 'תוצאות ל 11 יכולות מקצועיות' : 'Results for 11 professional capabilities'}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '0' : '0'}</div>
-              <div className="text-sm text-gray-300">{language === 'he' ? 'סטטיסטיקה 4' : 'Statistic 4'}</div>
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '✓' : '✓'}</div>
+              <div className="text-sm text-gray-300">{language === 'he' ? 'מתאים לכל סוגי החברות' : 'Suitable for all types of companies'}</div>
             </div>
           </motion.div>
         </div>
