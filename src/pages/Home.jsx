@@ -90,65 +90,65 @@ export default function Home() {
   const stepsData = [
   {
     icon: FileText,
-    title: getContent('step1_title', language === 'he' ? "ענה על 107 שאלות חכמות" : "Answer 107 Smart Questions"),
-    desc: getContent('step1_desc', language === 'he' ? "שאלון מבוסס מחקר שנבנה במשך 5 שנים. 10-15 דקות בלבד." : "Research-based questionnaire built over 5 years. Just 10-15 minutes."),
-    time: getContent('step1_time', language === 'he' ? "10 דקות" : "10 minutes")
+    title: getContent('step1_title', language === 'he' ? "כותרת שלב 1" : "Step 1 Title"),
+    desc: getContent('step1_desc', language === 'he' ? "תיאור שלב 1" : "Step 1 description"),
+    time: getContent('step1_time', language === 'he' ? "זמן משוער" : "Estimated time")
   },
   {
     icon: BarChart3,
-    title: getContent('step2_title', language === 'he' ? "קבל ניתוח מקיף ומדויק" : "Get Comprehensive Analysis"),
-    desc: getContent('step2_desc', language === 'he' ? "בינה מלאכותית + בקרה אנושית של מומחים בינלאומיים." : "AI + human oversight by international experts."),
-    time: getContent('step2_time', language === 'he' ? "עד 7 ימים" : "Up to 7 days")
+    title: getContent('step2_title', language === 'he' ? "כותרת שלב 2" : "Step 2 Title"),
+    desc: getContent('step2_desc', language === 'he' ? "תיאור שלב 2" : "Step 2 description"),
+    time: getContent('step2_time', language === 'he' ? "זמן משוער" : "Estimated time")
   },
   {
     icon: Rocket,
-    title: getContent('step3_title', language === 'he' ? "צא לדרך עם תוכנית פעולה" : "Launch with Action Plan"),
-    desc: getContent('step3_desc', language === 'he' ? "תובנות מותאמות אישית, KPIs ברורים, ותכנית פעולה ל-6 חודשים." : "Personalized insights, clear KPIs, and 6-month action plan."),
-    time: getContent('step3_time', language === 'he' ? "מיידי" : "Immediate")
+    title: getContent('step3_title', language === 'he' ? "כותרת שלב 3" : "Step 3 Title"),
+    desc: getContent('step3_desc', language === 'he' ? "תיאור שלב 3" : "Step 3 description"),
+    time: getContent('step3_time', language === 'he' ? "זמן משוער" : "Estimated time")
   }];
 
 
   const benefitsData = language === 'he' ? [
   {
     icon: Target,
-    title: "זהה את נקודות החוזקה שלך",
-    desc: "גלה את היכולות המקצועיות המובילות שלך וכיצד למנף אותן להצלחה."
+    title: "כותרת יתרון 1",
+    desc: "תיאור יתרון ראשון"
   },
   {
     icon: TrendingUp,
-    title: "קבל תוכנית פעולה מדויקת",
-    desc: "תכנית מפורטת ל-6 חודשים עם Quick Wins ויעדים ברורים."
+    title: "כותרת יתרון 2",
+    desc: "תיאור יתרון שני"
   },
   {
     icon: Zap,
-    title: "הימנע מטעויות יקרות",
-    desc: "זיהוי מוקדי סיכון קריטיים והמלצות למניעת כישלונות."
+    title: "כותרת יתרון 3",
+    desc: "תיאור יתרון שלישי"
   },
   {
     icon: Award,
-    title: "דוח מקצועי ברמה בינלאומית",
-    desc: "מבוסס על ניסיון של אלפי אנשים ברחבי העולם."
+    title: "כותרת יתרון 4",
+    desc: "תיאור יתרון רביעי"
   }] :
   [
   {
     icon: Target,
-    title: "Identify Your Strengths",
-    desc: "Discover your leading professional abilities and how to leverage them."
+    title: "Benefit Title 1",
+    desc: "First benefit description"
   },
   {
     icon: TrendingUp,
-    title: "Get Precise Action Plan",
-    desc: "Detailed 6-month plan with Quick Wins and clear targets."
+    title: "Benefit Title 2",
+    desc: "Second benefit description"
   },
   {
     icon: Zap,
-    title: "Avoid Costly Mistakes",
-    desc: "Identify critical risk areas and recommendations to prevent failures."
+    title: "Benefit Title 3",
+    desc: "Third benefit description"
   },
   {
     icon: Award,
-    title: "International-Level Report",
-    desc: "Based on experience from thousands of people worldwide."
+    title: "Benefit Title 4",
+    desc: "Fourth benefit description"
   }];
 
 
@@ -775,15 +775,15 @@ export default function Home() {
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-white leading-tight">
                 {getContent('section_title', language === 'he' ?
-                'מוכן לקחת את הצעד המקצועי הבא?' :
-                'Ready to Take the Next Professional Step?'
+                'כותרת קריאה לפעולה סופית' :
+                'Final Call to Action Title'
                 )}
               </h2>
 
               <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
                 {getContent('section_description', language === 'he' ?
-                'השקעה של 10 דקות עכשיו יכולה לחסוך לך שנים של ניסוי וטעייה. קבל את הדוח האישי שלך והתחל לבנות את העסק המצליח שלך.' :
-                '10 minutes now can save you years of trial and error. Get your personal report and start building your successful business.'
+                'תיאור מעורר השראה הקורא למשתמש לפעול' :
+                'Inspiring description calling user to action'
                 )}
               </p>
 
