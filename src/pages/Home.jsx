@@ -478,12 +478,15 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-6 text-white leading-tight">
               {language === 'he' ? 'V107 - אקו סיסטם מתוחכם לקבלת החלטות גיוס כ"א' : 'V107 - Advanced Ecosystem for HR Recruitment Decisions'}
             </h2>
-            <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
+            <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto mb-4">
               {language === 'he' ? 'מיון מבוסס נתונים' : 'Data-Driven Screening'}
             </p>
-          </motion.div>
+            <p className="text-lg text-gray-300 leading-relaxed max-w-4xl mx-auto">
+              {language === 'he' ? 'הסתייעו במערכת למיון יכולות עובדים, סל כלים מתקדם הכולל: אבחון, ניתוח והתאמת מועמדים למשרה, בדיוק מקסימאלי ובזמן קצר' : 'Utilize our employee capability screening system, an advanced toolkit including: diagnosis, analysis, and candidate matching for positions, with maximum accuracy and minimal time'}
+            </p>
+            </motion.div>
 
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
