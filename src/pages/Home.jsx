@@ -420,10 +420,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'כותרת סעיף' : 'Section Title'}
+                {language === 'he' ? 'מנתונים להחלטות: התפוקות של V107' : 'From Data to Decisions: V107 Outputs'}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {language === 'he' ? 'תת כותרת' : 'Subtitle'}
+                {language === 'he' ? 'התמונה המלאה על כל מועמד' : 'The Complete Picture of Every Candidate'}
               </p>
             </motion.div>
           </div>
