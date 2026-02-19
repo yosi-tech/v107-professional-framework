@@ -515,13 +515,13 @@ export default function Home() {
               },
               {
                 icon: TrendingUp,
-                title: language === 'he' ? 'דוח השוואת יכולות - בקרת גיוס, הצלבת נתוני הדוח לקו"ח המועמד, תוך הדגשת פערים בזמן אמת' : 'Capability Comparison Report',
+                title: language === 'he' ? 'דוח V107 השוואת יכולות - בקרת גיוס, הצלבת נתוני הדוח לקו"ח המועמד, תוך הדגשת פערים בזמן אמת' : 'V107 Capability Comparison Report',
                 desc: language === 'he' ? '' : 'Recruitment control, cross-referencing report data with candidate CV, highlighting gaps in real-time'
               },
               {
                 icon: CheckCircle,
-                title: language === 'he' ? 'כותרת פיצ׳ר 4' : 'Feature Title 4',
-                desc: language === 'he' ? 'תיאור פיצ׳ר רביעי - מה הוא כולל ומה היתרונות' : 'Description of fourth feature - what it includes and benefits'
+                title: language === 'he' ? 'V107 BOOSTER - כלי מקצועי לשיפור יכולות וביצועים של המועמד ושל עובדים קיימים' : 'V107 BOOSTER',
+                desc: language === 'he' ? '' : 'Professional tool for improving candidate and existing employee capabilities and performance'
               },
               {
                 icon: BookOpen,
