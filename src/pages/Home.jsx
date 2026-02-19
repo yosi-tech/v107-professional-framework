@@ -235,16 +235,16 @@ export default function Home() {
 
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
               <span className="text-white">
-                {language === 'he' ? 'כותרת ראשית' : 'Main Headline'}
+                {language === 'he' ? 'V107' : 'V107'}
               </span>
               <br />
               <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-                {language === 'he' ? 'חלק שני של הכותרת' : 'Second Part of Headline'}
+                {language === 'he' ? '?מה הראיון לא גילה לכם על המועמד לתפקיד' : 'What didn\'t the interview reveal about the candidate?'}
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {language === 'he' ? 'תיאור כללי של המוצר או השירות שלך' : 'General description of your product or service'}
+              {language === 'he' ? 'דוח יכולות מקצועי על כל מועמד — לפני שמקבלים החלטה' : 'Professional capability report on every candidate — before making a decision'}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-12">
@@ -255,7 +255,7 @@ export default function Home() {
 
                   <span className="relative z-10 flex items-center gap-2 sm:gap-3">
                     <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
-                    <span className="text-sm sm:text-xl">{language === 'he' ? 'לחצן פעולה ראשי' : 'Main Call to Action'}</span>
+                    <span className="text-sm sm:text-xl">{language === 'he' ? 'התחילו לגייס נכון' : 'Start Recruiting Right'}</span>
                     {React.createElement(currentArrowIcon, { className: "w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform" })}
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -265,7 +265,7 @@ export default function Home() {
 
             <div className="inline-flex items-center gap-2 text-sm text-white/80">
               <CheckCircle className="w-4 h-4 text-green-400" />
-              <span>{language === 'he' ? 'טקסט אמון' : 'Trust message'}</span>
+              <span>{language === 'he' ? 'בקשו פיילוט עכשיו — ללא התחייבות !' : 'Request a pilot now — no commitment!'}</span>
             </div>
           </motion.div>
 
