@@ -163,10 +163,10 @@ export default function About() {
             <Building2 className="w-10 h-10" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            {language === 'he' ? 'אודות' : 'About'}
+            {language === 'he' ? 'V107 — סוכן ה-AI האישי שלכם, שרואה הרבה מעבר לראיון...' : 'About'}
           </h1>
           <p className="text-xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
-            {language === 'he' ? 'תיאור החברה' : 'Company description'}
+            {language === 'he' ? 'דוח יכולות מדויק, אין שני דוחות זהים!' : 'Company description'}
           </p>
         </div>
       </section>
