@@ -102,8 +102,8 @@ export default function Home() {
   },
   {
     icon: Rocket,
-    title: getContent('step3_title', language === 'he' ? "מקבלים דוח — ומחליטים בביטחון" : "Receive report — decide with confidence"),
-    desc: getContent('step3_desc', language === 'he' ? "גיוס מבוסס דאטה מבוסס מיליוני מועמדים" : "Data-driven recruitment based on millions of candidates"),
+    title: getContent('step3_title', language === 'he' ? "מקבלים דוח —\nומחליטים בביטחון" : "Receive report —\ndecide with confidence"),
+    desc: getContent('step3_desc', language === 'he' ? "גיוס מבוסס דאטה מליוני מועמדים" : "Data-driven recruitment based on millions of candidates"),
     time: getContent('step3_time', language === 'he' ? "זמן משוער" : "Estimated time")
   }];
 
