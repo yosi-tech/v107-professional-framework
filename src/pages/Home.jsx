@@ -588,13 +588,13 @@ export default function Home() {
 
             <Link to={createPageUrl("Questionnaire")}>
               <Button
-                size="sm"
-                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-sm px-5 py-3 rounded-lg shadow-lg font-bold">
+                size="lg"
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xl px-12 py-6 rounded-2xl shadow-2xl font-bold">
 
                 <span className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  {language === 'he' ? 'כפתור פעולה' : 'Action Button'}
-                  <ArrowLeft className="w-4 h-4" />
+                  <Sparkles className="w-6 h-6" />
+                  {language === 'he' ? 'החלו בפיילוט עכשיו' : 'Start Pilot Now'}
+                  <ArrowLeft className="w-6 h-6" />
                 </span>
               </Button>
             </Link>
@@ -716,14 +716,17 @@ export default function Home() {
             transition={{ duration: 0.6 }}>
 
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-2xl">
-              <Sparkles className="w-16 h-16 text-amber-400 mx-auto mb-6" />
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <Sparkles className="w-16 h-16 text-amber-400" />
+                <span className="text-6xl">🌸</span>
+              </div>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-white leading-tight">
-                {language === 'he' ? 'כותרת סופית' : 'Final Title'}
+                {language === 'he' ? 'המהפכה בניהול ההון האנושי התחילה, קבלו הזמנה להצטרפות' : 'The HR Management Revolution Has Begun, Get Your Invitation to Join'}
               </h2>
 
               <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-                {language === 'he' ? 'תיאור קריאה לפעולה' : 'Call to action description'}
+                {language === 'he' ? 'הצטרפו לחברות וארגונים הובילים שכבר בחרו להפוך את V107 לכלי עבודה בהליך הגיוס שלהם. גיוס מבוסס נתונים, מדויק וחסכוני ביותר' : 'Join leading companies and organizations that have already chosen to make V107 their recruitment tool. Data-driven, accurate and most cost-effective recruitment'}
               </p>
 
               <div className="grid sm:grid-cols-3 gap-6 mb-10">
