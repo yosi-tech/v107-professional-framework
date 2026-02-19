@@ -571,20 +571,11 @@ export default function Home() {
 
             <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-2xl p-8 border border-amber-400/30">
               <h3 className="text-2xl md:text-3xl font-bold mb-4 text-amber-400">
-                {language === 'he' ? 'כותרת' : 'Title'}
+                {language === 'he' ? 'השותפים שלכם למצוינות ארגונית' : 'Your Partners for Organizational Excellence'}
               </h3>
               <p className="text-gray-200 leading-relaxed mb-4">
-                {language === 'he' ? 'תיאור' : 'Description'}
+                {language === 'he' ? 'אנחנו לא רק מספקים נתונים, אנחנו מעניקים לכם את הכלים הכי מתקדמים, להוביל את הארגון לגיוס כ"א הנכון והמדויק ביותר, התהליך הופך לברור, מדויק וחסכני יותר' : 'We don\'t just provide data, we give you the most advanced tools to lead the organization to the most accurate recruitment, the process becomes clearer, more accurate and more cost-effective'}
               </p>
-              <p className="text-gray-200 leading-relaxed mb-6">
-                {language === 'he' ? 'פסקה נוספת' : 'Additional paragraph'}
-              </p>
-              <div className="flex items-center gap-2 text-white">
-                <Rocket className="w-6 h-6 text-amber-400" />
-                <p className="font-bold text-lg">
-                  {language === 'he' ? 'טקסט מוטיבציה' : 'Motivational text'}
-                </p>
-              </div>
             </div>
           </motion.div>
 
