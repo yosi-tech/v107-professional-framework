@@ -476,10 +476,10 @@ export default function Home() {
             </span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-6 text-white leading-tight">
-              {language === 'he' ? 'כותרת' : 'Title'}
+              {language === 'he' ? 'V107 - אקו סיסטם מתוחכם לקבלת החלטות גיוס כ"א' : 'V107 - Advanced Ecosystem for HR Recruitment Decisions'}
             </h2>
             <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-              {language === 'he' ? 'תיאור' : 'Description'}
+              {language === 'he' ? 'מיון מבוסס נתונים' : 'Data-Driven Screening'}
             </p>
           </motion.div>
 
