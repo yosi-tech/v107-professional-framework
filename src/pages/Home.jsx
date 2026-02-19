@@ -771,20 +771,21 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
               <Users className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{language === 'he' ? '0' : '0'}</h3>
-              <p className="text-gray-600">{language === 'he' ? 'טקסט תג 1' : 'Badge text 1'}</p>
+              <p className="text-gray-700 font-semibold leading-relaxed">
+                {language === 'he' ? 'נבנה ע"י צוות מומחים בינלאומי' : 'Built by international experts'}<br />
+                {language === 'he' ? 'עם מאות שנות ניסיון' : 'With hundreds of years of experience'}
+              </p>
             </div>
             <div>
               <Award className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                {language === 'he' ? '0' : '0'}
-              </h3>
-              <p className="text-gray-600">{language === 'he' ? 'טקסט תג 2' : 'Badge text 2'}</p>
+              <p className="text-gray-700 font-semibold leading-relaxed">
+                {language === 'he' ? 'מערכת חדשנית המשפרת מאוד איתור מועמדים מתאימים לתפקיד' : 'Innovative system that greatly improves finding suitable candidates'}<br />
+                {language === 'he' ? 'בשורה אמיתית להליך הגיוס' : 'Real news for the recruitment process'}
+              </p>
             </div>
             <div>
               <Target className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{language === 'he' ? '0' : '0'}</h3>
-              <p className="text-gray-600">{language === 'he' ? 'טקסט תג 3' : 'Badge text 3'}</p>
+              <p className="text-gray-700 font-semibold">{language === 'he' ? 'עשרות לקוחות מרוצים' : 'Dozens of satisfied customers'}</p>
             </div>
           </div>
         </div>
