@@ -239,12 +239,12 @@ export default function Home() {
               </span>
               <br />
               <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-                {language === 'he' ? 'סוכן ה-AI האישי שלכם, שרואה הרבה מעבר לראיון...' : 'What didn\'t the interview reveal about the candidate?'}
+                {language === 'he' ? 'מה הראיון לא גילה לכם על המועמד לתפקיד?' : 'What didn\'t the interview reveal about the candidate?'}
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {language === 'he' ? 'דוח יכולות מדויק, אין שני דוחות זהים!' : 'Professional capability report on every candidate — before making a decision'}
+              {language === 'he' ? 'דוח יכולות מקצועי על כל מועמד — לפני שמקבלים החלטה' : 'Professional capability report on every candidate — before making a decision'}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-12">
