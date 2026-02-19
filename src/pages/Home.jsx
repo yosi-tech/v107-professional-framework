@@ -498,28 +498,25 @@ export default function Home() {
             </p>
 
             <h3 className="text-2xl md:text-3xl font-bold mb-6 text-amber-400">
-              {language === 'he' ? 'כותרת משנה' : 'Subheading'}
+              {language === 'he' ? 'מה כולל סל המוצרים שבנינו עבורכם?' : 'What does our product basket include?'}
             </h3>
-            <p className="text-gray-300 mb-6">
-              {language === 'he' ? 'תיאור' : 'Description'}
-            </p>
 
             <div className="space-y-4 mb-12">
               {[
               {
                 icon: Target,
-                title: language === 'he' ? 'כותרת פיצ׳ר 1' : 'Feature Title 1',
-                desc: language === 'he' ? 'תיאור פיצ׳ר ראשון - מה הוא כולל ומה היתרונות' : 'Description of first feature - what it includes and benefits'
+                title: language === 'he' ? 'שאלון V107 - איבחון מקצועי' : 'V107 Questionnaire - Professional Assessment',
+                desc: language === 'he' ? 'איסוף נתונים אובייקטיבי שתוכנן ע"י צוות מומחים בינלאומי' : 'Objective data collection designed by an international expert team'
               },
               {
                 icon: BarChart3,
-                title: language === 'he' ? 'כותרת פיצ׳ר 2' : 'Feature Title 2',
-                desc: language === 'he' ? 'תיאור פיצ׳ר שני - מה הוא כולל ומה היתרונות' : 'Description of second feature - what it includes and benefits'
+                title: language === 'he' ? 'דוח יכולות V107 - תמונת יכולות המועמד, והתאמה לתרבות הארגונית, המוגש בפורמט ברור ונוח' : 'V107 Capability Report',
+                desc: language === 'he' ? '' : 'Candidate capability overview and organizational culture fit, presented in a clear and convenient format'
               },
               {
                 icon: TrendingUp,
-                title: language === 'he' ? 'כותרת פיצ׳ר 3' : 'Feature Title 3',
-                desc: language === 'he' ? 'תיאור פיצ׳ר שלישי - מה הוא כולל ומה היתרונות' : 'Description of third feature - what it includes and benefits'
+                title: language === 'he' ? 'דוח השוואת יכולות - בקרת גיוס, הצלבת נתוני הדוח לקו"ח המועמד, תוך הדגשת פערים בזמן אמת' : 'Capability Comparison Report',
+                desc: language === 'he' ? '' : 'Recruitment control, cross-referencing report data with candidate CV, highlighting gaps in real-time'
               },
               {
                 icon: CheckCircle,
