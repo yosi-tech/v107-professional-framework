@@ -364,7 +364,7 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <h3 className="text-2xl font-bold mb-4 text-gray-900">{step.title}</h3>
+                        <h3 className="text-2xl font-bold mb-4 text-gray-900 whitespace-pre-line">{step.title}</h3>
                         <p className="text-gray-600 leading-relaxed mb-4">{step.desc}</p>
                       </div>
 
