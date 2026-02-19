@@ -239,7 +239,7 @@ export default function Home() {
               </span>
               <br />
               <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-                {language === 'he' ? '?מה הראיון לא גילה לכם על המועמד לתפקיד' : 'What didn\'t the interview reveal about the candidate?'}
+                {language === 'he' ? 'מה הראיון לא גילה לכם על המועמד לתפקיד?' : 'What didn\'t the interview reveal about the candidate?'}
               </span>
             </h1>
 
