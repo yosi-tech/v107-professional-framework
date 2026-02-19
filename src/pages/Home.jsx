@@ -522,7 +522,6 @@ export default function Home() {
                 icon: CheckCircle,
                 title: language === 'he' ? 'V107 BOOSTER - כלי מקצועי לשיפור יכולות וביצועים של המועמד ושל עובדים קיימים' : 'V107 BOOSTER',
                 desc: language === 'he' ? '' : 'Professional tool for improving candidate and existing employee capabilities and performance'
-              },
               }].
               map((item, index) =>
               <motion.div
