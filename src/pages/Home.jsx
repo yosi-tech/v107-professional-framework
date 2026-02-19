@@ -331,10 +331,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {getContent('how_it_works_title', language === 'he' ? 'V107 — סוכן ה-AI האישי שלכם, שרואה הרבה מעבר לראיון...' : 'How does V107 work?')}
+                {getContent('how_it_works_title', language === 'he' ? 'איך V107 עובד?' : 'How does V107 work?')}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {getContent('how_it_works_subtitle', language === 'he' ? 'דוח יכולות מדויק, אין שני דוחות זהים!' : 'Step by step')}
+                {getContent('how_it_works_subtitle', language === 'he' ? 'שלב אחר שלב' : 'Step by step')}
               </p>
             </motion.div>
           </div>
