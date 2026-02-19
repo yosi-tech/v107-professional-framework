@@ -69,7 +69,7 @@ export default function Home() {
     if (testimonials.length === 0) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % testimonials.length);
-    }, 7000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
@@ -613,7 +613,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'כותרת המלצות' : 'Testimonials Title'}
+                {language === 'he' ? 'מה הלקוחות שלנו מספרים עלינו' : 'What Our Clients Say About Us'}
               </h2>
               <p className="text-xl text-gray-600">
                 {language === 'he' ? 'תת כותרת' : 'Subtitle'}
@@ -625,7 +625,7 @@ export default function Home() {
           <div className="flex justify-center items-center h-64">
               <div className="text-gray-400">{language === 'he' ? 'טוען...' : 'Loading...'}</div>
             </div> :
-          testimonials.length > 0 ?
+          false ?
           <div className="relative">
               <div className="overflow-hidden rounded-3xl">
                 <div
@@ -745,11 +745,11 @@ export default function Home() {
                 <Link to={createPageUrl("Questionnaire")}>
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-2xl px-16 py-8 rounded-2xl shadow-2xl shadow-amber-500/50 font-black group">
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-3xl px-24 py-12 rounded-2xl shadow-2xl shadow-amber-500/50 font-black group">
 
                     <span className="flex items-center gap-3">
-                      <Play className="w-7 h-7" />
-                      {language === 'he' ? 'כפתור פעולה ראשי' : 'Main Action Button'}
+                      <Play className="w-10 h-10" />
+                      {language === 'he' ? 'החלו בפיילוט עכשיו' : 'Start Pilot Now'}
                     </span>
                   </Button>
                 </Link>
