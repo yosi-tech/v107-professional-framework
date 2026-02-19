@@ -255,7 +255,7 @@ export default function Home() {
 
                   <span className="relative z-10 flex items-center gap-2 sm:gap-3">
                     <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
-                    <span className="text-sm sm:text-xl">{language === 'he' ? 'התחילו לגייס נכון' : 'Start Recruiting Right'}</span>
+                    <span className="text-sm sm:text-xl">{language === 'he' ? 'התחילו פיילוט עכשיו' : 'Start a Pilot Now'}</span>
                     {React.createElement(currentArrowIcon, { className: "w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform" })}
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -265,7 +265,7 @@ export default function Home() {
 
             <div className="inline-flex items-center gap-2 text-sm text-white/80">
               <CheckCircle className="w-4 h-4 text-green-400" />
-              <span>{language === 'he' ? 'בקשו פיילוט עכשיו — ללא התחייבות !' : 'Request a pilot now — no commitment!'}</span>
+              <span>{language === 'he' ? 'גיוס נכון = חיסכון גדול' : 'Right recruitment = Big savings'}</span>
             </div>
           </motion.div>
 
