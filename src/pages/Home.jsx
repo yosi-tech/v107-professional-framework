@@ -235,18 +235,18 @@ export default function Home() {
 
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
               <span className="text-white">
-                {getContent('hero_title_part1', language === 'he' ? 'פתח את מלוא' : 'Unlock Your Full')}
+                {getContent('hero_title_part1', language === 'he' ? 'כותרת ראשית חלק 1' : 'Main Title Part 1')}
               </span>
               <br />
               <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-                {getContent('hero_title_part2', language === 'he' ? 'הפוטנציאל המקצועי שלך' : 'Professional Potential')}
+                {getContent('hero_title_part2', language === 'he' ? 'כותרת ראשית חלק 2' : 'Main Title Part 2')}
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
               {getContent('hero_subtitle', language === 'he' ?
-              'קבל דוח אישי מבוסס AI שיגלה את החוזקות שלך, יזהה מוקדי שיפור, ויספק לך תוכנית פעולה מדויקת להצלחה עסקית.' :
-              'Get an AI-powered personal report that reveals your strengths, identifies improvement areas, and provides a precise action plan for business success.'
+              'תיאור תמציתי של השירות והערך שהוא מספק' :
+              'Brief description of the service and value proposition'
               )}
             </p>
 
@@ -353,12 +353,12 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {getContent('how_it_works_title', language === 'he' ? 'איך זה עובד מקצועית?' : 'How Does It Work Professionally?')}
+                {getContent('how_it_works_title', language === 'he' ? 'כותרת סעיף איך זה עובד' : 'How It Works Section Title')}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                 {getContent('how_it_works_subtitle', language === 'he' ?
-                '3 שלבים פשוטים לקבלת הדוח המקצועי שלך' :
-                '3 Simple Steps to Your Professional Report'
+                'תת כותרת של סעיף איך זה עובד' :
+                'How it works section subtitle'
                 )}
               </p>
             </motion.div>
@@ -445,12 +445,12 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {getContent('section_title', language === 'he' ? 'למה דווקא V107?' : 'Why V107?')}
+                {getContent('section_title', language === 'he' ? 'כותרת סעיף יתרונות' : 'Benefits Section Title')}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                 {getContent('section_subtitle', language === 'he' ?
-                'הכלי המקצועי ביותר לאבחון יזמי בישראל' :
-                'The Most Professional Entrepreneurial Assessment Tool in Israel'
+                'תת כותרת של סעיף היתרונות' :
+                'Benefits section subtitle'
                 )}
               </p>
             </motion.div>
@@ -509,10 +509,10 @@ export default function Home() {
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-6 text-white leading-tight">
-              גלה את מפת היכולות האמיתית שלך
+              {language === 'he' ? 'כותרת סעיף אודות' : 'About Section Title'}
             </h2>
             <p className="text-xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-              בעולם המקצועי המודרני, ידע הוא כוח, אך דיוק הוא ההבדל בין דריכה במקום לפריצת דרך.
+              {language === 'he' ? 'תיאור כללי על המוצר והשירות' : 'General description of the product and service'}
             </p>
           </motion.div>
 
@@ -524,42 +524,46 @@ export default function Home() {
             className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 border border-white/20 mb-12">
 
             <p className="text-lg text-gray-200 leading-relaxed mb-8">
-              דו"ח V107 הינו פיתוח משולב וייחודי של צוות מומחים בתחומי האסטרטגיה והניהול, הפועל לצד אלגוריתם AI חדשני שפיתחנו במיוחד למטרה זו. השילוב בין ניסיון מקצועי עתיר שנים לבין בינה מלאכותית מתקדמת, מאפשר לנו להפיק עבורך אבחון אסטרטגי שאין שני לו בשוק.
+              {language === 'he' 
+                ? 'תיאור מפורט של המתודולוגיה והגישה המקצועית'
+                : 'Detailed description of methodology and professional approach'}
             </p>
 
             <h3 className="text-2xl md:text-3xl font-bold mb-6 text-amber-400">
-              מה כולל הדוח המקצועי האישי שלך?
+              {language === 'he' ? 'כותרת משנה - מה כולל' : 'Subheading - What\'s Included'}
             </h3>
             <p className="text-gray-300 mb-6">
-              עם סיום השאלון, המערכת תייצר ותעביר לידיעתך ניתוח פרימיום בתוך עד 5 ימי עסקים.
+              {language === 'he' 
+                ? 'תיאור של התהליך וזמני האספקה'
+                : 'Description of process and delivery times'}
             </p>
 
             <div className="space-y-4 mb-12">
               {[
               {
                 icon: Target,
-                title: 'אבחון מקצועי של חוזקות וחסמים',
-                desc: 'זיהוי מוקדי העוצמה שלך לצד החסמים המבניים המעכבים את צמיחתך המקצועית.'
+                title: language === 'he' ? 'כותרת פיצ׳ר 1' : 'Feature Title 1',
+                desc: language === 'he' ? 'תיאור פיצ׳ר ראשון - מה הוא כולל ומה היתרונות' : 'Description of first feature - what it includes and benefits'
               },
               {
                 icon: BarChart3,
-                title: 'מפת יכולות מקצועית ויזואלית',
-                desc: 'תמונת מצב גרפית נקייה ומקצועית המציגה את רמת המיומנות שלך ב-6 צירי כוח מרכזיים: ניהול, פיננסים, שיווק, דיגיטל, ביצוע וחזון.'
+                title: language === 'he' ? 'כותרת פיצ׳ר 2' : 'Feature Title 2',
+                desc: language === 'he' ? 'תיאור פיצ׳ר שני - מה הוא כולל ומה היתרונות' : 'Description of second feature - what it includes and benefits'
               },
               {
                 icon: TrendingUp,
-                title: 'ניתוח פערים מקצועי אסטרטגי (Gap Analysis)',
-                desc: 'הבנה עמוקה של הקשר בין היכולות שלך – כיצד חיזוק חולשה ספציפית ימנף את החוזקות הקיימות שלך ויכפיל את האימפקט המקצועי שלך.'
+                title: language === 'he' ? 'כותרת פיצ׳ר 3' : 'Feature Title 3',
+                desc: language === 'he' ? 'תיאור פיצ׳ר שלישי - מה הוא כולל ומה היתרונות' : 'Description of third feature - what it includes and benefits'
               },
               {
                 icon: CheckCircle,
-                title: 'פרוטוקול פעולה מקצועי (The Action Matrix)',
-                desc: 'צעדים מעשיים לביצוע מיידי (Quick Wins) לצד "מרשם" עבודה המותאמת אישית לפרופיל שלך.'
+                title: language === 'he' ? 'כותרת פיצ׳ר 4' : 'Feature Title 4',
+                desc: language === 'he' ? 'תיאור פיצ׳ר רביעי - מה הוא כולל ומה היתרונות' : 'Description of fourth feature - what it includes and benefits'
               },
               {
                 icon: BookOpen,
-                title: 'ספריית משאבי פרימיום מקצועיים',
-                desc: 'הפניות ממוקדות למקורות ידע מהשורה הראשונה בעולם – קורסים אקדמיים, ספרות ניהול מתקדמת וכלים טכנולוגיים מובילים.'
+                title: language === 'he' ? 'כותרת פיצ׳ר 5' : 'Feature Title 5',
+                desc: language === 'he' ? 'תיאור פיצ׳ר חמישי - מה הוא כולל ומה היתרונות' : 'Description of fifth feature - what it includes and benefits'
               }].
               map((item, index) =>
               <motion.div
@@ -586,9 +590,9 @@ export default function Home() {
             </h3>
             <div className="grid md:grid-cols-3 gap-6 mb-12">
               {[
-              { title: 'בהירות ניהולית', desc: 'הפסקת ה"רעש" והתמקדות במוקדים שבאמת מייצרים צמיחה בקריירה או בעסק שלך.' },
-              { title: 'שפה אסטרטגית', desc: 'שיפור היכולת לקבל החלטות מבוססות נתונים וגיבוש חזון מקצועי חד וממוקד.' },
-              { title: 'ייעול מערכתי', desc: 'קבלת כלים להפחתת עומס תפעולי ומעבר לניהול אסטרטגי חכם.' }].
+              { title: language === 'he' ? 'תרומה מקצועית 1' : 'Professional Contribution 1', desc: language === 'he' ? 'תיאור התרומה הראשונה' : 'Description of first contribution' },
+              { title: language === 'he' ? 'תרומה מקצועית 2' : 'Professional Contribution 2', desc: language === 'he' ? 'תיאור התרומה השנייה' : 'Description of second contribution' },
+              { title: language === 'he' ? 'תרומה מקצועית 3' : 'Professional Contribution 3', desc: language === 'he' ? 'תיאור התרומה השלישית' : 'Description of third contribution' }].
               map((item, index) =>
               <motion.div
                 key={index}
@@ -609,13 +613,17 @@ export default function Home() {
 
             <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-2xl p-8 border border-amber-400/30">
               <h3 className="text-2xl md:text-3xl font-bold mb-4 text-amber-400">
-                מעבר מידיעה לפעולה: אודות מוצר העל שלנו "V107-BOOSTER"
+                {language === 'he' ? 'כותרת מוצר נוסף/שירות משלים' : 'Additional Product/Service Title'}
               </h3>
               <p className="text-gray-200 leading-relaxed mb-4">
-                ניסיוננו מראה כי רבים מסתפקים בקריאת הדו"ח (שלב הידיעה), אך אלו שעברו ליישום בפועל של המסקנות, הם אלו שהשיגו יעדים טובים יותר.
+                {language === 'he' 
+                  ? 'תיאור המוצר או השירות המשלים - מה הוא מספק'
+                  : 'Description of complementary product/service - what it provides'}
               </p>
               <p className="text-gray-200 leading-relaxed mb-6">
-                בדיוק עבורכם פיתחנו את מוצר העל שלנו: <span className="font-bold text-amber-300">V107-BOOSTER</span>. זהו כלי עבודה יומי עוצמתי המלווה אותך במשך 7 ימים עם משימות יומיות-קצרות וממוקדות, במטרה להפוך את מסקנות הדו"ח לדרך חיים ניהולית ולתוצאות מוחשיות בשטח.
+                {language === 'he'
+                  ? 'פסקה נוספת המסבירה את היתרונות והערך המוסף'
+                  : 'Additional paragraph explaining benefits and added value'}
               </p>
               <div className="flex items-center gap-2 text-white">
                 <Rocket className="w-6 h-6 text-amber-400" />

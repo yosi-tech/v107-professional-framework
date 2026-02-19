@@ -163,12 +163,12 @@ export default function About() {
             <Building2 className="w-10 h-10" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            {getContent('hero_title', language === 'he' ? 'עלית – יזום עסקים' : 'Elit – Business Initiatives')}
+            {getContent('hero_title', language === 'he' ? 'כותרת עמוד אודות' : 'About Page Title')}
           </h1>
           <p className="text-xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
             {getContent('hero_subtitle', language === 'he' 
-              ? 'פעילות בוטיק המסייעת ליזמים ולבעלי עסקים קיימים לבנות החלטות נכונות וליישם אותן בפועל. גישה ממוקדת תוצאות עם סטנדרט מקצועי גבוה.'
-              : 'A boutique consultancy helping entrepreneurs and business owners make sound decisions and implement them effectively. Results-oriented approach with high professional standards.'
+              ? 'תיאור כללי של החברה, השירות והגישה המקצועית'
+              : 'General description of the company, service and professional approach'
             )}
           </p>
         </div>
@@ -187,31 +187,31 @@ export default function About() {
             </div>
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-                {getContent('yossi_name', language === 'he' ? 'יוסי אלון' : 'Yossi Alon')}
+                {getContent('yossi_name', language === 'he' ? 'שם המייסד/מנכ"ל' : 'Founder/CEO Name')}
               </h2>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
                 {getContent('yossi_bio_paragraph1', language === 'he'
-                  ? 'יועץ ומלווה בעלי עסקים קטנים ובינוניים מאז 2006. תואר ראשון בכלכלה, התמחות במימון, ידע נרחב בעסקים.'
-                  : 'Business consultant and mentor since 2006. Bachelor\'s degree in Economics, specialization in Finance, extensive knowledge in business.'
+                  ? 'פסקה ראשונה - רקע מקצועי וניסיון'
+                  : 'First paragraph - professional background and experience'
                 )}
               </p>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
                 {getContent('yossi_bio_paragraph2', language === 'he'
-                  ? 'עבדתי עם עשרות בעלי עסקים כמעט בכל קטגוריה בישראל—קמעונאות, B2B, מסעדות וחנויות נישה, שירותים מקצועיים, סטארט-אפים, שירותים טכנולוגים.'
-                  : 'I have worked with dozens of business owners across nearly every category in Israel—retail, B2B, restaurants and niche stores, professional services, startups, and tech services.'
+                  ? 'פסקה שנייה - תחומי התמחות ופרויקטים'
+                  : 'Second paragraph - areas of expertise and projects'
                 )}
               </p>
               <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
                 <p className="text-gray-800 font-semibold">
-                  {getContent('yossi_approach_title', language === 'he' ? 'הגישה שלי:' : 'My Approach:')}
+                  {getContent('yossi_approach_title', language === 'he' ? 'כותרת הגישה המקצועית' : 'Professional Approach Title')}
                 </p>
                 <p className="text-gray-700 mt-2">
-                  {getContent('yossi_approach_subtitle', language === 'he' ? 'פשוט. מדיד. אנושי.' : 'Simple. Measurable. Human.')}
+                  {getContent('yossi_approach_subtitle', language === 'he' ? 'סלוגן או משפט מפתח' : 'Slogan or key phrase')}
                 </p>
                 <p className="text-gray-600 mt-3 text-sm">
                   {getContent('yossi_approach_description', language === 'he'
-                    ? 'ב-AVENTURA 107 אנו משלבים שיטה סדורה, ניסיון שטח, וביקורת אנושית לפני כל דו״ח.'
-                    : 'At AVENTURA 107, we combine structured methodology, field experience, and human review before every report.'
+                    ? 'תיאור הגישה והמתודולוגיה'
+                    : 'Description of approach and methodology'
                   )}
                 </p>
                 <p className="text-gray-800 font-semibold mt-4">
@@ -240,12 +240,12 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-              {getContent('categories_title', language === 'he' ? 'ליווינו עסקים בקטגוריות רבות' : 'We Have Guided Businesses in Various Categories')}
+              {getContent('categories_title', language === 'he' ? 'כותרת סעיף קטגוריות/תחומים' : 'Categories/Sectors Section Title')}
             </h2>
             <p className="text-lg text-gray-600">
               {getContent('categories_subtitle', language === 'he'
-                ? 'ניסיון עשיר בליווי עסקים בכל התחומים'
-                : 'Rich experience in guiding businesses across all sectors'
+                ? 'תת כותרת לסעיף הקטגוריות'
+                : 'Categories section subtitle'
               )}
             </p>
           </div>
@@ -272,12 +272,12 @@ export default function About() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
-              {getContent('portfolio_title', language === 'he' ? 'דוגמאות ליווי' : 'Mentorship Examples')}
+              {getContent('portfolio_title', language === 'he' ? 'כותרת סעיף דוגמאות/תיק עבודות' : 'Examples/Portfolio Section Title')}
             </h2>
             <p className="text-lg text-gray-600">
               {getContent('portfolio_subtitle', language === 'he'
-                ? 'מקרי מבחן וסיפורי הצלחה מהשטח'
-                : 'Case studies and success stories from the field'
+                ? 'תת כותרת לסעיף הדוגמאות'
+                : 'Examples section subtitle'
               )}
             </p>
           </div>
