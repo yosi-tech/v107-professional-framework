@@ -90,20 +90,20 @@ export default function Home() {
   const stepsData = [
   {
     icon: FileText,
-    title: getContent('step1_title', language === 'he' ? "כותרת שלב 1" : "Step 1 Title"),
-    desc: getContent('step1_desc', language === 'he' ? "תיאור שלב 1" : "Step 1 description"),
+    title: getContent('step1_title', language === 'he' ? "שולחים לינק לשאלון מועמד" : "Send candidate questionnaire link"),
+    desc: getContent('step1_desc', language === 'he' ? "20 דקות מכל מכשיר" : "20 minutes from any device"),
     time: getContent('step1_time', language === 'he' ? "זמן משוער" : "Estimated time")
   },
   {
     icon: BarChart3,
-    title: getContent('step2_title', language === 'he' ? "כותרת שלב 2" : "Step 2 Title"),
-    desc: getContent('step2_desc', language === 'he' ? "תיאור שלב 2" : "Step 2 description"),
+    title: getContent('step2_title', language === 'he' ? "אלגוריתם העל שלנו מנתח" : "Our super algorithm analyzes"),
+    desc: getContent('step2_desc', language === 'he' ? "11 יכולות מקצועיות - הופכים לתמונת יכולות מלאה" : "11 professional capabilities - transform into a complete capability picture"),
     time: getContent('step2_time', language === 'he' ? "זמן משוער" : "Estimated time")
   },
   {
     icon: Rocket,
-    title: getContent('step3_title', language === 'he' ? "כותרת שלב 3" : "Step 3 Title"),
-    desc: getContent('step3_desc', language === 'he' ? "תיאור שלב 3" : "Step 3 description"),
+    title: getContent('step3_title', language === 'he' ? "מקבלים דוח — ומחליטים בביטחון" : "Receive report — decide with confidence"),
+    desc: getContent('step3_desc', language === 'he' ? "גיוס מבוסס דאטה מבוסס מיליוני מועמדים" : "Data-driven recruitment based on millions of candidates"),
     time: getContent('step3_time', language === 'he' ? "זמן משוער" : "Estimated time")
   }];
 
@@ -331,10 +331,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'כותרת סעיף' : 'Section Title'}
+                {language === 'he' ? 'איך V107 עובד?' : 'How does V107 work?'}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {language === 'he' ? 'תת כותרת של הסעיף' : 'Section subtitle'}
+                {language === 'he' ? 'שלב אחר שלב' : 'Step by step'}
               </p>
             </motion.div>
           </div>
