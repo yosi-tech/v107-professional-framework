@@ -747,10 +747,10 @@ export default function Home() {
                 <Link to={createPageUrl("Questionnaire")}>
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-3xl px-24 py-12 rounded-2xl shadow-2xl shadow-amber-500/50 font-black group">
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xl px-12 py-6 rounded-2xl shadow-2xl shadow-amber-500/50 font-black group">
 
                     <span className="flex items-center gap-3">
-                      <Play className="w-10 h-10" />
+                      <Play className="w-5 h-5" />
                       {language === 'he' ? 'החלו בפיילוט עכשיו' : 'Start Pilot Now'}
                     </span>
                   </Button>
