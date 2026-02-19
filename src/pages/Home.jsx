@@ -730,16 +730,16 @@ export default function Home() {
 
               <div className="grid sm:grid-cols-3 gap-6 mb-10">
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'יתרון 1' : 'Benefit 1'}</h4>
-                  <p className="text-gray-300 text-sm">{language === 'he' ? 'תיאור' : 'Description'}</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'התייעלות ודיוק' : 'Efficiency and Accuracy'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'התאמה מושלמת בין כישורי המועמד לדרישות התפקיד' : 'Perfect match between candidate skills and position requirements'}</p>
                 </div>
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'יתרון 2' : 'Benefit 2'}</h4>
-                  <p className="text-gray-300 text-sm">{language === 'he' ? 'תיאור' : 'Description'}</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'חיסכון בזמן ובמשאבים' : 'Time and Resource Savings'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'צמצום שעות עבודה יקרות לצד עלות מאוד נמוכה של השימוש במערכת' : 'Reducing expensive work hours alongside very low system usage cost'}</p>
                 </div>
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'יתרון 3' : 'Benefit 3'}</h4>
-                  <p className="text-gray-300 text-sm">{language === 'he' ? 'תיאור' : 'Description'}</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'בניית צוותים מנצחים' : 'Building Winning Teams'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'איתור העובדים המתאימים ביותר שיסייעו בצמיחה ובהצלחת הארגון' : 'Finding the most suitable employees to help grow and succeed the organization'}</p>
                 </div>
               </div>
 
