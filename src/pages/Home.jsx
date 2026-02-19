@@ -179,7 +179,7 @@ export default function Home() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src={getContent('hero_background_image', 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2574&auto=format&fit=crop')}
+            src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2574&auto=format&fit=crop"
             alt="Entrepreneurs collaborating"
             className="w-full h-full object-cover" />
 
@@ -229,7 +229,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-white/20">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="text-sm text-white/90 font-medium">
-                {getContent('hero_badge_text', language === 'he' ? 'מבוסס על 5 שנות מחקר ופיתוח' : 'Based on 5 Years of Research')}
+                {language === 'he' ? 'טקסט תג' : 'Badge text'}
               </span>
             </div>
 
@@ -277,20 +277,20 @@ export default function Home() {
             className="mt-20 mb-32 grid grid-cols-2 md:grid-cols-4 gap-6">
 
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{getContent('stat1_number', '5,000+')}</div>
-              <div className="text-sm text-gray-300">{getContent('stat1_label', language === 'he' ? 'אנשים השתמשו בשאלון' : 'People Used')}</div>
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '0' : '0'}</div>
+              <div className="text-sm text-gray-300">{language === 'he' ? 'סטטיסטיקה 1' : 'Statistic 1'}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{getContent('stat2_number', '107')}</div>
-              <div className="text-sm text-gray-300">{getContent('stat2_label', language === 'he' ? 'נקודות מידה' : 'Data Points')}</div>
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '0' : '0'}</div>
+              <div className="text-sm text-gray-300">{language === 'he' ? 'סטטיסטיקה 2' : 'Statistic 2'}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{getContent('stat3_number', '11')}</div>
-              <div className="text-sm text-gray-300">{getContent('stat3_label', language === 'he' ? 'ממדים קריטיים' : 'Critical Dimensions')}</div>
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '0' : '0'}</div>
+              <div className="text-sm text-gray-300">{language === 'he' ? 'סטטיסטיקה 3' : 'Statistic 3'}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full flex flex-col justify-start items-center text-center">
-              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{getContent('stat4_number', '7')}</div>
-              <div className="text-sm text-gray-300">{getContent('stat4_label', language === 'he' ? 'ימים לקבלת דוח' : 'Days to Report')}</div>
+              <div className="text-4xl font-black text-amber-400 mb-4 min-h-[5rem] flex items-center justify-center">{language === 'he' ? '0' : '0'}</div>
+              <div className="text-sm text-gray-300">{language === 'he' ? 'סטטיסטיקה 4' : 'Statistic 4'}</div>
             </div>
           </motion.div>
         </div>
@@ -311,26 +311,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Video Section - Only for Hebrew */}
-      {language === 'he' && (
-        <section className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-black mb-12 text-center text-transparent bg-gradient-to-r from-amber-500 to-amber-600 bg-clip-text">
-              הכירו את V107
-            </h2>
-            <div className="relative pb-[42.1875%] w-3/4 mx-auto rounded-2xl overflow-hidden shadow-2xl">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/ukwW8_NJ3hw"
-                title="V107 Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </section>
-      )}
+
 
       {/* How It Works - Clean & Simple */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
@@ -495,9 +476,9 @@ export default function Home() {
             className="text-center mb-16">
 
             <div className="inline-block mb-4">
-              <span className="bg-amber-500/20 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold">
-                אודות V107 המקצועי
-              </span>
+            <span className="bg-amber-500/20 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold">
+              {language === 'he' ? 'תג' : 'Badge'}
+            </span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-6 text-white leading-tight">
               {language === 'he' ? 'כותרת' : 'Title'}
@@ -651,10 +632,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'מה אומרים עלינו' : 'What People Say'}
+                {language === 'he' ? 'כותרת המלצות' : 'Testimonials Title'}
               </h2>
               <p className="text-xl text-gray-600">
-                {language === 'he' ? 'סיפורי הצלחה מהשטח' : 'Success Stories from the Field'}
+                {language === 'he' ? 'תת כותרת' : 'Subtitle'}
               </p>
             </motion.div>
           </div>
@@ -807,20 +788,20 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
               <Users className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{getContent('badge1_number', '5,000+')}</h3>
-              <p className="text-gray-600">{getContent('badge1_text', language === 'he' ? 'יזמים השתמשו בשאלון' : 'Entrepreneurs Used')}</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{language === 'he' ? '0' : '0'}</h3>
+              <p className="text-gray-600">{language === 'he' ? 'טקסט תג 1' : 'Badge text 1'}</p>
             </div>
             <div>
               <Award className="w-12 h-12 text-amber-600 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                {getContent('badge2_number', language === 'he' ? '5 שנים' : '5 Years')}
+                {language === 'he' ? '0' : '0'}
               </h3>
-              <p className="text-gray-600">{getContent('badge2_text', language === 'he' ? 'של מחקר ופיתוח' : 'Research & Development')}</p>
+              <p className="text-gray-600">{language === 'he' ? 'טקסט תג 2' : 'Badge text 2'}</p>
             </div>
             <div>
               <Target className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{getContent('badge3_number', '107')}</h3>
-              <p className="text-gray-600">{getContent('badge3_text', language === 'he' ? 'נקודות מידה קריטיות' : 'Critical Data Points')}</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{language === 'he' ? '0' : '0'}</h3>
+              <p className="text-gray-600">{language === 'he' ? 'טקסט תג 3' : 'Badge text 3'}</p>
             </div>
           </div>
         </div>

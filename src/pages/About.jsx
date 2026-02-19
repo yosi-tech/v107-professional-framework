@@ -178,7 +178,7 @@ export default function About() {
             <div>
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/ce9ac8251_.jpg"
-                alt={getContent('yossi_image_alt', language === 'he' ? 'יוסי אלון – יועץ ליזמים (AVENTURA 107)' : 'Yossi Alon – Business Consultant (AVENTURA 107)')}
+                alt={language === 'he' ? 'תמונת פרופיל' : 'Profile picture'}
                 className="w-48 h-48 rounded-full mx-auto object-cover shadow-2xl border-4 border-amber-500"
               />
             </div>
