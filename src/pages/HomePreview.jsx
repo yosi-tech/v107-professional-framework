@@ -402,37 +402,36 @@ export default function HomePreview() {
           </motion.div>
         </div>
 
-          {/* Stats Bar - Cyber Style */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
-            className="absolute bottom-10 left-0 right-0 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { icon: Target, value: '₪39', label: language === 'he' ? 'מחיר התחלתי' : 'Starting price' },
-                { icon: Clock, value: '24h', label: language === 'he' ? 'זמן אספקה' : 'Delivery time' },
-                { icon: BarChart3, value: '11', label: language === 'he' ? 'יכולות' : 'capabilities' },
-                { icon: Users, value: '500+', label: language === 'he' ? 'חברות' : 'companies' }
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
-                  className="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-all duration-300 cursor-pointer group">
-                  <stat.icon className="w-8 h-8 text-cyan-400 mx-auto mb-3 group-hover:text-purple-400 transition-colors" />
-                  <div className="text-3xl md:text-4xl font-black text-white mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs text-gray-400 uppercase tracking-wider">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+        {/* Stats Bar - Cyber Style */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="absolute bottom-10 left-0 right-0 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { icon: Target, value: '₪39', label: language === 'he' ? 'מחיר התחלתי' : 'Starting price' },
+              { icon: Clock, value: '24h', label: language === 'he' ? 'זמן אספקה' : 'Delivery time' },
+              { icon: BarChart3, value: '11', label: language === 'he' ? 'יכולות' : 'capabilities' },
+              { icon: Users, value: '500+', label: language === 'he' ? 'חברות' : 'companies' }
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
+                className="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-all duration-300 cursor-pointer group">
+                <stat.icon className="w-8 h-8 text-cyan-400 mx-auto mb-3 group-hover:text-purple-400 transition-colors" />
+                <div className="text-3xl md:text-4xl font-black text-white mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-xs text-gray-400 uppercase tracking-wider">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Scroll Indicator */}
         <motion.div
