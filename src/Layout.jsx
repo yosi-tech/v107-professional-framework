@@ -572,11 +572,16 @@ function AppLayout({ children }) {
       </header>
 
       {/* Banner for companies */}
-      <div className="py-6 px-4 sm:px-6 lg:px-8 shadow-lg" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
-        <div className="max-w-7xl mx-auto flex items-center justify-center">
-          <Link to={createPageUrl("Questionnaire")} className="w-full">
-            <Button className="w-full bg-transparent hover:bg-white/10 text-white font-bold text-lg sm:text-xl py-6 sm:py-8 rounded-lg transition-all border-2 border-white/30 hover:border-white/50">
-              {language === 'he' ? 'חברות חוסכות מאמץ, זמן ועלויות באמצעות V107 - לרכישה ליחידים בלבד' : 'Companies save effort, time and costs with V107 - For individuals only'}
+      <div className="py-4 px-4 sm:px-6 lg:px-8 shadow-lg" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-right flex-1">
+            <span className="font-bold text-lg sm:text-xl text-white">
+              {language === 'he' ? 'חברות חוסכות מאמץ, זמן ועלויות באמצעות V107' : 'Companies save effort, time and costs with V107'}
+            </span>
+          </div>
+          <Link to={createPageUrl("Questionnaire")}>
+            <Button className="bg-white hover:bg-gray-100 font-bold px-6 sm:px-8 py-3 rounded-lg shadow-lg whitespace-nowrap" style={{ color: '#b8a46e' }}>
+              {language === 'he' ? 'לרכישה ליחידים בלבד' : 'For individuals only'}
             </Button>
           </Link>
         </div>
