@@ -394,15 +394,13 @@ function AppLayout({ children }) {
             <Link
               to={createPageUrl("Home")}
               className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/89471dac6_IMG_8646.jpg" 
-                alt="V107 Logo" 
-                className="w-12 h-12 rounded-lg shadow-lg object-cover"
-              />
-              <div>
-                <h1 className="text-sm font-bold text-[#b8a46e] tracking-wider">
-                  PROFESSIONAL FRAMEWORK
+              <div className="flex flex-col items-start">
+                <h1 className="text-2xl font-black text-slate-900">
+                  V107
                 </h1>
+                <p className="text-xs font-semibold text-[#b8a46e] tracking-wider">
+                  PROFESSIONAL FRAMEWORK
+                </p>
               </div>
             </Link>
 
@@ -415,7 +413,7 @@ function AppLayout({ children }) {
                 {t('layout.nav_articles')}
               </Link>
               <Link to={createPageUrl("About")} className={`text-xl font-semibold transition-colors ${location.pathname === createPageUrl("About") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
-                {t('layout.nav_about')}
+                {language === 'he' ? 'אודות' : 'About'}
               </Link>
 
               {!isLoadingUser && user && (
@@ -432,22 +430,14 @@ function AppLayout({ children }) {
                 </Link>
               )}
 
-              {hasUnpaidReport ? (
-                <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
-                  <Button className="text-white rounded-lg text-base px-6 py-3 font-bold animate-pulse" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
-                    {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
-                  </Button>
-                </Link>
-              ) : (
-                <Link to={createPageUrl("Questionnaire")}>
-                  <Button className="gradient-accent text-white rounded-lg text-base px-6 py-3">
-                    {hasAbandonedQuestionnaire 
-                      ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
-                      : t('layout.start_questionnaire_btn')
-                    }
-                  </Button>
-                </Link>
-              )}
+              <Link to={createPageUrl("Questionnaire")}>
+                <Button className="gradient-accent text-white rounded-lg text-base px-6 py-3">
+                  {hasAbandonedQuestionnaire 
+                    ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
+                    : t('layout.start_questionnaire_btn')
+                  }
+                </Button>
+              </Link>
 
               {!isLoadingUser && !user && (
                 <Button variant="outline" size="sm" onClick={() => base44.auth.redirectToLogin(window.location.href)} className="bg-background text-slate-600 px-4 text-base font-medium">
@@ -464,18 +454,6 @@ function AppLayout({ children }) {
 
             {/* Mobile Quick Actions */}
             <div className="lg:hidden flex items-center gap-2">
-              {!isLoadingUser && user && hasUnpaidReport && (
-                <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
-                  <Button 
-                    size="sm" 
-                    className="text-white text-xs px-2 py-1.5"
-                    style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}
-                  >
-                    {language === 'he' ? 'רכישה' : 'Buy'}
-                  </Button>
-                </Link>
-              )}
-              
               {!isLoadingUser && user && hasAbandonedQuestionnaire && (
                 <Link to={createPageUrl("Questionnaire")}>
                   <Button 
@@ -523,7 +501,7 @@ function AppLayout({ children }) {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname === createPageUrl("About") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
                 >
-                  {t('layout.nav_about')}
+                  {language === 'he' ? 'אודות' : 'About'}
                 </Link>
                 
                 {!isLoadingUser && user && (
@@ -546,23 +524,15 @@ function AppLayout({ children }) {
                     {language === 'he' ? 'אדמין' : 'Admin'}
                   </Link>
                 )}
-                
-                {hasUnpaidReport ? (
-                  <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
-                    <Button className="text-white rounded-lg text-sm px-5 py-2.5 w-full font-bold" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
-                      {language === 'he' ? '🎯 רכישת דוח' : '🎯 Purchase Report'}
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
-                    <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5 w-full">
-                      {hasAbandonedQuestionnaire 
-                        ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
-                        : t('layout.start_questionnaire_btn')
-                      }
-                    </Button>
-                  </Link>
-                )}
+
+                <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
+                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5 w-full">
+                    {hasAbandonedQuestionnaire 
+                      ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
+                      : t('layout.start_questionnaire_btn')
+                    }
+                  </Button>
+                </Link>
                 
                 {!isLoadingUser && !user && (
                   <div className="px-4">
@@ -601,24 +571,16 @@ function AppLayout({ children }) {
         </div>
       </header>
 
-      {/* Banner for unpaid report */}
-      {!isLoadingUser && hasUnpaidReport && (
-        <div className="py-4 px-4 sm:px-6 lg:px-8 shadow-lg" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3 text-center sm:text-right">
-              <span className="text-2xl">🎯</span>
-              <span className="font-bold text-lg text-white">
-                {language === 'he' ? 'נותר לך רק לרכוש את הדוח המקצועי שלך!' : 'Only one step left - Purchase your professional report!'}
-              </span>
-            </div>
-            <Link to={createPageUrl(`Completion?responseId=${unpaidReportId}`)}>
-              <Button className="bg-white hover:bg-gray-100 font-bold px-8 py-3 rounded-lg shadow-lg" style={{ color: '#b8a46e' }}>
-                {language === 'he' ? 'לרכישת הדוח' : 'Purchase Report'}
-              </Button>
-            </Link>
-          </div>
+      {/* Banner for companies */}
+      <div className="py-6 px-4 sm:px-6 lg:px-8 shadow-lg" style={{ background: 'linear-gradient(to right, #b8a46e, #d4af37)' }}>
+        <div className="max-w-7xl mx-auto flex items-center justify-center">
+          <Link to={createPageUrl("Questionnaire")} className="w-full">
+            <Button className="w-full bg-transparent hover:bg-white/10 text-white font-bold text-lg sm:text-xl py-6 sm:py-8 rounded-lg transition-all border-2 border-white/30 hover:border-white/50">
+              {language === 'he' ? 'חברות חוסכות מאמץ, זמן ועלויות באמצעות V107 - לרכישה ליחידים בלבד' : 'Companies save effort, time and costs with V107 - For individuals only'}
+            </Button>
+          </Link>
         </div>
-      )}
+      </div>
 
       <main className="flex-1 relative z-10">
         {children}
