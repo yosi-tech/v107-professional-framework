@@ -90,21 +90,21 @@ export default function Home() {
   const stepsData = [
   {
     icon: FileText,
-    title: getContent('step1_title', language === 'he' ? "שולחים לינק לשאלון מועמד" : "Send candidate questionnaire link"),
-    desc: getContent('step1_desc', language === 'he' ? "20 דקות מכל מכשיר" : "20 minutes from any device"),
-    time: getContent('step1_time', language === 'he' ? "זמן משוער" : "Estimated time")
+    title: getContent('step1_title', language === 'he' ? "שולחים לינק לשאלון למועמדים הסופיים" : "Send questionnaire link to final candidates"),
+    desc: getContent('step1_desc', language === 'he' ? "20 דקות מכל מכשיר - השלב הכמעט אחרון" : "20 minutes from any device - the almost final stage"),
+    time: getContent('step1_time', language === 'he' ? "20 דקות" : "20 minutes")
   },
   {
     icon: BarChart3,
     title: getContent('step2_title', language === 'he' ? "אלגוריתם העל שלנו מנתח" : "Our super algorithm analyzes"),
-    desc: getContent('step2_desc', language === 'he' ? "11 יכולות מקצועיות - הופכים לתמונת יכולות מלאה" : "11 professional capabilities - transform into a complete capability picture"),
-    time: getContent('step2_time', language === 'he' ? "זמן משוער" : "Estimated time")
+    desc: getContent('step2_desc', language === 'he' ? "11 יכולות מקצועיות + דוח השוואתי לקורות חיים" : "11 professional capabilities + comparative report to CV"),
+    time: getContent('step2_time', language === 'he' ? "תוך 24 שעות" : "Within 24 hours")
   },
   {
     icon: Rocket,
-    title: getContent('step3_title', language === 'he' ? "מקבלים דוח —\nומחליטים בביטחון" : "Receive report —\ndecide with confidence"),
-    desc: getContent('step3_desc', language === 'he' ? "גיוס מבוסס דאטה מליוני מועמדים" : "Data-driven recruitment based on millions of candidates"),
-    time: getContent('step3_time', language === 'he' ? "זמן משוער" : "Estimated time")
+    title: getContent('step3_title', language === 'he' ? "מקבלים דוח V107 מקיף ודוח השוואתי —\nומחליטים בביטחון מלא" : "Receive comprehensive V107 report and comparative report —\ndecide with full confidence"),
+    desc: getContent('step3_desc', language === 'he' ? "מידע אובייקטיבי להחלטה הסופית" : "Objective information for the final decision"),
+    time: getContent('step3_time', language === 'he' ? "24 שעות" : "24 hours")
   }];
 
 
@@ -112,22 +112,22 @@ export default function Home() {
   {
     icon: Target,
     title: "פרופיל יכולות מקצועי מפורט",
-    desc: "מיפוי חוזקות ויכולות טעונות שיפור"
+    desc: "מיפוי מדויק של חוזקות ויכולות לשיפור - התמונה המלאה על המועמד"
   },
   {
     icon: TrendingUp,
     title: "דוח סינון יכולות מהיר",
-    desc: "24 שעות ממילוי השאלון"
+    desc: "24 שעות ממילוי השאלון - מותאם לשלב המכרע"
   },
   {
     icon: Zap,
-    title: "סטנדרט הערכה אחיד",
-    desc: "כלי אובייקטיבי"
+    title: "סטנדרט הערכה אחיד ואובייקטיבי",
+    desc: "כלי עצמאי שאינו תלוי בשיקול דעת אישי"
   },
   {
     icon: Award,
-    title: 'דוח פערים',
-    desc: "הפער בין קורות החיים ליכולות בפועל"
+    title: 'דוח פערים מדויק - V107 Comparison Report',
+    desc: "הפער בין קורות החיים ליכולות בפועל - מאפשר התאמה אופטימלית לתפקיד"
   }] :
   [
   {
@@ -239,12 +239,12 @@ export default function Home() {
               </span>
               <br />
               <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
-                {language === 'he' ? 'מה הראיון לא גילה לכם על המועמד לתפקיד?' : 'What didn\'t the interview reveal about the candidate?'}
+                {language === 'he' ? 'ההחלטה האחרונה שלכם, מבוססת נתונים אובייקטיביים' : 'Your Final Decision, Based on Objective Data'}
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {language === 'he' ? 'דוח יכולות מקצועי על כל מועמד — לפני שמקבלים החלטה' : 'Professional capability report on every candidate — before making a decision'}
+              {language === 'he' ? 'מידע קריטי על יכולות והתאמה לתפקיד — כשיש מספר מועמדים רציניים והצורך בהבחנה ברורה' : 'Critical information on capabilities and job fit — when you have several serious candidates and need clear differentiation'}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-12">
@@ -420,10 +420,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'מנתונים להחלטות: התפוקות של V107' : 'From Data to Decisions: V107 Outputs'}
+                {language === 'he' ? 'מנתונים להחלטות: מה מקבלים ב-V107' : 'From Data to Decisions: What You Get with V107'}
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {language === 'he' ? 'התמונה המלאה על כל מועמד' : 'The Complete Picture of Every Candidate'}
+                {language === 'he' ? 'כלי אסטרטגי לשלבים הסופיים של תהליך הגיוס' : 'Strategic tool for the final stages of recruitment'}
               </p>
             </motion.div>
           </div>
@@ -721,25 +721,25 @@ export default function Home() {
               </div>
 
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-white leading-tight">
-                {language === 'he' ? 'המהפכה בניהול ההון האנושי התחילה,\nקבלו הזמנה להצטרפות 🌸' : 'The HR Management Revolution Has Begun,\nGet Your Invitation to Join 🌸'}
+                {language === 'he' ? 'הצטרפו לחברות שקיבלו החלטות גיוס מדויקות יותר עם V107' : 'Join Companies Making More Accurate Hiring Decisions with V107'}
               </h2>
 
               <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-                {language === 'he' ? 'הצטרפו לחברות וארגונים הובילים שכבר בחרו להפוך את V107 לכלי עבודה בהליך הגיוס שלהם. גיוס מבוסס נתונים, מדויק וחסכוני ביותר' : 'Join leading companies and organizations that have already chosen to make V107 their recruitment tool. Data-driven, accurate and most cost-effective recruitment'}
+                {language === 'he' ? 'V107 הפך לכלי עבודה קריטי לקבלת החלטות גיוס מדויקות ומוכחות - כשיש מועמדים חזקים והצורך במידע נוסף מהותי על יכולותיהם' : 'V107 has become a critical work tool for making accurate and proven recruitment decisions - when there are strong candidates and a need for essential additional information about their capabilities'}
               </p>
 
               <div className="grid sm:grid-cols-3 gap-6 mb-10">
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'התייעלות ודיוק' : 'Efficiency and Accuracy'}</h4>
-                  <p className="text-gray-300 text-sm">{language === 'he' ? 'התאמה מושלמת בין כישורי המועמד לדרישות התפקיד' : 'Perfect match between candidate skills and position requirements'}</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'מידע אובייקטיבי להחלטה' : 'Objective Information for Decision'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'V107 אינו קובע מי מתאים - אנחנו נותנים למקבלי ההחלטות מידע בלתי אמצעי לטובת החלטה נכונה' : 'V107 doesn\'t decide who fits - we give decision makers unmediated information for the right decision'}</p>
                 </div>
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'חיסכון בזמן ובמשאבים' : 'Time and Resource Savings'}</h4>
-                  <p className="text-gray-300 text-sm">{language === 'he' ? 'צמצום שעות עבודה יקרות לצד עלות מאוד נמוכה של השימוש במערכת' : 'Reducing expensive work hours alongside very low system usage cost'}</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'דוח השוואתי ייחודי' : 'Unique Comparative Report'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'הצלבת נתוני הדוח לקורות החיים - זיהוי פערים בזמן אמת בין יכולות בפועל לכתוב בקו"ח' : 'Cross-referencing report data with CV - identifying gaps in real-time between actual capabilities and what\'s written in CV'}</p>
                 </div>
                 <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'בניית צוותים מנצחים' : 'Building Winning Teams'}</h4>
-                  <p className="text-gray-300 text-sm">{language === 'he' ? 'איתור העובדים המתאימים ביותר שיסייעו בצמיחה ובהצלחת הארגון' : 'Finding the most suitable employees to help grow and succeed the organization'}</p>
+                  <h4 className="font-bold text-white mb-2">{language === 'he' ? 'השלב המכרע בגיוס' : 'The Critical Stage in Recruitment'}</h4>
+                  <p className="text-gray-300 text-sm">{language === 'he' ? 'כשיש מספר מועמדים רציניים - V107 מספק תובנות קריטיות להבחנה ברורה ולהחלטה מושכלת' : 'When there are several serious candidates - V107 provides critical insights for clear differentiation and informed decision'}</p>
                 </div>
               </div>
 

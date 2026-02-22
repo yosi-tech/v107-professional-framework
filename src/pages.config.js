@@ -62,6 +62,7 @@ import BoosterThankYou from './pages/BoosterThankYou';
 import Completion from './pages/Completion';
 import EmailTemplates from './pages/EmailTemplates';
 import Home from './pages/Home';
+import HomePreview from './pages/HomePreview';
 import MyAccount from './pages/MyAccount';
 import Payment from './pages/Payment';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -71,7 +72,6 @@ import ReportView from './pages/ReportView';
 import Survey from './pages/Survey';
 import TermsOfService from './pages/TermsOfService';
 import ThankYou from './pages/ThankYou';
-import HomePreview from './pages/HomePreview';
 import __Layout from './Layout.jsx';
 
 
@@ -91,6 +91,7 @@ export const PAGES = {
     "Completion": Completion,
     "EmailTemplates": EmailTemplates,
     "Home": Home,
+    "HomePreview": HomePreview,
     "MyAccount": MyAccount,
     "Payment": Payment,
     "PrivacyPolicy": PrivacyPolicy,
@@ -100,7 +101,6 @@ export const PAGES = {
     "Survey": Survey,
     "TermsOfService": TermsOfService,
     "ThankYou": ThankYou,
-    "HomePreview": HomePreview,
 }
 
 export const pagesConfig = {
