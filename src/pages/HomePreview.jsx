@@ -129,64 +129,88 @@ export default function HomePreview() {
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
-      {/* Premium Design System */}
+      {/* Ultra Modern B2B Design System */}
       <style>{`
         :root {
-          --color-primary: #1a1a2e;
-          --color-primary-dark: #0f0f1e;
-          --color-secondary: #5a6a7a;
-          --color-accent: #b8860b;
-          --color-accent-light: #daa520;
-          --color-accent-dark: #8b6914;
-          --color-text-primary: #1a1a2e;
-          --color-text-secondary: #4a5568;
-          --color-text-muted: #9ca3af;
-          --color-background: #fafbfc;
-          --color-surface: #ffffff;
-          --color-border: #e5e7eb;
+          --color-primary: #0f172a;
+          --color-primary-light: #1e293b;
+          --color-secondary: #334155;
+          --color-accent: #06b6d4;
+          --color-accent-light: #22d3ee;
+          --color-accent-dark: #0891b2;
+          --color-purple: #8b5cf6;
+          --color-purple-light: #a78bfa;
+          --color-text-primary: #0f172a;
+          --color-text-secondary: #475569;
+          --color-text-muted: #94a3b8;
         }
         
         * {
-          font-family: 'Assistant', 'Noto Sans Hebrew', 'Rubik', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+          font-family: 'Inter', 'Assistant', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
         }
         
-        .gradient-premium {
-          background: linear-gradient(135deg, #b8860b 0%, #daa520 50%, #8b6914 100%);
+        .gradient-cyber {
+          background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
         }
         
-        .gradient-hero-premium {
-          background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #2d2d4a 100%);
+        .gradient-hero-cyber {
+          background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
         }
         
-        .text-gradient-gold {
-          background: linear-gradient(135deg, #daa520, #b8860b, #cd7f32);
+        .text-gradient-cyber {
+          background: linear-gradient(135deg, #22d3ee, #06b6d4, #8b5cf6);
           background-clip: text;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
+          animation: gradient-shift 3s ease infinite;
+          background-size: 200% 200%;
         }
         
-        .card-premium {
-          background: white;
-          border: 1px solid #e5e7eb;
+        @keyframes gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        .glass-card {
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .card-premium:hover {
-          transform: translateY(-12px);
-          box-shadow: 0 30px 60px -15px rgba(184, 134, 11, 0.3);
-          border-color: #b8860b;
+        .glass-card:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(6, 182, 212, 0.5);
+          transform: translateY(-12px) scale(1.02);
+          box-shadow: 0 40px 80px -20px rgba(6, 182, 212, 0.4);
         }
         
-        .btn-premium {
-          background: linear-gradient(135deg, #b8860b, #daa520);
-          box-shadow: 0 12px 35px -8px rgba(184, 134, 11, 0.4);
+        .btn-cyber {
+          background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+          box-shadow: 0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(139, 92, 246, 0.3);
           transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
         }
         
-        .btn-premium:hover {
-          background: linear-gradient(135deg, #8b6914, #b8860b);
-          box-shadow: 0 18px 50px -8px rgba(184, 134, 11, 0.6);
-          transform: translateY(-3px);
+        .btn-cyber::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.5s;
+        }
+        
+        .btn-cyber:hover::before {
+          left: 100%;
+        }
+        
+        .btn-cyber:hover {
+          box-shadow: 0 0 40px rgba(6, 182, 212, 0.8), 0 0 80px rgba(139, 92, 246, 0.5);
+          transform: translateY(-4px) scale(1.05);
         }
         
         .section-spacing {
@@ -209,147 +233,204 @@ export default function HomePreview() {
         }
       `}</style>
 
-      {/* Hero Section - Ultra Premium */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden gradient-hero-premium">
-        {/* Animated Background Grid */}
+      {/* Hero Section - Cyber Tech */}
+      <section className="relative min-h-screen flex items-center overflow-hidden gradient-hero-cyber">
+        {/* Cyber Grid Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gMTAwIDAgTCAwIDAgMCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3lhbiIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
           </div>
           
-          {/* Floating Orbs */}
+          {/* Glowing Orbs - Cyan & Purple */}
           <motion.div
-            className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-amber-600/20 to-yellow-700/20 rounded-full blur-3xl"
+            className="absolute top-20 right-20 w-[600px] h-[600px] bg-gradient-to-br from-cyan-500/30 to-blue-600/30 rounded-full blur-3xl"
             animate={{
-              y: [0, -50, 0],
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3]
+              y: [0, -80, 0],
+              x: [0, 50, 0],
+              scale: [1, 1.3, 1],
+              opacity: [0.3, 0.6, 0.3]
             }}
             transition={{
-              duration: 15,
+              duration: 20,
               repeat: Infinity,
               ease: "easeInOut"
             }} />
 
           <motion.div
-            className="absolute bottom-40 left-20 w-[550px] h-[550px] bg-gradient-to-br from-yellow-600/20 to-amber-800/20 rounded-full blur-3xl"
+            className="absolute bottom-20 left-20 w-[700px] h-[700px] bg-gradient-to-br from-purple-600/30 to-pink-600/30 rounded-full blur-3xl"
             animate={{
-              y: [0, 50, 0],
-              scale: [1, 1.3, 1],
-              opacity: [0.3, 0.6, 0.3]
+              y: [0, 80, 0],
+              x: [0, -50, 0],
+              scale: [1, 1.4, 1],
+              opacity: [0.3, 0.7, 0.3]
             }}
             transition={{
-              duration: 18,
+              duration: 22,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: 3
+              delay: 2
             }} />
 
           <motion.div
-            className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-gradient-to-br from-amber-500/15 to-yellow-600/15 rounded-full blur-3xl"
+            className="absolute top-1/3 left-1/3 w-[500px] h-[500px] bg-gradient-to-br from-cyan-400/20 to-purple-500/20 rounded-full blur-3xl"
             animate={{
-              scale: [1, 1.25, 1],
-              opacity: [0.2, 0.4, 0.2]
+              scale: [1, 1.35, 1],
+              rotate: [0, 180, 360],
+              opacity: [0.2, 0.5, 0.2]
             }}
             transition={{
-              duration: 12,
+              duration: 25,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: 1.5
+              delay: 1
             }} />
         </div>
 
-        <div className="px-4 text-center relative z-10 max-w-7xl sm:px-6 lg:px-8">
+        {/* Split Hero Layout */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          {/* Left Side - Content */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}>
+            initial={{ opacity: 0, x: -60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="text-right lg:text-right">
 
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full mb-12 border border-white/20 shadow-xl">
-              <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
-              <span className="text-base text-white/90 font-semibold">
-                {language === 'he' ? 'פלטפורמת הערכה מקצועית מובילה' : 'Leading Professional Assessment Platform'}
+              className="inline-flex items-center gap-3 glass-card px-6 py-3 rounded-full mb-8">
+              <Zap className="w-5 h-5 text-cyan-400 animate-pulse" />
+              <span className="text-sm text-cyan-100 font-bold uppercase tracking-wider">
+                {language === 'he' ? 'טכנולוגיית AI מתקדמת' : 'Advanced AI Technology'}
               </span>
             </motion.div>
 
             {/* Main Headline */}
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1] tracking-tight">
-              <span className="text-white block mb-2">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-8 leading-[1.05]">
+              <span className="text-white block mb-3">
                 {language === 'he' ? 'V107' : 'V107'}
               </span>
-              <span className="text-gradient-gold block">
-                {language === 'he' ? 'מה הראיון לא גילה לכם' : 'What the interview didn\'t'}
+              <span className="text-gradient-cyber block">
+                {language === 'he' ? 'גלה את הפוטנציאל' : 'Discover The'}
               </span>
-              <span className="text-gradient-gold block">
-                {language === 'he' ? 'על המועמד?' : 'reveal about the candidate?'}
+              <span className="text-gradient-cyber block">
+                {language === 'he' ? 'האמיתי של המועמד' : 'True Potential'}
               </span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-xl md:text-2xl lg:text-3xl text-gray-200 mb-16 max-w-4xl mx-auto leading-relaxed font-light">
+            <p className="text-lg md:text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed">
               {language === 'he' 
-                ? 'דוח יכולות מקצועי על כל מועמד — לפני שמקבלים החלטה' 
-                : 'Professional capability report on every candidate — before making a decision'}
+                ? 'פלטפורמת אבחון AI שמנתחת 11 יכולות מקצועיות ומספקת דוח מקיף תוך 24 שעות' 
+                : 'AI diagnostic platform analyzing 11 professional capabilities with comprehensive report in 24 hours'}
             </p>
 
-            {/* CTA Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-6 items-center justify-center mb-16">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-5 mb-12">
               <Link to={createPageUrl("Questionnaire")}>
                 <Button
                   size="lg"
-                  className="btn-premium text-white text-lg sm:text-2xl px-10 py-6 sm:px-16 sm:py-9 rounded-3xl font-bold group relative overflow-hidden">
-                  <span className="relative z-10 flex items-center gap-3">
-                    <Rocket className="w-6 h-6 sm:w-7 sm:h-7 group-hover:rotate-12 transition-transform" />
-                    <span>{language === 'he' ? 'התחילו פיילוט עכשיו' : 'Start Pilot Now'}</span>
-                    {React.createElement(currentArrowIcon, { className: "w-6 h-6 sm:w-7 sm:h-7 group-hover:translate-x-1 transition-transform" })}
+                  className="btn-cyber text-white text-lg px-12 py-7 rounded-2xl font-bold group w-full sm:w-auto">
+                  <span className="relative z-10 flex items-center gap-3 justify-center">
+                    <Rocket className="w-6 h-6" />
+                    <span>{language === 'he' ? 'התחל פיילוט' : 'Start Pilot'}</span>
                   </span>
                 </Button>
               </Link>
-            </motion.div>
+              <Button
+                size="lg"
+                variant="outline"
+                className="glass-card text-white text-lg px-12 py-7 rounded-2xl font-bold border-cyan-500/50 hover:border-cyan-400 w-full sm:w-auto">
+                <span className="flex items-center gap-3 justify-center">
+                  <Play className="w-5 h-5" />
+                  <span>{language === 'he' ? 'צפה בדמו' : 'Watch Demo'}</span>
+                </span>
+              </Button>
+            </div>
 
-            {/* Trust Badge */}
-            <div className="inline-flex items-center gap-3 text-base text-white/80">
-              <CheckCircle className="w-5 h-5 text-green-400" />
-              <span>{language === 'he' ? 'גיוס נכון = חיסכון גדול' : 'Right recruitment = Big savings'}</span>
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap gap-6 text-sm text-gray-400">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-cyan-400" />
+                <span>{language === 'he' ? 'ללא התחייבות' : 'No commitment'}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-cyan-400" />
+                <span>{language === 'he' ? 'תוצאות תוך 24 שעות' : '24h results'}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-cyan-400" />
+                <span>{language === 'he' ? 'דיוק 95%+' : '95%+ accuracy'}</span>
+              </div>
             </div>
           </motion.div>
 
-          {/* Stats Bar - Premium Cards */}
+          {/* Right Side - Visual Element */}
+          <motion.div
+            initial={{ opacity: 0, x: 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+            className="hidden lg:block">
+            <div className="relative">
+              {/* Floating Cards Mockup */}
+              <div className="relative w-full h-[600px]">
+                {[
+                  { top: '10%', right: '20%', delay: 0, color: 'from-cyan-500 to-blue-600' },
+                  { top: '35%', right: '40%', delay: 0.2, color: 'from-purple-500 to-pink-600' },
+                  { top: '60%', right: '10%', delay: 0.4, color: 'from-cyan-400 to-purple-500' }
+                ].map((card, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: card.delay }}
+                    className="absolute glass-card p-6 rounded-3xl"
+                    style={{ top: card.top, right: card.right }}>
+                    <div className={`w-48 h-32 bg-gradient-to-br ${card.color} rounded-2xl mb-4 flex items-center justify-center`}>
+                      <BarChart3 className="w-12 h-12 text-white" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-white/20 rounded-full w-3/4"></div>
+                      <div className="h-3 bg-white/20 rounded-full w-1/2"></div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+          {/* Stats Bar - Cyber Style */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
-            className="mt-28 mb-32 grid grid-cols-2 md:grid-cols-4 gap-6">
-            
-            {[
-              { value: '₪39', label: language === 'he' ? 'החל מ 39 ש"ח לדוח' : 'From ₪39 per report' },
-              { value: '24', label: language === 'he' ? 'שעות והדוח אצלכם' : 'hours to report' },
-              { value: '11', label: language === 'he' ? 'יכולות מקצועיות' : 'professional capabilities' },
-              { value: '✓', label: language === 'he' ? 'מתאים לכל החברות' : 'For all companies' }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
-                className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 h-full flex flex-col justify-center items-center text-center hover:bg-white/15 hover:scale-105 transition-all duration-300 cursor-pointer group">
-                <div className="text-5xl md:text-6xl font-black text-gradient-gold mb-6 group-hover:scale-110 transition-transform">
-                  {stat.value}
-                </div>
-                <div className="text-base text-gray-200 font-medium leading-snug">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="absolute bottom-10 left-0 right-0 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { icon: Target, value: '₪39', label: language === 'he' ? 'מחיר התחלתי' : 'Starting price' },
+                { icon: Clock, value: '24h', label: language === 'he' ? 'זמן אספקה' : 'Delivery time' },
+                { icon: BarChart3, value: '11', label: language === 'he' ? 'יכולות' : 'capabilities' },
+                { icon: Users, value: '500+', label: language === 'he' ? 'חברות' : 'companies' }
+              ].map((stat, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
+                  className="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-all duration-300 cursor-pointer group">
+                  <stat.icon className="w-8 h-8 text-cyan-400 mx-auto mb-3 group-hover:text-purple-400 transition-colors" />
+                  <div className="text-3xl md:text-4xl font-black text-white mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs text-gray-400 uppercase tracking-wider">
+                    {stat.label}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         </div>
 
@@ -367,8 +448,8 @@ export default function HomePreview() {
         </motion.div>
       </section>
 
-      {/* How It Works - Clean Luxury */}
-      <section className="section-spacing px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white relative">
+      {/* How It Works - Modern Tech */}
+      <section className="section-spacing px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-24">
             <motion.div
@@ -389,43 +470,50 @@ export default function HomePreview() {
             {stepsData.map((step, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 40, rotateX: 10 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: index * 0.15 }}>
-                <Card className="card-premium rounded-[2rem] shadow-2xl h-full flex flex-col overflow-hidden">
-                  <CardContent className="p-10 text-center flex-1 flex flex-col justify-between relative">
-                    {/* Number Badge */}
-                    <div className="absolute -top-5 -right-5 bg-gray-900 text-white text-xl font-black px-5 py-3 rounded-full shadow-2xl z-10">
-                      {index + 1}
-                    </div>
-
-                    <div>
-                      {/* Icon */}
-                      <div className="relative mb-10">
-                        <div className="w-28 h-28 gradient-premium rounded-[1.75rem] flex items-center justify-center mx-auto shadow-2xl transform hover:rotate-6 transition-transform duration-300">
-                          <step.icon className="w-14 h-14 text-white" />
-                        </div>
+                transition={{ duration: 0.7, delay: index * 0.15 }}
+                style={{ perspective: '1000px' }}>
+                <div className="relative group h-full">
+                  {/* Glow Effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-[2.5rem] opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500"></div>
+                  
+                  <Card className="relative bg-white border-2 border-gray-100 rounded-[2rem] shadow-2xl h-full flex flex-col overflow-hidden transform group-hover:border-cyan-400 transition-all duration-500">
+                    <CardContent className="p-10 text-center flex-1 flex flex-col justify-between">
+                      {/* Number Badge - Cyber Style */}
+                      <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-2xl z-10 group-hover:scale-110 transition-transform">
+                        {index + 1}
                       </div>
 
-                      {/* Title */}
-                      <h3 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900 whitespace-pre-line leading-snug">
-                        {step.title}
-                      </h3>
-                      
-                      {/* Description */}
-                      <p className="text-gray-600 leading-relaxed mb-8 text-lg">
-                        {step.desc}
-                      </p>
-                    </div>
+                      <div>
+                        {/* Icon - 3D Effect */}
+                        <div className="relative mb-10">
+                          <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                          <div className="relative w-32 h-32 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                            <step.icon className="w-16 h-16 text-white" />
+                          </div>
+                        </div>
 
-                    {/* Time Badge */}
-                    <div className="inline-flex items-center gap-3 bg-amber-50 px-6 py-4 rounded-2xl border border-amber-200 mx-auto">
-                      <Clock className="w-5 h-5 text-amber-700" />
-                      <span className="text-base font-bold text-amber-900">{step.time}</span>
-                    </div>
-                  </CardContent>
-                </Card>
+                        {/* Title */}
+                        <h3 className="text-2xl md:text-3xl font-black mb-6 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent whitespace-pre-line leading-snug">
+                          {step.title}
+                        </h3>
+                        
+                        {/* Description */}
+                        <p className="text-gray-600 leading-relaxed mb-8 text-lg font-medium">
+                          {step.desc}
+                        </p>
+                      </div>
+
+                      {/* Time Badge - Modern */}
+                      <div className="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-50 to-purple-50 px-6 py-4 rounded-2xl border border-cyan-200 mx-auto group-hover:border-cyan-400 transition-colors">
+                        <Clock className="w-5 h-5 text-cyan-600" />
+                        <span className="text-base font-bold bg-gradient-to-r from-cyan-600 to-purple-600 bg-clip-text text-transparent">{step.time}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -440,8 +528,8 @@ export default function HomePreview() {
             <Link to={createPageUrl("Questionnaire")}>
               <Button
                 size="lg"
-                className="btn-premium text-white text-xl px-16 py-8 rounded-3xl font-bold shadow-2xl">
-                <span className="flex items-center gap-3">
+                className="btn-cyber text-white text-xl px-16 py-8 rounded-3xl font-bold shadow-2xl">
+                <span className="relative z-10 flex items-center gap-3">
                   {language === 'he' ? 'התחילו פיילוט עכשיו' : 'Start Pilot Now'}
                   {React.createElement(currentArrowIcon, { className: "w-6 h-6" })}
                 </span>
@@ -451,8 +539,12 @@ export default function HomePreview() {
         </div>
       </section>
 
-      {/* Benefits - Premium Grid */}
-      <section className="section-spacing px-4 sm:px-6 lg:px-8 bg-white">
+      {/* Benefits - Asymmetric Grid */}
+      <section className="section-spacing px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gMTAwIDAgTCAwIDAgMCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3lhbiIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+        </div>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-24">
             <motion.div
@@ -460,10 +552,10 @@ export default function HomePreview() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}>
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-8 text-gray-900 tracking-tight">
+              <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-8 text-white tracking-tight">
                 {language === 'he' ? 'מנתונים להחלטות' : 'From Data to Decisions'}
               </h2>
-              <p className="text-2xl md:text-3xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed">
+              <p className="text-2xl md:text-3xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
                 {language === 'he' ? 'התמונה המלאה על כל מועמד' : 'The Complete Picture of Every Candidate'}
               </p>
             </motion.div>
@@ -477,23 +569,24 @@ export default function HomePreview() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: index * 0.1 }}>
-                <Card className="card-premium rounded-[2rem] shadow-2xl h-full">
-                  <CardContent className="p-10">
-                    <div className="flex items-start gap-8">
-                      <div className="w-24 h-24 gradient-premium rounded-[1.5rem] flex items-center justify-center flex-shrink-0 shadow-2xl">
+                <div className="glass-card rounded-[2rem] p-10 h-full group hover:scale-105 transition-all duration-500">
+                  <div className="flex items-start gap-8">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                      <div className="relative w-24 h-24 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-2xl group-hover:rotate-12 transition-transform duration-500">
                         <benefit.icon className="w-12 h-12 text-white" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-2xl md:text-3xl font-bold mb-5 text-gray-900 leading-snug">
-                          {benefit.title}
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed text-lg">
-                          {benefit.desc}
-                        </p>
-                      </div>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div className="flex-1">
+                      <h3 className="text-2xl md:text-3xl font-black mb-5 text-white leading-snug">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-gray-300 leading-relaxed text-lg">
+                        {benefit.desc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -573,8 +666,8 @@ export default function HomePreview() {
         </section>
       )}
 
-      {/* Final CTA - Premium Impact */}
-      <section className="relative section-spacing px-4 sm:px-6 lg:px-8 overflow-hidden gradient-hero-premium">
+      {/* Final CTA - Cyber Impact */}
+      <section className="relative section-spacing px-4 sm:px-6 lg:px-8 overflow-hidden gradient-hero-cyber">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-10"></div>
         </div>
@@ -623,8 +716,8 @@ export default function HomePreview() {
               <Link to={createPageUrl("Questionnaire")}>
                 <Button
                   size="lg"
-                  className="btn-premium text-white text-2xl px-20 py-10 rounded-3xl font-black shadow-2xl">
-                  <span className="flex items-center gap-4">
+                  className="btn-cyber text-white text-2xl px-20 py-10 rounded-3xl font-black shadow-2xl">
+                  <span className="relative z-10 flex items-center gap-4">
                     <Play className="w-8 h-8" />
                     {language === 'he' ? 'החלו בפיילוט עכשיו' : 'Start Pilot Now'}
                   </span>
@@ -639,8 +732,8 @@ export default function HomePreview() {
         </div>
       </section>
 
-      {/* Trust Badges - Premium Footer */}
-      <section className="py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white border-t border-gray-200">
+      {/* Trust Badges - Modern Footer */}
+      <section className="py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white border-t border-slate-200">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-16 text-center">
             {[
@@ -654,8 +747,11 @@ export default function HomePreview() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}>
-                <item.icon className="w-20 h-20 text-amber-700 mx-auto mb-8" />
-                <p className="text-gray-700 font-semibold leading-relaxed text-lg">
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl blur-2xl opacity-30"></div>
+                  <item.icon className="relative w-20 h-20 text-cyan-600 mx-auto" />
+                </div>
+                <p className="text-slate-700 font-bold leading-relaxed text-lg">
                   {item.text}
                 </p>
               </motion.div>
