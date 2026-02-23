@@ -605,9 +605,10 @@ Semantic Watermark: גרסה ${watermarkLetter}
 תחיל בעמוד 1 עכשיו:`;
 
     // Call Claude API
-    const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY') || Deno.env.get('anthropic_api_key');
     if (!apiKey) {
-      return Response.json({ error: 'ANTHROPIC_API_KEY not configured' }, { status: 500 });
+      const allKeys = Object.keys(Deno.env.toObject()).join(', ');
+      return Response.json({ error: 'ANTHROPIC_API_KEY not configured', available_env_keys: allKeys }, { status: 500 });
     }
 
     const anthropic = new Anthropic({ apiKey });
