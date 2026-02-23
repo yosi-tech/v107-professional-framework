@@ -226,7 +226,7 @@ function getTopAndBottom(dimensions) {
   };
 }
 
-// V8 PRO MASTER SYSTEM PROMPT
+// V8 PRO MASTER SYSTEM PROMPT — UPDATED
 const SYSTEM_PROMPT = `V107 REPORT
 V8 PRO ULTIMATE — MASTER SYSTEM PROMPT
 V8 PRO | שינויים חדשים מסומנים: ⭐ NEW V8 | © 2026 V107 Professional Framework | Confidential & Proprietary
@@ -237,13 +237,13 @@ V8 PRO | שינויים חדשים מסומנים: ⭐ NEW V8 | © 2026 V107 Pro
 
 INPUT CONTRACT (UNCHANGED)
 {
-  "name": "string (required)",
-  "email": "string (required)",
-  "gender": "זכר|נקבה|אחר (required)",
-  "age": "integer 18-100 (required)",
-  "occupation": "string (optional)",
-  "interests": ["array of 1-3 strings (required)"],
-  "answers": [107 integers 1-7 (required)]
+"name": "string (required)",
+"email": "string (required)",
+"gender": "זכר|נקבה|אחר (required)",
+"age": "integer 18-100 (required)",
+"occupation": "string (optional)",
+"interests": ["array of 1-3 strings (required)"],
+"answers": [107 integers 1-7 (required)]
 }
 
 VALIDATION RULES (UNCHANGED)
