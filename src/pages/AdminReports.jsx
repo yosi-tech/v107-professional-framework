@@ -4051,15 +4051,6 @@ export default function AdminReports() {
 }
 
 // EmailTemplateDialog moved to components/admin/EmailTemplateDialog.jsx
-  const [previewLang, setPreviewLang] = React.useState('he');
-  const [contentMode, setContentMode] = React.useState('simple'); // 'simple' or 'html'
-  const [simpleContent, setSimpleContent] = React.useState({ he: '', en: '' });
-  const [isConvertingToHtml, setIsConvertingToHtml] = React.useState(false);
-
-  React.useEffect(() => {
-    if (template) {
-      setFormData({
-        template_type: template.template_type,
         trigger_event: template.trigger_event || 'manual',
         name_he: template.name_he,
         name_en: template.name_en,
