@@ -1,55 +1,213 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import Anthropic from 'npm:@anthropic-ai/sdk@0.39.0';
 
+// ============================================================================
+// generateReportAutomatic - delegates to V7 Pro (Claude-powered)
+// ============================================================================
+
+const REVERSE_QUESTIONS = [4, 8, 14, 22, 25, 27, 34, 37, 39, 41, 45, 48, 54, 57, 60, 89, 90, 93, 98];
+
+const DIMENSIONS = {
+  resilience: { nameHe: 'חוסן והחלטיות', nameEn: 'Resilience', questions: [1,2,3,4,5,6,7,8,9,10,11] },
+  flexibility: { nameHe: 'גמישות וחדשנות', nameEn: 'Flexibility', questions: [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28] },
+  leadership: { nameHe: 'מנהיגות ואחריות', nameEn: 'Leadership', questions: [29,30,31,32,33,34,35,36,37,38,39,40,41] },
+  communication: { nameHe: 'תקשורת ושיתוף פעולה', nameEn: 'Communication', questions: [42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57] },
+  planning: { nameHe: 'תכנון', nameEn: 'Planning', questions: [58,59,60,61,62,63,64,76,77] },
+  learning: { nameHe: 'למידה וצמיחה', nameEn: 'Learning', questions: [65,66,67,68,69,78,85,86,87,103] },
+  vision: { nameHe: 'חזון אסטרטגי', nameEn: 'Vision', questions: [72,73,74,75,80,84,101,102] },
+  tech: { nameHe: 'מיומנות טכנולוגית', nameEn: 'Tech', questions: [82,83,94,95,106] },
+  networking: { nameHe: 'נטוורקינג', nameEn: 'Networking', questions: [81,105,107] },
+  balance: { nameHe: 'איזון ורווחה', nameEn: 'Balance', questions: [70,71,88,89,90,91,92] },
+  change: { nameHe: 'ניהול שינוי', nameEn: 'Change', questions: [96,97,98,99,100,104] }
+};
+
+function getPercentileContext(score) {
+  if (score >= 85) return { range: 'Top 10%', label: 'מצטיין', severity: 'outstanding' };
+  if (score >= 70) return { range: 'Top 30%', label: 'חזק', severity: 'strong' };
+  if (score >= 60) return { range: 'Average 50%', label: 'ממוצע', severity: 'moderate' };
+  if (score >= 40) return { range: 'Bottom 30%', label: 'מוגבל', severity: 'limited' };
+  return { range: 'Bottom 10%', label: 'פער קריטי', severity: 'critical' };
+}
+
+function getAgeCategory(age) {
+  if (age >= 20 && age <= 27) return { category: 'junior', label: 'מקצוען/ית בתחילת קריירה', timeline: '2-3 שנים', roi: 'הזדמנויות קריירה' };
+  if (age >= 28 && age <= 35) return { category: 'mid', label: 'מקצוען/ית באמצע הדרך', timeline: '1-2 שנים', roi: 'קידום ונראות' };
+  if (age >= 36 && age <= 45) return { category: 'senior', label: 'מנהל/ת ומקצוען/ית בכיר/ה', timeline: '6-18 חודשים', roi: 'הכנסה ועמדה' };
+  if (age >= 46 && age <= 60) return { category: 'executive', label: 'מנהל/ת בכיר/ה ומומחה/ית', timeline: '3-6 חודשים', roi: 'עסקאות ודירקטוריונים' };
+  return { category: 'postcareer', label: 'מקצוען/ית ומנטור/ית בכיר/ה', timeline: '5-10 שנים', roi: 'רלוונטיות ומורשת' };
+}
+
+const ARCHETYPES = {
+  continuousLearner: { name: 'הלומד המתמיד', conditions: (d) => d.learning.score >= 70 && d.networking.score < 60, strength: 'שליטה במומחיות', gap: 'בידוד מקצועי', message: 'אתה מומחה בודד - יודע הרבה, אבל מעט מכירים אותך' },
+  strategicNetworker: { name: 'הרשתות האסטרטגי', conditions: (d) => d.networking.score >= 70 && d.planning.score < 60, strength: 'בניית קשרים', gap: 'טקטי לא אסטרטגי', message: 'אתה מכיר כולם, אבל לא יודע לאן ללכת עם זה' },
+  executionMachine: { name: 'מכונת הביצוע', conditions: (d) => d.planning.score >= 70 && d.flexibility.score < 60, strength: 'מצוינות תהליכית', gap: 'קשיחות בשינוי', message: 'אתה מצוין בביצוע, אבל שובר כשהתוכנית משתנה' },
+  adaptiveInnovator: { name: 'החדשן הגמיש', conditions: (d) => d.flexibility.score >= 70 && d.resilience.score < 60, strength: 'ניווט בשינוי', gap: 'שחיקה מהירה', message: 'אתה מסתגל מהר, אבל לא מחזיק לטווח ארוך' },
+  resilientLeader: { name: 'המנהיג העמיד', conditions: (d) => d.resilience.score >= 70 && d.vision.score < 60, strength: 'ניהול משברים', gap: 'חוסר כיוון ארוך טווח', message: 'אתה מצטיין במשברים, אבל חסר כיוון אסטרטגי' },
+  visionaryCommunicator: { name: 'המתקשר החזונאי', conditions: (d) => d.vision.score >= 70 && d.planning.score < 60, strength: 'השראת כיוון', gap: 'חוסר תוכנית ביצוע', message: 'אתה רואה את העתיד, אבל לא יודע איך להגיע לשם' }
+};
+
+function calculateDimensionScore(responses, questions) {
+  let sum = 0;
+  for (const qNum of questions) {
+    let value = responses[`q${qNum}`];
+    if (!value) return 0;
+    if (REVERSE_QUESTIONS.includes(qNum)) value = 8 - value;
+    sum += value;
+  }
+  return Math.round((sum / questions.length) * 14.2857 * 10) / 10;
+}
+
+function calculateAllDimensions(responses) {
+  const result = {};
+  for (const [key, dim] of Object.entries(DIMENSIONS)) {
+    const score = calculateDimensionScore(responses, dim.questions);
+    result[key] = { name: dim.nameHe, nameEn: dim.nameEn, score, percentile: getPercentileContext(score) };
+  }
+  return result;
+}
+
+function identifyArchetype(dimensions) {
+  for (const [_, archetype] of Object.entries(ARCHETYPES)) {
+    if (archetype.conditions(dimensions)) return archetype;
+  }
+  return { name: 'הפרופיל המאוזן', strength: 'גמישות כללית', gap: 'חוסר התמחות ברורה', message: 'יש לך פרופיל מאוזן יחסית, אבל חסרה לך התמחות ברורה שתבליט אותך' };
+}
+
+function getTopAndBottom(dimensions) {
+  const sorted = Object.entries(dimensions).map(([key, val]) => ({ key, ...val })).sort((a, b) => b.score - a.score);
+  return { top3: sorted.slice(0, 3), bottom2: sorted.slice(-2) };
+}
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const { responseId } = await req.json();
+    const body = await req.json();
+    const { responseId } = body;
 
     if (!responseId) {
-      return Response.json({ error: 'Missing responseId' }, { status: 400 });
+      return Response.json({ error: 'responseId is required' }, { status: 400 });
     }
 
-    // Fetch the questionnaire response
     const response = await base44.asServiceRole.entities.QuestionnaireResponse.get(responseId);
     if (!response) {
-      return Response.json({ error: 'Response not found' }, { status: 404 });
+      return Response.json({ error: 'Questionnaire response not found' }, { status: 404 });
     }
 
-    // Check if report already exists
-    const existingReports = await base44.asServiceRole.entities.GeneratedReport.filter({ 
-      questionnaire_response_id: responseId 
+    const answers = response.responses;
+    if (!answers || Object.keys(answers).length < 107) {
+      return Response.json({ error: 'Invalid questionnaire - must have 107 answers' }, { status: 400 });
+    }
+
+    for (let i = 1; i <= 107; i++) {
+      const val = answers[`q${i}`];
+      if (!val || val < 1 || val > 7) {
+        return Response.json({ error: `Invalid answer for question ${i}` }, { status: 400 });
+      }
+    }
+
+    const age = response.personal_info?.age;
+    if (!age || age < 16 || age > 100) {
+      return Response.json({ error: 'Invalid age' }, { status: 400 });
+    }
+
+    const dimensions = calculateAllDimensions(answers);
+    const ageCategory = getAgeCategory(age);
+    const topBottom = getTopAndBottom(dimensions);
+    const archetype = identifyArchetype(dimensions);
+
+    const { top3, bottom2 } = topBottom;
+    const name = response.personal_info.full_name;
+    const today = new Date().toLocaleDateString('he-IL');
+
+    const allDimsTable = Object.values(dimensions)
+      .sort((a, b) => b.score - a.score)
+      .map(d => `${d.name}: ${d.score} (${d.percentile.range} – ${d.percentile.label})`)
+      .join('\n');
+
+    const prompt = `אתה מומחה בפסיכולוגיה ארגונית ופיתוח קריירה. עליך לכתוב דוח מקצועי מעמיק ואישי בעברית בלבד.
+
+## פרטי הנבדק/ת
+- שם: ${name}
+- גיל: ${age} | ${ageCategory.label}
+- מגדר: ${response.personal_info.gender === 'female' ? 'נקבה' : 'זכר'}
+- שנות ניסיון: ${response.personal_info.years_of_experience || 'לא צוין'}
+- סטטוס מקצועי: ${response.personal_info.current_professional_status || 'לא צוין'}
+- תחום עיסוק: ${response.personal_info.occupation_field || 'לא צוין'}
+- תחומי עניין: ${(response.personal_info.interest_areas || []).join(', ') || 'לא צוין'}
+- תפקיד יעד: ${response.personal_info.target_position || 'לא צוין'}
+- תאריך: ${today}
+
+## ציוני 11 הממדים
+${allDimsTable}
+
+## ממדים חזקים (Top 3)
+1. ${top3[0].name}: ${top3[0].score}
+2. ${top3[1].name}: ${top3[1].score}
+3. ${top3[2].name}: ${top3[2].score}
+
+## ממדים חלשים (Bottom 2)
+1. ${bottom2[1]?.name}: ${bottom2[1]?.score}
+2. ${bottom2[0]?.name}: ${bottom2[0]?.score}
+
+## ארכיטיפ: ${archetype.name} – ${archetype.message}
+
+כתוב דוח מקצועי מלא ב-5 עמודים בפורמט Markdown, אישי לחלוטין ל${name}, מעורר מוטיבציה ועם המלצות קונקרטיות.
+
+מבנה:
+**עמוד 1** – תקציר מנהלים אישי
+**עמוד 2** – ניתוח ממדים מעמיק
+**עמוד 3** – המפה המלאה (טבלה + גרפים בטקסט)
+**עמוד 4** – מסלולי קריירה (4 מסלולים ספציפיים)
+**עמוד 5** – V107 BOOSTER (3 משימות + סיכום)
+
+סיים כל עמוד עם: **[עמוד X מתוך 5]**`;
+
+    const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') });
+
+    const claudeResponse = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 8000,
+      messages: [{ role: 'user', content: prompt }],
+      system: 'אתה מומחה בפסיכולוגיה ארגונית ופיתוח קריירה. תמיד כותב בעברית. הדוחות שלך הם מקצועיים, אישיים ומעמיקים.'
     });
 
-    if (existingReports && existingReports.length > 0) {
-      return Response.json({ 
-        message: 'Report already exists',
-        reportId: existingReports[0].id 
-      });
+    const fullReport = claudeResponse.content[0].text;
+    const reportId = `V107-V7-${(response.language || 'HE').toUpperCase()}-${Date.now().toString().slice(-6)}`;
+
+    const domainScores = {};
+    for (const [key, dim] of Object.entries(dimensions)) {
+      domainScores[key] = { score: dim.score, percentile: dim.percentile.range };
     }
 
-    // Call generateReportV8ProClaude function
-    const generateResult = await base44.asServiceRole.functions.invoke('generateReportV8ProClaude', { 
-      responseId: responseId 
+    const savedReport = await base44.asServiceRole.entities.GeneratedReport.create({
+      questionnaire_response_id: responseId,
+      user_name: response.personal_info.full_name,
+      user_email: response.personal_info.email,
+      report_id: reportId,
+      purchased: false,
+      report_markdown: fullReport,
+      archetype: archetype.name,
+      recommended_booster_track: topBottom.bottom2[1]?.key || topBottom.bottom2[0]?.key,
+      domain_scores: domainScores,
+      executive_summary: {
+        top3: top3.map(d => ({ name: d.name, score: d.score })),
+        bottom2: bottom2.map(d => ({ name: d.name, score: d.score })),
+        archetype: archetype.name
+      },
+      status: 'completed',
+      language: response.language || 'he'
     });
 
-    if (!generateResult.success) {
-      return Response.json({ 
-        error: generateResult.error || 'Failed to generate report' 
-      }, { status: 500 });
-    }
-
-    return Response.json({ 
+    return Response.json({
       success: true,
-      reportId: generateResult.reportId,
-      report_number: generateResult.report_number,
-      message: generateResult.message
+      reportId: savedReport.id,
+      report_number: reportId,
+      model_used: 'claude-haiku-4-5-20251001',
+      message: 'Report generated successfully'
     });
 
   } catch (error) {
     console.error('Error generating report:', error);
-    return Response.json({ 
-      error: error.message || 'Unknown error' 
-    }, { status: 500 });
+    return Response.json({ error: error.message, stack: error.stack }, { status: 500 });
   }
 });
