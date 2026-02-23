@@ -550,45 +550,12 @@ export default function ReportView() {
               </div>
             )}
 
-            {/* Page 3: Page 3 Header + Readiness Table + Domain Scores */}
+            {/* Page 3: Markdown Content Only */}
             {(!isPrinting && currentPage === 3) && (
               <div className="space-y-8">
                 {pageContents[2] && (
                   <FullReportSection markdownContent={pageContents[2]} />
                 )}
-                <div className="relative">
-                  {isAdmin && (
-                    <Button
-                      onClick={() => startEditSection('domain_scores')}
-                      size="sm"
-                      variant="outline"
-                      className="absolute top-4 left-4 z-10 no-print"
-                    >
-                      <Edit2 className="w-4 h-4 ml-2" />
-                      {getText('edit')}
-                    </Button>
-                  )}
-                  {editingSection === 'domain_scores' ? (
-                    <Card className="p-6">
-                      <ReadinessTableEditor
-                        data={report.domain_scores}
-                        onSave={(data) => saveSection('domain_scores', data)}
-                        onCancel={cancelEdit}
-                      />
-                    </Card>
-                  ) : (
-                    <>
-                      <ReadinessTableSection
-                        domainScores={report.domain_scores}
-                        language={currentLanguage}
-                      />
-                      <DomainScoresSection
-                        domainScores={report.domain_scores}
-                        language={currentLanguage}
-                      />
-                    </>
-                  )}
-                </div>
               </div>
             )}
 
