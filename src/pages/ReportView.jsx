@@ -550,12 +550,14 @@ export default function ReportView() {
               </div>
             )}
 
-            {/* Page 3: Markdown Content Only */}
+            {/* Page 3: Markdown Content + Charts */}
             {(!isPrinting && currentPage === 3) && (
               <div className="space-y-8">
                 {pageContents[2] && (
                   <FullReportSection markdownContent={pageContents[2]} />
                 )}
+                <ReadinessTableSection domainScores={report.domain_scores} language={currentLanguage} />
+                <DomainScoresSection domainScores={report.domain_scores} language={currentLanguage} />
               </div>
             )}
 
