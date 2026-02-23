@@ -606,8 +606,10 @@ Semantic Watermark: גרסה ${watermarkLetter}
 
     // Call Claude API - V8 PRO
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
+    const debugEnv = { has_key: !!apiKey, key_length: apiKey ? apiKey.length : 0 };
+    
     if (!apiKey) {
-      return Response.json({ error: 'ANTHROPIC_API_KEY not configured' }, { status: 500 });
+      return Response.json({ error: 'ANTHROPIC_API_KEY not configured', debug: debugEnv }, { status: 500 });
     }
 
     const anthropic = new Anthropic({ apiKey });
