@@ -4051,33 +4051,9 @@ export default function AdminReports() {
 }
 
 // EmailTemplateDialog is in components/admin/EmailTemplateDialog.jsx
-
-  const convertSimpleToHtml = async (textHe, textEn) => {
-    const prompt = `המר את התוכן הטקסטואלי הבא לתבניות HTML מעוצבות ומקצועיות עבור מיילים.
-
-תוכן בעברית:
-${textHe || 'אין תוכן'}
-
-תוכן באנגלית:
-${textEn || 'אין תוכן'}
-
-דרישות:
-1. צור HTML מעוצב יפה ומקצועי עם CSS מוטמע
-2. עיצוב responsive
-3. צבעים מקצועיים (#3b82f6 כצבע ראשי, #1e3a8a כצבע משני, #f59e0b כצבע מבטא)
-4. כפתורים בולטים עם gradient
-5. גרסה עברית ב-RTL וגרסה אנגלית ב-LTR
-6. שמור על המשתנים כמו {userName}, {questionnaireUrl}, {reportUrl}, {surveyUrl}, {couponCode}, {purchaseUrl}
-7. הוסף אייקוני אימוג'י מתאימים
-8. כלול header עם לוגו V107 וכותרת
-9. כלול footer עם זכויות יוצרים
-10. טקסט קריא ונגיש
-
-החזר JSON בלבד:
-{
-  "content_he": "HTML מלא בעברית",
-  "content_en": "Full HTML in English"
-}`;
+  const _unused = null;
+  if (false) {
+    const prompt = '';
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt: prompt,
