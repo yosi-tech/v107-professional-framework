@@ -4051,21 +4051,6 @@ export default function AdminReports() {
 }
 
 // EmailTemplateDialog moved to components/admin/EmailTemplateDialog.jsx
-    trigger_event: template?.trigger_event || 'manual',
-    name_he: template?.name_he || '',
-    name_en: template?.name_en || '',
-    subject_he: template?.subject_he || '',
-    subject_en: template?.subject_en || '',
-    content_he: template?.content_he || '',
-    content_en: template?.content_en || '',
-    description_he: template?.description_he || '',
-    description_en: template?.description_en || '',
-    active: template?.active ?? true,
-    include_coupon: template?.include_coupon ?? false,
-    coupon_amount: template?.coupon_amount || 50,
-    aiPrompt: ''
-  });
-  const [isGeneratingAI, setIsGeneratingAI] = React.useState(false);
   const [previewLang, setPreviewLang] = React.useState('he');
   const [contentMode, setContentMode] = React.useState('simple'); // 'simple' or 'html'
   const [simpleContent, setSimpleContent] = React.useState({ he: '', en: '' });
