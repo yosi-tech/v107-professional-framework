@@ -41,11 +41,7 @@ import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
-import UnifiedSurveyChart from "@/components/admin/UnifiedSurveyChart";
-import ContentManager from "@/components/admin/ContentManager";
-import ReportComparison from "@/components/analytics/ReportComparison";
-import TrendsChart from "@/components/analytics/TrendsChart";
-import ScheduledTasksManager from "@/components/admin/ScheduledTasksManager";
+import UnifiedSurveyChart from "@/components/admin/UnifiedSurveyChart"; import ContentManager from "@/components/admin/ContentManager"; import ReportComparison from "@/components/analytics/ReportComparison"; import TrendsChart from "@/components/analytics/TrendsChart"; import ScheduledTasksManager from "@/components/admin/ScheduledTasksManager"; import { EmailTemplateDialog } from "@/components/admin/EmailTemplateDialog";
 import {
   Dialog,
   DialogContent,
