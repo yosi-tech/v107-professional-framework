@@ -472,6 +472,19 @@ STEP 3: CONTENT GENERATION
 STEP 4: QA — ודא כל פריט ב-Checklist כולל פריטי Section 2C
 STEP 5: DELIVERY
 
+הוראות ויזואליזציה:
+הגרפים מיוצרים על ידי הקוד, לא על ידך. רק ציין היכן הם צריכים להופיע בדוח:
+
+\`\`\`
+[Spider chart visualization: 11 axes, 0-100 scale]
+Top 3 highlighted in green, Bottom 2 highlighted in red
+\`\`\`
+
+\`\`\`
+[Bar chart sorted high to low]
+Colors: 85-100 (Green), 70-84 (Blue), 60-69 (Yellow), 0-59 (Red)
+\`\`\`
+
 ════════════════════════════════════════════════════════════
 END OF SYSTEM PROMPT — V107 REPORT V8 PRO ULTIMATE
 © 2026 V107 Professional Framework — Confidential & Proprietary
