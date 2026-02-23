@@ -616,7 +616,7 @@ Semantic Watermark: גרסה ${watermarkLetter}
     
     console.log('Calling Claude API...');
     const claudeResponse = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-3-5-sonnet-latest',
       max_tokens: 16000,
       system: SYSTEM_PROMPT,
       messages: [
