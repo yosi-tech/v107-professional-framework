@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import Anthropic from 'npm:@anthropic-ai/sdk@0.27.0';
+import Anthropic from 'npm:@anthropic-ai/sdk@0.39.0';
 
 // ============================================================================
 // V107 REPORT V8 PRO ULTIMATE - CLAUDE API INTEGRATION
