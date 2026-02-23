@@ -120,7 +120,7 @@ export default function AdminReports() {
   const [sortBy, setSortBy] = useState('date'); // 'name', 'date', 'urgency', 'hours'
   const [selectedReportsForAnalytics, setSelectedReportsForAnalytics] = useState([]);
   const [analyticsViewMode, setAnalyticsViewMode] = useState('comparison');
-  const [reportGenerationMode, setReportGenerationMode] = useState('v6_pro_ultimate'); // 'original' or 'v6_pro_ultimate'
+  const [reportGenerationMode, setReportGenerationMode] = useState('claude'); // 'claude', 'v6_pro_ultimate', 'original'
 
   useEffect(() => {
     checkAdminAndLoadData();
