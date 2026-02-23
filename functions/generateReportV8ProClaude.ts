@@ -427,18 +427,6 @@ PAGES 2-5 (UNCHANGED)
 Spider: 11 axes | Scale 0-100 | Grid 20pt | Highlight TOP3 + BOTTOM2
 Bar: sorted HIGH→LOW | 85-100: Green #4CAF50 | 70-84: Blue #2196F3 | 60-69: Yellow #FFC107 | 0-59: Red #F44336
 
-IMPORTANT: הגרפים מיוצרים על ידי הקוד, לא על ידך. רק ציין היכן הם צריכים להופיע בדוח עם התיאור:
-
-\`\`\`
-[Spider chart visualization: 11 axes, 0-100 scale]
-Top 3 highlighted in green, Bottom 2 highlighted in red
-\`\`\`
-
-\`\`\`
-[Bar chart sorted high to low]
-Colors: 85-100 (Green), 70-84 (Blue), 60-69 (Yellow), 0-59 (Red)
-\`\`\`
-
 ════════════════════════════════════════════════════════════
 🚫 SECTION 7: CRITICAL SAFETY RULES (UNCHANGED)
 ════════════════════════════════════════════════════════════
