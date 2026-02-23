@@ -4050,71 +4050,7 @@ export default function AdminReports() {
 
 }
 
-// EmailTemplateDialog moved to components/admin/EmailTemplateDialog.jsx
-        trigger_event: template.trigger_event || 'manual',
-        name_he: template.name_he,
-        name_en: template.name_en,
-        subject_he: template.subject_he,
-        subject_en: template.subject_en,
-        content_he: template.content_he,
-        content_en: template.content_en,
-        description_he: template.description_he || '',
-        description_en: template.description_en || '',
-        active: template.active ?? true,
-        include_coupon: template.include_coupon ?? false,
-        coupon_amount: template.coupon_amount || 50
-      });
-    } else {
-      setFormData({
-        template_type: 'abandonment_incomplete',
-        trigger_event: 'manual',
-        name_he: '',
-        name_en: '',
-        subject_he: '',
-        subject_en: '',
-        content_he: '',
-        content_en: '',
-        description_he: '',
-        description_en: '',
-        active: true,
-        include_coupon: false,
-        coupon_amount: 50
-      });
-    }
-  }, [template]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name_he || !formData.subject_he) {
-      alert('יש למלא לפחות את השם והנושא בעברית');
-      return;
-    }
-
-    // אם במצב Simple ויש תוכן, המר ל-HTML
-    if (contentMode === 'simple' && (simpleContent.he || simpleContent.en)) {
-      setIsConvertingToHtml(true);
-      try {
-        const convertedHtml = await convertSimpleToHtml(simpleContent.he, simpleContent.en);
-        const finalData = {
-          ...formData,
-          content_he: convertedHtml.content_he,
-          content_en: convertedHtml.content_en
-        };
-        onSave(finalData);
-      } catch (error) {
-        alert('שגיאה בהמרת התוכן ל-HTML: ' + error.message);
-      } finally {
-        setIsConvertingToHtml(false);
-      }
-      return;
-    }
-
-    if (!formData.content_he) {
-      alert('יש למלא את תוכן המייל בעברית');
-      return;
-    }
-    onSave(formData);
-  };
+// EmailTemplateDialog is in components/admin/EmailTemplateDialog.jsx
 
   const convertSimpleToHtml = async (textHe, textEn) => {
     const prompt = `המר את התוכן הטקסטואלי הבא לתבניות HTML מעוצבות ומקצועיות עבור מיילים.
