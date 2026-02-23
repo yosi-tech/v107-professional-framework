@@ -4050,9 +4050,7 @@ export default function AdminReports() {
 
 }
 
-function EmailTemplateDialog({ open, onOpenChange, template, onSave }) {
-  const [formData, setFormData] = React.useState({
-    template_type: template?.template_type || 'abandonment_incomplete',
+// EmailTemplateDialog moved to components/admin/EmailTemplateDialog.jsx
     trigger_event: template?.trigger_event || 'manual',
     name_he: template?.name_he || '',
     name_en: template?.name_en || '',
