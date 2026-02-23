@@ -604,7 +604,7 @@ Semantic Watermark: גרסה ${watermarkLetter}
 
 תחיל בעמוד 1 עכשיו:`;
 
-    // Call Claude API
+    // Call Claude API - V8 PRO
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
     if (!apiKey) {
       return Response.json({ error: 'ANTHROPIC_API_KEY not configured' }, { status: 500 });
