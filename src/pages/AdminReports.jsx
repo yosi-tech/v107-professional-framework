@@ -202,9 +202,7 @@ export default function AdminReports() {
       }
 
       // Call the backend function to generate the report
-      const functionName = reportGenerationMode === 'v6_pro_ultimate' 
-        ? 'generateReportV6ProUltimate' 
-        : 'generateReportAutomatic';
+      const functionName = reportGenerationMode === 'claude' ? 'generateReportV7Pro' : reportGenerationMode === 'v6_pro_ultimate' ? 'generateReportV6ProUltimate' : 'generateReportAutomatic';
       
       const result = await base44.functions.invoke(functionName, {
         responseId: response.id
