@@ -4,23 +4,21 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import {
   ArrowLeft,
-  ArrowRight,
   CheckCircle,
-  FileText,
-  BarChart3,
-  Target,
-  Zap,
-  TrendingUp,
-  Users,
-  Clock,
-  Award,
-  Sparkles,
-  Rocket,
   Star,
-  Play,
   ChevronLeft,
   ChevronRight,
-  Quote } from "lucide-react";
+  Sparkles,
+  Target,
+  TrendingUp,
+  Users,
+  Award,
+  BookOpen,
+  Zap,
+  BarChart3,
+  FileText,
+  Rocket
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTranslation } from "@/components/i18n/useTranslation";
@@ -30,16 +28,13 @@ export default function Home() {
   const { t, language } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [testimonials, setTestimonials] = useState([]);
-  const [isLoadingTestimonials, setIsLoadingTestimonials] = useState(true);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
         const data = await base44.entities.Testimonial.list('-created_date');
         setTestimonials(data);
-      } finally {
-        setIsLoadingTestimonials(false);
-      }
+      } catch (e) {}
     };
     fetchTestimonials();
   }, []);
@@ -52,610 +47,294 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
-  const nextSlide = () => {
-    if (testimonials.length === 0) return;
-    setCurrentSlide((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevSlide = () => {
-    if (testimonials.length === 0) return;
-    setCurrentSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
-  const currentArrowIcon = language === 'he' ? ArrowLeft : ArrowRight;
-
-  const stepsData = [
-  {
-    icon: FileText,
-    title: language === 'he' ? "שולחים לינק לשאלון מועמד" : "Send candidate questionnaire link",
-    desc: language === 'he' ? "20 דקות מכל מכשיר" : "20 minutes from any device",
-    time: language === 'he' ? "20 דקות" : "20 minutes"
-  },
-  {
-    icon: BarChart3,
-    title: language === 'he' ? "אלגוריתם העל שלנו מנתח" : "Our super algorithm analyzes",
-    desc: language === 'he' ? "11 יכולות מקצועיות" : "11 professional capabilities",
-    time: language === 'he' ? "תוך שעות" : "Within hours"
-  },
-  {
-    icon: Rocket,
-    title: language === 'he' ? "מקבלים דוח —\nמחליטים בביטחון" : "Receive report —\ndecide with confidence",
-    desc: language === 'he' ? "גיוס מבוסס דאטה" : "Data-driven recruitment",
-    time: language === 'he' ? "24 שעות" : "24 hours"
-  }];
-
-  const benefitsData = language === 'he' ? [
-  {
-    icon: Target,
-    title: "פרופיל יכולות מקצועי מפורט",
-    desc: "מיפוי חוזקות ויכולות טעונות שיפור"
-  },
-  {
-    icon: TrendingUp,
-    title: "דוח סינון יכולות מהיר",
-    desc: "24 שעות ממילוי השאלון"
-  },
-  {
-    icon: Zap,
-    title: "סטנדרט הערכה אחיד",
-    desc: "כלי אובייקטיבי"
-  },
-  {
-    icon: Award,
-    title: 'דוח פערים',
-    desc: "הפער בין קורות החיים ליכולות בפועל"
-  }] :
-  [
-  {
-    icon: Target,
-    title: "Detailed Professional Profile",
-    desc: "Mapping strengths and areas for improvement"
-  },
-  {
-    icon: TrendingUp,
-    title: "Fast Capability Screening",
-    desc: "24 hours from questionnaire completion"
-  },
-  {
-    icon: Zap,
-    title: "Unified Assessment Standard",
-    desc: "Objective tool"
-  },
-  {
-    icon: Award,
-    title: "Gap Report",
-    desc: "CV vs actual capabilities gap"
-  }];
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % testimonials.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
 
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
-      {/* Ultra Modern B2B Design System */}
+    <div className="min-h-screen overflow-hidden" dir="rtl">
       <style>{`
-        :root {
-          --color-primary: #0f172a;
-          --color-primary-light: #1e293b;
-          --color-secondary: #334155;
-          --color-accent: #06b6d4;
-          --color-accent-light: #22d3ee;
-          --color-accent-dark: #0891b2;
-          --color-purple: #8b5cf6;
-          --color-purple-light: #a78bfa;
-          --color-text-primary: #0f172a;
-          --color-text-secondary: #475569;
-          --color-text-muted: #94a3b8;
-        }
-        
-        * {
-          font-family: 'Inter', 'Assistant', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
-        }
-        
-        .gradient-cyber {
-          background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
-        }
-        
-        .gradient-hero-cyber {
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
-        }
-        
-        .text-gradient-cyber {
-          background: linear-gradient(135deg, #22d3ee, #06b6d4, #8b5cf6);
-          background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: gradient-shift 3s ease infinite;
-          background-size: 200% 200%;
-        }
-        
-        @keyframes gradient-shift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
-        .glass-card {
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .glass-card:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(6, 182, 212, 0.5);
-          transform: translateY(-12px) scale(1.02);
-          box-shadow: 0 40px 80px -20px rgba(6, 182, 212, 0.4);
-        }
-        
-        .btn-cyber {
-          background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-          box-shadow: 0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(139, 92, 246, 0.3);
-          transition: all 0.3s ease;
+        .hero-bg {
+          background: radial-gradient(ellipse at center, #1a2a6c 0%, #0d1b4b 40%, #060d2e 100%);
           position: relative;
           overflow: hidden;
         }
-        
-        .btn-cyber::before {
+        .hero-bg::before {
           content: '';
           position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-          transition: left 0.5s;
+          inset: 0;
+          background-image: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
+          background-size: 40px 40px;
+          opacity: 0.4;
         }
-        
-        .btn-cyber:hover::before {
-          left: 100%;
+        .dark-section {
+          background: linear-gradient(180deg, #0d1b4b 0%, #060d2e 100%);
         }
-        
-        .btn-cyber:hover {
-          box-shadow: 0 0 40px rgba(6, 182, 212, 0.8), 0 0 80px rgba(139, 92, 246, 0.5);
-          transform: translateY(-4px) scale(1.05);
+        .gold-text { color: #d4a843; }
+        .gold-btn {
+          background: linear-gradient(135deg, #f59e0b, #d97706);
+          color: white;
+          font-weight: 700;
+          border: none;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 20px rgba(245,158,11,0.4);
         }
-        
-        .section-spacing {
-          padding: 10rem 0;
+        .gold-btn:hover {
+          background: linear-gradient(135deg, #d97706, #b45309);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(245,158,11,0.5);
+          color: white;
         }
-        
-        @media (max-width: 768px) {
-          .section-spacing {
-            padding: 5rem 0;
-          }
+        .stat-card {
+          background: rgba(255,255,255,0.08);
+          border: 1px solid rgba(255,255,255,0.15);
+          backdrop-filter: blur(10px);
+          border-radius: 16px;
         }
-
-        .floating-element {
-          animation: float 8s ease-in-out infinite;
+        .step-card {
+          background: white;
+          border-radius: 20px;
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+          transition: all 0.3s ease;
         }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-30px); }
+        .step-card:hover {
+          box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+          transform: translateY(-4px);
+        }
+        .benefit-card {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 16px;
+          transition: all 0.3s ease;
+        }
+        .benefit-card:hover {
+          background: rgba(255,255,255,0.08);
+          border-color: rgba(212,168,67,0.4);
+        }
+        .archetype-section {
+          background: linear-gradient(135deg, #0d1b4b 0%, #1a2a6c 50%, #0d1b4b 100%);
+          position: relative;
+        }
+        .archetype-section::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+          background-size: 30px 30px;
+        }
+        .cta-section {
+          background: linear-gradient(135deg, #0d1b4b 0%, #1a2a6c 100%);
+          position: relative;
+        }
+        .cta-section::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+          background-size: 35px 35px;
+        }
+        .orange-icon-bg {
+          background: linear-gradient(135deg, #f59e0b, #d97706);
+          border-radius: 12px;
+          padding: 10px;
+          display: inline-flex;
         }
       `}</style>
 
-      {/* Hero Section - Cyber Tech */}
-      <section className="relative min-h-screen flex items-center overflow-hidden gradient-hero-cyber">
-        {/* Cyber Grid Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gMTAwIDAgTCAwIDAgMCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3lhbiIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
-          </div>
+      {/* ===== SECTION 1: HERO ===== */}
+      <section className="hero-bg min-h-screen flex flex-col justify-center py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto text-center relative z-10">
           
-          {/* Glowing Orbs - Cyan & Purple */}
+          {/* Badge */}
           <motion.div
-            className="absolute top-20 right-20 w-[600px] h-[600px] bg-gradient-to-br from-cyan-500/30 to-blue-600/30 rounded-full blur-3xl"
-            animate={{
-              y: [0, -80, 0],
-              x: [0, 50, 0],
-              scale: [1, 1.3, 1],
-              opacity: [0.3, 0.6, 0.3]
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }} />
-
-          <motion.div
-            className="absolute bottom-20 left-20 w-[700px] h-[700px] bg-gradient-to-br from-purple-600/30 to-pink-600/30 rounded-full blur-3xl"
-            animate={{
-              y: [0, 80, 0],
-              x: [0, -50, 0],
-              scale: [1, 1.4, 1],
-              opacity: [0.3, 0.7, 0.3]
-            }}
-            transition={{
-              duration: 22,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2
-            }} />
-
-          <motion.div
-            className="absolute top-1/3 left-1/3 w-[500px] h-[500px] bg-gradient-to-br from-cyan-400/20 to-purple-500/20 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.35, 1],
-              rotate: [0, 180, 360],
-              opacity: [0.2, 0.5, 0.2]
-            }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1
-            }} />
-        </div>
-
-        {/* Split Hero Layout */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          {/* Left Side - Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -60 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-right lg:text-right">
-
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-3 glass-card px-6 py-3 rounded-full mb-8">
-              <Zap className="w-5 h-5 text-cyan-400 animate-pulse" />
-              <span className="text-sm text-cyan-100 font-bold uppercase tracking-wider">
-                {language === 'he' ? 'טכנולוגיית AI מתקדמת' : 'Advanced AI Technology'}
-              </span>
-            </motion.div>
-
-            {/* Main Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-8 leading-[1.05]">
-              <span className="text-white block mb-3">
-                {language === 'he' ? 'V107' : 'V107'}
-              </span>
-              <span className="text-gradient-cyber block">
-                {language === 'he' ? 'גלה את הפוטנציאל' : 'Discover The'}
-              </span>
-              <span className="text-gradient-cyber block">
-                {language === 'he' ? 'האמיתי של המועמד' : 'True Potential'}
-              </span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-lg md:text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed">
-              {language === 'he' 
-                ? 'פלטפורמת אבחון AI שמנתחת 11 יכולות מקצועיות ומספקת דוח מקיף תוך 24 שעות' 
-                : 'AI diagnostic platform analyzing 11 professional capabilities with comprehensive report in 24 hours'}
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-5 mb-12">
-              <Link to={createPageUrl("Questionnaire")}>
-                <Button
-                  size="lg"
-                  className="btn-cyber text-white text-lg px-12 py-7 rounded-2xl font-bold group w-full sm:w-auto">
-                  <span className="relative z-10 flex items-center gap-3 justify-center">
-                    <Rocket className="w-6 h-6" />
-                    <span>{language === 'he' ? 'התחל פיילוט' : 'Start Pilot'}</span>
-                  </span>
-                </Button>
-              </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                className="glass-card text-white text-lg px-12 py-7 rounded-2xl font-bold border-cyan-500/50 hover:border-cyan-400 w-full sm:w-auto">
-                <span className="flex items-center gap-3 justify-center">
-                  <Play className="w-5 h-5" />
-                  <span>{language === 'he' ? 'צפה בדמו' : 'Watch Demo'}</span>
-                </span>
-              </Button>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap gap-6 text-sm text-gray-400">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-cyan-400" />
-                <span>{language === 'he' ? 'ללא התחייבות' : 'No commitment'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-cyan-400" />
-                <span>{language === 'he' ? 'תוצאות תוך 24 שעות' : '24h results'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-cyan-400" />
-                <span>{language === 'he' ? 'דיוק 95%+' : '95%+ accuracy'}</span>
-              </div>
-            </div>
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full"
+            style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.4)' }}>
+            <CheckCircle className="w-4 h-4 gold-text" />
+            <span className="text-sm gold-text font-semibold">מבוסס על 5 שנות מחקר אינטנסיבי</span>
           </motion.div>
 
-          {/* Right Side - Visual Element */}
-          <motion.div
-            initial={{ opacity: 0, x: 60 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-            className="hidden lg:block">
-            <div className="relative">
-              {/* Floating Cards Mockup */}
-              <div className="relative w-full h-[600px]">
-                {[
-                  { top: '10%', right: '20%', delay: 0, color: 'from-cyan-500 to-blue-600' },
-                  { top: '35%', right: '40%', delay: 0.2, color: 'from-purple-500 to-pink-600' },
-                  { top: '60%', right: '10%', delay: 0.4, color: 'from-cyan-400 to-purple-500' }
-                ].map((card, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: card.delay }}
-                    className="absolute glass-card p-6 rounded-3xl"
-                    style={{ top: card.top, right: card.right }}>
-                    <div className={`w-48 h-32 bg-gradient-to-br ${card.color} rounded-2xl mb-4 flex items-center justify-center`}>
-                      <BarChart3 className="w-12 h-12 text-white" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-white/20 rounded-full w-3/4"></div>
-                      <div className="h-3 bg-white/20 rounded-full w-1/2"></div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Stats Bar - Cyber Style */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.8 }}
-          className="absolute bottom-10 left-0 right-0 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: Target, value: '₪39', label: language === 'he' ? 'מחיר התחלתי' : 'Starting price' },
-              { icon: Clock, value: '24h', label: language === 'he' ? 'זמן אספקה' : 'Delivery time' },
-              { icon: BarChart3, value: '11', label: language === 'he' ? 'יכולות' : 'capabilities' },
-              { icon: Users, value: '500+', label: language === 'he' ? 'חברות' : 'companies' }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
-                className="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-all duration-300 cursor-pointer group">
-                <stat.icon className="w-8 h-8 text-cyan-400 mx-auto mb-3 group-hover:text-purple-400 transition-colors" />
-                <div className="text-3xl md:text-4xl font-black text-white mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-xs text-gray-400 uppercase tracking-wider">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
-          animate={{ y: [0, 15, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}>
-          <div className="w-10 h-16 border-2 border-white/40 rounded-full flex items-start justify-center p-3">
-            <motion.div
-              className="w-2 h-4 bg-white/80 rounded-full"
-              animate={{ y: [0, 24, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
-          </div>
-        </motion.div>
-      </section>
-
-      {/* How It Works - Modern Tech */}
-      <section className="section-spacing px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}>
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-8 text-gray-900 tracking-tight">
-                {language === 'he' ? 'איך V107 עובד?' : 'How does V107 work?'}
-              </h2>
-              <p className="text-2xl md:text-3xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed">
-                {language === 'he' ? 'שלושה שלבים פשוטים לגיוס מבוסס נתונים' : 'Three simple steps to data-driven recruitment'}
-              </p>
-            </motion.div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-10">
-            {stepsData.map((step, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 40, rotateX: 10 }}
-                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: index * 0.15 }}
-                style={{ perspective: '1000px' }}>
-                <div className="relative group h-full">
-                  {/* Glow Effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-[2.5rem] opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500"></div>
-                  
-                  <Card className="relative bg-white border-2 border-gray-100 rounded-[2rem] shadow-2xl h-full flex flex-col overflow-hidden transform group-hover:border-cyan-400 transition-all duration-500">
-                    <CardContent className="p-10 text-center flex-1 flex flex-col justify-between">
-                      {/* Number Badge - Cyber Style */}
-                      <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-2xl z-10 group-hover:scale-110 transition-transform">
-                        {index + 1}
-                      </div>
-
-                      <div>
-                        {/* Icon - 3D Effect */}
-                        <div className="relative mb-10">
-                          <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                          <div className="relative w-32 h-32 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                            <step.icon className="w-16 h-16 text-white" />
-                          </div>
-                        </div>
-
-                        {/* Title */}
-                        <h3 className="text-2xl md:text-3xl font-black mb-6 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent whitespace-pre-line leading-snug">
-                          {step.title}
-                        </h3>
-                        
-                        {/* Description */}
-                        <p className="text-gray-600 leading-relaxed mb-8 text-lg font-medium">
-                          {step.desc}
-                        </p>
-                      </div>
-
-                      {/* Time Badge - Modern */}
-                      <div className="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-50 to-purple-50 px-6 py-4 rounded-2xl border border-cyan-200 mx-auto group-hover:border-cyan-400 transition-colors">
-                        <Clock className="w-5 h-5 text-cyan-600" />
-                        <span className="text-base font-bold bg-gradient-to-r from-cyan-600 to-purple-600 bg-clip-text text-transparent">{step.time}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <motion.div
+          {/* Main Headline */}
+          <motion.h1
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            className="text-center mt-24">
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight text-white">
+            מרגישים תקועים מקצועית ?<br />
+            <span className="gold-text">לא יודעים באיזה מקצוע לבחור ?</span>
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-lg md:text-xl text-blue-100 mb-10 max-w-3xl mx-auto leading-relaxed">
+            דיי לדחות | דאגי/י לעצמך ולעתידך - מלאו את השאלון ותופתעו מרמת הדוח האישי שתקבלו.
+          </motion.p>
+
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}>
             <Link to={createPageUrl("Questionnaire")}>
-              <Button
-                size="lg"
-                className="btn-cyber text-white text-xl px-16 py-8 rounded-3xl font-bold shadow-2xl">
-                <span className="relative z-10 flex items-center gap-3">
-                  {language === 'he' ? 'התחילו פיילוט עכשיו' : 'Start Pilot Now'}
-                  {React.createElement(currentArrowIcon, { className: "w-6 h-6" })}
-                </span>
+              <Button size="lg" className="gold-btn text-lg px-10 py-6 rounded-2xl">
+                <Zap className="w-5 h-5 ml-2" />
+                חקש והתחל את השאלון עכשיו
               </Button>
             </Link>
           </motion.div>
+
+          {/* Trust line */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="mt-6 text-sm text-blue-300">
+            <CheckCircle className="w-4 h-4 inline ml-1" />
+            חזרנו לצמוח! - בטוח קרא על דעת של ריבוי ומפרסמים
+          </motion.p>
+
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
+            {[
+              { value: '4952', label: 'משתתפים פעילים' },
+              { value: 'שאלון יכולות\nאמריקאי', label: 'תקן בינלאומי' },
+              { value: '11', label: 'ממדי יכולות נמדדים' },
+              { value: '5 ימים\nלקבלת הדו"ח', label: 'זמן אספקה' },
+            ].map((stat, i) => (
+              <div key={i} className="stat-card p-5 text-center">
+                <div className="text-2xl md:text-3xl font-black text-white whitespace-pre-line leading-tight mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-xs text-blue-300">{stat.label}</div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
-      {/* Benefits - Asymmetric Grid */}
-      <section className="section-spacing px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gMTAwIDAgTCAwIDAgMCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3lhbiIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-        </div>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}>
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-8 text-white tracking-tight">
-                {language === 'he' ? 'מנתונים להחלטות' : 'From Data to Decisions'}
-              </h2>
-              <p className="text-2xl md:text-3xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
-                {language === 'he' ? 'התמונה המלאה על כל מועמד' : 'The Complete Picture of Every Candidate'}
-              </p>
-            </motion.div>
+      {/* ===== SECTION 2: HOW IT WORKS ===== */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">איך זה עובד?</h2>
+            <p className="text-lg text-gray-600">3 צעדים פשוטים לקבלת הדוח המקצועי שלך</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-10">
-            {benefitsData.map((benefit, index) => (
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Rocket,
+                num: '1',
+                title: 'מתחילים בתחילך!',
+                desc: 'מלאו את השאלון בנוחות, בפרטיות ובקצב שלכם. כ-20 דקות שישנו את הכיוון המקצועי שלכם.',
+                time: 'כ-20 דקות'
+              },
+              {
+                icon: BarChart3,
+                num: '2',
+                title: 'קבלו ניתוח יכולות מקצועי, חשוב לדעת איך לחשתמר ולהגיע לפסגות הנחשקים',
+                desc: 'האלגוריתם שלנו מנתח את התשובות שלכם על פני 11 ממדים ומייצר פרופיל ייחודי.',
+                time: 'עד 5 ימים'
+              },
+              {
+                icon: FileText,
+                num: '3',
+                title: 'קיבלו תוכנית פעולה מקצועית אישית שלך!',
+                desc: 'דוח מפורט הכולל ניתוח יכולות, המלצות לכיוון מקצועי ותוכנית פעולה.',
+                time: 'מיד בסיום'
+              }
+            ].map((step, i) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: index * 0.1 }}>
-                <div className="glass-card rounded-[2rem] p-10 h-full group hover:scale-105 transition-all duration-500">
-                  <div className="flex items-start gap-8">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
-                      <div className="relative w-24 h-24 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-2xl group-hover:rotate-12 transition-transform duration-500">
-                        <benefit.icon className="w-12 h-12 text-white" />
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl md:text-3xl font-black mb-5 text-white leading-snug">
-                        {benefit.title}
-                      </h3>
-                      <p className="text-gray-300 leading-relaxed text-lg">
-                        {benefit.desc}
-                      </p>
-                    </div>
+                transition={{ duration: 0.6, delay: i * 0.15 }}>
+                <div className="step-card p-8 h-full relative">
+                  <div className="absolute -top-4 -right-4 w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-lg"
+                    style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
+                    {step.num}
+                  </div>
+                  <div className="orange-icon-bg mb-6 w-14 h-14 flex items-center justify-center">
+                    <step.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-black text-gray-900 mb-3 leading-snug">{step.title}</h3>
+                  <p className="text-gray-600 leading-relaxed mb-4">{step.desc}</p>
+                  <div className="flex items-center gap-2 text-amber-600 font-semibold text-sm">
+                    <CheckCircle className="w-4 h-4" />
+                    {step.time}
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
+
+          <div className="text-center mt-12">
+            <Link to={createPageUrl("Questionnaire")}>
+              <Button size="lg" className="gold-btn text-lg px-10 py-5 rounded-2xl">
+                התחל עכשיו - חינם!
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Testimonials - Optional */}
+      {/* ===== SECTION 3: TESTIMONIALS ===== */}
       {testimonials.length > 0 && (
-        <section className="section-spacing px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-20">
-              <h2 className="text-5xl md:text-6xl font-black mb-6 text-gray-900">
-                {language === 'he' ? 'מה הלקוחות אומרים' : 'What Clients Say'}
-              </h2>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה אומרים עלינו</h2>
+              <p className="text-gray-500">סיפורות הצלחה אמיתיות</p>
             </div>
 
             <div className="relative">
-              <div className="overflow-hidden rounded-[2rem]">
-                <div className="flex transition-transform duration-700 ease-in-out"
-                  style={{ transform: language === 'he' ? `translateX(${currentSlide * 100}%)` : `translateX(-${currentSlide * 100}%)` }}>
-                  {testimonials.map((testimonial, index) => (
-                    <div key={testimonial.id || index} className="w-full flex-shrink-0 px-4">
-                      <Card className="mx-auto max-w-4xl border-2 border-gray-200 shadow-2xl rounded-[2rem]">
-                        <CardContent className="p-12 text-center">
-                          <Quote className="w-16 h-16 text-amber-500 mx-auto mb-6 opacity-30" />
-                          <p className="text-2xl text-gray-700 mb-8 leading-relaxed font-medium">
-                            "{language === 'he' ? testimonial.quote_he : testimonial.quote_en || testimonial.quote_he}"
-                          </p>
-                          <div className="flex items-center justify-center gap-2 mb-6">
-                            {[...Array(testimonial.stars)].map((_, i) => (
-                              <Star key={i} className="w-6 h-6 text-amber-500 fill-current" />
-                            ))}
-                          </div>
-                          <div className="flex items-center justify-center gap-4">
-                            <div className="w-16 h-16 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-                              {testimonial.name.charAt(0)}
-                            </div>
-                            <div className={language === 'he' ? 'text-right' : 'text-left'}>
-                              <p className="font-bold text-gray-900 text-xl">{testimonial.name}</p>
-                              <p className="text-gray-600">{language === 'he' ? testimonial.title_he : testimonial.title_en || testimonial.title_he}</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+              <div className="overflow-hidden rounded-3xl border border-gray-100 shadow-xl bg-white">
+                <div className="p-12 md:p-16 text-center">
+                  <div className="text-8xl text-amber-400 font-serif leading-none mb-6 opacity-30">99</div>
+                  <p className="text-xl md:text-2xl text-gray-700 leading-relaxed mb-8 max-w-3xl mx-auto">
+                    "{testimonials[currentSlide]?.quote_he}"
+                  </p>
+                  <div className="flex justify-center gap-1 mb-6">
+                    {[...Array(testimonials[currentSlide]?.stars || 5)].map((_, i) => (
+                      <Star key={i} className="w-6 h-6 text-amber-400 fill-current" />
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-xl">
+                      {testimonials[currentSlide]?.name?.charAt(0)}
                     </div>
-                  ))}
+                    <div className="text-right">
+                      <p className="font-bold text-gray-900">{testimonials[currentSlide]?.name}</p>
+                      <p className="text-gray-500 text-sm">{testimonials[currentSlide]?.title_he}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {testimonials.length > 1 && (
                 <>
-                  <button
-                    onClick={prevSlide}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 w-14 h-14 bg-amber-600 text-white rounded-full flex items-center justify-center hover:bg-amber-700 transition-all duration-300 shadow-2xl z-10">
-                    <ChevronRight className="w-7 h-7" />
+                  <button onClick={prevSlide}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center hover:bg-amber-600 transition-colors shadow-lg">
+                    <ChevronRight className="w-6 h-6" />
                   </button>
-                  <button
-                    onClick={nextSlide}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-14 h-14 bg-amber-600 text-white rounded-full flex items-center justify-center hover:bg-amber-700 transition-all duration-300 shadow-2xl z-10">
-                    <ChevronLeft className="w-7 h-7" />
+                  <button onClick={nextSlide}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center hover:bg-amber-600 transition-colors shadow-lg">
+                    <ChevronLeft className="w-6 h-6" />
                   </button>
-
-                  <div className="flex justify-center mt-8 gap-3">
-                    {testimonials.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                          currentSlide === index ? 'bg-amber-600 w-10' : 'bg-gray-300 hover:bg-gray-400'
-                        }`} />
+                  <div className="flex justify-center gap-2 mt-6">
+                    {testimonials.map((_, i) => (
+                      <button key={i} onClick={() => setCurrentSlide(i)}
+                        className={`h-2 rounded-full transition-all ${i === currentSlide ? 'w-8 bg-amber-500' : 'w-2 bg-gray-300'}`} />
                     ))}
                   </div>
                 </>
@@ -665,97 +344,200 @@ export default function Home() {
         </section>
       )}
 
-      {/* Final CTA - Cyber Impact */}
-      <section className="relative section-spacing px-4 sm:px-6 lg:px-8 overflow-hidden gradient-hero-cyber">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-10"></div>
-        </div>
+      {/* ===== SECTION 4: ARCHETYPE + V107 CONTRIBUTIONS ===== */}
+      <section className="archetype-section py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto relative z-10">
+          
+          {/* Archetype */}
+          <div className="text-center mb-16">
+            <p className="text-amber-400 font-semibold mb-2 text-sm uppercase tracking-wider">הארכיטיפ שלכם (The Action Matrix)</p>
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
+              גלה את מפת היכולות האמיתית שלך
+            </h2>
+            <p className="text-blue-200 max-w-2xl mx-auto leading-relaxed">
+              הניתוח המקצועי שלנו יחשוף לכם תמונה שלמה, ממשית, אין דיאק אחד דומה בין הדוחות שמייצרים AI אנלרנטית.
+              מוצאים בין פ- ס (פוטנציאל) מחזיק מפתח שיש לו אלטרנטיבה מהטקסטות, ויותר לנו לאמור לכם מה לעשות.
+            </p>
+          </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}>
-
-            <div className="bg-white/10 backdrop-blur-xl rounded-[3rem] p-16 md:p-20 border border-white/20 shadow-2xl">
-              <div className="flex items-center justify-center mb-12">
-                <Sparkles className="w-24 h-24 text-amber-400 animate-pulse" />
-              </div>
-
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-12 text-white leading-tight tracking-tight">
-                {language === 'he' ? 'המהפכה בניהול ההון האנושי\nהתחילה 🌸' : 'The HR Revolution\nHas Begun 🌸'}
-              </h2>
-
-              <p className="text-2xl md:text-3xl text-gray-200 mb-16 max-w-3xl mx-auto leading-relaxed font-light">
-                {language === 'he' 
-                  ? 'הצטרפו לחברות וארגונים הובילים שכבר בחרו להפוך את V107 לכלי עבודה' 
-                  : 'Join leading companies using V107 as their recruitment tool'}
-              </p>
-
-              <div className="grid sm:grid-cols-3 gap-8 mb-16">
-                {[
-                  { title: language === 'he' ? 'התייעלות ודיוק' : 'Efficiency', desc: language === 'he' ? 'התאמה מושלמת' : 'Perfect match' },
-                  { title: language === 'he' ? 'חיסכון בזמן' : 'Time Savings', desc: language === 'he' ? 'צמצום שעות יקרות' : 'Reduce costs' },
-                  { title: language === 'he' ? 'צוותים מנצחים' : 'Winning Teams', desc: language === 'he' ? 'העובדים המתאימים' : 'Best employees' }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="bg-white/5 p-8 rounded-3xl border border-white/10 hover:bg-white/10 transition-all duration-300">
-                    <h4 className="font-bold text-white mb-3 text-xl">{item.title}</h4>
-                    <p className="text-gray-300 text-base">{item.desc}</p>
-                  </motion.div>
-                ))}
-              </div>
-
-              <Link to={createPageUrl("Questionnaire")}>
-                <Button
-                  size="lg"
-                  className="btn-cyber text-white text-2xl px-20 py-10 rounded-3xl font-black shadow-2xl">
-                  <span className="relative z-10 flex items-center gap-4">
-                    <Play className="w-8 h-8" />
-                    {language === 'he' ? 'החלו בפיילוט עכשיו' : 'Start Pilot Now'}
-                  </span>
-                </Button>
-              </Link>
-
-              <p className="mt-12 text-lg text-gray-300">
-                {language === 'he' ? '✓ ללא התחייבות, התחילו היום' : '✓ No commitment, start today'}
-              </p>
+          {/* What's in the report */}
+          <div className="mb-16">
+            <h3 className="text-2xl font-black text-white text-center mb-8">מה כולל הדוח המקצועי האישי שלך?</h3>
+            <p className="text-blue-300 text-center mb-8 text-sm">כולל גם ניתוח קצר לתיאשי - 1 מתוך 107 שאלות ו- 11 ממדים</p>
+            <div className="space-y-4 max-w-3xl mx-auto">
+              {[
+                { icon: Target, title: 'ניתוח מקצועי של הנקות וחסמים', desc: 'זיהוי חוזקות ופרמטרים חיניים המשפיעים על הביצועים והפוטנציאל' },
+                { icon: TrendingUp, title: 'מפה קולינות מקצועיות ומיומנויות', desc: 'בניית תמונה כוללת של יכולות ליבה, כישורים נרכשים ותחומי שיפור פוטנציאליים' },
+                { icon: BookOpen, title: 'ניתוח קוגניטיבי ואסטרטגי (Gap Analysis)', desc: 'זיהוי הפערים - הכל מסביר אותו - ומצביע על ההזדמנות הטמונה בהם' },
+              ].map((item, i) => (
+                <motion.div key={i}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="benefit-card p-6 flex items-start gap-4">
+                  <div className="orange-icon-bg flex-shrink-0">
+                    <item.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white mb-1">{item.title}</h4>
+                    <p className="text-blue-300 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          </motion.div>
+          </div>
+
+          {/* V107 Contributions */}
+          <div className="border-t border-white/10 pt-16">
+            <h3 className="text-2xl md:text-3xl font-black text-white text-center mb-10">
+              התרומות המקצועיות של V107 עבורך:
+            </h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { num: '1', title: 'בהירות בהחלות', desc: 'השאלון מייצר תמונה מלאה שמאפשרת לכם לקבל החלטות מקצועיות מושכלות ובטוחות יותר' },
+                { num: '2', title: 'שיחה אותנטית', desc: 'יש שפה משל V107 שמאפשר לנו לשוחח איתכם בשפה מקצועית שמתחילה מהנקודה האמיתית' },
+                { num: '3', title: 'יישל מקצועי', desc: 'קבלת כלים לנהל את הצמיחה מהמקצועית בעצמכם ולהגיע לפסגות שאתם חולמים' },
+              ].map((item, i) => (
+                <motion.div key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="benefit-card p-8 text-center">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-black text-xl mx-auto mb-4"
+                    style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
+                    {item.num}
+                  </div>
+                  <h4 className="font-bold text-white mb-3 text-lg">{item.title}</h4>
+                  <p className="text-blue-300 text-sm leading-relaxed">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* V107 BOOSTER */}
+          <div className="mt-16 p-8 md:p-12 rounded-3xl text-center"
+            style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.3)' }}>
+            <h3 className="text-2xl md:text-3xl font-black text-white mb-6">
+              מעבר מידיעה לפעולה: אנדות מוצר על שלנו "V107-BOOSTER"
+            </h3>
+            <p className="text-blue-200 leading-relaxed max-w-3xl mx-auto mb-4">
+              מחירם של 30 מחירים לכם פניות (30 לב לי ניתן לשמור את יחסינו, לשלוח לנו את ה-IMPRESSION, על לשנות לפי השאלון מנסח של ה-
+              פנייה וכבר אחרי כן מוציאים את מכרם לנו מה לעשות.
+            </p>
+            <p className="text-blue-200 leading-relaxed max-w-3xl mx-auto">
+              כל יום V107-BOOSTER שולח לך אחת משלוש פניות (30 לב לי ניתן לשמור את יחסינו, לשלוח לנו את ה-IMPRESSION
+              מדי כשמנסה להוציא את המשימות המותאמות בדרך הראשון לצמיחה ולהצלחה מקצועית שלכם.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Trust Badges - Modern Footer */}
-      <section className="py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white border-t border-slate-200">
+      {/* ===== SECTION 5: BENEFITS - "אל תהססו" ===== */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-16 text-center">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">
+              אל תהססו, תשקיעו בעצמכם, תעשו את הצעד הבא, זה ממש למענכם !
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              מכל כיוון, מכל גיל, מכל מצב. רמה קצת לאמות ריבוי לבנות הקריירה המקצועית המייחד שלכם.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
             {[
-              { icon: Users, text: language === 'he' ? 'נבנה ע"י צוות מומחים בינלאומי עם מאות שנות ניסיון' : 'Built by international experts' },
-              { icon: Award, text: language === 'he' ? 'מערכת חדשנית המשפרת מאוד איתור מועמדים מתאימים' : 'Innovative assessment system' },
-              { icon: Target, text: language === 'he' ? 'עשרות לקוחות מרוצים' : 'Dozens of satisfied customers' }
-            ].map((item, index) => (
-              <motion.div
-                key={index}
+              { icon: Target, title: 'זהות את הכיוון ותתמקן שיפור המקצועי שלך', desc: 'אנחנו מסייעים לכם לזהות את החוזקות שלכם ולהבין את ערוצי הצמיחה הפוטנציאלים' },
+              { icon: TrendingUp, title: 'קבל הכוונה מעולה מרחוק', desc: 'קבל ליווי מקצועי ממוקד, כל מכשיר ובכל זמן' },
+              { icon: Award, title: 'דוח פסיכומטרי ברמה בינלאומית', desc: 'הדוח שלנו משתמש בכלים פסיכומטריים מובילים - ממד ליממד ועל-פי 11 ממדים מוכחים' },
+              { icon: Users, title: 'תמיכה מקצועית ומותאמת - ניקרת', desc: 'קבל אחת קישורית ממוקד לניהול קריירה, עם משוב אישי ותמיכה שוטפת' },
+            ].map((item, i) => (
+              <motion.div key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}>
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl blur-2xl opacity-30"></div>
-                  <item.icon className="relative w-20 h-20 text-cyan-600 mx-auto" />
+                transition={{ delay: i * 0.1 }}
+                className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 flex gap-5 items-start">
+                <div className="orange-icon-bg flex-shrink-0 w-14 h-14 flex items-center justify-center">
+                  <item.icon className="w-7 h-7 text-white" />
                 </div>
-                <p className="text-slate-700 font-bold leading-relaxed text-lg">
-                  {item.text}
-                </p>
+                <div>
+                  <h3 className="font-black text-gray-900 text-xl mb-2">{item.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
+                </div>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ===== SECTION 6: TRUST BADGES ===== */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-10 text-center">
+            {[
+              { icon: FileText, title: 'שאלון חדשני ממאסר אישותר - מוכרז להתחיל', desc: 'כל שאלה בנויה על מחקר מעמיק ואסטרטגיה קוגניטיבית מוכחת, המאפשרת ניתוח מדויק' },
+              { icon: Users, title: 'נבנה ע"י צוות מומחים בינלאומי עם מאות שנות ניסיון', desc: 'הצוות שלנו מורכב ממומחים בינלאומיים' },
+              { icon: Award, title: 'אלפי לקוחות מרוצים', desc: 'אלפי אנשים כבר עשו את השאלון וקיבלו תובנות חשובות שהשפיעו על הקריירה שלהם' },
+            ].map((item, i) => (
+              <div key={i} className="text-center">
+                <div className="orange-icon-bg w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <item.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="font-black text-gray-900 text-lg mb-2">{item.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== SECTION 7 & 8: FINAL CTA ===== */}
+      <section className="cta-section py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center">
+
+            <Sparkles className="w-16 h-16 text-amber-400 mx-auto mb-8 animate-pulse" />
+
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
+              אל תהססו, תשקיעו בעצמכם, תעשו את הצעד הבא,<br />
+              <span className="gold-text">זה ממש למענכם !</span>
+            </h2>
+
+            <p className="text-blue-200 text-lg mb-12 max-w-3xl mx-auto leading-relaxed">
+              הגיע הזמן של 30 דקות שלכם, לחשוב לאמות ריבוי, לקבל לאמות תוצאות, קבל אחת 
+              מהתוכניות המקצועיות הטובות ביותר לשיפור הקריירה המקצועית שלכם.
+            </p>
+
+            <div className="grid sm:grid-cols-3 gap-6 mb-12 max-w-3xl mx-auto">
+              {[
+                { title: 'דיוק מקסימלי', desc: 'ממוצע גבוה של דיוק בזיהוי יכולות' },
+                { title: 'תוצאות מקצועיות', desc: 'הכלת ממצאים פרופ מקצועיים' },
+                { title: 'לא מקור', desc: 'ייחוד מקצועי לכל משתמש' },
+              ].map((item, i) => (
+                <div key={i} className="benefit-card p-6 text-center">
+                  <h4 className="font-bold text-white mb-2">{item.title}</h4>
+                  <p className="text-blue-300 text-sm">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <Link to={createPageUrl("Questionnaire")}>
+              <Button size="lg" className="gold-btn text-xl px-14 py-7 rounded-2xl">
+                <Zap className="w-6 h-6 ml-2" />
+                יילוי השאלון חינם, התחל עכשיו !
+              </Button>
+            </Link>
+
+            <p className="mt-6 text-blue-400 text-sm">
+              ✓ ללא עלות ראשונית / ניתן לשלם בהמשך
+            </p>
+          </motion.div>
         </div>
       </section>
     </div>
