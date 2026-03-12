@@ -793,7 +793,7 @@ export default function Questionnaire() {
     if (currentStep === 0 && !validatePersonalInfo()) {
       return;
     }
-    setCurrentStep((prev) => Math.min(prev + 1, 8));
+    setCurrentStep((prev) => Math.min(prev + 1, 6));
     window.scrollTo(0, 0);
   };
 
