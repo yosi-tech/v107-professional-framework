@@ -1047,9 +1047,9 @@ export default function Questionnaire() {
           
           {currentStep === 0 ? (
             <p className="text-text-secondary mb-6">פרטים אישיים</p>
-          ) : currentStep >= 1 && currentStep <= 7 ? (
+          ) : currentStep >= 1 && currentStep <= 5 ? (
             <p className="text-text-secondary mb-6">{getCurrentSectionInfo()?.title}</p>
-          ) : currentStep === 8 ? (
+          ) : currentStep === 6 ? (
             <p className="text-text-secondary mb-6">הערה אופציונלית</p>
           ) : null}
           
