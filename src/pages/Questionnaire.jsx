@@ -137,12 +137,10 @@ const questionsEn = questionsHe; // For now, we'll keep the same for both langua
 
 const sectionTitlesHe = [
   { start: 1, end: 11, title: "מקטע 1: מיקוד, החלטה וחוסן" },
-  { start: 12, end: 22, title: "מקטע 2: גמישות, יצירתיות וחדשנות" },
-  { start: 23, end: 28, title: "מקטע 3: חשיבה אסטרטגית ותכנון" },
-  { start: 29, end: 42, title: "מקטע 4: מנהיגות, יוזמה ואחריות" },
-  { start: 43, end: 58, title: "מקטע 5: תקשורת, שיתוף פעולה ויושרה" },
-  { start: 59, end: 77, title: "מקטע 6: תכנון וניהול זמן" },
-  { start: 78, end: 107, title: "מקטע 7: למידה, צמיחה ואיזון אישי" }
+  { start: 12, end: 28, title: "מקטע 2: גמישות, יצירתיות וחדשנות" },
+  { start: 29, end: 41, title: "מקטע 3: מנהיגות, יוזמה ואחריות" },
+  { start: 42, end: 57, title: "מקטע 4: תקשורת, שיתוף פעולה ורשתות" },
+  { start: 58, end: 107, title: "מקטע 5: תכנון, למידה ואיזון" }
 ];
 
 const sectionTitlesEn = sectionTitlesHe; // For now, we'll keep the same for both languages
