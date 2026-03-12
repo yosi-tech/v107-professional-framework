@@ -817,7 +817,7 @@ export default function Questionnaire() {
       return <PersonalInfoForm data={personalInfo} onChange={setPersonalInfo} language={language} />;
     }
     
-    if (currentStep >= 1 && currentStep <= 7) {
+    if (currentStep >= 1 && currentStep <= 5) {
       const sectionInfo = getCurrentSectionInfo();
       if (!sectionInfo) return null;
       
