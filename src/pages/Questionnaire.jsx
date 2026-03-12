@@ -879,7 +879,7 @@ export default function Questionnaire() {
       );
     }
 
-    if (currentStep === 8) {
+    if (currentStep === 6) {
       return (
         <Card className="shadow-lg" dir={language === 'he' ? 'rtl' : 'ltr'}>
           <CardHeader>
