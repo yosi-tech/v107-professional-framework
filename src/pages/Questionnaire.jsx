@@ -162,7 +162,7 @@ const QuestionnaireIntro = ({ onStart, language }) => {
       <CardContent className="space-y-6">
         <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-text-secondary space-y-4`}>
           <p className="font-semibold text-lg text-text-primary">
-            {language === 'he' ? 'ברוך הבא ל-V107 QUESTIONNAIRE V8 B2B' : 'Welcome to V107 QUESTIONNAIRE V8 B2B'}
+            {language === 'he' ? 'ברוך הבא ל-V107 QUESTIONNAIRE V6 PRO' : 'Welcome to V107 QUESTIONNAIRE V6 PRO'}
           </p>
           <ul className="space-y-2 list-disc pr-6">
             <li>{language === 'he' ? 'כלי אבחון מקצועי זה נועד למפות את היכולות, הדפוסים והנטיות האישיות והמקצועיות שלך בהתבסס על 11 ממדים פסיכומטריים ליבתיים.' : 'This professional diagnostic tool is designed to map your personal and professional abilities, patterns, and tendencies based on 11 core psychometric dimensions.'}</li>
