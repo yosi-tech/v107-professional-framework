@@ -1032,7 +1032,7 @@ export default function Questionnaire() {
 
               <Button
                 onClick={nextStep}
-                disabled={currentStep >= 8}
+                disabled={currentStep >= 6}
                 size="sm"
                 className="bg-slate-600 hover:bg-slate-700 text-white"
               >
