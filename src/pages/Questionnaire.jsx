@@ -1096,7 +1096,7 @@ export default function Questionnaire() {
           )}
         </div>
         
-        {currentStep === 8 && (
+        {currentStep === 6 && (
           <div className="mt-8 bg-blue-50 p-6 rounded-lg border border-blue-200 text-center">
             <h3 className="font-semibold text-lg mb-3">🩵 סיום השאלון: הדרך למפת היכולות האישית שלך</h3>
             <div className="text-sm text-gray-700 space-y-2 text-right">
