@@ -156,7 +156,7 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
         </CardTitle>
         <CardDescription className="text-lg text-text-secondary">
-          {language === 'he' ? 'גרסה V8 B2B' : 'Version V8 B2B'}
+          {language === 'he' ? 'גרסה V6 PRO' : 'Version V6 PRO'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
