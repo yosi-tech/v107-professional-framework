@@ -1014,7 +1014,7 @@ export default function Questionnaire() {
 
               {/* Page selector */}
               <div className="flex gap-2">
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((step) => (
+                {[0, 1, 2, 3, 4, 5, 6].map((step) => (
                   <button
                     key={step}
                     onClick={() => setCurrentStep(step)}
