@@ -79,7 +79,17 @@ function getTopAndBottom(dimensions) {
   return { top3: sorted.slice(0, 3), bottom2: sorted.slice(-2) };
 }
 
-// Build a rich prompt for Claude
+// Simple hash function for variability/watermark
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+// Build a rich prompt for Claude — V7 PRO ULTIMATE
 function buildClaudePrompt(userData, dimensions, archetype, ageCategory, topBottom) {
   const { top3, bottom2 } = topBottom;
   const name = userData.personal_info.full_name;
@@ -90,15 +100,39 @@ function buildClaudePrompt(userData, dimensions, archetype, ageCategory, topBott
   const occupation = userData.personal_info.occupation_field || 'לא צוין';
   const interests = (userData.personal_info.interest_areas || []).join(', ') || 'לא צוין';
   const targetPosition = userData.personal_info.target_position || 'לא צוין';
+  const email = userData.personal_info.email || '';
   const language = userData.language || 'he';
   const today = new Date().toLocaleDateString('he-IL');
+
+  // ⭐ NEW V7 — Variability Version: hash(name+age) mod 4
+  const variabilityVersion = ['A', 'B', 'C', 'D'][simpleHash(`${name}${age}`) % 4];
+
+  // ⭐ NEW V7 — Semantic Watermark: hash(email) mod 4
+  const watermarkPhrases = ['התנועה הפנימית שלך', 'המנגנון הסמוי', 'הדפוס העמוק', 'השורש הפונקציונלי'];
+  const watermarkPhrase = watermarkPhrases[simpleHash(email) % 4];
+
+  // Archetype variability opening examples
+  const archetypeOpenings = {
+    A: `"הידע שלך הוא הנשק החזק ביותר שלך — וגם הכלא שלך."`,
+    B: `"בעולם שבו רוב האנשים מפסיקים ללמוד ב-30, אתה יוצא דופן."`,
+    C: `"יש אנשים שמשקיעים בקשרים. אתה משקיע בידע. זה הכוח שלך."`,
+    D: `"107 שאלות חשפו דפוס שחוזר אצל 6% בלבד מ-5,000 המשתמשים."`
+  };
 
   const allDimsTable = Object.values(dimensions)
     .sort((a, b) => b.score - a.score)
     .map(d => `${d.name}: ${d.score} (${d.percentile.range} – ${d.percentile.label})`)
     .join('\n');
 
-  return `אתה מומחה בפסיכולוגיה ארגונית ופיתוח קריירה. עליך לכתוב דוח מקצועי מעמיק ואישי בעברית בלבד (${language === 'he' ? 'עברית' : 'English'}).
+  const bottom2RiskFlags = bottom2.map(d =>
+    `⚠️ RISK FLAG — ${d.name} (${d.score}): "ממד זה ב-${d.score} מהווה חסם מוכח בתפקידי [תפקיד רלוונטי]. ללא טיפול, הסיכוי לקידום ב-18 חודש פוחת ב-[X]%."`
+  ).join('\n');
+
+  return `אתה מומחה בפסיכולוגיה ארגונית ופיתוח קריירה בכיר. עליך לכתוב דוח V107 מקצועי מעמיק ואישי, בעברית בלבד.
+
+══════════════════════════════════════
+🔒 SYSTEM CONFIGURATION — V7 PRO ULTIMATE
+══════════════════════════════════════
 
 ## פרטי הנבדק/ת
 - שם: ${name}
@@ -111,7 +145,7 @@ function buildClaudePrompt(userData, dimensions, archetype, ageCategory, topBott
 - תפקיד יעד: ${targetPosition}
 - תאריך: ${today}
 
-## ציוני 11 הממדים (מחושבים)
+## ציוני 11 הממדים
 ${allDimsTable}
 
 ## ממדים חזקים (Top 3)
@@ -119,62 +153,110 @@ ${allDimsTable}
 2. ${top3[1].name}: ${top3[1].score} (${top3[1].percentile.range})
 3. ${top3[2].name}: ${top3[2].score} (${top3[2].percentile.range})
 
-## ממדים חלשים (Bottom 2)
+## ממדים חלשים (Bottom 2) + Risk Flags
 1. ${bottom2[1] ? bottom2[1].name + ': ' + bottom2[1].score : ''} (${bottom2[1]?.percentile?.range || ''})
 2. ${bottom2[0] ? bottom2[0].name + ': ' + bottom2[0].score : ''} (${bottom2[0]?.percentile?.range || ''})
+
+${bottom2RiskFlags}
 
 ## ארכיטיפ
 ${archetype.name} – ${archetype.message}
 חוזקה: ${archetype.strength} | פער: ${archetype.gap}
 
----
+## Variability Version: ${variabilityVersion}
+פתיחת ארכיטיפ לגרסה זו: ${archetypeOpenings[variabilityVersion]}
 
-## הוראות לדוח
+## Semantic Watermark
+בעמוד 2, פסקה 3 — שלב באופן טבעי את הביטוי: "${watermarkPhrase}" (חייב להיראות טבעי בהקשר).
 
-כתוב דוח מלא ומקצועי ב-5 עמודים בפורמט Markdown. הדוח צריך להיות:
-- אישי לחלוטין – השתמש בשם ${name} לאורך כל הדוח
-- מעמיק ומנותח – לא תבניות כלליות
-- מעורר מוטיבציה ומעשי – עם המלצות קונקרטיות
-- בגוף נוכח ראשון רבים (אתה/את)
-- מקצועי, ישיר, וחם
+══════════════════════════════════════
+📋 הוראות כתיבה — V7 PRO ULTIMATE
+══════════════════════════════════════
 
-### מבנה חובה:
+כתוב דוח מלא ומקצועי בדיוק 5 עמודים בפורמט Markdown.
+
+**כללי חובה:**
+- אישי לחלוטין — השתמש בשם ${name} לאורך כל הדוח
+- שפה ניבויית, לא תיאורית: ❌ "יש לך חוזק" → ✅ "פרופיל זה מנבא ביצועים גבוהים ב-85% מתפקידי [ROLE]"
+- לכל ממד: "ממוצע בעלי תפקיד דומה בשוק: [X]. הציון שלך: [Y]. מתוך בסיס נתוני V107 של 5,000+ משתמשים"
+- לפחות 3 משפטי "מנבא" בדוח
+- אחוזון תמיד: "ממד X ב-[Y] = אתה ב-[Z]% התחתונים/העליונים של אנשים בגילך"
+- ❌ אסור: "פוטנציאל אינסופי" | "הצלחה מובטחת" | "שינוי מהפכני" | כל סופרלטיב ללא נתון
+
+══════════════════════════════════════
+📄 מבנה חובה — 5 עמודים
+══════════════════════════════════════
 
 **עמוד 1 – תקציר מנהלים אישי**
-- פתיחה אישית ל${name}
-- המנוע (Top 3) עם פרשנות עומק
-- המחיר (Bottom 2) עם השפעה קונקרטית
-- התובנה המרכזית
-- הפרופיל האישי (${archetype.name})
-- ה-ROI האישי
+
+⚡ שורה ראשונה — VIRAL HOOK (לפני כל תוכן אחר):
+פורמט חובה (מקסימום 20 מילה, מספרים מבסיס הנתונים):
+"${name}, מתוך 5,200 אנשים שמילאו V107 — הפרופיל שלך שייך ל-[X]% בלבד שמשלבים [TRAIT_1] עם [TRAIT_2]."
+⚠️ זהו המשפט החשוב ביותר. כתוב טיוטה, עבור עליה שוב. חייב לגרום לתחושה: "זה אני בדיוק".
+
+לאחר מכן:
+1. המנוע שלך (Top 3) — עם קשר לגיל ותחומי עניין
+2. המחיר שאתה משלם (Bottom 2) — percentile + ROI loss
+3. התובנה המרכזית — פרדוקס/מתח, משפט אחד
+4. הפרופיל שלך (${archetype.name}) — 2-3 משפטים עם גרסה ${variabilityVersion}
+5. ה-ROI האישי — מספרים קונקרטיים לפי גיל ${age}
+
+בסוף עמוד 1 — ARCHETYPE CARD (Shareable):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧬 V107 PROFILE CARD
+${name} | גיל ${age} | ${today}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+הפרופיל: ${archetype.name}
+חוזק מרכזי: [TOP_DIM] — [SCORE] (Top [X]%)
+אזור פיתוח: [BOTTOM_DIM] — [SCORE] (Bottom [X]%)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"[5 מילים שמגדירות אותך — עוצמתיות, אישיות, בלתי נשכחות]"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **עמוד 2 – ניתוח ממדים מעמיק**
-- ניתוח עומק לכל ממד Top 3 (ביטוי יומיומי, יתרון, דוגמאות)
-- ניתוח Bottom 2 עם הסבר פסיכולוגי
-- דפוס האינטראקציה בין הממדים
-- הפרדוקס המקצועי
+- PART A: לכל TOP 3 ממד: ציון + percentile + ביטוי יומיומי + יתרון + Benchmark השוואה
+- Interaction Pattern: [ממד גבוה] + [ממד נמוך] = [דפוס] (לדוגמה: למידה 87 + נטוורקינג 43 = 'מומחה בודד')
+- PART B: לכל BOTTOM 2: ציון + percentile + עלות ROI + הסבר פסיכולוגי (WHY) + Risk Flag + מה קורה אם לא מטפלים
+- PART C: הפרדוקס המקצועי שלך — 3 משפטים, המתח המרכזי
+- ⚠️ בפסקה 3 של עמוד זה: שלב את הביטוי "${watermarkPhrase}" באופן טבעי
 
 **עמוד 3 – המפה המלאה**
-- טבלת כל 11 הממדים עם ציונים, percentile ופרשנות
-- דירוג מהגבוה לנמוך
-- תיאור גרפי (Spider Chart / Bar Chart בטקסט)
-- זיהוי דפוסים
+תחילה — טבלת יכולות (11 שורות):
+| ממד | תיאור בשפת חיי יום-יום | (ללא ציונים בטבלה) |
+
+לאחר מכן — גרף בר אופקי (טקסטואלי), ממוין HIGH→LOW:
+85-100: ■■■■■ ירוק | 70-84: ■■■■ כחול | 60-69: ■■■ צהוב | 0-59: ■■ אדום
+כל בר: ציון + אחוזון
+
+לאחר מכן — טבלת פרשנות:
+| # | ממד | ציון | Percentile | פרשנות + קשר לארכיטיפ |
 
 **עמוד 4 – מסלולי קריירה (4 מסלולים)**
-בהתבסס על ${occupation !== 'לא צוין' ? 'תחום העיסוק: ' + occupation : 'תחומי עניין: ' + interests} ועל תפקיד היעד ${targetPosition}:
-- 4 מסלולי קריירה ספציפיים עם כותרות תפקיד אמיתיות
-- לכל מסלול: למה מתאים, סיפור הצלחה קצר, מה לשפר, ROI צפוי
-- קשור ספציפית לפרופיל ${archetype.name}
+בהתבסס על ${occupation !== 'לא צוין' ? 'תחום: ' + occupation : 'תחומי עניין: ' + interests} ותפקיד יעד: ${targetPosition}
+לכל מסלול: למה מתאים | סיפור הצלחה קצר | מה לשפר (action specific) | ROI צפוי
 
-**עמוד 5 – V107 BOOSTER**
-- תיאור המצב הנוכחי של ${name}
-- 3 משימות יומיות קונקרטיות (יום 3, 12, 21) מותאמות לפרופיל
+**עמוד 5 – V107 BOOSTER + סיכום**
+- The Situation (2-3 משפטים) — המצב הנוכחי של ${name}
+- The Solution — מה הבוסטר נותן
+- 3 Sample Tasks קונקרטיות (יום 3, יום 12, יום 21) מותאמות לפרופיל
 - סיכום מעורר השראה אישי
 - הבהרה משפטית
 
 סיים כל עמוד עם: **[עמוד X מתוך 5]**
+
+══════════════════════════════════════
+✅ CHECKLIST לפני הגשה
+══════════════════════════════════════
+☐ Viral Hook — מספרי, מפתיע, מקסימום 20 מילה
+☐ Archetype Card — כולל Quote 5 מילים
+☐ Semantic Watermark "${watermarkPhrase}" שולב בעמוד 2 פסקה 3
+☐ Benchmark Citation קיים לכל ממד — 'מתוך 5,000+ משתמשי V107'
+☐ Risk Flag קיים לכל ממד תחתון — עם % ספציפי
+☐ לפחות 3 משפטי ניבוי בדוח
+☐ גיל ${age} מוזכר ומותאם לאורך כל הדוח
+☐ תחומי עניין משולבים מינימום 3 מקומות
+☐ בדיוק 5 עמודים
 `;
-}
 
 Deno.serve(async (req) => {
   try {
