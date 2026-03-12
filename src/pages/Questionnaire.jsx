@@ -809,7 +809,7 @@ export default function Questionnaire() {
 
   const getProgress = () => {
     if (currentStep <= 0) return 0;
-    return (currentStep / 9) * 100;
+    return (currentStep / 7) * 100;
   };
 
   const renderCurrentSection = () => {
