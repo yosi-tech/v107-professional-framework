@@ -803,7 +803,7 @@ export default function Questionnaire() {
   };
 
   const getCurrentSectionInfo = () => {
-    if (currentStep <= 0 || currentStep > 7) return null;
+    if (currentStep <= 0 || currentStep > 5) return null;
     return sectionTitles[currentStep - 1];
   };
 
