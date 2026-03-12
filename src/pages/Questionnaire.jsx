@@ -1078,7 +1078,7 @@ export default function Questionnaire() {
             קודם
           </Button>
 
-          {currentStep < 8 ? (
+          {currentStep < 6 ? (
             <Button onClick={nextStep} size="lg" className="bg-slate-600 hover:bg-slate-700 text-white">
               הבא
               {language === 'he' ? <ArrowLeft className="w-5 h-5 mr-2" /> : <ArrowRight className="w-5 h-5 ml-2" />}
