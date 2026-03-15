@@ -1,8 +1,8 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 import Anthropic from 'npm:@anthropic-ai/sdk@0.39.0';
 
 // ============================================================================
-// generateReportAutomatic - delegates to V7 Pro (Claude-powered)
+// generateReportAutomatic - delegates to V9 Pro (Claude-powered, McKinsey data)
 // ============================================================================
 
 const REVERSE_QUESTIONS = [4, 8, 14, 22, 25, 27, 34, 37, 39, 41, 45, 48, 54, 57, 60, 89, 90, 93, 98];
