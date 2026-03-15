@@ -149,13 +149,27 @@ Deno.serve(async (req) => {
     const openers = archetypeOpenerMap[archetype.name] || archetypeOpenerMap['הלומד המתמיד'];
     const archetypeOpener = openers[versionIndex];
 
+    const genderRaw = response.personal_info.gender;
+    const genderLabel = genderRaw === 'female' ? 'נקבה' : 'זכר';
+    const genderInstruction = genderRaw === 'female'
+      ? `⚠️ הוראת מגדר — חובה מוחלטת: הנבדקת היא אישה. כתוב את כל הדוח בלשון נקבה בלבד ללא יוצא מן הכלל.
+- השתמש תמיד ב"את" ולא "אתה"
+- ניסוחים לדוגמה: "את מביאה", "את עשית", "הצלחת", "חזקה", "מומחית", "מנהלת שיווק"
+- אסור לכתוב "אתה/את" — בחר "את" בלבד
+- בדוק כל משפט: האם כתוב בלשון נקבה?`
+      : `⚠️ הוראת מגדר — חובה מוחלטת: הנבדק הוא גבר. כתוב את כל הדוח בלשון זכר בלבד ללא יוצא מן הכלל.
+- השתמש תמיד ב"אתה" ולא "את"
+- אסור לכתוב "אתה/את" — בחר "אתה" בלבד`;
+
     const prompt = `אתה מנתח פסיכומטרי מקצועי. כתוב דוח V107 מלא בעברית בלבד — 5 עמודים בדיוק.
 
 🚨 חובה: הדוח כולו בעברית בלבד. אסור לכתוב באנגלית. 🚨
 
+${genderInstruction}
+
 📌 נתוני הנבדק/ת:
 שם: ${name} | גיל: ${age} | ${ageCategory.label}
-מגדר: ${response.personal_info.gender === 'female' ? 'נקבה' : 'זכר'}
+מגדר: ${genderLabel}
 שנות ניסיון: ${response.personal_info.years_of_experience || 'לא צוין'}
 ${occupation ? 'תחום עיסוק: ' + occupation : 'ניתוח מבוסס תחומי עניין בלבד'}
 תחומי עניין: ${interests}
