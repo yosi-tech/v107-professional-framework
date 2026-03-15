@@ -268,8 +268,8 @@ Spider Chart ASCII (11 שורות ממוינות HIGH→LOW, ▲ TOP 3, ▼ BOTT
       success: true,
       reportId: savedReport.id,
       report_number: reportId,
-      model_used: 'claude-haiku-4-5-20251001',
-      message: 'Report generated successfully'
+      model_used: 'claude-sonnet-4-5-20251001',
+      message: 'V9 PRO report generated successfully'
     });
 
   } catch (error) {
