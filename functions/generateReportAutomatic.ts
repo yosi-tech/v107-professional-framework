@@ -152,14 +152,31 @@ Deno.serve(async (req) => {
     const genderRaw = response.personal_info.gender;
     const genderLabel = genderRaw === 'female' ? 'נקבה' : 'זכר';
     const genderInstruction = genderRaw === 'female'
-      ? `⚠️ הוראת מגדר — חובה מוחלטת: הנבדקת היא אישה. כתוב את כל הדוח בלשון נקבה בלבד ללא יוצא מן הכלל.
-- השתמש תמיד ב"את" ולא "אתה"
-- ניסוחים לדוגמה: "את מביאה", "את עשית", "הצלחת", "חזקה", "מומחית", "מנהלת שיווק"
-- אסור לכתוב "אתה/את" — בחר "את" בלבד
-- בדוק כל משפט: האם כתוב בלשון נקבה?`
-      : `⚠️ הוראת מגדר — חובה מוחלטת: הנבדק הוא גבר. כתוב את כל הדוח בלשון זכר בלבד ללא יוצא מן הכלל.
-- השתמש תמיד ב"אתה" ולא "את"
-- אסור לכתוב "אתה/את" — בחר "אתה" בלבד`;
+      ? `🚨 CRITICAL GENDER RULE — HIGHEST PRIORITY — MUST OVERRIDE EVERYTHING ELSE 🚨
+The subject of this report is FEMALE (אישה).
+You MUST write the ENTIRE report using Hebrew FEMININE forms only.
+This is non-negotiable. Scan every single sentence before outputting.
+
+FORBIDDEN (masculine) — never use these:
+❌ אתה | ❌ יודע | ❌ עושה (masc) | ❌ מנבא | ❌ נשמר | ❌ מתכנן | ❌ מוביל | ❌ מצליח | ❌ יכול
+
+REQUIRED (feminine) — always use these:
+✅ את | ✅ יודעת | ✅ עושה (fem) | ✅ מנבאת | ✅ נשמרת | ✅ מתכננת | ✅ מובילה | ✅ מצליחה | ✅ יכולה
+
+EXAMPLES — correct feminine usage:
+✅ "את מביאה תוצאות" | ✅ "הציון שלך מנבא" | ✅ "את יודעת לנהל" | ✅ "את נמצאת ב-Top 10%"
+✅ "בגיל 57, את עושה את ההיפך" | ✅ "את מצליחה שם" | ✅ "את לא מוותרת"
+
+WRONG — never write like this:
+❌ "אתה עושה" | ❌ "אתה יודעת" | ❌ "אתה נשמרת" | ❌ "אתה בטובי" | ❌ "אתה מנבא"
+
+Before writing each sentence, ask yourself: "Is the subject female? Are all verbs/adjectives in feminine form?" If NO — rewrite.`
+      : `🚨 CRITICAL GENDER RULE — HIGHEST PRIORITY 🚨
+The subject of this report is MALE (גבר).
+You MUST write the ENTIRE report using Hebrew MASCULINE forms only.
+
+REQUIRED: אתה | יודע | עושה | מנבא | נשמר | מתכנן | מוביל | מצליח | יכול
+FORBIDDEN: את (feminine pronoun) or any feminine verb/adjective forms referring to the subject.`;
 
     const prompt = `אתה מנתח פסיכומטרי מקצועי. כתוב דוח V107 מלא בעברית בלבד — 5 עמודים בדיוק.
 
