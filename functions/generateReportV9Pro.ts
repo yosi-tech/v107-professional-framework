@@ -160,16 +160,6 @@ function buildClaudePrompt(userData, dimensions, archetype, ageCategory, topBott
   const age = userData.personal_info.age;
   const genderRaw = userData.personal_info.gender;
   const gender = genderRaw === 'female' ? 'נקבה' : 'זכר';
-  const genderInstruction = genderRaw === 'female'
-    ? `⚠️ הוראת מגדר — חובה מוחלטת: הנבדקת היא אישה. כתוב את כל הדוח בלשון נקבה בלבד ללא יוצא מן הכלל.
-- "את" ולא "אתה" | "שלך" | "עשית" | "הצלחת" | "חזקה" | "מומחית" | "מנהלת"
-- אסור לכתוב "אתה/את" — בחר "את" בלבד
-- אסור לכתוב ביטויים כמו "אתה מביא" — יש לכתוב "את מביאה"
-- בדוק כל משפט לפני הכתיבה`
-    : `⚠️ הוראת מגדר — חובה מוחלטת: הנבדק הוא גבר. כתוב את כל הדוח בלשון זכר בלבד ללא יוצא מן הכלל.
-- "אתה" ולא "את" | "שלך" | "עשית" | "הצלחת" | "חזק" | "מומחה" | "מנהל"
-- אסור לכתוב "אתה/את" — בחר "אתה" בלבד
-- בדוק כל משפט לפני הכתיבה`;
   const experience = userData.personal_info.years_of_experience || 'לא צוין';
   const status = userData.personal_info.current_professional_status || 'לא צוין';
   const occupation = userData.personal_info.occupation_field || '';
