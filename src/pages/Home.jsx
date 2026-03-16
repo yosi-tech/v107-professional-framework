@@ -347,44 +347,74 @@ export default function Home() {
       <section className="archetype-section py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto relative z-10">
           
-          {/* Archetype */}
+          {/* Header */}
           <div className="text-center mb-16">
-            <p className="text-amber-400 font-semibold mb-2 text-sm uppercase tracking-wider">הארכיטיפ שלכם (The Action Matrix)</p>
             <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
               גלה את מפת היכולות האמיתית שלך
             </h2>
-            <p className="text-blue-200 max-w-2xl mx-auto leading-relaxed">
-              הניתוח המקצועי שלנו יחשוף לכם תמונה שלמה, ממשית, אין דיאק אחד דומה בין הדוחות שמייצרים AI אנלרנטית.
-              מוצאים בין פ- ס (פוטנציאל) מחזיק מפתח שיש לו אלטרנטיבה מהטקסטות, ויותר לנו לאמור לכם מה לעשות.
+            <p className="text-blue-200 max-w-2xl mx-auto leading-relaxed text-lg">
+              קבל את 11 היכולות המקצועיות שלך. תמונה מקצועית מלאה של מי את/ה — ולאן את/ה הולך/ת.
             </p>
           </div>
 
-          {/* What's in the report */}
-          <div className="mb-16">
-            <h3 className="text-2xl font-black text-white text-center mb-8">מה כולל הדוח המקצועי האישי שלך?</h3>
-            <p className="text-blue-300 text-center mb-8 text-sm">כולל גם ניתוח קצר לתיאשי - 1 מתוך 107 שאלות ו- 11 ממדים</p>
-            <div className="space-y-4 max-w-3xl mx-auto">
-              {[
-                { icon: Target, title: 'ניתוח מקצועי של הנקות וחסמים', desc: 'זיהוי חוזקות ופרמטרים חיניים המשפיעים על הביצועים והפוטנציאל' },
-                { icon: TrendingUp, title: 'מפה קולינות מקצועיות ומיומנויות', desc: 'בניית תמונה כוללת של יכולות ליבה, כישורים נרכשים ותחומי שיפור פוטנציאליים' },
-                { icon: BookOpen, title: 'ניתוח קוגניטיבי ואסטרטגי (Gap Analysis)', desc: 'זיהוי הפערים - הכל מסביר אותו - ומצביע על ההזדמנות הטמונה בהם' },
-              ].map((item, i) => (
-                <motion.div key={i}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="benefit-card p-6 flex items-start gap-4">
-                  <div className="orange-icon-bg flex-shrink-0">
-                    <item.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white mb-1">{item.title}</h4>
-                    <p className="text-blue-300 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+          {/* 3 Product Cards */}
+          <div className="grid md:grid-cols-3 gap-6 mb-10">
+            {[
+              {
+                emoji: '🗺️',
+                title: 'דוח אישי',
+                desc: '5 עמודות ניתוח מעמיק של הפרופיל שלך'
+              },
+              {
+                emoji: '⚡',
+                title: 'בוסטר 30 יום',
+                desc: 'משימה יומית אחת ממוקדת בדיוק בחוזקות שלך'
+              },
+              {
+                emoji: '📄',
+                title: 'ניתוח קורות חיים',
+                desc: 'השוואת הפרופיל שלך מול דרישות התפקיד שאת/ה רוצה'
+              },
+            ].map((card, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="benefit-card p-8 text-center rounded-2xl">
+                <div className="text-5xl mb-4">{card.emoji}</div>
+                <h4 className="font-black text-white text-xl mb-3">{card.title}</h4>
+                <p className="text-blue-300 text-sm leading-relaxed">{card.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Price line */}
+          <div className="text-center mb-10">
+            <p className="text-3xl font-black text-amber-400">כל זה — 99 ₪ בלבד</p>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center mb-8">
+            <Link to={createPageUrl("Questionnaire")}>
+              <Button size="lg" className="gold-btn text-xl px-14 py-6 rounded-2xl">
+                התחל/י עכשיו ←
+              </Button>
+            </Link>
+          </div>
+
+          {/* 3 stats */}
+          <div className="flex flex-wrap justify-center gap-8 mb-6 text-center">
+            <span className="text-white font-bold">5,012 משתמשים</span>
+            <span className="text-white/40">|</span>
+            <span className="text-white font-bold">11 ממדים</span>
+            <span className="text-white/40">|</span>
+            <span className="text-white font-bold">מילוי קצר וענייני</span>
+          </div>
+
+          {/* Trust line */}
+          <div className="text-center">
+            <p className="text-blue-300 text-sm">✓ ללא התחייבות &nbsp;&nbsp; ✓ תוצאות מיידיות &nbsp;&nbsp; ✓ פרטיותך שמורה</p>
           </div>
 
           {/* V107 Contributions */}
