@@ -150,10 +150,10 @@ export default function Home() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full"
+            className="inline-flex items-center gap-2 mb-8 px-5 py-3 rounded-full"
             style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.4)' }}>
-            <CheckCircle className="w-4 h-4 gold-text" />
-            <span className="text-sm gold-text font-semibold">מבוסס על 5 שנות מחקר אינטנסיבי</span>
+            <CheckCircle className="w-5 h-5 gold-text" />
+            <span className="text-base gold-text font-semibold">מבוסס על 5 שנות מחקר</span>
           </motion.div>
 
           {/* Main Headline */}
@@ -194,8 +194,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
             className="mt-6 text-sm text-blue-300">
-            <CheckCircle className="w-4 h-4 inline ml-1" />
-            חזרנו לצמוח! - בטוח קרא על דעת של ריבוי ומפרסמים
+            הדרך הקלה, הנכונה, המהירה והכדאית לדעת יכולות אמיתיות שלך
           </motion.p>
 
           {/* Stats */}
