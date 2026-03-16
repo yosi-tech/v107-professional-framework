@@ -205,7 +205,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
             {[
-              { value: '4952', label: 'משתתפים פעילים' },
+              { value: '5011', label: 'משתתפים פעילים' },
               { value: 'שאלון יכולות\nאמריקאי', label: 'תקן בינלאומי' },
               { value: '11', label: 'ממדי יכולות נמדדים' },
               { value: '5 ימים\nלקבלת הדו"ח', label: 'זמן אספקה' },
