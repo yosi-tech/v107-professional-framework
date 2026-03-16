@@ -91,10 +91,10 @@ export default function Home() {
           border-radius: 16px;
         }
         .step-card {
-          background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+          background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
           border-radius: 20px;
-          border: 1px solid #60a5fa;
-          box-shadow: 0 4px 20px rgba(59,130,246,0.2);
+          border: 1px solid #93c5fd;
+          box-shadow: 0 4px 20px rgba(59,130,246,0.12);
           transition: all 0.3s ease;
         }
         .step-card:hover {
@@ -103,9 +103,9 @@ export default function Home() {
           border-color: #3b82f6;
         }
         .teal-card {
-          background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
-          border: 1px solid #60a5fa;
-          box-shadow: 0 4px 20px rgba(59,130,246,0.2);
+          background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+          border: 1px solid #93c5fd;
+          box-shadow: 0 4px 20px rgba(59,130,246,0.12);
           transition: all 0.3s ease;
         }
         .teal-card:hover {
@@ -232,7 +232,7 @@ export default function Home() {
       </section>
 
       {/* ===== SECTION 2: HOW IT WORKS ===== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #93c5fd 0%, #60a5fa 100%)'}}>
+      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #e0effe 0%, #bfdbfe 100%)'}}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">איך זה עובד?</h2>
@@ -300,7 +300,7 @@ export default function Home() {
 
       {/* ===== SECTION 3: TESTIMONIALS ===== */}
       {testimonials.length > 0 && (
-        <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #93c5fd 0%, #60a5fa 100%)'}}>
+        <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #e0effe 0%, #bfdbfe 100%)'}}>
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה אומרים עלינו</h2>
@@ -472,7 +472,7 @@ export default function Home() {
       </section>
 
       {/* ===== SECTION 5: WHAT YOU GET ===== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #93c5fd 0%, #60a5fa 100%)'}}>
+      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #e0effe 0%, #bfdbfe 100%)'}}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה מקבלים ב-99 ₪?</h2>
