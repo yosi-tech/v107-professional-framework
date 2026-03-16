@@ -208,7 +208,7 @@ export default function Home() {
               { value: '5011', label: 'משתתפים פעילים' },
               { value: 'שאלון יכולות\nאמריקאי', label: 'תקן בינלאומי' },
               { value: '11', label: 'ממדי יכולות נמדדים' },
-              { value: '5 ימים\nלקבלת הדו"ח', label: 'זמן אספקה' },
+              { value: 'תוך עד 24 שעות\nדוח V107 אצלך במייל !', label: 'זמן אספקה' },
             ].map((stat, i) => (
               <div key={i} className="stat-card p-5 text-center">
                 <div className="text-2xl md:text-3xl font-black text-white whitespace-pre-line leading-tight mb-2">
