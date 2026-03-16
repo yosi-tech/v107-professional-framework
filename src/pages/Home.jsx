@@ -509,26 +509,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== SECTION 6: TRUST BADGES ===== */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-10 text-center">
-            {[
-              { icon: FileText, title: 'שאלון חדשני ממאסר אישותר - מוכרז להתחיל', desc: 'כל שאלה בנויה על מחקר מעמיק ואסטרטגיה קוגניטיבית מוכחת, המאפשרת ניתוח מדויק' },
-              { icon: Users, title: 'נבנה ע"י צוות מומחים בינלאומי עם מאות שנות ניסיון', desc: 'הצוות שלנו מורכב ממומחים בינלאומיים' },
-              { icon: Award, title: 'אלפי לקוחות מרוצים', desc: 'אלפי אנשים כבר עשו את השאלון וקיבלו תובנות חשובות שהשפיעו על הקריירה שלהם' },
-            ].map((item, i) => (
-              <div key={i} className="text-center">
-                <div className="orange-icon-bg w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="font-black text-gray-900 text-lg mb-2">{item.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* ===== SECTION 7 & 8: FINAL CTA ===== */}
       <section className="cta-section py-24 px-4 sm:px-6 lg:px-8">
