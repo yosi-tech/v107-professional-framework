@@ -162,7 +162,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight text-white">
-            מרגישים תקועים מקצועית ?<br />
+            מרגישים תקועים מקצועית...<br />
             <span className="gold-text">לא יודעים באיזה מקצוע לבחור ?</span>
           </motion.h1>
 
