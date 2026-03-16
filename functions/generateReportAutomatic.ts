@@ -974,7 +974,7 @@ Deno.serve(async (req) => {
     const claudeResponse = await anthropic.messages.create({
       model: 'claude-sonnet-4-5-20251001',
       max_tokens: 10000,
-      system: V9_SYSTEM_PROMPT,
+      system: V9_SYSTEM_PROMPT, // V10 FINAL
       messages: [{ role: 'user', content: JSON.stringify(inputJSON) }]
     });
 
@@ -990,7 +990,7 @@ Deno.serve(async (req) => {
       domainScores[key] = { score: dim.score, percentile: dim.percentile.range };
     }
 
-    const reportId = `V107-V9-${(response.language || 'HE').toUpperCase()}-${Date.now().toString().slice(-6)}`;
+    const reportId = `V107-V10-${(response.language || 'HE').toUpperCase()}-${Date.now().toString().slice(-6)}`;
 
     const savedReport = await base44.asServiceRole.entities.GeneratedReport.create({
       questionnaire_response_id: responseId,
@@ -1016,7 +1016,7 @@ Deno.serve(async (req) => {
       reportId: savedReport.id,
       report_number: reportId,
       model_used: 'claude-sonnet-4-5-20251001',
-      message: 'V9 FINAL report generated successfully'
+      message: 'V10 FINAL report generated successfully'
     });
 
   } catch (error) {
