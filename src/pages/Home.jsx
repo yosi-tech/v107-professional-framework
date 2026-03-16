@@ -417,16 +417,16 @@ export default function Home() {
             <p className="text-blue-300 text-sm">✓ ללא התחייבות &nbsp;&nbsp; ✓ תוצאות מיידיות &nbsp;&nbsp; ✓ פרטיותך שמורה</p>
           </div>
 
-          {/* V107 Contributions */}
+          {/* What you'll get */}
           <div className="border-t border-white/10 pt-16">
             <h3 className="text-2xl md:text-3xl font-black text-white text-center mb-10">
-              התרומות המקצועיות של V107 עבורך:
+              מה תקבל/י — ומה ישתנה
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                { num: '1', title: 'בהירות בהחלות', desc: 'השאלון מייצר תמונה מלאה שמאפשרת לכם לקבל החלטות מקצועיות מושכלות ובטוחות יותר' },
-                { num: '2', title: 'שיחה אותנטית', desc: 'יש שפה משל V107 שמאפשר לנו לשוחח איתכם בשפה מקצועית שמתחילה מהנקודה האמיתית' },
-                { num: '3', title: 'יישל מקצועי', desc: 'קבלת כלים לנהל את הצמיחה מהמקצועית בעצמכם ולהגיע לפסגות שאתם חולמים' },
+                { num: '1', title: 'בהירות', desc: 'תבין/י סוף סוף מי את/ה מקצועית' },
+                { num: '2', title: 'כיוון', desc: 'תדע/י לאן להתקדם ומדוע' },
+                { num: '3', title: 'פעולה', desc: 'תצא/י עם תוכנית עבודה ל-30 יום, כמו גם הבנת יכולות אסטרטגית' },
               ].map((item, i) => (
                 <motion.div key={i}
                   initial={{ opacity: 0, y: 20 }}
@@ -438,8 +438,8 @@ export default function Home() {
                     style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
                     {item.num}
                   </div>
-                  <h4 className="font-bold text-white mb-3 text-lg">{item.title}</h4>
-                  <p className="text-blue-300 text-sm leading-relaxed">{item.desc}</p>
+                  <h4 className="font-black text-white mb-3 text-xl">{item.title}</h4>
+                  <p className="text-blue-200 leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -448,17 +448,14 @@ export default function Home() {
           {/* V107 BOOSTER */}
           <div className="mt-16 p-8 md:p-12 rounded-3xl text-center"
             style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.3)' }}>
-            <h3 className="text-2xl md:text-3xl font-black text-white mb-6">
-              מעבר מידיעה לפעולה: אנדות מוצר על שלנו "V107-BOOSTER"
-            </h3>
-            <p className="text-blue-200 leading-relaxed max-w-3xl mx-auto mb-4">
-              מחירם של 30 מחירים לכם פניות (30 לב לי ניתן לשמור את יחסינו, לשלוח לנו את ה-IMPRESSION, על לשנות לפי השאלון מנסח של ה-
-              פנייה וכבר אחרי כן מוציאים את מכרם לנו מה לעשות.
+            <p className="text-xl md:text-2xl text-white leading-relaxed max-w-2xl mx-auto mb-8">
+              הדוח נותן לך את המפה. הבוסטר מוביל אותך בה — יום יום, 30 יום.
             </p>
-            <p className="text-blue-200 leading-relaxed max-w-3xl mx-auto">
-              כל יום V107-BOOSTER שולח לך אחת משלוש פניות (30 לב לי ניתן לשמור את יחסינו, לשלוח לנו את ה-IMPRESSION
-              מדי כשמנסה להוציא את המשימות המותאמות בדרך הראשון לצמיחה ולהצלחה מקצועית שלכם.
-            </p>
+            <Link to={createPageUrl("Questionnaire")}>
+              <Button size="lg" className="gold-btn text-xl px-12 py-6 rounded-2xl">
+                קבל/י את הכל — 99 ₪
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
