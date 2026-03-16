@@ -957,7 +957,7 @@ Deno.serve(async (req) => {
     }
 
     const genderRaw = response.personal_info?.gender;
-    const genderFormatted = genderRaw === 'female' ? 'Female' : genderRaw === 'male' ? 'Male' : 'Other';
+    const genderFormatted = genderRaw === 'female' ? 'נקבה' : genderRaw === 'male' ? 'זכר' : 'אחר';
 
     const inputJSON = {
       name: response.personal_info.full_name,
