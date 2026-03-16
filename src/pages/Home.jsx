@@ -172,7 +172,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-lg md:text-xl text-blue-100 mb-10 max-w-3xl mx-auto leading-relaxed">
-            דיי לדחות | דאגי/י לעצמך ולעתידך - מלאו את השאלון ותופתעו מרמת הדוח האישי שתקבלו.
+            די לדחות | דאג/י לעצמך ולעתידך - מלאו את השאלון ותופתעו מרמת הדוח האישי שתקבלו.
           </motion.p>
 
           {/* CTA Button */}
@@ -233,7 +233,7 @@ export default function Home() {
               {
                 icon: Rocket,
                 num: '1',
-                title: 'מתחילים בתחילך!',
+                title: 'מתחילים עכשיו!',
                 desc: 'מלאו את השאלון בנוחות, בפרטיות ובקצב שלכם. כ-20 דקות שישנו את הכיוון המקצועי שלכם.',
                 time: 'כ-20 דקות'
               },
@@ -293,7 +293,7 @@ export default function Home() {
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה אומרים עלינו</h2>
-              <p className="text-gray-500">סיפורות הצלחה אמיתיות</p>
+              <p className="text-gray-500">סיפורי הצלחה אמיתיים</p>
             </div>
 
             <div className="relative">
