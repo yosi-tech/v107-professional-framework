@@ -528,40 +528,34 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center">
 
-            <Sparkles className="w-16 h-16 text-amber-400 mx-auto mb-8 animate-pulse" />
-
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
-              אל תהססו, תשקיעו בעצמכם, תעשו את הצעד הבא,<br />
-              <span className="gold-text">זה ממש למענכם !</span>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-12">
+              מה מקבלים ב-99 ₪?
             </h2>
 
-            <p className="text-blue-200 text-lg mb-12 max-w-3xl mx-auto leading-relaxed">
-              הגיע הזמן של 30 דקות שלכם, לחשוב לאמות ריבוי, לקבל לאמות תוצאות, קבל אחת 
-              מהתוכניות המקצועיות הטובות ביותר לשיפור הקריירה המקצועית שלכם.
-            </p>
-
-            <div className="grid sm:grid-cols-3 gap-6 mb-12 max-w-3xl mx-auto">
+            <div className="grid sm:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
               {[
-                { title: 'דיוק מקסימלי', desc: 'ממוצע גבוה של דיוק בזיהוי יכולות' },
-                { title: 'תוצאות מקצועיות', desc: 'הכלת ממצאים פרופ מקצועיים' },
-                { title: 'לא מקור', desc: 'ייחוד מקצועי לכל משתמש' },
+                { icon: '📊', title: 'דוח אישי מלא', desc: '5 עמודות. 11 ממדים. מי את/ה, מה החוזקות, ולאן כדאי ללכת.' },
+                { icon: '⚡', title: 'בוסטר 30 יום', desc: 'משימה יומית אחת — בנויה בדיוק על הפרופיל שלך.' },
+                { icon: '📄', title: 'ניתוח קורות חיים', desc: 'השוואת הפרופיל שלך מול התפקיד שאת/ה רוצה — פערים וחוזקות.' },
               ].map((item, i) => (
                 <div key={i} className="benefit-card p-6 text-center">
-                  <h4 className="font-bold text-white mb-2">{item.title}</h4>
-                  <p className="text-blue-300 text-sm">{item.desc}</p>
+                  <div className="text-4xl mb-3">{item.icon}</div>
+                  <h4 className="font-black text-white mb-2 text-lg">{item.title}</h4>
+                  <p className="text-blue-300 text-sm leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
 
+            <p className="text-amber-400 font-bold text-xl mb-10">שלושה מוצרים. מחיר אחד. 99 ₪ בלבד.</p>
+
             <Link to={createPageUrl("Questionnaire")}>
               <Button size="lg" className="gold-btn text-xl px-14 py-7 rounded-2xl">
-                <Zap className="w-6 h-6 ml-2" />
-                יילוי השאלון חינם, התחל עכשיו !
+                התחל/י עכשיו ←
               </Button>
             </Link>
 
-            <p className="mt-6 text-blue-400 text-sm">
-              ✓ ללא עלות ראשונית / ניתן לשלם בהמשך
+            <p className="mt-6 text-blue-300 text-sm">
+              ✓ ללא התחייבות &nbsp;&nbsp; ✓ תוצאות מיידיות &nbsp;&nbsp; ✓ פרטיותך שמורה
             </p>
           </motion.div>
         </div>
