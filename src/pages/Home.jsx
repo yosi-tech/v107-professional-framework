@@ -460,40 +460,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== SECTION 5: BENEFITS - "אל תהססו" ===== */}
+      {/* ===== SECTION 5: WHAT YOU GET ===== */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">
-              אל תהססו, תשקיעו בעצמכם, תעשו את הצעד הבא, זה ממש למענכם !
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              מכל כיוון, מכל גיל, מכל מצב. רמה קצת לאמות ריבוי לבנות הקריירה המקצועית המייחד שלכם.
-            </p>
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה מקבלים ב-99 ₪?</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
             {[
-              { icon: Target, title: 'זהות את הכיוון ותתמקן שיפור המקצועי שלך', desc: 'אנחנו מסייעים לכם לזהות את החוזקות שלכם ולהבין את ערוצי הצמיחה הפוטנציאלים' },
-              { icon: TrendingUp, title: 'קבל הכוונה מעולה מרחוק', desc: 'קבל ליווי מקצועי ממוקד, כל מכשיר ובכל זמן' },
-              { icon: Award, title: 'דוח פסיכומטרי ברמה בינלאומית', desc: 'הדוח שלנו משתמש בכלים פסיכומטריים מובילים - ממד ליממד ועל-פי 11 ממדים מוכחים' },
-              { icon: Users, title: 'תמיכה מקצועית ומותאמת - ניקרת', desc: 'קבל אחת קישורית ממוקד לניהול קריירה, עם משוב אישי ותמיכה שוטפת' },
+              {
+                emoji: '🗺️',
+                title: 'דוח אישי מלא',
+                desc: 'שאלון יכולות מתוחכם. 11 ממדים. 5 עמודות שמסבירים לך מי את/ה, מה החוזקות שלך — ולאן כדאי לך ללכת.'
+              },
+              {
+                emoji: '⚡',
+                title: 'בוסטר 30 יום שלנו — מלווה אותך בביצוע',
+                desc: 'כל יום משימה אחת, קצרה וממוקדת — בנויה בדיוק על הפרופיל שלך. לא גנרי. שלך בלבד.'
+              },
+              {
+                emoji: '📄',
+                title: 'ניתוח קורות חיים',
+                desc: 'מעלה את קורות החיים שלך — ומקבל/ת ניתוח מה עובד, מה חסר, ואיך להתאים לתפקיד שאת/ה רוצה.'
+              },
             ].map((item, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 flex gap-5 items-start">
-                <div className="orange-icon-bg flex-shrink-0 w-14 h-14 flex items-center justify-center">
-                  <item.icon className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-black text-gray-900 text-xl mb-2">{item.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
-                </div>
+                className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 text-center">
+                <div className="text-5xl mb-5">{item.emoji}</div>
+                <h3 className="font-black text-gray-900 text-xl mb-3 leading-snug">{item.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
+          </div>
+
+          <div className="text-center mb-8">
+            <p className="text-2xl font-black text-gray-900 mb-8">שלושה מוצרים. מחיר אחד. <span style={{color:'#d97706'}}>99 ₪ בלבד.</span></p>
+            <Link to={createPageUrl("Questionnaire")}>
+              <Button size="lg" className="gold-btn text-xl px-14 py-6 rounded-2xl">
+                התחל/י עכשיו ←
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
