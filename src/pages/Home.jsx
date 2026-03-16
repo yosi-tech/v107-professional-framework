@@ -91,15 +91,26 @@ export default function Home() {
           border-radius: 16px;
         }
         .step-card {
-          background: white;
+          background: linear-gradient(135deg, #e8f4fd 0%, #dbeafe 100%);
           border-radius: 20px;
-          border: 1px solid #e5e7eb;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+          border: 1px solid #bfdbfe;
+          box-shadow: 0 4px 20px rgba(59,130,246,0.08);
           transition: all 0.3s ease;
         }
         .step-card:hover {
-          box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+          box-shadow: 0 12px 40px rgba(59,130,246,0.15);
           transform: translateY(-4px);
+          border-color: #93c5fd;
+        }
+        .teal-card {
+          background: linear-gradient(135deg, #e8f4fd 0%, #dbeafe 100%);
+          border: 1px solid #bfdbfe;
+          box-shadow: 0 4px 20px rgba(59,130,246,0.08);
+          transition: all 0.3s ease;
+        }
+        .teal-card:hover {
+          box-shadow: 0 12px 40px rgba(59,130,246,0.15);
+          border-color: #93c5fd;
         }
         .benefit-card {
           background: rgba(255,255,255,0.05);
