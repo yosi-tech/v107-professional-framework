@@ -183,7 +183,7 @@ export default function Home() {
             <Link to={createPageUrl("Questionnaire")}>
               <Button size="lg" className="gold-btn text-lg px-10 py-6 rounded-2xl">
                 <Zap className="w-5 h-5 ml-2" />
-                חקש והתחל את השאלון עכשיו
+                התחל את השאלון עכשיו
               </Button>
             </Link>
           </motion.div>
