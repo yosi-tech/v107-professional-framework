@@ -232,7 +232,7 @@ export default function Home() {
       </section>
 
       {/* ===== SECTION 2: HOW IT WORKS ===== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #f0f7ff 0%, #e8f0fe 100%)'}}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">איך זה עובד?</h2>
@@ -300,7 +300,7 @@ export default function Home() {
 
       {/* ===== SECTION 3: TESTIMONIALS ===== */}
       {testimonials.length > 0 && (
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #f0f7ff 0%, #e8f0fe 100%)'}}>
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה אומרים עלינו</h2>
@@ -308,7 +308,7 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              <div className="overflow-hidden rounded-3xl border border-gray-100 shadow-xl bg-white">
+              <div className="overflow-hidden rounded-3xl shadow-xl teal-card">
                 <div className="p-12 md:p-16 text-center">
                   <div className="text-8xl text-amber-400 font-serif leading-none mb-6 opacity-30">99</div>
                   <p className="text-xl md:text-2xl text-gray-700 leading-relaxed mb-8 max-w-3xl mx-auto">
@@ -472,7 +472,7 @@ export default function Home() {
       </section>
 
       {/* ===== SECTION 5: WHAT YOU GET ===== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #f0f7ff 0%, #e8f0fe 100%)'}}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה מקבלים ב-99 ₪?</h2>
@@ -501,7 +501,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 text-center">
+                className="teal-card rounded-2xl p-8 transition-all duration-300 text-center">
                 <div className="text-5xl mb-5">{item.emoji}</div>
                 <h3 className="font-black text-gray-900 text-xl mb-3 leading-snug">{item.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{item.desc}</p>
