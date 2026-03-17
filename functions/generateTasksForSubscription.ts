@@ -377,7 +377,7 @@ Deno.serve(async (req) => {
 
     // קרא ל-LLM עם System Prompt V9
     const bulkTasksData = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: inputJSON,
+      prompt: `${V9_BOOSTER_SYSTEM_PROMPT}\n\n---\nINPUT JSON:\n${inputJSON}`,
       model: 'claude_sonnet_4_6',
       response_json_schema: {
         type: "object",
