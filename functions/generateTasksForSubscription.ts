@@ -316,86 +316,69 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // בדוק הרשאות אדמין
     const user = await base44.auth.me();
     if (!user || user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     const { subscriptionId } = await req.json();
-    
     if (!subscriptionId) {
       return Response.json({ error: 'Missing subscriptionId' }, { status: 400 });
     }
 
     // מצא את המנוי
-    const subscriptions = await base44.asServiceRole.entities.OnlineCoachingSubscription.filter({ 
-      id: subscriptionId 
-    });
-    
+    const subscriptions = await base44.asServiceRole.entities.OnlineCoachingSubscription.filter({ id: subscriptionId });
     if (subscriptions.length === 0) {
       return Response.json({ error: 'Subscription not found' }, { status: 404 });
     }
-    
     const subscription = subscriptions[0];
 
-    // בדוק אם כבר יש משימות למנוי זה
-    const existingTasks = await base44.asServiceRole.entities.BoosterTask.filter({
-      subscription_id: subscriptionId
-    });
-
+    // בדוק אם כבר יש משימות
+    const existingTasks = await base44.asServiceRole.entities.BoosterTask.filter({ subscription_id: subscriptionId });
     if (existingTasks.length > 0) {
-      return Response.json({ 
-        error: 'Tasks already exist for this subscription',
-        count: existingTasks.length 
-      }, { status: 400 });
-    }
-
-    // מצא את הדוח
-    let report = null;
-    if (subscription.generated_report_id) {
-      const reports = await base44.asServiceRole.entities.GeneratedReport.filter({
-        id: subscription.generated_report_id
-      });
-      report = reports[0];
+      return Response.json({ error: 'Tasks already exist for this subscription', count: existingTasks.length }, { status: 400 });
     }
 
     const userName = subscription.user_name;
     const language = subscription.language || 'he';
     const track = subscription.recommended_booster_track;
 
-    // מצא את השאלון המקורי למידע מגדר
-    let personalInfo = null;
-    if (subscription.questionnaire_response_id) {
-      const questionnaireResponses = await base44.asServiceRole.entities.QuestionnaireResponse.filter({
-        id: subscription.questionnaire_response_id
-      });
-      if (questionnaireResponses.length > 0) {
-        personalInfo = questionnaireResponses[0].personal_info;
-      }
-    }
+    // מצא שאלון ודוח במקביל
+    const [questionnaireResponses, reports] = await Promise.all([
+      subscription.questionnaire_response_id
+        ? base44.asServiceRole.entities.QuestionnaireResponse.filter({ id: subscription.questionnaire_response_id })
+        : Promise.resolve([]),
+      subscription.generated_report_id
+        ? base44.asServiceRole.entities.GeneratedReport.filter({ id: subscription.generated_report_id })
+        : Promise.resolve([])
+    ]);
 
-    // הכן נתונים ליצירת כל 30 המשימות
-    const userGender = detectGender(userName, personalInfo);
+    const personalInfo = questionnaireResponses[0]?.personal_info || null;
+    const report = reports[0] || null;
+
+    // בנה את הנתונים לפרומפט V9
+    const gender = detectGender(userName, personalInfo);
+    const age = personalInfo?.age || 35;
     const domainScores = report?.domain_scores || {};
-    const reportAnalysis = report?.report_markdown?.substring(0, 800) || '';
+    const archetype = report?.archetype || 'הלומד המתמיד';
 
-    const userData = {
-      userName,
-      userGender,
-      track,
-      domainScores,
-      reportAnalysis
-    };
+    // חשב top3 ו-bottom2 מתוך domain_scores
+    const sortedDimensions = Object.entries(domainScores)
+      .map(([key, val]) => ({ key, score: val?.score || 0, hebrewName: DIMENSION_MAP[key] || key }))
+      .sort((a, b) => b.score - a.score);
 
-    // צור פרומפט ל-LLM ליצירת כל 30 המשימות
-    const prompt = createBulkTasksPrompt(userData, language);
+    const top3 = sortedDimensions.slice(0, 3).map(d => d.hebrewName);
+    const bottom2 = sortedDimensions.slice(-2).map(d => d.hebrewName);
 
-    console.log('Generating 30 tasks for', userName);
+    const userData = { userName, gender, age, archetype, top3, bottom2 };
+    const inputJSON = buildV9InputJSON(userData);
 
-    // קרא ל-LLM ליצירת כל 30 המשימות
+    console.log('Generating 30 tasks (V9) for', userName, '| archetype:', archetype, '| bottom2:', bottom2);
+
+    // קרא ל-LLM עם System Prompt V9
     const bulkTasksData = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: prompt,
+      prompt: inputJSON,
+      model: 'claude_sonnet_4_6',
       response_json_schema: {
         type: "object",
         properties: {
@@ -406,12 +389,12 @@ Deno.serve(async (req) => {
               properties: {
                 day: { type: "integer" },
                 subject: { type: "string" },
+                task_title: { type: "string" },
                 the_why: { type: "string" },
                 the_task: { type: "string" },
-                task_title: { type: "string" },
                 closing_encouragement: { type: "string" }
               },
-              required: ["day", "subject", "the_why", "the_task", "task_title", "closing_encouragement"]
+              required: ["day", "subject", "task_title", "the_why", "the_task", "closing_encouragement"]
             }
           }
         },
@@ -419,9 +402,8 @@ Deno.serve(async (req) => {
       }
     });
 
-    console.log('Generated tasks, creating records...');
+    console.log('Generated', bulkTasksData.tasks?.length, 'tasks, saving to DB...');
 
-    // צור את כל 30 המשימות ב-DB
     const tasksToCreate = bulkTasksData.tasks.map(task => ({
       subscription_id: subscription.id,
       user_email: subscription.user_email,
@@ -439,22 +421,14 @@ Deno.serve(async (req) => {
 
     await base44.asServiceRole.entities.BoosterTask.bulkCreate(tasksToCreate);
 
-    console.log('All 30 tasks created successfully');
-
     return Response.json({
       success: true,
       tasksCreated: tasksToCreate.length,
-      message: `Created ${tasksToCreate.length} tasks for ${userName}`
+      message: `Created ${tasksToCreate.length} tasks (V9) for ${userName}`
     });
 
   } catch (error) {
     console.error('Error in generateTasksForSubscription:', error);
-    return Response.json(
-      { 
-        success: false, 
-        error: error.message 
-      },
-      { status: 500 }
-    );
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 });
