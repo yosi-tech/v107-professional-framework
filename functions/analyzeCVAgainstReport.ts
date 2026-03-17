@@ -172,6 +172,12 @@ Deno.serve(async (req) => {
     const top3 = sortedDimensions.slice(0, 3);
     const bottom2 = sortedDimensions.slice(-2);
 
+    // Profile fields for prompt
+    const genderRaw = response.personal_info?.gender;
+    const genderHebrew = genderRaw === 'female' ? 'נקבה' : genderRaw === 'male' ? 'זכר' : 'אחר';
+    const age = response.personal_info?.age || 'לא צוין';
+    const archetype = report.archetype || 'לא צוין';
+
     // Calculate scores
     const roleFitScore = calculateRoleFitScore(v107Scores, cvAnalysis, targetPosition);
     const flightRiskScore = calculateFlightRiskScore(v107Scores, cvAnalysis);
