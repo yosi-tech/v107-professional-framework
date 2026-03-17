@@ -188,10 +188,18 @@ Deno.serve(async (req) => {
 
 לפניך:
 - דוח V107 V8 PRO של המועמד ${response.personal_info.full_name}
-- ניתוח קורות החיים שלו/ה
+- מגדר: ${genderHebrew}
+- גיל: ${age}
+- פרופיל אישיותי (ארכיטייפ): ${archetype}
 - התפקיד המבוקש: ${targetPosition || 'לא צוין'}
 
-דוח V107 (11 ממדים):
+3 הממדים הגבוהים (חוזקות):
+${top3.map(d => `- ${d.name}: ${d.score}/100`).join('\n')}
+
+2 הממדים הנמוכים (אזורי פיתוח):
+${bottom2.map(d => `- ${d.name}: ${d.score}/100`).join('\n')}
+
+דוח V107 - כל 11 הממדים:
 ${sortedDimensions.map(d => `- ${d.name}: ${d.score}/100`).join('\n')}
 
 ניתוח CV:
