@@ -222,7 +222,7 @@ ${JSON.stringify(cvAnalysis, null, 2)}
 - ⚡ COMPENSATED: חולשה ב-V107 + ניסיון מפצה ב-CV
 - ⛔ CRITICAL GAP: חולשה ב-V107 + אין הוכחה ב-CV
 
-⭐ לכל CRITICAL GAP - הוסף: "לפי ${BENCHMARK_DATA[key]?.sources || 'מקור'}, ממוצע [ממד]: ~[X]/100. ציון המועמד: [Y]."
+⭐ לכל CRITICAL GAP - הוסף את מקור ה-benchmark הרלוונטי ממדד זה (Gallup, McKinsey, LinkedIn וכו׳), ממוצע הממד ב-benchmark, וציון המועמד.
 
 **עמוד 3: DEEP DIVE**
 - TOP 3 Strengths (מה מצוין בפרופיל)
