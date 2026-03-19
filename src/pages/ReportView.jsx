@@ -18,7 +18,8 @@ import {
   BarChart3,
   Shield,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  MessageSquare
 } from "lucide-react";
 import { format } from "date-fns";
 
