@@ -707,8 +707,36 @@ export default function ReportView() {
           </Card>
         )}
 
+        {/* Survey Invite Card */}
         {report.report_markdown && (
-          <div className="mt-12 space-y-6">
+          <div className="mt-8 no-print">
+            <Card className="border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50 shadow-lg">
+              <CardContent className="p-8 text-center" dir="rtl">
+                <div className="text-4xl mb-4">🎁</div>
+                <h3 className="text-2xl font-bold text-amber-900 mb-2">דקה מזמנך שווה לנו הרבה</h3>
+                <p className="text-amber-800 text-lg mb-2">
+                  מלא/י שאלון קצר של <strong>6 שאלות</strong> על הדוח שקיבלת
+                </p>
+                <p className="text-amber-700 mb-2">
+                  ותקבל/י קוד קופון{' '}
+                  <span className="text-2xl font-black tracking-widest text-amber-700">MEKORAVIM</span>
+                  {' '}— <strong>100% הנחה</strong> על החבילה המלאה!
+                </p>
+                <p className="text-sm text-amber-600 mb-6">⏰ תקף עד 30.3.2026 | עד 250 ממלאים בלבד</p>
+                <Button
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-lg px-10 py-6"
+                  onClick={() => window.open(`/Survey?type=feedback&report_id=${report.id}`, '_blank')}
+                >
+                  <MessageSquare className="w-5 h-5 ml-2" />
+                  מלא שאלון קצר וקבל קופון ←
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {report.report_markdown && (
+          <div className="mt-6 space-y-6">
               <Card className="border-2 border-slate-300 bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center gap-2">
