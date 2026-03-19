@@ -737,7 +737,7 @@ export default function ReportView() {
 
         {report.report_markdown && (
           <div className="mt-6 space-y-6">
-              <Card className="border-2 border-slate-300 bg-slate-50">
+            <Card className="border-2 border-slate-300 bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center gap-2">
                     <Shield className="w-6 h-6 text-slate-600" />
