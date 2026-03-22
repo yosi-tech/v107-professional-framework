@@ -21,7 +21,9 @@ Deno.serve(async (req) => {
     for (const response of eligibleResponses) {
       try {
         const userEmail = response.personal_info?.email || response.created_by;
+        // דלג על כתובות דמה (אנונימיזציה) או כתובות לא תקינות
         if (!userEmail) continue;
+        if (userEmail.includes('anonymized@') || userEmail.includes('@deleted.') || !userEmail.includes('@')) continue;
         
         // בדיקה אם כבר נשלח מייל מסוג זה למשתמש
         const existingEmail = await base44.asServiceRole.entities.EmailLog.filter({
