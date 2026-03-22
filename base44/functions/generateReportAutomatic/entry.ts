@@ -965,7 +965,7 @@ Deno.serve(async (req) => {
       name: response.personal_info.full_name,
       email: response.personal_info.email,
       gender: genderFormatted,
-      age: age,
+      age: effectiveAge,
       occupation: response.personal_info.occupation_field || '',
       interests: response.personal_info.interest_areas || [],
       answers: answersArray
