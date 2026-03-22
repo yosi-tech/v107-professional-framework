@@ -1017,7 +1017,7 @@ Deno.serve(async (req) => {
       success: true,
       reportId: savedReport.id,
       report_number: reportId,
-      model_used: 'claude-sonnet-4-5-20251001',
+      model_used: 'claude-opus-4-5',
       message: 'V10 FINAL report generated successfully'
     });
 
