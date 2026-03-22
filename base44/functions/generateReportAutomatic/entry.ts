@@ -952,9 +952,11 @@ Deno.serve(async (req) => {
     }
 
     const age = response.personal_info?.age;
-    if (!age || age < 18 || age > 100) {
-      return Response.json({ error: 'Invalid age' }, { status: 400 });
+    if (age && (age < 18 || age > 100)) {
+      return Response.json({ error: 'Invalid age - must be between 18 and 100' }, { status: 400 });
     }
+    // אם גיל חסר — נשתמש ב-35 כברירת מחדל (לא נחסום יצירת דוח)
+    const effectiveAge = age || 35;
 
     const genderRaw = response.personal_info?.gender;
     const genderFormatted = genderRaw === 'female' ? 'נקבה' : genderRaw === 'male' ? 'זכר' : 'אחר';
