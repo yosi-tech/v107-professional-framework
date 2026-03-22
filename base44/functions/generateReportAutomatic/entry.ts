@@ -974,7 +974,7 @@ Deno.serve(async (req) => {
     const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') });
 
     const claudeResponse = await anthropic.messages.create({
-      model: 'claude-opus-4-5',
+      model: 'claude-sonnet-4-5',
       max_tokens: 10000,
       system: V9_SYSTEM_PROMPT, // V10 FINAL
       messages: [{ role: 'user', content: JSON.stringify(inputJSON) }]
@@ -1017,7 +1017,7 @@ Deno.serve(async (req) => {
       success: true,
       reportId: savedReport.id,
       report_number: reportId,
-      model_used: 'claude-opus-4-5',
+      model_used: 'claude-sonnet-4-5',
       message: 'V10 FINAL report generated successfully'
     });
 
