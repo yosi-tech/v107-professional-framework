@@ -9,15 +9,11 @@ Deno.serve(async (req) => {
     const oneDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
     const twoDaysAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000));
     
-    // מצא שאלונים שהושלמו לפני 24-48 שעות (חלון של יממה)
-    const allResponses = await base44.asServiceRole.entities.QuestionnaireResponse.filter({
-      status: 'completed'
+    // מצא שאלונים שהושלמו לפני 24-48 שעות - סינון בשאילתה ישירות לחסוך זמן CPU
+    const eligibleResponses = await base44.asServiceRole.entities.QuestionnaireResponse.filter({
+      status: 'completed',
+      updated_date: { $gte: twoDaysAgo.toISOString(), $lte: oneDayAgo.toISOString() }
     }, '-updated_date');
-    
-    const eligibleResponses = allResponses.filter(response => {
-      const completionDate = new Date(response.updated_date);
-      return completionDate >= twoDaysAgo && completionDate <= oneDayAgo;
-    });
     
     let emailsSent = 0;
     const errors = [];
