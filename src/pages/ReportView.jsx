@@ -239,7 +239,7 @@ export default function ReportView() {
     
     // Regex to find page headers: supports #, ##, ###, and "עמוד" or "Page" or "PAGE"
     // Captures the page number
-    const pageRegex = /(?:^|\n)#+\s*(?:עמוד|Page)\s*([1-5])/gi;
+  const pageRegex = /(?:^|\n)#[^\n]*?(?:עמוד|Page)\s*([1-5])/gi;
     
     const matches = [];
     let match;

@@ -576,6 +576,9 @@ export default function Questionnaire() {
         setResponses(savedResponse.responses || {});
         setOptionalComment(savedResponse.optional_comment || '');
         setSavedResponseId(savedResponse.id);
+          if (savedResponse.current_step !== undefined && savedResponse.current_step > 0) {
+          setCurrentStep(savedResponse.current_step);
+  }
       }
     } catch (error) {
       console.error('Error loading existing responses:', error);
@@ -684,7 +687,9 @@ export default function Questionnaire() {
         data_usage_consent: personalInfo.data_usage_consent || false,
         language: language,
         version: 'V8_B2B',
-        status: 'in_progress'
+        status: 'in_progress',
+        current_step: currentStep  
+
       };
 
       if (savedResponseId) {
@@ -767,7 +772,8 @@ export default function Questionnaire() {
         data_usage_consent: personalInfo.data_usage_consent || false,
         language: language,
         version: 'V8_B2B',
-        status: 'completed'
+        status: 'completed',
+        current_step: 0
       };
 
       let finalResponseId = savedResponseId;
