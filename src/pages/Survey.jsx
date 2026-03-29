@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
@@ -119,19 +119,49 @@ export default function Survey() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user || isSubmitting) return;
-
+    try {
     if (isFeedback) {
       if (!responses.q1 || !responses.q2 || !responses.q4 || !responses.q5) {
         alert('אנא ענה על שאלות 1, 2, 4 ו-5 (חובה)');
         return;
       }
       setIsSubmitting(true);
+
+      // Save survey response
       await base44.entities.SurveyResponse.create({
         survey_type: 'feedback',
         responses: { ...responses, report_id: reportId },
       });
+
+      // Create a personal MEKORAVIM coupon in the DB for this user
+      // Without this, Payment.jsx Coupon.filter({ code: 'MEKORAVIM' }) returns empty → "Invalid coupon"
+      const validUntil = new Date('2026-03-30T23:59:00');
+      try {
+        // Check if this user already has a MEKORAVIM coupon (edge case: double submit)
+        const existing = await base44.entities.Coupon.filter({
+          code: 'MEKORAVIM',
+          user_email: user.email,
+        });
+        if (existing.length === 0) {
+          await base44.entities.Coupon.create({
+            code: 'MEKORAVIM',
+            discount_percentage: 100,
+            discount_amount: 0,
+            is_single_use: true,
+            is_user_specific: true,
+            user_email: user.email,
+            valid_until: validUntil.toISOString(),
+            used: false,
+            source: 'feedback_survey',
+          });
+        }
+      } catch (couponError) {
+        // Non-fatal: user still sees the code even if DB write fails
+        console.error('Failed to create MEKORAVIM coupon in DB:', couponError);
+      }
       setCouponCode('MEKORAVIM');
-    } else {
+    }
+    else {
       if (!responses.q1 || !responses.q2 || !responses.q3) {
         alert('אנא ענה על כל השאלות (למעט הערות - אופציונלי)');
         return;
@@ -155,6 +185,13 @@ export default function Survey() {
       setCouponCode(newCoupon);
     }
     setIsSubmitting(false);
+    }catch (error) {
+    console.error('Survey submit error:', error);
+    alert('אירעה שגיאה. נסה שוב.');
+  } finally {
+    setIsSubmitting(false); // ← כאן, תמיד ירוץ
+  }
+    
   };
 
   if (isLoading) {

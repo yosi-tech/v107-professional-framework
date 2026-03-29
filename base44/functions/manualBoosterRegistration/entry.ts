@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClientFromRequest } from '@base44/sdk';
 
 // זיהוי מגדר - קודם מהשאלון/דוח, אחר כך לפי שם
 function detectGender(fullName, personalInfo = null) {
