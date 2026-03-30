@@ -449,27 +449,41 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
 
           <div>
             <Label htmlFor="cv_upload">{language === 'he' ? 'העלאת קורות חיים (אופציונלי)' : 'Upload CV (Optional)'}</Label>
-            <Input
-              id="cv_upload"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  try {
-                    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                    handleInputChange("cv_file_url", file_url);
-                  } catch (error) {
-                    alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
+            {data.cv_file_url ? (
+              <div className="flex items-center gap-3 mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <span className="text-green-600">✓</span>
+                <span className="text-sm text-green-800 flex-1">
+                  {data.cv_file_name || (language === 'he' ? 'קובץ הועלה בהצלחה' : 'File uploaded successfully')}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleInputChange("cv_file_url", "");
+                    handleInputChange("cv_file_name", "");
+                  }}
+                  className="text-xs text-red-500 hover:text-red-700 underline"
+                >
+                  {language === 'he' ? 'הסר' : 'Remove'}
+                </button>
+              </div>
+            ) : (
+              <Input
+                id="cv_upload"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    try {
+                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                      onChange({ ...data, cv_file_url: file_url, cv_file_name: file.name });
+                    } catch (error) {
+                      alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
+                    }
                   }
-                }
-              }}
-              className="cursor-pointer"
-            />
-            {data.cv_file_url && (
-              <p className="text-xs text-green-600 mt-1">
-                ✓ {language === 'he' ? 'קובץ הועלה בהצלחה' : 'File uploaded successfully'}
-              </p>
+                }}
+                className="cursor-pointer mt-1"
+              />
             )}
           </div>
         </div>
