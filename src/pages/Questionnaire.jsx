@@ -211,7 +211,7 @@ const QuestionnaireIntro = ({ onStart, language }) => {
   );
 };
 
-const PersonalInfoForm = ({ data, onChange, language }) => {
+const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
   const handleInputChange = (field, value) => {
     onChange({ ...data, [field]: value });
   };
@@ -475,8 +475,10 @@ const PersonalInfoForm = ({ data, onChange, language }) => {
                   const file = e.target.files?.[0];
                   if (file) {
                     try {
-                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                      onChange({ ...data, cv_file_url: file_url, cv_file_name: file.name });
+                  const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                  const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
+                  onChange(updatedData);
+                  if (onImmediateSave) onImmediateSave(updatedData);
                     } catch (error) {
                       alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
                     }
@@ -840,7 +842,27 @@ export default function Questionnaire() {
 
   const renderCurrentSection = () => {
     if (currentStep === 0) {
-      return <PersonalInfoForm data={personalInfo} onChange={setPersonalInfo} language={language} />;
+      return <PersonalInfoForm
+  data={personalInfo}
+  onChange={setPersonalInfo}
+  language={language}
+  onImmediateSave={async (updatedData) => {
+    try {
+      if (savedResponseId) {
+        await QuestionnaireResponse.update(savedResponseId, {
+          personal_info: { ...updatedData, email: user.email },
+          responses,
+          optional_comment: optionalComment,
+          language,
+          version: 'V8_B2B',
+          status: 'in_progress'
+        });
+      }
+    } catch (e) {
+      console.error('CV immediate save failed:', e);
+    }
+  }}
+/>
     }
     
     if (currentStep >= 1 && currentStep <= 5) {
