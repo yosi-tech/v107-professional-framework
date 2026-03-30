@@ -461,13 +461,6 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
 {data.cv_file_url ? (
   <div className="flex items-center gap-3 mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
     <span className="text-green-600">✓</span>
-    
-    {/* DEBUG - remove later */}
-    <pre style={{fontSize:'10px', background:'#fee', padding:'4px'}}>
-      url: {data.cv_file_url?.substring(0,30)}...{'\n'}
-      name: "{data.cv_file_name}"
-    </pre>
-
     <span className="text-sm text-green-800 flex-1">
       {(data.cv_file_name && data.cv_file_name.trim())
         ? data.cv_file_name
@@ -493,7 +486,6 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
         if (!file) return;
         try {
           const { file_url } = await base44.integrations.Core.UploadFile({ file });
-          alert(`uploaded!\nfile_url: ${file_url}\nfile_name: ${file.name}`);
           const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
           onChange(updatedData);
           if (onImmediateSave) await onImmediateSave(updatedData);
