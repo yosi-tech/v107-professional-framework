@@ -471,19 +471,24 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
                 id="cv_upload"
                 type="file"
                 accept=".pdf,.doc,.docx"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    try {
-                  const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                  const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
-                  onChange(updatedData);
-                  if (onImmediateSave) onImmediateSave(updatedData);
-                    } catch (error) {
-                      alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
-                    }
+               onChange={async (e) => {
+  const file = e.target.files?.[0];
+                if (file) {
+                  try {
+                    console.log('מתחיל העלאת קובץ:', file.name);
+                    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                    console.log('קובץ הועלה, file_url:', file_url);
+                    const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
+                    onChange(updatedData);
+                    console.log('קורא ל-onImmediateSave...');
+                    if (onImmediateSave) await onImmediateSave(updatedData);
+                    console.log('onImmediateSave הסתיים');
+                  } catch (error) {
+                    console.error('שגיאה:', error);
+                    alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
                   }
-                }}
+                }
+              }}
                 className="cursor-pointer mt-1"
               />
             )}
