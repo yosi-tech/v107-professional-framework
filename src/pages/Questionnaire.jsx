@@ -597,11 +597,24 @@ export default function Questionnaire() {
 
       if (existingResponses.length > 0) {
         const savedResponse = existingResponses[0];
-        setPersonalInfo(savedResponse.personal_info || {});
-        setResponses(savedResponse.responses || {});
-        setOptionalComment(savedResponse.optional_comment || '');
-        setSavedResponseId(savedResponse.id);
+        const loadedPersonalInfo = savedResponse.personal_info || {};
+        const loadedResponses = savedResponse.responses || {};
+        const loadedComment = savedResponse.optional_comment || '';
+        const loadedId = savedResponse.id;
         const savedStep = savedResponse.current_step;
+
+        // Clean null values from responses (DB stores unset as null, we need them absent)
+        const cleanResponses = {};
+        for (const [key, val] of Object.entries(loadedResponses)) {
+          if (val !== null && val !== undefined) {
+            cleanResponses[key] = val;
+          }
+        }
+
+        setPersonalInfo(loadedPersonalInfo);
+        setResponses(cleanResponses);
+        setOptionalComment(loadedComment);
+        setSavedResponseId(loadedId);
         if (savedStep !== undefined && savedStep !== null) {
           setCurrentStep(Math.max(0, savedStep));
         } else {
@@ -611,8 +624,6 @@ export default function Questionnaire() {
     } catch (error) {
       // Error loading
     }
-    // Mark that loading is complete - only NOW is it safe to save
-    isDataLoadedRef.current = true;
   }, []);
 
   const checkAuthAndLoadData = useCallback(async () => {
@@ -623,12 +634,28 @@ export default function Questionnaire() {
     } catch (error) {
       setIsLoginRequired(true);
     }
+    // Don't set isLoading=false here directly — we need React to process
+    // the setState calls from loadExistingResponses first.
+    // Use a flag to trigger it in the next render cycle.
     setIsLoading(false);
   }, [loadExistingResponses]);
 
   useEffect(() => {
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
+
+  // This effect marks loading as truly complete AFTER the loaded data
+  // has been committed to state (next render cycle after isLoading=false).
+  useEffect(() => {
+    if (!isLoading && user) {
+      // Use requestAnimationFrame to ensure this runs after React
+      // has flushed all state updates from loadExistingResponses
+      const rafId = requestAnimationFrame(() => {
+        isDataLoadedRef.current = true;
+      });
+      return () => cancelAnimationFrame(rafId);
+    }
+  }, [isLoading, user]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -698,7 +725,7 @@ export default function Questionnaire() {
     return () => {
       document.removeEventListener('click', handleClick, true);
     };
-  }, [shouldBlockNavigation, savedResponseId, user, personalInfo]);
+  }, [shouldBlockNavigation, savedResponseId, user, personalInfo, responses, optionalComment, language]);
 
   // הפונקציה מקבלת את כל הערכים ישירות - אין תלות ב-closure או refs
   const saveToBackend = useCallback(async (currentResponses, currentPersonalInfo, currentComment, currentSavedId, currentUser, stepToSave) => {
@@ -755,7 +782,6 @@ export default function Questionnaire() {
   };
 
 const updateResponse = (questionNumber, value) => {
-  console.log('updateResponse:', questionNumber, value);
   setResponses((prev) => ({
     ...prev,
     [`q${questionNumber}`]: value
