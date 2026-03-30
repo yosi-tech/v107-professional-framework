@@ -723,11 +723,13 @@ export default function Questionnaire() {
       };
 
       if (savedResponseId) {
-        await QuestionnaireResponse.update(savedResponseId, data);
-      } else {
-        const newResponse = await QuestionnaireResponse.create(data);
-        setSavedResponseId(newResponse.id);
-      }
+    await QuestionnaireResponse.update(savedResponseId, data);
+    console.log('SAVED SUCCESSFULLY', data.responses);
+  } else {
+    const newResponse = await QuestionnaireResponse.create(data);
+    setSavedResponseId(newResponse.id);
+    console.log('CREATED SUCCESSFULLY', newResponse.id);
+  }
     } catch (error) {
       // Silently fail auto-save to avoid console logging
     }
