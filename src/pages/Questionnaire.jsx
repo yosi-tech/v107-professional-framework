@@ -447,52 +447,66 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
             />
           </div>
 
-          <div>
-            <Label htmlFor="cv_upload">{language === 'he' ? 'העלאת קורות חיים (אופציונלי)' : 'Upload CV (Optional)'}</Label>
-            {data.cv_file_url ? (
-              <div className="flex items-center gap-3 mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <span className="text-green-600">✓</span>
-                <span className="text-sm text-green-800 flex-1">
-                  {data.cv_file_name || (language === 'he' ? 'קובץ הועלה בהצלחה' : 'File uploaded successfully')}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleInputChange("cv_file_url", "");
-                    handleInputChange("cv_file_name", "");
-                  }}
-                  className="text-xs text-red-500 hover:text-red-700 underline"
-                >
-                  {language === 'he' ? 'הסר' : 'Remove'}
-                </button>
-              </div>
-            ) : (
-              <Input
-                id="cv_upload"
-                type="file"
-                accept=".pdf,.doc,.docx"
-               onChange={async (e) => {
-  const file = e.target.files?.[0];
-                if (file) {
-                  try {
-                    console.log('מתחיל העלאת קובץ:', file.name);
-                    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                    console.log('קובץ הועלה, file_url:', file_url);
-                    const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
-                    onChange(updatedData);
-                    console.log('קורא ל-onImmediateSave...');
-                    if (onImmediateSave) await onImmediateSave(updatedData);
-                    console.log('onImmediateSave הסתיים');
-                  } catch (error) {
-                    console.error('שגיאה:', error);
-                    alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
-                  }
-                }
-              }}
-                className="cursor-pointer mt-1"
-              />
-            )}
-          </div>
+        <div>
+  <Label htmlFor="cv_upload">
+    {language === 'he' ? 'העלאת קורות חיים (אופציונלי)' : 'Upload CV (Optional)'}
+  </Label>
+  
+  {/* Debug info - תמחק אחרי בדיקה */}
+  <p style={{fontSize:'11px', color:'gray'}}>
+    cv_file_url: {data.cv_file_url ? '✅ קיים' : '❌ ריק'} | 
+    cv_file_name: {data.cv_file_name || 'ריק'}
+  </p>
+
+  {data.cv_file_url ? (
+    <div className="flex items-center gap-3 mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+      <span className="text-green-600">✓</span>
+      <span className="text-sm text-green-800 flex-1">
+        {(data.cv_file_name && data.cv_file_name.trim())
+          ? data.cv_file_name
+          : (language === 'he' ? 'קובץ הועלה בהצלחה' : 'File uploaded successfully')}
+      </span>
+      <button
+        type="button"
+        onClick={() => {
+          handleInputChange("cv_file_url", "");
+          handleInputChange("cv_file_name", "");
+        }}
+        className="text-xs text-red-500 hover:text-red-700 underline"
+      >
+        {language === 'he' ? 'הסר' : 'Remove'}
+      </button>
+    </div>
+  ) : (
+    <div style={{ userSelect: 'auto', WebkitUserSelect: 'auto' }}>
+      <Input
+        id="cv_upload"
+        type="file"
+        accept=".pdf,.doc,.docx"
+        style={{ userSelect: 'auto', WebkitUserSelect: 'auto', pointerEvents: 'auto' }}
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          console.log('onChange נקרא, file:', file?.name);
+          if (file) {
+            try {
+              console.log('מעלה קובץ:', file.name);
+              const { file_url } = await base44.integrations.Core.UploadFile({ file });
+              console.log('הועלה בהצלחה, url:', file_url);
+              const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
+              onChange(updatedData);
+              if (onImmediateSave) await onImmediateSave(updatedData);
+              console.log('נשמר ב-DB');
+            } catch (error) {
+              console.error('שגיאה בהעלאה:', error);
+              alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
+            }
+          }
+        }}
+        className="cursor-pointer mt-1"
+      />
+    </div>
+  )}
+</div>
         </div>
 
         <div className="pt-4 border-t">
