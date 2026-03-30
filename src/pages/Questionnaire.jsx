@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { QuestionnaireResponse } from "@/entities/QuestionnaireResponse";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -584,6 +584,19 @@ export default function Questionnaire() {
   const questions = language === 'he' ? questionsHe : questionsEn;
   const sectionTitles = language === 'he' ? sectionTitlesHe : sectionTitlesEn;
 
+  // refs תמיד עדכניים למניעת stale closure בשמירה
+  const responsesRef = useRef(responses);
+  const personalInfoRef = useRef(personalInfo);
+  const optionalCommentRef = useRef(optionalComment);
+  const savedResponseIdRef = useRef(savedResponseId);
+  const userRef = useRef(user);
+
+  useEffect(() => { responsesRef.current = responses; }, [responses]);
+  useEffect(() => { personalInfoRef.current = personalInfo; }, [personalInfo]);
+  useEffect(() => { optionalCommentRef.current = optionalComment; }, [optionalComment]);
+  useEffect(() => { savedResponseIdRef.current = savedResponseId; }, [savedResponseId]);
+  useEffect(() => { userRef.current = user; }, [user]);
+
   const loadExistingResponses = useCallback(async (currentUser) => {
     try {
       const existingResponses = await QuestionnaireResponse.filter({
@@ -699,45 +712,43 @@ export default function Questionnaire() {
     };
   }, [shouldBlockNavigation, savedResponseId, user, personalInfo]);
 
-  const autoSaveProgress = useCallback(async (stepOverride) => {
-    if (!user) return;
+  const autoSaveProgress = useCallback(async (stepToSave) => {
+    const currentUser = userRef.current;
+    if (!currentUser) return;
+
+    const currentResponses = responsesRef.current;
+    const currentPersonalInfo = personalInfoRef.current;
+    const currentComment = optionalCommentRef.current;
+    const currentSavedId = savedResponseIdRef.current;
+
+    const hasPersonalInfo = Object.keys(currentPersonalInfo).length > 0;
+    const hasResponses = Object.keys(currentResponses).length > 0;
+    const hasComment = currentComment.trim().length > 0;
+
+    if (!hasPersonalInfo && !hasResponses && !hasComment) return;
+
+    const data = {
+      personal_info: { ...currentPersonalInfo, email: currentUser.email },
+      responses: currentResponses,
+      optional_comment: currentComment,
+      data_usage_consent: currentPersonalInfo.data_usage_consent || false,
+      language: language,
+      version: 'V8_B2B',
+      status: 'in_progress',
+      current_step: stepToSave ?? 0
+    };
 
     try {
-      // const hasResponses = Object.keys(responses).length > 0;
-      // const hasPersonalInfo = personalInfo.full_name?.trim().length > 0;
-      // const hasComment = optionalComment.trim().length > 0;
-    const hasPersonalInfo = Object.keys(personalInfo).length > 0;
-    const hasResponses = Object.keys(responses).length > 0;
-    const hasComment = optionalComment.trim().length > 0;
-    console.log('autoSave running:', { hasPersonalInfo, hasResponses, hasComment, savedResponseId, responsesCount: Object.keys(responses).length });
-
-      if (!hasPersonalInfo && !hasResponses && !hasComment) return;
-
-      const stepToSave = stepOverride !== undefined ? stepOverride : currentStep;
-
-      const data = {
-        personal_info: { ...personalInfo, email: user.email },
-        responses: responses,
-        optional_comment: optionalComment,
-        data_usage_consent: personalInfo.data_usage_consent || false,
-        language: language,
-        version: 'V8_B2B',
-        status: 'in_progress',
-        current_step: stepToSave
-      };
-
-      if (savedResponseId) {
-    await QuestionnaireResponse.update(savedResponseId, data);
-    console.log('SAVED SUCCESSFULLY', data.responses);
-  } else {
-    const newResponse = await QuestionnaireResponse.create(data);
-    setSavedResponseId(newResponse.id);
-    console.log('CREATED SUCCESSFULLY', newResponse.id);
-  }
+      if (currentSavedId) {
+        await QuestionnaireResponse.update(currentSavedId, data);
+      } else {
+        const newResponse = await QuestionnaireResponse.create(data);
+        setSavedResponseId(newResponse.id);
+      }
     } catch (error) {
-      // Silently fail auto-save to avoid console logging
+      // Silently fail
     }
-  }, [user, personalInfo, responses, optionalComment, language, savedResponseId, currentStep]);
+  }, [language]);
 
   useEffect(() => {
     if (user && currentStep >= 0) {
@@ -746,11 +757,9 @@ export default function Questionnaire() {
                      optionalComment.trim().length > 0;
       
       if (hasData) {
-        // שמור מיידית אם הועלה קובץ CV, אחרת עם השהייה
-        const delay = personalInfo.cv_file_url ? 0 : 2000;
         const timeoutId = setTimeout(() => {
-          autoSaveProgress();
-        }, delay);
+          autoSaveProgress(currentStep);
+        }, 1500);
 
         return () => clearTimeout(timeoutId);
       }
