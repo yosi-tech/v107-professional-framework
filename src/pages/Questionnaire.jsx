@@ -746,7 +746,7 @@ export default function Questionnaire() {
         return () => clearTimeout(timeoutId);
       }
     }
-  }, [user, responses, personalInfo, optionalComment, currentStep, autoSaveProgress]);
+  }, [user, responses, personalInfo, optionalComment, currentStep]);
 
   const handleLogin = () => {
     base44.auth.redirectToLogin(window.location.href);
