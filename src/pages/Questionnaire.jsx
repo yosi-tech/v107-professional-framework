@@ -761,12 +761,13 @@ export default function Questionnaire() {
     base44.auth.redirectToLogin(window.location.href);
   };
 
-  const updateResponse = (questionNumber, value) => {
-    setResponses((prev) => ({
-      ...prev,
-      [`q${questionNumber}`]: value
-    }));
-  };
+const updateResponse = (questionNumber, value) => {
+  console.log('updateResponse:', questionNumber, value);
+  setResponses((prev) => ({
+    ...prev,
+    [`q${questionNumber}`]: value
+  }));
+};
 
   const validatePersonalInfo = () => {
     if (!personalInfo.full_name?.trim()) {
