@@ -591,9 +591,13 @@ export default function Questionnaire() {
         status: 'in_progress',
         version: 'V8_B2B'
       }, '-updated_date', 1);
-
+//
       if (existingResponses.length > 0) {
         const savedResponse = existingResponses[0];
+          console.log('LOADED:', {
+          responsesCount: Object.keys(savedResponse.responses || {}).length,
+          responses: savedResponse.responses
+        });
         setPersonalInfo(savedResponse.personal_info || {});
         setResponses(savedResponse.responses || {});
         setOptionalComment(savedResponse.optional_comment || '');
