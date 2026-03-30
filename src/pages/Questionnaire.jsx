@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { QuestionnaireResponse } from "@/entities/QuestionnaireResponse";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -578,6 +578,7 @@ export default function Questionnaire() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoginRequired, setIsLoginRequired] = useState(false);
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false);
+  const isDataLoadedRef = useRef(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -610,6 +611,8 @@ export default function Questionnaire() {
     } catch (error) {
       // Error loading
     }
+    // Mark that loading is complete - only NOW is it safe to save
+    isDataLoadedRef.current = true;
   }, []);
 
   const checkAuthAndLoadData = useCallback(async () => {
@@ -732,6 +735,8 @@ export default function Questionnaire() {
 
   useEffect(() => {
     if (!user || currentStep < 0 || isLoading) return;
+    // Don't save until loadExistingResponses has finished - prevents overwriting with empty state
+    if (!isDataLoadedRef.current) return;
 
     const hasData = Object.keys(responses).length > 0 ||
                     Object.keys(personalInfo).length > 0 ||
