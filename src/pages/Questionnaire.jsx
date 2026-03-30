@@ -696,7 +696,7 @@ export default function Questionnaire() {
     };
   }, [shouldBlockNavigation, savedResponseId, user, personalInfo]);
 
-  const autoSaveProgress = useCallback(async () => {
+  const autoSaveProgress = useCallback(async (stepOverride) => {
     if (!user) return;
 
     try {
@@ -706,6 +706,8 @@ export default function Questionnaire() {
 
       if (!hasPersonalInfo && !hasResponses && !hasComment) return;
 
+      const stepToSave = stepOverride !== undefined ? stepOverride : currentStep;
+
       const data = {
         personal_info: { ...personalInfo, email: user.email },
         responses: responses,
@@ -714,8 +716,7 @@ export default function Questionnaire() {
         language: language,
         version: 'V8_B2B',
         status: 'in_progress',
-        current_step: currentStep  
-
+        current_step: stepToSave
       };
 
       if (savedResponseId) {
@@ -727,7 +728,7 @@ export default function Questionnaire() {
     } catch (error) {
       // Silently fail auto-save to avoid console logging
     }
-  }, [user, personalInfo, responses, optionalComment, language, savedResponseId]);
+  }, [user, personalInfo, responses, optionalComment, language, savedResponseId, currentStep]);
 
   useEffect(() => {
     if (user && currentStep >= 0) {
@@ -827,12 +828,16 @@ export default function Questionnaire() {
     if (currentStep === 0 && !validatePersonalInfo()) {
       return;
     }
-    setCurrentStep((prev) => Math.min(prev + 1, 6));
+    const newStep = Math.min(currentStep + 1, 6);
+    setCurrentStep(newStep);
+    autoSaveProgress(newStep);
     window.scrollTo(0, 0);
   };
 
   const prevStep = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, -1));
+    const newStep = Math.max(currentStep - 1, -1);
+    setCurrentStep(newStep);
+    if (newStep >= 0) autoSaveProgress(newStep);
     window.scrollTo(0, 0);
   };
 
@@ -1079,7 +1084,7 @@ export default function Questionnaire() {
                 {[0, 1, 2, 3, 4, 5, 6].map((step) => (
                   <button
                     key={step}
-                    onClick={() => setCurrentStep(step)}
+                    onClick={() => { setCurrentStep(step); autoSaveProgress(step); }}
                     disabled={step === currentStep}
                     className={`w-8 h-8 rounded-full text-sm font-medium transition-all ${
                       step === currentStep
