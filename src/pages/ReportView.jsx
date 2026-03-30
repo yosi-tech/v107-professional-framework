@@ -232,69 +232,63 @@ export default function ReportView() {
     );
   }
 
-  // Split markdown into 5 pages using robust regex matching
+  // Split markdown into 5 pages
   let pageContents = ['', '', '', '', ''];
   if (report.report_markdown) {
     const fullText = report.report_markdown;
     
-    // Regex to find page headers: supports #, ##, ###, and "עמוד" or "Page" or "PAGE"
-    // Captures the page number
-  const pageRegex = /(?:^|\n)#[^\n]*?(?:עמוד|Page)\s*([1-5])/gi;
+    // Regex רחב שתופס כל צורת כותרת עמוד:
+    // - # עמוד 1 / ## עמוד 2 / ### PAGE 3 / # דף 1 / # עמוד ראשון וכד'
+    // - גם ספרות ערביות (1-5) וגם מילים עבריות (ראשון, שני, שלישי, רביעי, חמישי)
+    const pageNumberMap = {
+      '1': 1, 'ראשון': 1, 'ראשונה': 1,
+      '2': 2, 'שני': 2, 'שנייה': 2, 'שנית': 2,
+      '3': 3, 'שלישי': 3, 'שלישית': 3,
+      '4': 4, 'רביעי': 4, 'רביעית': 4,
+      '5': 5, 'חמישי': 5, 'חמישית': 5,
+    };
+    
+    const pageRegex = /(?:^|\n)(#{1,4}[^\n]*?(?:עמוד|דף|Page|PAGE)\s*([1-5ראשוןשנישלישירביעיחמישי]+)[^\n]*)/gi;
     
     const matches = [];
     let match;
     while ((match = pageRegex.exec(fullText)) !== null) {
-      matches.push({
-        page: parseInt(match[1]),
-        index: match.index,
-        fullMatch: match[0]
-      });
+      const rawNum = match[2]?.trim();
+      const pageNum = pageNumberMap[rawNum] || parseInt(rawNum);
+      if (pageNum >= 1 && pageNum <= 5) {
+        matches.push({
+          page: pageNum,
+          index: match.index === 0 ? 0 : match.index + 1, // skip leading \n
+          fullMatch: match[0]
+        });
+      }
     }
 
     if (matches.length > 0) {
-      // Sort matches by index just in case (though regex exec usually goes in order)
       matches.sort((a, b) => a.index - b.index);
 
-      // Assign content
       for (let i = 0; i < matches.length; i++) {
         const currentMatch = matches[i];
         const pageNum = currentMatch.page;
-        
-        // Start index is the match index (we include the header in the content)
-        // If it's not the start of the line (matched \n), add 1 to skip the newline
-        const startIndex = currentMatch.fullMatch.startsWith('\n') ? currentMatch.index + 1 : currentMatch.index;
-        
-        // End index is the start of the next match, or end of string
+        const startIndex = currentMatch.index;
         const nextMatch = matches[i + 1];
         const endIndex = nextMatch ? nextMatch.index : fullText.length;
         
-        // Map page 1..5 to index 0..4
         if (pageNum >= 1 && pageNum <= 5) {
           pageContents[pageNum - 1] = fullText.substring(startIndex, endIndex).trim();
         }
       }
-      
-      // Handle content before Page 1 (if any significant content exists before the first marker)
-      if (matches[0].page > 1 && matches[0].index > 10) {
-         // If there's content before the first detected page (and it's not Page 1),
-         // put it in the previous page slot or Page 1 if logical.
-         // For now, let's assume valid reports start with Page 1 or have minimal preamble.
-         // If Page 1 marker is missing but Page 2 is found, content before Page 2 goes to Page 1.
-         pageContents[0] = fullText.substring(0, matches[0].index).trim();
-      } else if (matches[0].page === 1 && matches[0].index > 0) {
-          // If Page 1 marker exists but isn't at 0, check if there's content before it.
-          // Usually we can just ignore preamble if it's just whitespace, but let's be safe.
-          // Actually, we want the header included, so we start from the match.
-      }
 
+      // אם יש תוכן לפני עמוד 1, שייך אותו לעמוד 1
+      if (matches[0].index > 10 && !pageContents[0]) {
+        pageContents[0] = fullText.substring(0, matches[0].index).trim();
+      }
     } else {
-       // Fallback: No page markers found? Try splitting by any header #
-       // This mimics the old behavior for backward compatibility or unstructured reports
-       const sections = fullText.split(/(?=^# )/m).filter(s => s.trim());
-       // Fill as many pages as sections found (up to 5)
-       sections.forEach((sec, idx) => {
-         if (idx < 5) pageContents[idx] = sec;
-       });
+      // Fallback: פצל לפי כותרות # רגילות
+      const sections = fullText.split(/(?=^#{1,2} )/m).filter(s => s.trim());
+      sections.forEach((sec, idx) => {
+        if (idx < 5) pageContents[idx] = sec;
+      });
     }
   }
 

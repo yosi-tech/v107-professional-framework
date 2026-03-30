@@ -576,9 +576,13 @@ export default function Questionnaire() {
         setResponses(savedResponse.responses || {});
         setOptionalComment(savedResponse.optional_comment || '');
         setSavedResponseId(savedResponse.id);
-          if (savedResponse.current_step !== undefined && savedResponse.current_step > 0) {
-          setCurrentStep(savedResponse.current_step);
-  }
+        // תמיד טען את הצעד הנוכחי אם קיים, אחרת התחל מ-0 (פרטים אישיים)
+        const savedStep = savedResponse.current_step;
+        if (savedStep !== undefined && savedStep !== null) {
+          setCurrentStep(Math.max(0, savedStep));
+        } else {
+          setCurrentStep(0);
+        }
       }
     } catch (error) {
       console.error('Error loading existing responses:', error);
