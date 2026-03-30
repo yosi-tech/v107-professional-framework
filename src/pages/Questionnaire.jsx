@@ -848,15 +848,21 @@ export default function Questionnaire() {
   language={language}
   onImmediateSave={async (updatedData) => {
     try {
+      const saveData = {
+        personal_info: { ...updatedData, email: user.email },
+        responses,
+        optional_comment: optionalComment,
+        data_usage_consent: updatedData.data_usage_consent || false,
+        language,
+        version: 'V8_B2B',
+        status: 'in_progress',
+        current_step: currentStep
+      };
       if (savedResponseId) {
-        await QuestionnaireResponse.update(savedResponseId, {
-          personal_info: { ...updatedData, email: user.email },
-          responses,
-          optional_comment: optionalComment,
-          language,
-          version: 'V8_B2B',
-          status: 'in_progress'
-        });
+        await QuestionnaireResponse.update(savedResponseId, saveData);
+      } else {
+        const newResponse = await QuestionnaireResponse.create(saveData);
+        setSavedResponseId(newResponse.id);
       }
     } catch (e) {
       console.error('CV immediate save failed:', e);

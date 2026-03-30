@@ -1,0 +1,707 @@
+{
+  "name": "QuestionnaireResponse",
+  "type": "object",
+  "properties": {
+    "personal_info": {
+      "type": "object",
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "age": {
+          "type": "integer",
+          "minimum": 16,
+          "maximum": 90
+        },
+        "gender": {
+          "type": "string",
+          "enum": [
+            "male",
+            "female",
+            "other"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 200
+        },
+        "years_of_experience": {
+          "type": "string",
+          "enum": [
+            "0-3",
+            "4-10",
+            "11-20",
+            "21+"
+          ],
+          "description": "\u05e9\u05e0\u05d5\u05ea \u05e0\u05e1\u05d9\u05d5\u05df \u05d1\u05e2\u05d1\u05d5\u05d3\u05d4"
+        },
+        "current_professional_status": {
+          "type": "string",
+          "enum": [
+            "employee",
+            "freelancer",
+            "entrepreneur",
+            "student",
+            "job_seeker",
+            "active_retiree"
+          ],
+          "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05de\u05e7\u05e6\u05d5\u05e2\u05d9 \u05e0\u05d5\u05db\u05d7\u05d9"
+        },
+        "occupation_field": {
+          "type": "string",
+          "enum": [
+            "marketing",
+            "sales",
+            "hr",
+            "technology",
+            "entrepreneurship",
+            "education",
+            "management",
+            "other"
+          ],
+          "description": "\u05ea\u05d7\u05d5\u05dd \u05e2\u05e1\u05d5\u05e7 \u05e7\u05d9\u05d9\u05dd"
+        },
+        "occupation_field_other": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "\u05e4\u05d9\u05e8\u05d5\u05d8 \u05ea\u05d7\u05d5\u05dd \u05e2\u05e1\u05d5\u05e7 \u05d0\u05d7\u05e8"
+        },
+        "interest_areas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3,
+          "description": "\u05ea\u05d7\u05d5\u05de\u05d9 \u05e2\u05e0\u05d9\u05d9\u05df (\u05e2\u05d3 3)"
+        },
+        "interest_areas_other": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "\u05e4\u05d9\u05e8\u05d5\u05d8 \u05ea\u05d7\u05d5\u05de\u05d9 \u05e2\u05e0\u05d9\u05d9\u05df \u05d0\u05d7\u05e8\u05d9\u05dd"
+        },
+        "target_position": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "\u05d4\u05ea\u05e4\u05e7\u05d9\u05d3 \u05d0\u05dc\u05d9\u05d5 \u05d4\u05d5\u05d2\u05e9\u05d4 \u05d4\u05de\u05d5\u05e2\u05de\u05d3\u05d5\u05ea"
+        },
+        "cv_file_url": {
+          "type": "string",
+          "description": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05dc\u05e7\u05d5\u05e8\u05d5\u05ea \u05d7\u05d9\u05d9\u05dd \u05e9\u05d4\u05d5\u05e2\u05dc\u05d5"
+        },
+        "cv_file_name": {
+          "type": "string",
+          "description": "\u05e9\u05dd \u05d4\u05e7\u05d5\u05d1\u05e5 \u05e9\u05dc \u05e7\u05d5\u05e8\u05d5\u05ea \u05d4\u05d7\u05d9\u05d9\u05dd"
+        }
+      },
+      "required": [
+        "full_name",
+        "email"
+      ]
+    },
+    "responses": {
+      "type": "object",
+      "properties": {
+        "q1": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q2": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q3": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q4": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q5": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q6": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q7": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q8": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q9": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q10": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q11": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q12": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q13": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q14": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q15": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q16": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q17": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q18": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q19": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q20": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q21": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q22": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q23": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q24": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q25": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q26": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q27": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q28": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q29": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q30": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q31": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q32": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q33": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q34": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q35": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q36": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q37": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q38": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q39": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q40": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q41": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q42": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q43": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q44": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q45": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q46": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q47": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q48": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q49": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q50": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q51": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q52": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q53": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q54": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q55": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q56": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q57": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q58": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q59": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q60": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q61": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q62": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q63": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q64": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q65": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q66": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q67": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q68": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q69": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q70": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q71": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q72": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q73": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q74": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q75": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q76": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q77": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q78": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q79": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q80": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q81": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q82": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q83": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q84": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q85": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q86": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q87": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q88": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q89": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q90": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q91": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q92": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q93": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q94": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q95": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q96": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q97": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q98": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q99": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q100": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q101": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q102": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q103": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q104": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q105": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q106": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "q107": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        }
+      }
+    },
+    "optional_comment": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Optional open-ended response"
+    },
+    "data_usage_consent": {
+      "type": "boolean",
+      "default": false,
+      "description": "User consent for data usage for diagnostic purposes"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "he",
+        "en"
+      ],
+      "default": "he"
+    },
+    "version": {
+      "type": "string",
+      "default": "V8_B2B"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "completed",
+        "abandoned"
+      ],
+      "default": "in_progress"
+    }
+  },
+  "required": [
+    "personal_info",
+    "language",
+    "version",
+    "data_usage_consent"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
