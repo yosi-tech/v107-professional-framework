@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { QuestionnaireResponse } from "@/entities/QuestionnaireResponse";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -576,7 +576,6 @@ export default function Questionnaire() {
   const [savedResponseId, setSavedResponseId] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const isLoadedRef = useRef(false); // מונע שמירה לפני שהטעינה הסתיימה
   const [isLoginRequired, setIsLoginRequired] = useState(false);
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false);
   const navigate = useNavigate();
@@ -585,18 +584,7 @@ export default function Questionnaire() {
   const questions = language === 'he' ? questionsHe : questionsEn;
   const sectionTitles = language === 'he' ? sectionTitlesHe : sectionTitlesEn;
 
-  // refs תמיד עדכניים למניעת stale closure בשמירה
-  const responsesRef = useRef(responses);
-  const personalInfoRef = useRef(personalInfo);
-  const optionalCommentRef = useRef(optionalComment);
-  const savedResponseIdRef = useRef(savedResponseId);
-  const userRef = useRef(user);
 
-  useEffect(() => { responsesRef.current = responses; }, [responses]);
-  useEffect(() => { personalInfoRef.current = personalInfo; }, [personalInfo]);
-  useEffect(() => { optionalCommentRef.current = optionalComment; }, [optionalComment]);
-  useEffect(() => { savedResponseIdRef.current = savedResponseId; }, [savedResponseId]);
-  useEffect(() => { userRef.current = user; }, [user]);
 
   const loadExistingResponses = useCallback(async (currentUser) => {
     try {
@@ -605,26 +593,14 @@ export default function Questionnaire() {
         status: 'in_progress',
         version: 'V8_B2B'
       }, '-updated_date', 1);
-//
+
       if (existingResponses.length > 0) {
         const savedResponse = existingResponses[0];
-        const loadedResponses = savedResponse.responses || {};
-        const loadedPersonalInfo = savedResponse.personal_info || {};
-        const loadedComment = savedResponse.optional_comment || '';
-        const loadedId = savedResponse.id;
+        setPersonalInfo(savedResponse.personal_info || {});
+        setResponses(savedResponse.responses || {});
+        setOptionalComment(savedResponse.optional_comment || '');
+        setSavedResponseId(savedResponse.id);
         const savedStep = savedResponse.current_step;
-
-        // עדכן את ה-refs לפני ה-setState כדי שלא תהיה שמירה עם ערכים ריקים
-        responsesRef.current = loadedResponses;
-        personalInfoRef.current = loadedPersonalInfo;
-        optionalCommentRef.current = loadedComment;
-        savedResponseIdRef.current = loadedId;
-
-        setPersonalInfo(loadedPersonalInfo);
-        setResponses(loadedResponses);
-        setOptionalComment(loadedComment);
-        setSavedResponseId(loadedId);
-
         if (savedStep !== undefined && savedStep !== null) {
           setCurrentStep(Math.max(0, savedStep));
         } else {
@@ -634,8 +610,6 @@ export default function Questionnaire() {
     } catch (error) {
       // Error loading
     }
-    // סמן שהטעינה הסתיימה - מעכשיו מותר לשמור
-    isLoadedRef.current = true;
   }, []);
 
   const checkAuthAndLoadData = useCallback(async () => {
@@ -723,27 +697,21 @@ export default function Questionnaire() {
     };
   }, [shouldBlockNavigation, savedResponseId, user, personalInfo]);
 
-  const autoSaveProgress = useCallback(async (stepToSave) => {
-    const currentUser = userRef.current;
+  // הפונקציה מקבלת את כל הערכים ישירות - אין תלות ב-closure או refs
+  const saveToBackend = useCallback(async (currentResponses, currentPersonalInfo, currentComment, currentSavedId, currentUser, stepToSave) => {
     if (!currentUser) return;
-    if (!isLoadedRef.current) return; // אל תשמור לפני שהטעינה הסתיימה
+    if (!currentPersonalInfo && !currentResponses && !currentComment) return;
 
-    const currentResponses = responsesRef.current;
-    const currentPersonalInfo = personalInfoRef.current;
-    const currentComment = optionalCommentRef.current;
-    const currentSavedId = savedResponseIdRef.current;
-
-    const hasPersonalInfo = Object.keys(currentPersonalInfo).length > 0;
-    const hasResponses = Object.keys(currentResponses).length > 0;
-    const hasComment = currentComment.trim().length > 0;
-
-    if (!hasPersonalInfo && !hasResponses && !hasComment) return;
+    const hasData = Object.keys(currentResponses || {}).length > 0 ||
+                    Object.keys(currentPersonalInfo || {}).length > 0 ||
+                    (currentComment || '').trim().length > 0;
+    if (!hasData) return;
 
     const data = {
-      personal_info: { ...currentPersonalInfo, email: currentUser.email },
-      responses: currentResponses,
-      optional_comment: currentComment,
-      data_usage_consent: currentPersonalInfo.data_usage_consent || false,
+      personal_info: { ...(currentPersonalInfo || {}), email: currentUser.email },
+      responses: currentResponses || {},
+      optional_comment: currentComment || '',
+      data_usage_consent: (currentPersonalInfo || {}).data_usage_consent || false,
       language: language,
       version: 'V8_B2B',
       status: 'in_progress',
@@ -763,20 +731,19 @@ export default function Questionnaire() {
   }, [language]);
 
   useEffect(() => {
-    if (user && currentStep >= 0) {
-      const hasData = Object.keys(responses).length > 0 || 
-                     Object.keys(personalInfo).length > 0 || 
-                     optionalComment.trim().length > 0;
-      
-      if (hasData) {
-        const timeoutId = setTimeout(() => {
-          autoSaveProgress(currentStep);
-        }, 1500);
+    if (!user || currentStep < 0 || isLoading) return;
 
-        return () => clearTimeout(timeoutId);
-      }
-    }
-  }, [user, responses, personalInfo, optionalComment, currentStep, autoSaveProgress]);
+    const hasData = Object.keys(responses).length > 0 ||
+                    Object.keys(personalInfo).length > 0 ||
+                    optionalComment.trim().length > 0;
+    if (!hasData) return;
+
+    const timeoutId = setTimeout(() => {
+      saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, currentStep);
+    }, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }, [user, responses, personalInfo, optionalComment, currentStep, savedResponseId, saveToBackend, isLoading]);
 
   const handleLogin = () => {
     base44.auth.redirectToLogin(window.location.href);
@@ -861,14 +828,14 @@ const updateResponse = (questionNumber, value) => {
     }
     const newStep = Math.min(currentStep + 1, 6);
     setCurrentStep(newStep);
-    autoSaveProgress(newStep);
+    saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, newStep);
     window.scrollTo(0, 0);
   };
 
   const prevStep = () => {
     const newStep = Math.max(currentStep - 1, -1);
     setCurrentStep(newStep);
-    if (newStep >= 0) autoSaveProgress(newStep);
+    if (newStep >= 0) saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, newStep);
     window.scrollTo(0, 0);
   };
 
@@ -1112,7 +1079,7 @@ const updateResponse = (questionNumber, value) => {
                 {[0, 1, 2, 3, 4, 5, 6].map((step) => (
                   <button
                     key={step}
-                    onClick={() => { setCurrentStep(step); autoSaveProgress(step); }}
+                    onClick={() => { setCurrentStep(step); saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, step); }}
                     disabled={step === currentStep}
                     className={`w-8 h-8 rounded-full text-sm font-medium transition-all ${
                       step === currentStep
