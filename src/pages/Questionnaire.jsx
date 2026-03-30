@@ -714,9 +714,11 @@ export default function Questionnaire() {
                      optionalComment.trim().length > 0;
       
       if (hasData) {
+        // שמור מיידית אם הועלה קובץ CV, אחרת עם השהייה
+        const delay = personalInfo.cv_file_url ? 0 : 2000;
         const timeoutId = setTimeout(() => {
           autoSaveProgress();
-        }, 2000);
+        }, delay);
 
         return () => clearTimeout(timeoutId);
       }
