@@ -883,10 +883,7 @@ const updateResponse = (questionNumber, value) => {
     };
       if (savedResponseId) {
         await QuestionnaireResponse.update(savedResponseId, saveData);
-      } else {
-        const newResponse = await QuestionnaireResponse.create(saveData);
-        setSavedResponseId(newResponse.id);
-      }
+      } 
     } catch (e) {
       console.error('CV immediate save failed:', e);
     }
