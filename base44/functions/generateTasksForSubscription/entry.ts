@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClientFromRequest } from '@base44/sdk';
 
 const V9_BOOSTER_SYSTEM_PROMPT = `V107 BOOSTER — SYSTEM PROMPT V9 FINAL
 © 2026 V107 Professional Framework

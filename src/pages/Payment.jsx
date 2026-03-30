@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { tranzilaCreateHandshake } from "@/functions/tranzilaCreateHandshake";
-import { getFullReportPurchaseEmailTemplate } from '@/components/email/FullReportPurchaseTemplate';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +14,6 @@ import { useTranslation } from "@/components/i18n/useTranslation";
 
 const ReportInfoModal = ({ isOpen, onClose }) => {
   const { language } = useTranslation();
-  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px] md:max-w-xl lg:max-w-2xl" dir={language === 'he' ? 'rtl' : 'ltr'}>
@@ -119,6 +117,7 @@ export default function Payment() {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [handshakeData, setHandshakeData] = useState(null);
   const [isLoadingHandshake, setIsLoadingHandshake] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
 
   // Coupon states
   const [couponCode, setCouponCode] = useState('');
@@ -244,16 +243,20 @@ export default function Payment() {
       };
 
       const createdOrder = await base44.entities.PaymentOrder.create(orderData);
+      setCurrentOrderId(createdOrder.id); 
       console.log('PaymentOrder created:', createdOrder.id);
 
       // Mark coupon as used immediately to prevent reuse (only if single-use)
-      if (appliedCoupon) {
-        const isSingleUse = appliedCoupon.is_single_use !== false; // default is true
-        if (isSingleUse) {
-          await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
-          console.log('Coupon marked as used:', appliedCoupon.code);
-        }
-      }
+      // Coupon is marked as used ONLY via tranzilaNotify webhook after payment confirmed.
+      // Do NOT mark it here — user may open Tranzila and cancel without paying.
+      
+          // if (appliedCoupon) {
+          //   const isSingleUse = appliedCoupon.is_single_use !== false; // default is true
+          //   if (isSingleUse) {
+          //     await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
+          //     console.log('Coupon marked as used:', appliedCoupon.code);
+          //   }
+          // }
 
       const { data } = await tranzilaCreateHandshake({ sum: price });
       setHandshakeData(data);
@@ -463,7 +466,7 @@ export default function Payment() {
                     id="tranzila-frame"
                     title="Tranzila Payment"
                     allowpaymentrequest="true"
-                    src={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php?sum=${handshakeData.sum}&currency=1&cred_type=1&tranmode=A&new_process=1&thtk=${handshakeData.thtk}&lang=${language === 'he' ? 'il' : 'us'}&buttonLabel=${encodeURIComponent(language === 'he' ? 'שלם עכשיו' : 'Pay Now')}&trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb&pdesc=${encodeURIComponent(productDetails[product]?.title || '')}&contact=${encodeURIComponent(user?.full_name || '')}&email=${encodeURIComponent(user?.email || '')}`}
+                    src={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php?sum=${handshakeData.sum}&currency=1&cred_type=1&tranmode=A&new_process=1&thtk=${handshakeData.thtk}&lang=${language === 'he' ? 'il' : 'us'}&buttonLabel=${encodeURIComponent(language === 'he' ? 'שלם עכשיו' : 'Pay Now')}&trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb&pdesc=${encodeURIComponent(productDetails[product]?.title || '')}&contact=${encodeURIComponent(user?.full_name || '')}&email=${encodeURIComponent(user?.email || '')}&cfield1=${encodeURIComponent(currentOrderId)}`}
                     style={{
                       width: '100%',
                       height: '600px',

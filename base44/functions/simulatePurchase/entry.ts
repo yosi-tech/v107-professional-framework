@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClientFromRequest } from '@base44/sdk';
 
 // פונקציה לייצור תבנית מייל לרכישת דו"ח מלא
 function getFullReportPurchaseEmailTemplate(userName, transactionId, date, hasCompletedQuestionnaire, questionnaireUrl, isExpress, language = 'he') {
