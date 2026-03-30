@@ -594,6 +594,10 @@ export default function Questionnaire() {
 
       if (existingResponses.length > 0) {
         const savedResponse = existingResponses[0];
+          console.log('LOADED:', {
+          responsesCount: Object.keys(savedResponse.responses || {}).length,
+          responses: savedResponse.responses
+        });
         setPersonalInfo(savedResponse.personal_info || {});
         setResponses(savedResponse.responses || {});
         setOptionalComment(savedResponse.optional_comment || '');
