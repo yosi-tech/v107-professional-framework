@@ -598,7 +598,6 @@ export default function Questionnaire() {
         setResponses(savedResponse.responses || {});
         setOptionalComment(savedResponse.optional_comment || '');
         setSavedResponseId(savedResponse.id);
-        // תמיד טען את הצעד הנוכחי אם קיים, אחרת התחל מ-0 (פרטים אישיים)
         const savedStep = savedResponse.current_step;
         if (savedStep !== undefined && savedStep !== null) {
           setCurrentStep(Math.max(0, savedStep));
@@ -700,9 +699,13 @@ export default function Questionnaire() {
     if (!user) return;
 
     try {
-      const hasResponses = Object.keys(responses).length > 0;
-      const hasPersonalInfo = personalInfo.full_name?.trim().length > 0;
-      const hasComment = optionalComment.trim().length > 0;
+      // const hasResponses = Object.keys(responses).length > 0;
+      // const hasPersonalInfo = personalInfo.full_name?.trim().length > 0;
+      // const hasComment = optionalComment.trim().length > 0;
+    const hasPersonalInfo = Object.keys(personalInfo).length > 0;
+    const hasResponses = Object.keys(responses).length > 0;
+    const hasComment = optionalComment.trim().length > 0;
+    console.log('autoSave running:', { hasPersonalInfo, hasResponses, hasComment, savedResponseId, responsesCount: Object.keys(responses).length });
 
       if (!hasPersonalInfo && !hasResponses && !hasComment) return;
 
@@ -746,7 +749,7 @@ export default function Questionnaire() {
         return () => clearTimeout(timeoutId);
       }
     }
-  }, [user, responses, personalInfo, optionalComment, currentStep]);
+  }, [user, responses, personalInfo, optionalComment, currentStep, autoSaveProgress]);
 
   const handleLogin = () => {
     base44.auth.redirectToLogin(window.location.href);
