@@ -491,6 +491,7 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
             try {
               console.log('מעלה קובץ:', file.name);
               const { file_url } = await base44.integrations.Core.UploadFile({ file });
+              console.log('updatedData:', { cv_file_url: file_url, cv_file_name: file.name });
               console.log('הועלה בהצלחה, url:', file_url);
               const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
               onChange(updatedData);
@@ -868,15 +869,17 @@ export default function Questionnaire() {
   onImmediateSave={async (updatedData) => {
     try {
       const saveData = {
-        personal_info: { ...updatedData, email: user.email },
-        responses,
-        optional_comment: optionalComment,
-        data_usage_consent: updatedData.data_usage_consent || false,
-        language,
-        version: 'V8_B2B',
-        status: 'in_progress',
-        current_step: currentStep
-      };
+      personal_info: { ...updatedData, email: user.email },
+      cv_file_name: updatedData.cv_file_name || '',
+      cv_file_url: updatedData.cv_file_url || '',
+      responses,
+      optional_comment: optionalComment,
+      data_usage_consent: updatedData.data_usage_consent || false,
+      language,
+      version: 'V8_B2B',
+      status: 'in_progress',
+      current_step: currentStep
+    };
       if (savedResponseId) {
         await QuestionnaireResponse.update(savedResponseId, saveData);
       } else {
