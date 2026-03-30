@@ -700,8 +700,8 @@ export default function Questionnaire() {
     if (!user) return;
 
     try {
-      const hasPersonalInfo = Object.keys(personalInfo).length > 0;
       const hasResponses = Object.keys(responses).length > 0;
+      const hasPersonalInfo = personalInfo.full_name?.trim().length > 0;
       const hasComment = optionalComment.trim().length > 0;
 
       if (!hasPersonalInfo && !hasResponses && !hasComment) return;
