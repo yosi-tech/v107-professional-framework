@@ -452,11 +452,7 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
     {language === 'he' ? 'העלאת קורות חיים (אופציונלי)' : 'Upload CV (Optional)'}
   </Label>
   
-  {/* Debug info - תמחק אחרי בדיקה */}
-  <p style={{fontSize:'11px', color:'gray'}}>
-    cv_file_url: {data.cv_file_url ? '✅ קיים' : '❌ ריק'} | 
-    cv_file_name: {data.cv_file_name || 'ריק'}
-  </p>
+
 
 {data.cv_file_url ? (
   <div className="flex items-center gap-3 mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
