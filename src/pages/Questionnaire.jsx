@@ -576,6 +576,7 @@ export default function Questionnaire() {
   const [savedResponseId, setSavedResponseId] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const isLoadedRef = useRef(false); // מונע שמירה לפני שהטעינה הסתיימה
   const [isLoginRequired, setIsLoginRequired] = useState(false);
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false);
   const navigate = useNavigate();
@@ -607,15 +608,23 @@ export default function Questionnaire() {
 //
       if (existingResponses.length > 0) {
         const savedResponse = existingResponses[0];
-          console.log('LOADED:', {
-          responsesCount: Object.keys(savedResponse.responses || {}).length,
-          responses: savedResponse.responses
-        });
-        setPersonalInfo(savedResponse.personal_info || {});
-        setResponses(savedResponse.responses || {});
-        setOptionalComment(savedResponse.optional_comment || '');
-        setSavedResponseId(savedResponse.id);
+        const loadedResponses = savedResponse.responses || {};
+        const loadedPersonalInfo = savedResponse.personal_info || {};
+        const loadedComment = savedResponse.optional_comment || '';
+        const loadedId = savedResponse.id;
         const savedStep = savedResponse.current_step;
+
+        // עדכן את ה-refs לפני ה-setState כדי שלא תהיה שמירה עם ערכים ריקים
+        responsesRef.current = loadedResponses;
+        personalInfoRef.current = loadedPersonalInfo;
+        optionalCommentRef.current = loadedComment;
+        savedResponseIdRef.current = loadedId;
+
+        setPersonalInfo(loadedPersonalInfo);
+        setResponses(loadedResponses);
+        setOptionalComment(loadedComment);
+        setSavedResponseId(loadedId);
+
         if (savedStep !== undefined && savedStep !== null) {
           setCurrentStep(Math.max(0, savedStep));
         } else {
@@ -623,8 +632,10 @@ export default function Questionnaire() {
         }
       }
     } catch (error) {
-      console.error('Error loading existing responses:', error);
+      // Error loading
     }
+    // סמן שהטעינה הסתיימה - מעכשיו מותר לשמור
+    isLoadedRef.current = true;
   }, []);
 
   const checkAuthAndLoadData = useCallback(async () => {
@@ -715,6 +726,7 @@ export default function Questionnaire() {
   const autoSaveProgress = useCallback(async (stepToSave) => {
     const currentUser = userRef.current;
     if (!currentUser) return;
+    if (!isLoadedRef.current) return; // אל תשמור לפני שהטעינה הסתיימה
 
     const currentResponses = responsesRef.current;
     const currentPersonalInfo = personalInfoRef.current;
