@@ -488,25 +488,19 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
         type="file"
         accept=".pdf,.doc,.docx"
         style={{ userSelect: 'auto', WebkitUserSelect: 'auto', pointerEvents: 'auto' }}
-        onChange={async (e) => {
-          const file = e.target.files?.[0];
-          console.log('onChange נקרא, file:', file?.name);
-          if (file) {
-            try {
-              console.log('מעלה קובץ:', file.name);
-              const { file_url } = await base44.integrations.Core.UploadFile({ file });
-              console.log('updatedData:', { cv_file_url: file_url, cv_file_name: file.name });
-              console.log('הועלה בהצלחה, url:', file_url);
-              const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
-              onChange(updatedData);
-              if (onImmediateSave) await onImmediateSave(updatedData);
-              console.log('נשמר ב-DB');
-            } catch (error) {
-              console.error('שגיאה בהעלאה:', error);
-              alert(language === 'he' ? 'שגיאה בהעלאת הקובץ' : 'Error uploading file');
-            }
-          }
-        }}
+      onChange={async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+          const { file_url } = await base44.integrations.Core.UploadFile({ file });
+          alert(`uploaded!\nfile_url: ${file_url}\nfile_name: ${file.name}`);
+          const updatedData = { ...data, cv_file_url: file_url, cv_file_name: file.name };
+          onChange(updatedData);
+          if (onImmediateSave) await onImmediateSave(updatedData);
+        } catch (error) {
+          alert('Error: ' + error.message);
+        }
+      }}
         className="cursor-pointer mt-1"
       />
     </div>
