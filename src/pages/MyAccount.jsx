@@ -6,13 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import {
   Loader2, FileText, Award, ShoppingCart, Gift,
   CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle,
-  Lock, Rocket, Trash2, LayoutDashboard, Settings, TrendingUp, Brain, Zap, Upload
+  Lock, Rocket, Trash2, LayoutDashboard, Settings, TrendingUp, Brain, Zap, Upload, Compass
 } from 'lucide-react';
 import { useTranslation } from '@/components/i18n/useTranslation';
 import { Link as RouterLink } from 'react-router-dom';
 
 const NAV_ITEMS = [
   { key: 'dashboard', label: 'לוח בקרה', icon: LayoutDashboard },
+  { key: 'career', label: 'נתיבי קריירה', icon: Compass, href: 'CareerPaths' },
   { key: 'questionnaires', label: 'שאלונים', icon: FileText },
   { key: 'reports', label: 'דוחות', icon: Award },
   { key: 'coupons', label: 'קופונים', icon: Gift },
@@ -140,7 +141,17 @@ export default function MyAccount() {
 
         {/* Nav */}
         <nav className="flex flex-col gap-0.5 px-3 flex-1">
-          {NAV_ITEMS.map(({ key, label, icon: Icon }) => (
+          {NAV_ITEMS.map(({ key, label, icon: Icon, href }) => (
+            href ? (
+              <Link
+                key={key}
+                to={createPageUrl(href)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full text-right text-slate-500 hover:bg-slate-100"
+              >
+                <Icon className="w-5 h-5 flex-shrink-0" />
+                <span>{label}</span>
+              </Link>
+            ) : (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
@@ -153,6 +164,7 @@ export default function MyAccount() {
               <Icon className="w-5 h-5 flex-shrink-0" />
               <span>{label}</span>
             </button>
+            )
           ))}
         </nav>
 
@@ -176,7 +188,13 @@ export default function MyAccount() {
       {/* Mobile Bottom Nav */}
       <nav className="lg:hidden fixed bottom-0 right-0 left-0 z-50 bg-white border-t border-slate-200 shadow-lg">
         <div className="flex items-center justify-around py-2">
-          {NAV_ITEMS.map(({ key, label, icon: Icon }) => (
+          {NAV_ITEMS.map(({ key, label, icon: Icon, href }) => (
+            href ? (
+              <Link key={key} to={createPageUrl(href)} className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-colors text-slate-400">
+                <Icon className="w-5 h-5" />
+                <span className="text-[10px] font-medium">{label}</span>
+              </Link>
+            ) : (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
@@ -187,6 +205,7 @@ export default function MyAccount() {
               <Icon className="w-5 h-5" />
               <span className="text-[10px] font-medium">{label}</span>
             </button>
+            )
           ))}
           <button
             onClick={handleLogout}
