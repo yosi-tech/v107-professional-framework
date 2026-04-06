@@ -243,7 +243,8 @@ export default function MyAccount() {
                 </div>
                 <div className="space-y-4">
                   {Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
-                    const pct = typeof score === 'number' ? Math.min(100, Math.round(score * 100 / 7)) : score;
+                    const rawScore = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
+                    const pct = typeof rawScore === 'number' ? Math.min(100, Math.round(rawScore <= 7 ? rawScore * 100 / 7 : rawScore)) : 0;
                     const isHigh = pct >= 75;
                     return (
                       <div key={domain} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
