@@ -237,123 +237,205 @@ export default function MyAccount() {
 
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+          <div>
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
 
-            {/* Stats Overview */}
-            <div className="md:col-span-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { label: 'שאלונים', value: questionnaireResponses.length, icon: FileText, color: 'blue' },
-                { label: 'דוחות', value: reports.length, icon: Award, color: 'green' },
-                { label: 'קופונים פעילים', value: coupons.filter(c => !c.used).length, icon: Gift, color: 'purple' },
-                { label: 'רכישות', value: paymentOrders.filter(o => o.status === 'paid').length, icon: ShoppingCart, color: 'orange' },
-              ].map(({ label, value, icon: Icon, color }) => (
-                <div key={label} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${
-                    color === 'blue' ? 'bg-blue-50 text-blue-600' :
-                    color === 'green' ? 'bg-green-50 text-green-600' :
-                    color === 'purple' ? 'bg-purple-50 text-purple-600' :
-                    'bg-orange-50 text-[#FF8F00]'
-                  }`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div className="text-3xl font-black text-slate-900 mb-1">{value}</div>
-                  <div className="text-sm text-slate-500">{label}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Domain Scores from latest report */}
-            {latestReport?.domain_scores && (
-              <section className="md:col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+              {/* Radar + Metrics Card */}
+              <section className="md:col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-slate-100 overflow-hidden">
                 <div className="flex justify-between items-center mb-8">
-                  <h2 className="text-2xl font-bold text-slate-900">מפת עוצמות</h2>
+                  <h2 className="text-2xl font-bold text-slate-900">מפת עוצמות (Strengths Map)</h2>
                   <span className="bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full font-bold">דאטה מעודכן</span>
                 </div>
-                <div className="space-y-4">
-                  {Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
-                    const rawScore = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
-                    const pct = typeof rawScore === 'number' ? Math.min(100, Math.round(rawScore <= 7 ? rawScore * 100 / 7 : rawScore)) : 0;
-                    const isHigh = pct >= 75;
-                    return (
-                      <div key={domain} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
-                        <span className="text-slate-800 font-medium text-sm">{domain}</span>
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-bold text-slate-400">{pct}%</span>
-                          <div className="w-28 h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div
-                              className={`h-full rounded-full ${isHigh ? 'bg-green-500' : pct >= 50 ? 'bg-blue-500' : 'bg-red-400'}`}
-                              style={{ width: `${pct}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-
-            {/* Booster Subscription */}
-            {boosterSubscription && (
-              <section className="md:col-span-4 bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#FF8F00' }}>
-                    <Rocket className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900">מסלול Booster</h3>
-                    <p className="text-xs text-slate-500">פעיל</p>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-500">מסלול</span>
-                    <Badge className="bg-orange-100 text-[#FF8F00] border-0 font-bold">
-                      {boosterSubscription.recommended_booster_track}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-500">יום נוכחי</span>
-                    <span className="font-black text-2xl text-slate-900">{boosterSubscription.current_day} <span className="text-sm text-slate-400 font-normal">/ 30</span></span>
-                  </div>
-                  <div className="w-full bg-slate-100 rounded-full h-3">
-                    <div
-                      className="h-3 rounded-full transition-all"
-                      style={{ width: `${(boosterSubscription.current_day / 30) * 100}%`, backgroundColor: '#FF8F00' }}
-                    />
-                  </div>
-                  <p className="text-xs text-slate-400 text-center">המיילים היומיים נשלחים אוטומטית</p>
-                </div>
-              </section>
-            )}
-
-            {/* Quick Actions */}
-            <section className="md:col-span-12 bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 mb-6">פעולות מהירות</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Link to={createPageUrl('Questionnaire')}>
-                  <div className="p-6 rounded-2xl border border-slate-200 hover:border-[#FF8F00] hover:bg-orange-50 transition-all cursor-pointer group">
-                    <FileText className="w-8 h-8 text-[#FF8F00] mb-3" />
-                    <h3 className="font-bold text-slate-900 mb-1">מיפוי חדש</h3>
-                    <p className="text-sm text-slate-500">התחל שאלון חדש וקבל דוח מעודכן</p>
-                  </div>
-                </Link>
-                <Link to={createPageUrl('Survey')}>
-                  <div className="p-6 rounded-2xl border border-slate-200 hover:border-purple-400 hover:bg-purple-50 transition-all cursor-pointer group">
-                    <Gift className="w-8 h-8 text-purple-500 mb-3" />
-                    <h3 className="font-bold text-slate-900 mb-1">קבל קופון</h3>
-                    <p className="text-sm text-slate-500">מלא סקר קצר וקבל הנחה</p>
-                  </div>
-                </Link>
-                {latestReport && (
-                  <Link to={createPageUrl(`ReportView?reportid=${latestReport.id}`)}>
-                    <div className="p-6 rounded-2xl border border-slate-200 hover:border-green-400 hover:bg-green-50 transition-all cursor-pointer group">
-                      <Award className="w-8 h-8 text-green-500 mb-3" />
-                      <h3 className="font-bold text-slate-900 mb-1">הדוח שלי</h3>
-                      <p className="text-sm text-slate-500">צפה בדוח המקצועי המלא</p>
+                <div className="grid lg:grid-cols-2 gap-8 items-center">
+                  {/* SVG Radar Chart */}
+                  <div className="flex justify-center">
+                    <div className="relative w-full max-w-[280px] aspect-square">
+                      <svg className="w-full h-full" viewBox="0 0 100 100">
+                        {/* Background circles */}
+                        <circle cx="50" cy="50" r="10" fill="#f0f4f8" stroke="#dfe3e7" strokeWidth="1" strokeDasharray="2 2" />
+                        <circle cx="50" cy="50" r="20" fill="none" stroke="#dfe3e7" strokeWidth="1" strokeDasharray="2 2" />
+                        <circle cx="50" cy="50" r="30" fill="none" stroke="#dfe3e7" strokeWidth="1" strokeDasharray="2 2" />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#dfe3e7" strokeWidth="1" strokeDasharray="2 2" />
+                        <circle cx="50" cy="50" r="50" fill="none" stroke="#dfe3e7" strokeWidth="0.5" />
+                        {/* Axis lines */}
+                        <line x1="50" y1="50" x2="50" y2="0" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
+                        <line x1="50" y1="50" x2="100" y2="50" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
+                        <line x1="50" y1="50" x2="50" y2="100" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
+                        <line x1="50" y1="50" x2="0" y2="50" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
+                        <line x1="50" y1="50" x2="15" y2="15" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
+                        <line x1="50" y1="50" x2="85" y2="15" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
+                        <line x1="50" y1="50" x2="85" y2="85" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
+                        <line x1="50" y1="50" x2="15" y2="85" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
+                        {/* Dynamic radar polygon from domain scores */}
+                        {latestReport?.domain_scores ? (() => {
+                          const entries = Object.entries(latestReport.domain_scores).slice(0, 8);
+                          const n = entries.length || 1;
+                          const points = entries.map(([, score], i) => {
+                            const rawScore = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
+                            const pct = typeof rawScore === 'number' ? Math.min(1, rawScore <= 7 ? rawScore / 7 : rawScore / 100) : 0;
+                            const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+                            const r = pct * 45;
+                            return [50 + r * Math.cos(angle), 50 + r * Math.sin(angle)];
+                          });
+                          const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ') + ' Z';
+                          return <path d={d} fill="rgba(255,140,0,0.25)" stroke="#FF8F00" strokeWidth="2" />;
+                        })() : (
+                          <path d="M 50 14 L 72 27 L 81 55 L 65 78 L 35 78 L 19 55 L 28 27 Z" fill="rgba(255,140,0,0.25)" stroke="#FF8F00" strokeWidth="2" />
+                        )}
+                      </svg>
                     </div>
-                  </Link>
+                  </div>
+                  {/* Metrics List */}
+                  <div className="space-y-3 max-h-72 overflow-y-auto">
+                    {latestReport?.domain_scores
+                      ? Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
+                          const rawScore = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
+                          const pct = typeof rawScore === 'number' ? Math.min(100, Math.round(rawScore <= 7 ? rawScore * 100 / 7 : rawScore)) : 0;
+                          const isLow = pct < 60;
+                          return (
+                            <div key={domain} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+                              <span className={`font-medium text-sm ${isLow ? 'text-red-600' : 'text-slate-800'}`}>{domain}</span>
+                              <div className="flex items-center gap-3">
+                                <span className={`text-sm font-bold ${isLow ? 'text-red-500' : 'text-slate-400'}`}>{pct}%</span>
+                                <div className={`w-24 h-2 rounded-full overflow-hidden ${isLow ? 'bg-red-100' : 'bg-slate-100'}`}>
+                                  <div
+                                    className={`h-full rounded-full ${pct >= 75 ? 'bg-green-500' : pct >= 60 ? 'bg-blue-500' : 'bg-yellow-500'}`}
+                                    style={{ width: `${pct}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })
+                      : (
+                        <div className="text-center py-8 text-slate-400">
+                          <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות את מפת העוצמות</p>
+                          <Link to={createPageUrl('Questionnaire')}>
+                            <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
+                          </Link>
+                        </div>
+                      )
+                    }
+                  </div>
+                </div>
+              </section>
+
+              {/* Right Column */}
+              <aside className="md:col-span-4 space-y-6">
+                {/* Career Paths */}
+                <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                  <h2 className="text-xl font-bold text-slate-900 mb-6">נתיבי קריירה מומלצים</h2>
+                  {latestReport?.archetype ? (
+                    <div className="space-y-3">
+                      <div className="p-4 rounded-2xl bg-slate-50 border-r-4 border-purple-500 hover:bg-purple-50 transition-colors cursor-pointer">
+                        <h3 className="font-bold text-slate-900 mb-1">{latestReport.archetype}</h3>
+                        <p className="text-sm text-slate-500">ארכיטיפ מקצועי מותאם אישית</p>
+                      </div>
+                      {latestReport.recommended_booster_track && (
+                        <div className="p-4 rounded-2xl bg-slate-50 border-r-4 border-green-500 hover:bg-green-50 transition-colors cursor-pointer">
+                          <h3 className="font-bold text-slate-900 mb-1">מסלול: {latestReport.recommended_booster_track}</h3>
+                          <p className="text-sm text-slate-500">מסלול הבוסטר המומלץ עבורך</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {[
+                        { title: 'מנהל מוצר טכנולוגי', desc: 'התאמה גבוהה על בסיס מיומנויות תכנון', color: 'border-purple-500 hover:bg-purple-50' },
+                        { title: 'יועץ אסטרטגי בכיר', desc: 'התאמה גבוהה על בסיס חזון וניהול שינוי', color: 'border-green-500 hover:bg-green-50' },
+                        { title: 'מוביל צוות פיתוח', desc: 'התאמה על בסיס מנהיגות', color: 'border-yellow-500 hover:bg-yellow-50' },
+                      ].map((item) => (
+                        <div key={item.title} className={`p-4 rounded-2xl bg-slate-50 border-r-4 ${item.color} transition-colors cursor-pointer`}>
+                          <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
+                          <p className="text-sm text-slate-500">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {latestReport && (
+                    <Link to={createPageUrl(`ReportView?reportid=${latestReport.id}`)}>
+                      <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
+                        צפה בדוח המלא ←
+                      </button>
+                    </Link>
+                  )}
+                </div>
+
+                {/* Recent Questionnaires */}
+                <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                  <h2 className="text-xl font-bold text-slate-900 mb-6">פעילויות אחרונות</h2>
+                  <div className="space-y-3">
+                    {questionnaireResponses.slice(0, 3).length > 0 ? questionnaireResponses.slice(0, 3).map((r) => (
+                      <div key={r.id} className="p-4 rounded-2xl bg-slate-50 border-r-4 border-slate-300 hover:bg-slate-100 transition-colors">
+                        <h3 className="font-bold text-slate-900 mb-1 text-sm">{getStatusText(r.status)}</h3>
+                        <p className="text-xs text-slate-500">{new Date(r.created_date).toLocaleDateString('he-IL')}</p>
+                      </div>
+                    )) : (
+                      <p className="text-sm text-slate-400 text-center py-4">אין פעילויות עדיין</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Booster if active */}
+                {boosterSubscription && (
+                  <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#FF8F00' }}>
+                        <Rocket className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-sm">Booster פעיל</h3>
+                        <p className="text-xs text-slate-500">{boosterSubscription.recommended_booster_track}</p>
+                      </div>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-2 mb-2">
+                      <div className="h-2 rounded-full" style={{ width: `${(boosterSubscription.current_day / 30) * 100}%`, backgroundColor: '#FF8F00' }} />
+                    </div>
+                    <p className="text-xs text-slate-400">יום {boosterSubscription.current_day} מתוך 30</p>
+                  </div>
                 )}
+              </aside>
+            </div>
+
+            {/* Personal Insights */}
+            <section className="mt-12">
+              <h2 className="text-2xl font-bold text-slate-900 mb-8">תובנות אישיות</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                  { icon: TrendingUp, color: 'bg-blue-50 text-blue-600', title: 'מגמת צמיחה', desc: 'היכולת שלך ללמוד ולצמוח מבוססת על נתוני השאלון שלך. מומלץ להתמקד בתחומים שזוהו כחוזקות.' },
+                  { icon: UserIcon, color: 'bg-purple-50 text-purple-600', title: 'נטוורקינג פעיל', desc: 'כישורים בין-אישיים חזקים הם נכס מקצועי. כלי הבוסטר יכול לעזור לך למנף זאת לקידום.' },
+                  { icon: Zap, color: 'bg-orange-50 text-[#FF8F00]', title: 'איזון חיים-עבודה', desc: 'חיזוק האיזון בין עבודה לחיים אישיים תורם לביצועים ארוכי טווח ולמניעת שחיקה.' },
+                ].map(({ icon: Icon, color, title, desc }) => (
+                  <div key={title} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${color}`}>
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-lg font-bold mb-2 text-slate-900">{title}</h3>
+                    <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Promotional Banner */}
+            <section className="mt-12 bg-slate-900 rounded-3xl p-10 text-white flex flex-col md:flex-row items-center gap-10 overflow-hidden relative">
+              <div className="flex-1 relative z-10">
+                <h2 className="text-2xl font-black mb-3">משהו אצלך זז? העבר לחבר וקבל שדרוג מיידי!</h2>
+                <p className="text-slate-300 text-base mb-6 leading-relaxed">הרגשת שינוי קטן? הבנת כיוון חדש? עכשיו זה הזמן לקחת את זה צעד קדימה ולעזור גם לחבר להתקדם.</p>
+                <div className="flex gap-4 flex-wrap">
+                  <Link to={createPageUrl('Questionnaire')}>
+                    <button className="text-white px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform text-sm" style={{ backgroundColor: '#FF8F00' }}>שדרג עכשיו</button>
+                  </Link>
+                  <Link to={createPageUrl('About')}>
+                    <button className="border border-white/20 px-8 py-3 rounded-xl font-bold hover:bg-white/10 transition-colors text-sm">למד עוד</button>
+                  </Link>
+                </div>
+              </div>
+              <div className="flex-shrink-0 w-full md:w-56">
+                <div className="aspect-video rounded-2xl bg-slate-800 flex items-center justify-center shadow-xl">
+                  <Zap className="w-12 h-12 text-[#FF8F00]" />
+                </div>
               </div>
             </section>
           </div>
