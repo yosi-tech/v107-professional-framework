@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, FileText, Award, ShoppingCart, Gift, CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle, Lock, Rocket, Trash2 } from 'lucide-react';
+import {
+  Loader2, FileText, Award, ShoppingCart, Gift,
+  CheckCircle, Clock, LogOut, User as UserIcon, AlertCircle,
+  Lock, Rocket, Trash2, LayoutDashboard, Settings, TrendingUp, Brain, Zap, Upload
+} from 'lucide-react';
 import { useTranslation } from '@/components/i18n/useTranslation';
+import { Link as RouterLink } from 'react-router-dom';
+
+const NAV_ITEMS = [
+  { key: 'dashboard', label: 'לוח בקרה', icon: LayoutDashboard },
+  { key: 'questionnaires', label: 'שאלונים', icon: FileText },
+  { key: 'reports', label: 'דוחות', icon: Award },
+  { key: 'coupons', label: 'קופונים', icon: Gift },
+  { key: 'orders', label: 'רכישות', icon: ShoppingCart },
+];
 
 export default function MyAccount() {
   const { language } = useTranslation();
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
@@ -26,96 +37,55 @@ export default function MyAccount() {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
 
-        // טען שאלונים
         const responses = await base44.entities.QuestionnaireResponse.filter(
-          { created_by: currentUser.email },
-          '-updated_date'
+          { created_by: currentUser.email }, '-updated_date'
         );
         setQuestionnaireResponses(responses);
 
-        // טען דוחות - סינון לפי user_email ורכישה
         try {
           const allReports = await base44.entities.GeneratedReport.list('-created_date');
-          const myReports = allReports.filter(report => 
-            report.user_email === currentUser.email && 
+          const myReports = allReports.filter(report =>
+            report.user_email === currentUser.email &&
             (report.purchased === true || currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download)
           );
           setReports(myReports);
-        } catch (e) {
-          // No reports found
-        }
+        } catch (e) {}
 
-        // טען סקרים
         try {
-          const surveys = await base44.entities.SurveyResponse.filter(
-            { created_by: currentUser.email },
-            '-created_date'
-          );
+          const surveys = await base44.entities.SurveyResponse.filter({ created_by: currentUser.email }, '-created_date');
           setSurveyResponses(surveys);
-        } catch (e) {
-          // No surveys found
-        }
+        } catch (e) {}
 
-        // טען קופונים
         try {
-          const userCoupons = await base44.entities.Coupon.filter(
-            { user_email: currentUser.email },
-            '-created_date'
-          );
+          const userCoupons = await base44.entities.Coupon.filter({ user_email: currentUser.email }, '-created_date');
           setCoupons(userCoupons);
-        } catch (e) {
-          // No coupons found
-        }
+        } catch (e) {}
 
-        // טען מנוי בוסטר
         try {
           const subscriptions = await base44.entities.OnlineCoachingSubscription.filter(
-            { user_email: currentUser.email, status: 'active' },
-            '-created_date'
+            { user_email: currentUser.email, status: 'active' }, '-created_date'
           );
-          if (subscriptions.length > 0) {
-            setBoosterSubscription(subscriptions[0]);
-          }
-        } catch (e) {
-          // No booster subscription found
-        }
+          if (subscriptions.length > 0) setBoosterSubscription(subscriptions[0]);
+        } catch (e) {}
 
-        // טען הזמנות תשלום
         try {
-          const orders = await base44.entities.PaymentOrder.filter(
-            { user_email: currentUser.email },
-            '-created_date'
-          );
+          const orders = await base44.entities.PaymentOrder.filter({ user_email: currentUser.email }, '-created_date');
           setPaymentOrders(orders);
-        } catch (e) {
-          // No payment orders found
-        }
+        } catch (e) {}
 
       } catch (error) {
-        console.error('Error loading user data:', error);
-        // הפנה להתחברות אם אין משתמש מחובר
         base44.auth.redirectToLogin(window.location.href);
       } finally {
         setIsLoading(false);
       }
     };
-
     loadUserData();
   }, []);
 
-  const handleLogout = () => {
-    base44.auth.logout(createPageUrl('Home'));
-  };
+  const handleLogout = () => base44.auth.logout(createPageUrl('Home'));
 
   const handleDeleteQuestionnaire = async (questionnaireId) => {
-    const confirmDelete = window.confirm(
-      language === 'he' 
-        ? 'האם אתה בטוח שברצונך למחוק את השאלון? לא ניתן לשחזר אותו.'
-        : 'Are you sure you want to delete this questionnaire? This action cannot be undone.'
-    );
-
-    if (!confirmDelete) return;
-
+    if (!window.confirm(language === 'he' ? 'האם אתה בטוח שברצונך למחוק את השאלון?' : 'Are you sure?')) return;
     try {
       await base44.entities.QuestionnaireResponse.delete(questionnaireId);
       setQuestionnaireResponses(prev => prev.filter(q => q.id !== questionnaireId));
@@ -126,475 +96,418 @@ export default function MyAccount() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'completed':
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case 'in_progress':
-        return <Clock className="w-5 h-5 text-blue-600" />;
-      case 'abandoned':
-        return <AlertCircle className="w-5 h-5 text-orange-600" />;
-      default:
-        return <FileText className="w-5 h-5 text-gray-600" />;
+      case 'completed': return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case 'in_progress': return <Clock className="w-4 h-4 text-blue-600" />;
+      case 'abandoned': return <AlertCircle className="w-4 h-4 text-orange-600" />;
+      default: return <FileText className="w-4 h-4 text-gray-600" />;
     }
   };
 
   const getStatusText = (status) => {
-    if (language === 'he') {
-      switch (status) {
-        case 'completed': return 'הושלם';
-        case 'in_progress': return 'בתהליך';
-        case 'abandoned': return 'נזנח';
-        default: return status;
-      }
-    } else {
-      switch (status) {
-        case 'completed': return 'Completed';
-        case 'in_progress': return 'In Progress';
-        case 'abandoned': return 'Abandoned';
-        default: return status;
-      }
-    }
+    const map = { completed: 'הושלם', in_progress: 'בתהליך', abandoned: 'נזנח' };
+    return map[status] || status;
   };
+
+  // Get latest completed questionnaire for domain scores
+  const latestCompleted = questionnaireResponses.find(r => r.status === 'completed');
+  const latestReport = reports[0];
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-20 px-4 flex justify-center items-center" dir={language === 'he' ? 'rtl' : 'ltr'}>
-        <div className="text-center">
-          <Loader2 className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" />
-          <p className="text-lg text-gray-600">
-            {language === 'he' ? 'טוען נתונים...' : 'Loading data...'}
-          </p>
-        </div>
+      <div className="min-h-screen flex justify-center items-center" dir="rtl">
+        <Loader2 className="animate-spin h-12 w-12 text-[#FF8F00]" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <UserIcon className="w-8 h-8 text-blue-600" />
-              {language === 'he' ? 'האזור האישי שלי' : 'My Account'}
-            </h1>
-            <p className="text-gray-600 mt-2">
-              {language === 'he' ? `שלום, ${user?.full_name || user?.email}` : `Hello, ${user?.full_name || user?.email}`}
-            </p>
+    <div className="min-h-screen bg-slate-50" dir="rtl">
+
+      {/* Sidebar */}
+      <aside className="bg-white text-slate-700 font-medium h-screen w-64 fixed right-0 top-0 z-40 hidden lg:flex flex-col py-8 px-4 pt-24 border-l border-slate-100 shadow-sm">
+        <div className="mb-10 px-2">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 rounded-full bg-[#FF8F00] flex items-center justify-center text-white flex-shrink-0">
+              <UserIcon className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm leading-tight">{user?.full_name || 'שלום'}</h3>
+              <p className="text-xs text-slate-500 truncate max-w-[120px]">{user?.email}</p>
+            </div>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
-            {language === 'he' ? 'התנתק' : 'Logout'}
-          </Button>
         </div>
 
-        {/* מנוי בוסטר פעיל */}
-        {boosterSubscription && (
-          <Card className="shadow-lg mb-6 border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Rocket className="w-6 h-6 text-purple-600" />
-                {language === 'he' ? '🚀 מסלול הבוסטר שלך פעיל!' : '🚀 Your Booster Track is Active!'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">
-                    {language === 'he' ? 'מסלול:' : 'Track:'}
-                  </span>
-                  <Badge className="bg-purple-600 text-white">
-                    {boosterSubscription.recommended_booster_track}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">
-                    {language === 'he' ? 'יום נוכחי:' : 'Current Day:'}
-                  </span>
-                  <span className="font-bold text-lg text-purple-700">
-                    {boosterSubscription.current_day} / 7
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div 
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 h-3 rounded-full transition-all"
-                    style={{ width: `${(boosterSubscription.current_day / 7) * 100}%` }}
-                  />
-                </div>
-                <p className="text-xs text-gray-600 text-center mt-2">
-                  {language === 'he' 
-                    ? 'המיילים היומיים נשלחים אוטומטית למייל שלך'
-                    : 'Daily emails are sent automatically to your email'}
-                </p>
+        <nav className="flex flex-col gap-1 flex-1">
+          {NAV_ITEMS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full text-right ${
+                activeTab === key
+                  ? 'text-[#FF8F00] bg-orange-50 font-bold border-r-4 border-[#FF8F00]'
+                  : 'text-slate-500 hover:bg-slate-100'
+              }`}
+            >
+              <Icon className="w-5 h-5 flex-shrink-0" />
+              <span>{label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <div className="px-2 space-y-2">
+          <Link to={createPageUrl('Questionnaire')} className="block">
+            <button className="w-full text-white py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-transform text-sm" style={{ backgroundColor: '#FF8F00' }}>
+              התחל מיפוי חדש
+            </button>
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors text-sm"
+          >
+            <LogOut className="w-4 h-4" />
+            התנתק
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="lg:mr-64 pt-8 pb-24 px-4 md:px-12 max-w-7xl mx-auto w-full">
+
+        {/* Header */}
+        <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <div>
+            {latestCompleted && (
+              <div className="flex items-center gap-2 text-[#FF8F00] mb-2">
+                <CheckCircle className="w-4 h-4" />
+                <span className="text-sm font-bold tracking-widest uppercase">המיפוי הושלם</span>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            )}
+            <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-3 leading-tight">
+              האזור האישי שלי
+            </h1>
+            <p className="text-lg text-slate-500 font-light">
+              שלום, {user?.full_name || user?.email}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            {latestCompleted && (
+              <Link to={createPageUrl(`Completion?responseId=${latestCompleted.id}`)}>
+                <button className="flex items-center gap-2 bg-white text-slate-800 px-5 py-3 rounded-xl shadow-sm hover:shadow-md transition-all font-semibold text-sm border border-slate-200">
+                  <Upload className="w-4 h-4" />
+                  אפשרויות רכישה
+                </button>
+              </Link>
+            )}
+            {boosterSubscription && (
+              <button className="flex items-center gap-2 text-white px-6 py-3 rounded-xl shadow-xl hover:scale-105 transition-all font-bold text-sm" style={{ backgroundColor: '#FF8F00' }}>
+                <Zap className="w-4 h-4" />
+                Booster פעיל
+              </button>
+            )}
+          </div>
+        </header>
 
-        {/* פעולות מהירות */}
-        <Card className="shadow-lg mb-6">
-          <CardHeader>
-            <CardTitle>
-              {language === 'he' ? 'פעולות מהירות' : 'Quick Actions'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
-              <Link to={createPageUrl('Questionnaire')}>
-                <Button className="w-full" variant="outline">
-                  <FileText className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
-                  {language === 'he' ? 'מלא שאלון חדש' : 'New Questionnaire'}
-                </Button>
-              </Link>
-              <Link to={createPageUrl('Survey')}>
-                <Button className="w-full" variant="outline">
-                  <Gift className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
-                  {language === 'he' ? 'מלא סקר לקופון' : 'Fill Survey for Coupon'}
-                </Button>
-              </Link>
-              <Link to={createPageUrl('Home')}>
-                <Button className="w-full" variant="outline">
-                  {language === 'he' ? 'חזור לדף הבית' : 'Back to Home'}
-                </Button>
-              </Link>
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && (
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+
+            {/* Stats Overview */}
+            <div className="md:col-span-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { label: 'שאלונים', value: questionnaireResponses.length, icon: FileText, color: 'blue' },
+                { label: 'דוחות', value: reports.length, icon: Award, color: 'green' },
+                { label: 'קופונים פעילים', value: coupons.filter(c => !c.used).length, icon: Gift, color: 'purple' },
+                { label: 'רכישות', value: paymentOrders.filter(o => o.status === 'paid').length, icon: ShoppingCart, color: 'orange' },
+              ].map(({ label, value, icon: Icon, color }) => (
+                <div key={label} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${
+                    color === 'blue' ? 'bg-blue-50 text-blue-600' :
+                    color === 'green' ? 'bg-green-50 text-green-600' :
+                    color === 'purple' ? 'bg-purple-50 text-purple-600' :
+                    'bg-orange-50 text-[#FF8F00]'
+                  }`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div className="text-3xl font-black text-slate-900 mb-1">{value}</div>
+                  <div className="text-sm text-slate-500">{label}</div>
+                </div>
+              ))}
             </div>
-          </CardContent>
-        </Card>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* שאלונים */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blue-600" />
-                {language === 'he' ? 'השאלונים שלי' : 'My Questionnaires'}
-              </CardTitle>
-              <CardDescription>
-                {language === 'he' 
-                  ? `${questionnaireResponses.length} שאלונים` 
-                  : `${questionnaireResponses.length} questionnaires`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {questionnaireResponses.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">
-                    {language === 'he' ? 'לא מצאנו שאלונים' : 'No questionnaires found'}
-                  </p>
-                  <Link to={createPageUrl('Questionnaire')}>
-                    <Button>
-                      {language === 'he' ? 'התחל שאלון חדש' : 'Start New Questionnaire'}
-                    </Button>
-                  </Link>
+            {/* Domain Scores from latest report */}
+            {latestReport?.domain_scores && (
+              <section className="md:col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-2xl font-bold text-slate-900">מפת עוצמות</h2>
+                  <span className="bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full font-bold">דאטה מעודכן</span>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  {questionnaireResponses.map((response) => (
-                    <div
-                      key={response.id}
-                      className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(response.status)}
-                          <span className="font-medium">{getStatusText(response.status)}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-500">
-                            {new Date(response.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
-                          </span>
-                          <button
-                            onClick={() => handleDeleteQuestionnaire(response.id)}
-                            className="p-1 hover:bg-red-100 rounded transition-colors text-red-600"
-                            title={language === 'he' ? 'מחק שאלון' : 'Delete questionnaire'}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-3">
-                        {response.personal_info?.full_name || user?.full_name}
-                      </p>
-                      {(response.status === 'in_progress' || response.status === 'abandoned') && (
-                        <Link to={createPageUrl('Questionnaire')}>
-                          <Button size="sm" variant="outline" className="w-full">
-                            {language === 'he' ? 'המשך למלא' : 'Continue'}
-                          </Button>
-                        </Link>
-                      )}
-                      {response.status === 'completed' && (
-                        <Link to={createPageUrl(`Completion?responseId=${response.id}`)}>
-                          <Button size="sm" variant="outline" className="w-full">
-                            {language === 'he' ? 'צפה באפשרויות רכישה' : 'View Purchase Options'}
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* דוחות */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-green-600" />
-                  {language === 'he' ? 'הדוחות שלי' : 'My Reports'}
-                </CardTitle>
-                <CardDescription>
-                  {language === 'he' 
-                    ? `${reports.length} דוחות` 
-                    : `${reports.length} reports`}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {/* Debug Info */}
-                <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mb-4">
-                  <p className="text-sm"><strong>מייל מחובר:</strong> {user?.email}</p>
-                  <p className="text-sm"><strong>סה"כ דוחות שנמצאו:</strong> {reports.length}</p>
-                  {reports.length > 0 && (
-                    <div className="mt-2">
-                      <p className="text-sm font-semibold">פרטי דוחות:</p>
-                      {reports.map((r, idx) => (
-                        <p key={idx} className="text-xs">
-                          {idx + 1}. {r.report_id} - מייל: {r.user_email} - נרכש: {r.purchased ? 'כן' : 'לא'}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              {reports.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    {language === 'he' ? 'לא מצאנו דוחות' : 'No reports found'}
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {reports.map((report) => {
-                    const hasPurchased = (report.purchased !== false) || user?.has_purchased_full_report || user?.has_purchased_answers_download;
-                    
+                <div className="space-y-4">
+                  {Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
+                    const pct = typeof score === 'number' ? Math.min(100, Math.round(score * 100 / 7)) : score;
+                    const isHigh = pct >= 75;
                     return (
-                      <div
-                        key={report.id}
-                        className={`p-4 border rounded-lg transition-colors ${hasPurchased ? 'hover:bg-gray-50' : 'bg-orange-50 border-orange-200'}`}
-                      >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{report.report_id}</span>
-                          {!hasPurchased && (
-                            <Lock className="w-4 h-4 text-orange-600" />
-                          )}
+                      <div key={domain} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+                        <span className="text-slate-800 font-medium text-sm">{domain}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-bold text-slate-400">{pct}%</span>
+                          <div className="w-28 h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${isHigh ? 'bg-green-500' : pct >= 50 ? 'bg-blue-500' : 'bg-red-400'}`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
                         </div>
-                        <span className="text-sm text-gray-500">
-                          {new Date(report.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
-                        </span>
                       </div>
-                      {!hasPurchased ? (
-                        <Link to={createPageUrl(`Completion?responseId=${report.questionnaire_response_id}`)}>
-                          <Button size="sm" className="w-full mt-2 bg-orange-600 hover:bg-orange-700">
-                            <ShoppingCart className={`w-4 h-4 ${language === 'he' ? 'ml-2' : 'mr-2'}`} />
-                            {language === 'he' ? 'רכוש דוח' : 'Purchase Report'}
-                          </Button>
-                        </Link>
-                      ) : (
-                        <Link to={createPageUrl(`ReportView?reportid=${report.id}`)}>
-                          <Button size="sm" className="w-full mt-2">
-                            {language === 'he' ? 'צפה בדוח' : 'View Report'}
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
                     );
                   })}
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </section>
+            )}
 
-          {/* קופונים */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Gift className="w-5 h-5 text-purple-600" />
-                {language === 'he' ? 'הקופונים שלי' : 'My Coupons'}
-              </CardTitle>
-              <CardDescription>
-                {language === 'he' 
-                  ? `${coupons.filter(c => !c.used).length} קופונים פעילים` 
-                  : `${coupons.filter(c => !c.used).length} active coupons`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {coupons.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">
-                    {language === 'he' ? 'אין לך קופונים' : 'No coupons found'}
-                  </p>
-                  <Link to={createPageUrl('Survey')}>
-                    <Button variant="outline">
-                      {language === 'he' ? 'מלא סקר וקבל קופון' : 'Fill Survey for Coupon'}
-                    </Button>
+            {/* Booster Subscription */}
+            {boosterSubscription && (
+              <section className="md:col-span-4 bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#FF8F00' }}>
+                    <Rocket className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900">מסלול Booster</h3>
+                    <p className="text-xs text-slate-500">פעיל</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-slate-500">מסלול</span>
+                    <Badge className="bg-orange-100 text-[#FF8F00] border-0 font-bold">
+                      {boosterSubscription.recommended_booster_track}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-slate-500">יום נוכחי</span>
+                    <span className="font-black text-2xl text-slate-900">{boosterSubscription.current_day} <span className="text-sm text-slate-400 font-normal">/ 30</span></span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-3">
+                    <div
+                      className="h-3 rounded-full transition-all"
+                      style={{ width: `${(boosterSubscription.current_day / 30) * 100}%`, backgroundColor: '#FF8F00' }}
+                    />
+                  </div>
+                  <p className="text-xs text-slate-400 text-center">המיילים היומיים נשלחים אוטומטית</p>
+                </div>
+              </section>
+            )}
+
+            {/* Quick Actions */}
+            <section className="md:col-span-12 bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+              <h2 className="text-xl font-bold text-slate-900 mb-6">פעולות מהירות</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Link to={createPageUrl('Questionnaire')}>
+                  <div className="p-6 rounded-2xl border border-slate-200 hover:border-[#FF8F00] hover:bg-orange-50 transition-all cursor-pointer group">
+                    <FileText className="w-8 h-8 text-[#FF8F00] mb-3" />
+                    <h3 className="font-bold text-slate-900 mb-1">מיפוי חדש</h3>
+                    <p className="text-sm text-slate-500">התחל שאלון חדש וקבל דוח מעודכן</p>
+                  </div>
+                </Link>
+                <Link to={createPageUrl('Survey')}>
+                  <div className="p-6 rounded-2xl border border-slate-200 hover:border-purple-400 hover:bg-purple-50 transition-all cursor-pointer group">
+                    <Gift className="w-8 h-8 text-purple-500 mb-3" />
+                    <h3 className="font-bold text-slate-900 mb-1">קבל קופון</h3>
+                    <p className="text-sm text-slate-500">מלא סקר קצר וקבל הנחה</p>
+                  </div>
+                </Link>
+                {latestReport && (
+                  <Link to={createPageUrl(`ReportView?reportid=${latestReport.id}`)}>
+                    <div className="p-6 rounded-2xl border border-slate-200 hover:border-green-400 hover:bg-green-50 transition-all cursor-pointer group">
+                      <Award className="w-8 h-8 text-green-500 mb-3" />
+                      <h3 className="font-bold text-slate-900 mb-1">הדוח שלי</h3>
+                      <p className="text-sm text-slate-500">צפה בדוח המקצועי המלא</p>
+                    </div>
                   </Link>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {coupons.map((coupon) => (
-                    <div
-                      key={coupon.id}
-                      className={`p-4 border rounded-lg ${coupon.used ? 'bg-gray-50 opacity-60' : 'bg-green-50 border-green-200'}`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-mono font-bold text-lg">{coupon.code}</span>
-                        {coupon.used ? (
-                          <span className="text-sm text-gray-500">
-                            {language === 'he' ? 'נוצל' : 'Used'}
-                          </span>
-                        ) : (
-                          <span className="text-sm text-green-600 font-semibold">
-                            {language === 'he' ? 'פעיל' : 'Active'}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        {language === 'he' ? 'הנחה:' : 'Discount:'} {coupon.discount_amount}₪
-                      </p>
-                      {coupon.valid_until && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          {language === 'he' ? 'תוקף עד:' : 'Valid until:'} {new Date(coupon.valid_until).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                )}
+              </div>
+            </section>
+          </div>
+        )}
 
-          {/* סקרים */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5 text-orange-600" />
-                {language === 'he' ? 'הסקרים שלי' : 'My Surveys'}
-              </CardTitle>
-              <CardDescription>
-                {language === 'he' 
-                  ? `${surveyResponses.length} סקרים` 
-                  : `${surveyResponses.length} surveys`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {surveyResponses.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    {language === 'he' ? 'לא מצאנו סקרים' : 'No surveys found'}
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {surveyResponses.map((survey) => (
-                    <div
-                      key={survey.id}
-                      className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium">
-                          {language === 'he' ? 'סקר נטישה' : 'Abandonment Survey'}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {new Date(survey.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
-                        </span>
+        {/* Questionnaires Tab */}
+        {activeTab === 'questionnaires' && (
+          <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">השאלונים שלי <span className="text-slate-400 font-normal text-lg">({questionnaireResponses.length})</span></h2>
+            {questionnaireResponses.length === 0 ? (
+              <div className="text-center py-16">
+                <FileText className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                <p className="text-slate-500 mb-6">לא מצאנו שאלונים</p>
+                <Link to={createPageUrl('Questionnaire')}>
+                  <button className="text-white px-8 py-3 rounded-xl font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל שאלון</button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {questionnaireResponses.map((response) => (
+                  <div key={response.id} className="p-5 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        {getStatusIcon(response.status)}
+                        <span className="font-semibold text-slate-900">{getStatusText(response.status)}</span>
+                        <span className="text-sm text-slate-400">—</span>
+                        <span className="text-sm text-slate-500">{response.personal_info?.full_name || user?.full_name}</span>
                       </div>
-                      {survey.coupon_code && (
-                        <p className="text-sm text-gray-600">
-                          {language === 'he' ? 'קוד קופון:' : 'Coupon code:'} <span className="font-mono font-semibold">{survey.coupon_code}</span>
-                        </p>
-                      )}
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-slate-400">{new Date(response.created_date).toLocaleDateString('he-IL')}</span>
+                        <button onClick={() => handleDeleteQuestionnaire(response.id)} className="p-1.5 hover:bg-red-100 rounded-lg text-red-500 transition-colors">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    {(response.status === 'in_progress' || response.status === 'abandoned') && (
+                      <Link to={createPageUrl('Questionnaire')}>
+                        <button className="w-full py-2 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-colors">המשך למלא</button>
+                      </Link>
+                    )}
+                    {response.status === 'completed' && (
+                      <Link to={createPageUrl(`Completion?responseId=${response.id}`)}>
+                        <button className="w-full py-2 rounded-xl text-sm font-bold text-white transition-colors" style={{ backgroundColor: '#FF8F00' }}>צפה באפשרויות רכישה</button>
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
 
-          {/* הזמנות תשלום */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5 text-blue-600" />
-                {language === 'he' ? 'הרכישות שלי' : 'My Purchases'}
-              </CardTitle>
-              <CardDescription>
-                {language === 'he' 
-                  ? `${paymentOrders.length} הזמנות` 
-                  : `${paymentOrders.length} orders`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {paymentOrders.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    {language === 'he' ? 'לא מצאנו הזמנות' : 'No orders found'}
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {paymentOrders.map((order) => (
-                    <div
-                      key={order.id}
-                      className={`p-4 border rounded-lg transition-colors ${
-                        order.status === 'paid' ? 'bg-green-50 border-green-200' : 
-                        order.status === 'failed' ? 'bg-red-50 border-red-200' : 
-                        'bg-yellow-50 border-yellow-200'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
+        {/* Reports Tab */}
+        {activeTab === 'reports' && (
+          <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">הדוחות שלי <span className="text-slate-400 font-normal text-lg">({reports.length})</span></h2>
+            {/* Debug */}
+            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-6 text-sm">
+              <p><strong>מייל מחובר:</strong> {user?.email}</p>
+              <p><strong>סה"כ דוחות:</strong> {reports.length}</p>
+              {reports.map((r, i) => (
+                <p key={i} className="text-xs mt-1">{i + 1}. {r.report_id} | {r.user_email} | נרכש: {r.purchased ? 'כן' : 'לא'}</p>
+              ))}
+            </div>
+            {reports.length === 0 ? (
+              <div className="text-center py-16">
+                <Award className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                <p className="text-slate-500">לא מצאנו דוחות</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {reports.map((report) => {
+                  const hasPurchased = report.purchased !== false || user?.has_purchased_full_report || user?.has_purchased_answers_download;
+                  return (
+                    <div key={report.id} className={`p-5 border rounded-2xl transition-colors ${hasPurchased ? 'border-slate-100 hover:bg-slate-50' : 'bg-orange-50 border-orange-200'}`}>
+                      <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          {order.status === 'paid' && <CheckCircle className="w-5 h-5 text-green-600" />}
-                          {order.status === 'pending' && <Clock className="w-5 h-5 text-yellow-600" />}
-                          {order.status === 'failed' && <AlertCircle className="w-5 h-5 text-red-600" />}
-                          <span className="font-medium">
-                            {order.product_type === 'full_report' && (language === 'he' ? 'דו"ח מלא' : 'Full Report')}
-                            {order.product_type === 'answers_download' && (language === 'he' ? 'הורדת תשובות' : 'Answers Download')}
-                            {order.product_type === 'online_coaching_7days' && (language === 'he' ? 'ליווי 7 ימים' : '7-day Coaching')}
-                          </span>
+                          <span className="font-semibold text-slate-900">{report.report_id}</span>
+                          {!hasPurchased && <Lock className="w-4 h-4 text-orange-600" />}
                         </div>
-                        <Badge className={
-                          order.status === 'paid' ? 'bg-green-600' : 
-                          order.status === 'failed' ? 'bg-red-600' : 
-                          'bg-yellow-600'
-                        }>
-                          {order.status === 'paid' && (language === 'he' ? 'שולם' : 'Paid')}
-                          {order.status === 'pending' && (language === 'he' ? 'ממתין' : 'Pending')}
-                          {order.status === 'failed' && (language === 'he' ? 'נכשל' : 'Failed')}
-                        </Badge>
+                        <span className="text-sm text-slate-400">{new Date(report.created_date).toLocaleDateString('he-IL')}</span>
                       </div>
-                      <div className="text-sm text-gray-600 space-y-1">
-                        <p>{language === 'he' ? 'סכום:' : 'Amount:'} {order.amount}₪</p>
-                        {order.is_express && <p>{language === 'he' ? '⚡ אספקה מואצת' : '⚡ Express Delivery'}</p>}
-                        {order.coupon_code && <p>{language === 'he' ? 'קופון:' : 'Coupon:'} {order.coupon_code}</p>}
-                        {order.tranzila_reference && <p>{language === 'he' ? 'מזהה עסקה:' : 'Transaction ID:'} {order.tranzila_reference}</p>}
-                        <p className="text-xs text-gray-500">
-                          {new Date(order.created_date).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </p>
-                      </div>
+                      {!hasPurchased ? (
+                        <Link to={createPageUrl(`Completion?responseId=${report.questionnaire_response_id}`)}>
+                          <button className="w-full py-2 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: '#FF8F00' }}>רכוש דוח</button>
+                        </Link>
+                      ) : (
+                        <Link to={createPageUrl(`ReportView?reportid=${report.id}`)}>
+                          <button className="w-full py-2 rounded-xl text-sm font-bold text-white bg-slate-800">צפה בדוח</button>
+                        </Link>
+                      )}
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Coupons Tab */}
+        {activeTab === 'coupons' && (
+          <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">הקופונים שלי <span className="text-slate-400 font-normal text-lg">({coupons.filter(c => !c.used).length} פעילים)</span></h2>
+            {coupons.length === 0 ? (
+              <div className="text-center py-16">
+                <Gift className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                <p className="text-slate-500 mb-6">אין לך קופונים</p>
+                <Link to={createPageUrl('Survey')}>
+                  <button className="border border-slate-200 px-8 py-3 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors">מלא סקר וקבל קופון</button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {coupons.map((coupon) => (
+                  <div key={coupon.id} className={`p-5 border rounded-2xl ${coupon.used ? 'border-slate-100 opacity-60' : 'bg-green-50 border-green-200'}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-mono font-black text-xl text-slate-900">{coupon.code}</span>
+                      <Badge className={coupon.used ? 'bg-slate-200 text-slate-500' : 'bg-green-100 text-green-700 border-0 font-bold'}>
+                        {coupon.used ? 'נוצל' : 'פעיל'}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-slate-600">הנחה: <strong>{coupon.discount_amount}₪</strong></p>
+                    {coupon.valid_until && (
+                      <p className="text-xs text-slate-400 mt-1">תוקף עד: {new Date(coupon.valid_until).toLocaleDateString('he-IL')}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Orders Tab */}
+        {activeTab === 'orders' && (
+          <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">הרכישות שלי <span className="text-slate-400 font-normal text-lg">({paymentOrders.length})</span></h2>
+            {paymentOrders.length === 0 ? (
+              <div className="text-center py-16">
+                <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                <p className="text-slate-500">לא מצאנו הזמנות</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {paymentOrders.map((order) => (
+                  <div key={order.id} className={`p-5 border rounded-2xl ${
+                    order.status === 'paid' ? 'bg-green-50 border-green-200' :
+                    order.status === 'failed' ? 'bg-red-50 border-red-200' :
+                    'bg-yellow-50 border-yellow-200'
+                  }`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        {order.status === 'paid' && <CheckCircle className="w-5 h-5 text-green-600" />}
+                        {order.status === 'pending' && <Clock className="w-5 h-5 text-yellow-600" />}
+                        {order.status === 'failed' && <AlertCircle className="w-5 h-5 text-red-600" />}
+                        <span className="font-semibold text-slate-900">
+                          {order.product_type === 'full_report' && 'דו"ח מלא'}
+                          {order.product_type === 'answers_download' && 'הורדת תשובות'}
+                          {order.product_type === 'online_coaching_7days' && 'ליווי 7 ימים'}
+                        </span>
+                      </div>
+                      <Badge className={
+                        order.status === 'paid' ? 'bg-green-600 text-white border-0' :
+                        order.status === 'failed' ? 'bg-red-600 text-white border-0' :
+                        'bg-yellow-500 text-white border-0'
+                      }>
+                        {order.status === 'paid' ? 'שולם' : order.status === 'pending' ? 'ממתין' : 'נכשל'}
+                      </Badge>
+                    </div>
+                    <div className="text-sm text-slate-600 space-y-1">
+                      <p>סכום: <strong>{order.amount}₪</strong></p>
+                      {order.is_express && <p>⚡ אספקה מואצת</p>}
+                      {order.coupon_code && <p>קופון: {order.coupon_code}</p>}
+                      {order.tranzila_reference && <p className="text-xs text-slate-400">מזהה עסקה: {order.tranzila_reference}</p>}
+                      <p className="text-xs text-slate-400">{new Date(order.created_date).toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+      </main>
     </div>
   );
 }
