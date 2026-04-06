@@ -242,79 +242,73 @@ export default function MyAccount() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
 
               {/* Strengths Map Card */}
-              <section className="md:col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-slate-100 overflow-hidden">
+              <section className="md:col-span-8 bg-white rounded-3xl p-8 shadow-[0_20px_40px_rgba(15,23,42,0.06)] overflow-hidden relative border border-slate-100">
                 <div className="flex justify-between items-center mb-8">
-                  <h2 className="text-2xl font-bold text-slate-900">מפת עוצמות (Strengths Map)</h2>
-                  <span className="bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full font-bold">דאטה מעודכן</span>
-                </div>
-                {latestReport?.domain_scores ? (() => {
-                  const domainEntries = Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
-                    const rawScore = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
-                    const pct = typeof rawScore === 'number' ? Math.min(100, Math.round(rawScore <= 7 ? rawScore * 100 / 7 : rawScore)) : 0;
-                    const isLow = pct < 60;
-                    const isYellow = !isLow && pct < 75;
-                    const color = isLow ? '#f59e0b' : isYellow ? '#3b82f6' : '#22c55e';
-                    return { domain, pct, isLow, color };
-                  });
-                  const pieData = domainEntries.map(d => ({ value: d.pct, color: d.color }));
-                  // Build SVG pie chart
-                  const total = pieData.reduce((s, d) => s + d.value, 0) || 1;
-                  let cumAngle = -Math.PI / 2;
-                  const slices = pieData.map((d) => {
-                    const angle = (d.value / total) * 2 * Math.PI;
-                    const x1 = 50 + 46 * Math.cos(cumAngle);
-                    const y1 = 50 + 46 * Math.sin(cumAngle);
-                    cumAngle += angle;
-                    const x2 = 50 + 46 * Math.cos(cumAngle);
-                    const y2 = 50 + 46 * Math.sin(cumAngle);
-                    const largeArc = angle > Math.PI ? 1 : 0;
-                    return { x1, y1, x2, y2, largeArc, color: d.color };
-                  });
-                  return (
-                    <div className="flex flex-col md:flex-row gap-8 items-center">
-                      {/* Left: bars list */}
-                      <div className="flex-1 space-y-5 w-full">
-                        {domainEntries.map(({ domain, pct, isLow, color }) => (
-                          <div key={domain} className="flex items-center gap-3" dir="rtl">
-                            {/* Bar */}
-                            <div className="w-24 h-2.5 bg-slate-100 rounded-full overflow-hidden shrink-0">
-                              <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color }} />
-                            </div>
-                            {/* Percent */}
-                            <span className={`text-sm font-bold shrink-0 ${isLow ? 'text-amber-500' : 'text-slate-600'}`}>
-                              {pct}%{isLow ? ' ▲' : ''}
-                            </span>
-                            {/* Name */}
-                            <span className="text-sm text-slate-700 font-medium leading-tight">{domain}</span>
-                          </div>
-                        ))}
-                      </div>
-                      {/* Right: pie chart SVG */}
-                      <div className="shrink-0 w-48 h-48">
-                        <svg viewBox="0 0 100 100" className="w-full h-full">
-                          <circle cx="50" cy="50" r="48" fill="#f1f5f9" />
-                          {slices.map((s, i) => (
-                            <path
-                              key={i}
-                              d={`M 50 50 L ${s.x1.toFixed(2)} ${s.y1.toFixed(2)} A 46 46 0 ${s.largeArc} 1 ${s.x2.toFixed(2)} ${s.y2.toFixed(2)} Z`}
-                              fill={s.color}
-                              stroke="white"
-                              strokeWidth="1.5"
-                            />
-                          ))}
-                          <circle cx="50" cy="50" r="18" fill="white" />
-                        </svg>
-                      </div>
-                    </div>
-                  );
-                })() : (
-                  <div className="text-center py-8 text-slate-400">
-                    <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות את מפת העוצמות</p>
-                    <Link to={createPageUrl('Questionnaire')}>
-                      <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
-                    </Link>
+                  <h2 className="text-2xl font-bold text-slate-900">מפת עוצמות</h2>
+                  <div className="flex gap-2">
+                    <span className="bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full font-bold">דאטה מעודכן</span>
                   </div>
-                )}
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                  {/* SVG Radar / Pie */}
+                  <div className="flex justify-center">
+                    <div className="relative w-full max-w-[400px] aspect-square">
+                      <svg className="w-full h-full -rotate-[18deg]" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" fill="none" r="10" stroke="#e2e8f0" strokeDasharray="2 2" />
+                        <circle cx="50" cy="50" fill="none" r="20" stroke="#e2e8f0" strokeDasharray="2 2" />
+                        <circle cx="50" cy="50" fill="none" r="30" stroke="#e2e8f0" strokeDasharray="2 2" />
+                        <circle cx="50" cy="50" fill="none" r="40" stroke="#e2e8f0" strokeDasharray="2 2" />
+                        <circle cx="50" cy="50" fill="none" r="50" stroke="#e2e8f0" strokeWidth="0.5" />
+
+                        <path d="M 50 50 L 50 10 A 40 40 0 0 1 85 27 Z" fill="#22c55e" opacity="0.6" stroke="#16a34a" strokeWidth="1" />
+                        <path d="M 50 50 L 85 27 A 40 40 0 0 1 89 65 Z" fill="#22c55e" opacity="0.6" stroke="#16a34a" strokeWidth="1" />
+                        <path d="M 50 50 L 89 65 A 40 40 0 0 1 60 88 Z" fill="#3b82f6" opacity="0.6" stroke="#2563eb" strokeWidth="1" />
+                        <path d="M 50 50 L 60 88 A 40 40 0 0 1 25 80 Z" fill="#ef4444" opacity="0.6" stroke="#dc2626" strokeWidth="1" />
+                        <path d="M 50 50 L 25 80 A 40 40 0 0 1 12 35 Z" fill="#3b82f6" opacity="0.6" stroke="#2563eb" strokeWidth="1" />
+
+                        <line x1="50" x2="50" y1="50" y2="0" stroke="#e2e8f0" opacity="0.5" />
+                        <line x1="50" x2="100" y1="50" y2="50" stroke="#e2e8f0" opacity="0.5" />
+                        <line x1="50" x2="50" y1="50" y2="100" stroke="#e2e8f0" opacity="0.5" />
+                        <line x1="50" x2="0" y1="50" y2="50" stroke="#e2e8f0" opacity="0.5" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Metrics list */}
+                  <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2" dir="rtl">
+                    {latestReport?.domain_scores ? (() => {
+                      const entries = Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
+                        const raw = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
+                        const pct = typeof raw === 'number' ? Math.min(100, parseFloat((raw <= 7 ? raw * 100 / 7 : raw).toFixed(1))) : 0;
+                        const isLow = pct < 60;
+                        const barColor = isLow ? '#eab308' : pct >= 75 ? '#22c55e' : '#3b82f6';
+                        return { domain, pct, isLow, barColor };
+                      });
+                      return entries.map(({ domain, pct, isLow, barColor }) => (
+                        <div key={domain} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+                          <span className={`font-medium text-sm flex items-center gap-1 ${isLow ? 'text-red-600' : 'text-slate-800'}`}>
+                            {isLow && <span className="text-amber-500 text-xs">▲</span>}
+                            {domain}
+                          </span>
+                          <div className="flex items-center gap-3">
+                            <span className={`text-sm font-bold ${isLow ? 'text-red-600' : 'text-slate-400'}`}>{pct}%</span>
+                            <div className={`w-24 h-2 rounded-full overflow-hidden ${isLow ? 'bg-red-100' : 'bg-slate-100'}`}>
+                              <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: barColor }} />
+                            </div>
+                          </div>
+                        </div>
+                      ));
+                    })() : (
+                      <div className="text-center py-8 text-slate-400">
+                        <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות את מפת העוצמות</p>
+                        <Link to={createPageUrl('Questionnaire')}>
+                          <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </section>
 
               {/* Right Column */}
