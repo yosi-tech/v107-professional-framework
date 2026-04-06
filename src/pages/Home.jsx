@@ -57,7 +57,7 @@ export default function Home() {
               <img
                 className="w-full h-full object-cover"
                 alt="Professional man and woman thinking about various career paths"
-                src="https://lh3.googleusercontent.com/aida/ADBb0ugClXlEQoSMv0X3RtIEKf8uHxtdiZo_brGKINsKop2mXLKhvxLfk7I5fCv3uOEVCFZI32_xcYHPWeVtQaK_7UGfz6gjlda5SemyBZXNTIAce7Jaq0qCMLz9KEEJKDQAHsuOrI-V7bnNcni_AS8BnktHKRwoprqyEo7gOtk6hyJ_FQkeI2WaTM2kbRwfyLivnkquUg-hxWFQYJIpH06SgskFAE_PLH_ufXVVPX6zcJH1T4nALfWrrboF-eXvt2roJ5utSM05CR-InDQ"
+                src="https://media.base44.com/images/public/68beedf299352a857559c5a4/0d57f75de_Gemini_Generated_Image_kt4uf4kt4uf4kt4u.png"
               />
             </div>
 
