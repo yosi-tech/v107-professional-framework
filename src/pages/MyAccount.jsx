@@ -123,21 +123,23 @@ export default function MyAccount() {
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
 
-      {/* Sidebar */}
-      <aside className="bg-white text-slate-700 font-medium h-screen w-64 fixed right-0 top-0 z-40 hidden lg:flex flex-col py-8 px-4 pt-24 border-l border-slate-100 shadow-sm">
-        <div className="mb-10 px-2">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-full bg-[#FF8F00] flex items-center justify-center text-white flex-shrink-0">
-              <UserIcon className="w-6 h-6" />
+      {/* Desktop Sidebar */}
+      <aside className="bg-white h-screen w-64 fixed right-0 top-0 z-40 hidden lg:flex flex-col pt-24 pb-6 border-l border-slate-100 shadow-sm">
+        {/* User Info */}
+        <div className="px-5 mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-full bg-[#FF8F00] flex items-center justify-center text-white flex-shrink-0 shadow-md">
+              <UserIcon className="w-5 h-5" />
             </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-sm leading-tight">{user?.full_name || 'שלום'}</h3>
-              <p className="text-xs text-slate-500 truncate max-w-[120px]">{user?.email}</p>
+            <div className="overflow-hidden">
+              <h3 className="font-bold text-slate-900 text-sm leading-tight truncate">{user?.full_name || 'שלום'}</h3>
+              <p className="text-xs text-slate-400 truncate">{user?.email}</p>
             </div>
           </div>
         </div>
 
-        <nav className="flex flex-col gap-1 flex-1">
+        {/* Nav */}
+        <nav className="flex flex-col gap-0.5 px-3 flex-1">
           {NAV_ITEMS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -154,15 +156,16 @@ export default function MyAccount() {
           ))}
         </nav>
 
-        <div className="px-2 space-y-2">
+        {/* Bottom Actions */}
+        <div className="px-4 space-y-2 mt-4">
           <Link to={createPageUrl('Questionnaire')} className="block">
-            <button className="w-full text-white py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-transform text-sm" style={{ backgroundColor: '#FF8F00' }}>
+            <button className="w-full text-white py-3 rounded-xl font-bold shadow-md hover:scale-105 transition-transform text-sm" style={{ backgroundColor: '#FF8F00' }}>
               התחל מיפוי חדש
             </button>
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors text-sm"
           >
             <LogOut className="w-4 h-4" />
             התנתק
@@ -170,8 +173,33 @@ export default function MyAccount() {
         </div>
       </aside>
 
+      {/* Mobile Bottom Nav */}
+      <nav className="lg:hidden fixed bottom-0 right-0 left-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+        <div className="flex items-center justify-around py-2">
+          {NAV_ITEMS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-colors ${
+                activeTab === key ? 'text-[#FF8F00]' : 'text-slate-400'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-[10px] font-medium">{label}</span>
+            </button>
+          ))}
+          <button
+            onClick={handleLogout}
+            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-slate-400"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="text-[10px] font-medium">יציאה</span>
+          </button>
+        </div>
+      </nav>
+
       {/* Main Content */}
-      <main className="lg:mr-64 pt-8 pb-24 px-4 md:px-12 max-w-7xl mx-auto w-full">
+      <main className="lg:mr-64 pt-8 pb-28 lg:pb-24 px-4 md:px-12 max-w-7xl mx-auto w-full">
 
         {/* Header */}
         <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
