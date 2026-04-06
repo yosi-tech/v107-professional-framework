@@ -388,318 +388,289 @@ function AppLayout({ children }) {
         }
       `}</style>
       
-      <header className="bg-surface/80 backdrop-blur-lg border-b border-slate-200/80 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+      <header className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl transition-all duration-300">
+        <div className="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+          {/* Logo */}
+          <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <span className="text-2xl font-black tracking-tighter text-slate-900 flex items-center">
+              107<span className="text-[#FF8F00]">V</span>
+            </span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex gap-8 items-center">
             <Link
               to={createPageUrl("Home")}
-              className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-              <div className="flex flex-col items-start">
-                <h1 className="text-2xl font-black text-slate-900">
-                  V107
-                </h1>
-                <p className="text-xs font-semibold text-[#b8a46e] tracking-wider">
-                  PROFESSIONAL FRAMEWORK
-                </p>
-              </div>
+              className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("Home") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+            >
+              {t('layout.nav_home')}
+            </Link>
+            <Link
+              to={createPageUrl("Articles")}
+              className={`font-bold tracking-tight transition-colors ${location.pathname.startsWith(createPageUrl("Articles")) || location.pathname.startsWith(createPageUrl("ArticleDetails")) ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+            >
+              {t('layout.nav_articles')}
+            </Link>
+            <Link
+              to={createPageUrl("About")}
+              className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("About") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+            >
+              {language === 'he' ? 'אודות' : 'About'}
             </Link>
 
-            {/* Desktop Navigation - completely hidden on mobile */}
-            <div className="hidden lg:flex items-center gap-4 sm:gap-6">
-              <Link to={createPageUrl("Home")} className={`text-xl font-semibold transition-colors ${location.pathname === createPageUrl("Home") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+            {!isLoadingUser && user && (
+              <Link
+                to={createPageUrl("MyAccount")}
+                className={`font-bold tracking-tight transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("MyAccount") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+              >
+                <UserIcon className="w-4 h-4" />
+                {language === 'he' ? 'האזור שלי' : 'My Account'}
+              </Link>
+            )}
+
+            {!isLoadingUser && isAdmin && (
+              <Link
+                to={createPageUrl("AdminReports")}
+                className={`font-bold tracking-tight transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+              >
+                <Shield className="w-4 h-4" />
+                {language === 'he' ? 'אדמין' : 'Admin'}
+              </Link>
+            )}
+          </nav>
+
+          {/* Desktop CTA Buttons */}
+          <div className="hidden lg:flex gap-4 items-center">
+            <Link to={createPageUrl("Questionnaire")}>
+              <button className="bg-[#FF8F00] text-white px-6 py-2.5 rounded-full font-bold hover:scale-105 active:scale-95 transition-all duration-200">
+                {hasAbandonedQuestionnaire
+                  ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
+                  : t('layout.start_questionnaire_btn')
+                }
+              </button>
+            </Link>
+
+            {!isLoadingUser && !user && (
+              <button
+                onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                className="text-slate-600 font-semibold hover:bg-slate-50 px-4 py-2 rounded-full transition-all"
+              >
+                {language === 'he' ? 'התחבר' : 'Login'}
+              </button>
+            )}
+
+            {!isLoadingUser && user && (
+              <button
+                onClick={() => base44.auth.logout(createPageUrl('Home'))}
+                className="text-slate-600 font-semibold hover:bg-slate-50 px-4 py-2 rounded-full transition-all"
+              >
+                {language === 'he' ? 'התנתק' : 'Logout'}
+              </button>
+            )}
+          </div>
+
+          {/* Mobile Quick Actions */}
+          <div className="lg:hidden flex items-center gap-2">
+            {!isLoadingUser && user && hasAbandonedQuestionnaire && (
+              <Link to={createPageUrl("Questionnaire")}>
+                <button className="bg-[#FF8F00] text-white text-xs px-3 py-1.5 rounded-full font-bold">
+                  {language === 'he' ? 'המשך' : 'Continue'}
+                </button>
+              </Link>
+            )}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6 text-slate-700" />
+              ) : (
+                <Menu className="w-6 h-6 text-slate-700" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="bg-slate-100/50 h-[1px] w-full"></div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 py-4">
+            <nav className="flex flex-col gap-2 px-8">
+              <Link
+                to={createPageUrl("Home")}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("Home") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+              >
                 {t('layout.nav_home')}
               </Link>
-              <Link to={createPageUrl("Articles")} className={`text-xl font-semibold transition-colors ${location.pathname.startsWith(createPageUrl("Articles")) || location.pathname.startsWith(createPageUrl("ArticleDetails")) ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+              <Link
+                to={createPageUrl("Articles")}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname.startsWith(createPageUrl("Articles")) ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+              >
                 {t('layout.nav_articles')}
               </Link>
-              <Link to={createPageUrl("About")} className={`text-xl font-semibold transition-colors ${location.pathname === createPageUrl("About") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
+              <Link
+                to={createPageUrl("About")}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("About") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+              >
                 {language === 'he' ? 'אודות' : 'About'}
               </Link>
 
               {!isLoadingUser && user && (
-                <Link to={createPageUrl("MyAccount")} className={`text-xl font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("MyAccount") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
-                  <UserIcon className="w-5 h-5" />
+                <Link
+                  to={createPageUrl("MyAccount")}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("MyAccount") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+                >
                   {language === 'he' ? 'האזור שלי' : 'My Account'}
                 </Link>
               )}
 
               {!isLoadingUser && isAdmin && (
-                <Link to={createPageUrl("AdminReports")} className={`text-xl font-semibold transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>
-                  <Shield className="w-5 h-5" />
+                <Link
+                  to={createPageUrl("AdminReports")}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`font-bold tracking-tight flex items-center gap-2 py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("AdminReports") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+                >
+                  <Shield className="w-4 h-4" />
                   {language === 'he' ? 'אדמין' : 'Admin'}
                 </Link>
               )}
 
-              <Link to={createPageUrl("Questionnaire")}>
-                <Button className="gradient-accent text-white rounded-lg text-base px-6 py-3">
-                  {hasAbandonedQuestionnaire 
-                    ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
-                    : t('layout.start_questionnaire_btn')
-                  }
-                </Button>
-              </Link>
-
-              {!isLoadingUser && !user && (
-                <Button variant="outline" size="sm" onClick={() => base44.auth.redirectToLogin(window.location.href)} className="bg-background text-slate-600 px-4 text-base font-medium">
-                  {language === 'he' ? 'התחבר' : 'Login'}
-                </Button>
-              )}
-
-              {!isLoadingUser && user && (
-                <Button variant="outline" size="sm" onClick={() => base44.auth.logout(createPageUrl('Home'))} className="bg-background text-slate-600 px-4 text-base font-medium">
-                  {language === 'he' ? 'התנתק' : 'Logout'}
-                </Button>
-              )}
-            </div>
-
-            {/* Mobile Quick Actions */}
-            <div className="lg:hidden flex items-center gap-2">
-              {!isLoadingUser && user && hasAbandonedQuestionnaire && (
-                <Link to={createPageUrl("Questionnaire")}>
-                  <Button 
-                    size="sm" 
-                    className="gradient-accent text-white text-xs px-2 py-1.5"
-                  >
-                    {language === 'he' ? 'המשך' : 'Continue'}
-                  </Button>
-                </Link>
-              )}
-              
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
-              >
-                {isMobileMenuOpen ? (
-                  <X className="w-6 h-6 text-slate-700" />
-                ) : (
-                  <Menu className="w-6 h-6 text-slate-700" />
-                )}
-              </button>
-            </div>
-          </div>
-          
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="lg:hidden border-t border-slate-200 py-4">
-              <nav className="flex flex-col gap-4">
-                <Link 
-                  to={createPageUrl("Home")} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname === createPageUrl("Home") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                >
-                  {t('layout.nav_home')}
-                </Link>
-                <Link 
-                  to={createPageUrl("Articles")} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname.startsWith(createPageUrl("Articles")) ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                >
-                  {t('layout.nav_articles')}
-                </Link>
-                <Link 
-                  to={createPageUrl("About")} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname === createPageUrl("About") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                >
-                  {language === 'he' ? 'אודות' : 'About'}
-                </Link>
-                
-                {!isLoadingUser && user && (
-                  <Link 
-                    to={createPageUrl("MyAccount")} 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`text-sm font-semibold transition-colors px-4 py-2 rounded-lg ${location.pathname === createPageUrl("MyAccount") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                  >
-                    {language === 'he' ? 'האזור שלי' : 'My Account'}
-                  </Link>
-                )}
-
-                {!isLoadingUser && isAdmin && (
-                  <Link 
-                    to={createPageUrl("AdminReports")} 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`text-sm font-semibold transition-colors flex items-center gap-2 px-4 py-2 rounded-lg ${location.pathname === createPageUrl("AdminReports") ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
-                  >
-                    <Shield className="w-4 h-4" />
-                    {language === 'he' ? 'אדמין' : 'Admin'}
-                  </Link>
-                )}
-
-                <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)} className="px-4">
-                  <Button className="gradient-accent text-white rounded-lg text-sm px-5 py-2.5 w-full">
-                    {hasAbandonedQuestionnaire 
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+                <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)}>
+                  <button className="w-full bg-[#FF8F00] text-white py-2.5 rounded-full font-bold transition-all">
+                    {hasAbandonedQuestionnaire
                       ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
                       : t('layout.start_questionnaire_btn')
                     }
-                  </Button>
+                  </button>
                 </Link>
-                
+
                 {!isLoadingUser && !user && (
-                  <div className="px-4">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => {
-                        base44.auth.redirectToLogin(window.location.href);
-                        setIsMobileMenuOpen(false);
-                      }} 
-                      className="w-full"
-                    >
-                      {language === 'he' ? 'התחבר' : 'Login'}
-                    </Button>
-                  </div>
+                  <button
+                    onClick={() => { base44.auth.redirectToLogin(window.location.href); setIsMobileMenuOpen(false); }}
+                    className="w-full text-slate-600 font-semibold hover:bg-slate-50 py-2 rounded-full transition-all border border-slate-200"
+                  >
+                    {language === 'he' ? 'התחבר' : 'Login'}
+                  </button>
                 )}
-                
+
                 {!isLoadingUser && user && (
-                  <div className="px-4">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => {
-                        base44.auth.logout(createPageUrl('Home'));
-                        setIsMobileMenuOpen(false);
-                      }} 
-                      className="w-full"
-                    >
-                      {language === 'he' ? 'התנתק' : 'Logout'}
-                    </Button>
-                  </div>
+                  <button
+                    onClick={() => { base44.auth.logout(createPageUrl('Home')); setIsMobileMenuOpen(false); }}
+                    className="w-full text-slate-600 font-semibold hover:bg-slate-50 py-2 rounded-full transition-all border border-slate-200"
+                  >
+                    {language === 'he' ? 'התנתק' : 'Logout'}
+                  </button>
                 )}
-              </nav>
-            </div>
-          )}
-        </div>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
 
 
-      <main className="flex-1 relative z-10">
+      <main className="flex-1 relative z-10 pt-[73px]">
         {children}
       </main>
       
-      <footer className="bg-primary text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            {/* Company Info */}
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68beedf299352a857559c5a4/89471dac6_IMG_8646.jpg" 
-                  alt="V107 Logo" 
-                  className="w-10 h-10 rounded-lg shadow-lg object-cover"
-                />
-                <h3 className="text-sm font-bold text-[#b8a46e] tracking-wider">PROFESSIONAL FRAMEWORK</h3>
+      <footer className="bg-slate-50 border-t border-slate-200 w-full py-12">
+        <div className="max-w-7xl mx-auto px-12">
+          {/* Main footer row */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+            {/* Logo */}
+            <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+              <span className="text-xl font-bold tracking-tighter text-slate-900 flex items-center">
+                107<span className="text-[#FF8F00]">V</span>
+              </span>
+            </Link>
+
+            {/* Nav Links */}
+            <nav className="flex flex-wrap gap-6 justify-center">
+              <Link to={createPageUrl("Home")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
+                {t('layout.nav_home')}
+              </Link>
+              <Link to={createPageUrl("About")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
+                {t('layout.nav_about')}
+              </Link>
+              <Link to={createPageUrl("Articles")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
+                {t('layout.nav_articles')}
+              </Link>
+              <Link to={createPageUrl("TermsOfService")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
+                {t('layout.footer_terms')}
+              </Link>
+              <Link to={createPageUrl("PrivacyPolicy")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
+                {language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy'}
+              </Link>
+              <Link to={createPageUrl("AccessibilityStatement")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
+                {language === 'he' ? 'נגישות' : 'Accessibility'}
+              </Link>
+            </nav>
+
+            {/* Copyright */}
+            <div className="text-slate-500 text-sm">
+              © 2026 v107. {language === 'he' ? 'כל הזכויות שמורות.' : 'All rights reserved.'}
+            </div>
+          </div>
+
+          {/* Newsletter + Contact */}
+          <div className="border-t border-slate-200 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+              <div className="flex-1 max-w-sm">
+                <h4 className="text-slate-700 font-semibold mb-3 text-sm">{t('layout.footer_newsletter')}</h4>
+                <p className="text-slate-500 text-xs mb-3">{t('layout.footer_newsletter_desc')}</p>
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  const email = e.target.email.value;
+                  if (!email) return;
+                  try {
+                    await base44.entities.ContactInquiry.create({
+                      name: 'Newsletter Subscriber',
+                      email: email,
+                      message: 'Newsletter subscription request',
+                      source: 'newsletter_footer'
+                    });
+                    alert(t('layout.footer_newsletter_success'));
+                    e.target.reset();
+                  } catch (error) {
+                    console.error('Newsletter subscription error:', error);
+                  }
+                }} className="flex gap-2">
+                  <Input
+                    type="email"
+                    name="email"
+                    placeholder={t('layout.footer_newsletter_placeholder')}
+                    required
+                    className="bg-white border-slate-300 text-slate-700 placeholder:text-slate-400 text-sm"
+                  />
+                  <button type="submit" className="bg-[#FF8F00] text-white px-4 py-2 rounded-full font-bold text-sm whitespace-nowrap hover:scale-105 transition-all">
+                    {t('layout.footer_newsletter_button')}
+                  </button>
+                </form>
               </div>
-            </div>
 
-            {/* Quick Links - Company */}
-            <div>
-              <h4 className="text-white font-semibold mb-4">{t('layout.footer_company')}</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link to={createPageUrl("Home")} className="text-slate-400 hover:text-white transition-colors text-sm">
-                    {t('layout.nav_home')}
-                  </Link>
-                </li>
-                <li>
-                  <Link to={createPageUrl("About")} className="text-slate-400 hover:text-white transition-colors text-sm">
-                    {t('layout.nav_about')}
-                  </Link>
-                </li>
-                <li>
-                  <Link to={createPageUrl("Articles")} className="text-slate-400 hover:text-white transition-colors text-sm">
-                    {t('layout.nav_articles')}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Quick Links - Resources */}
-            <div>
-              <h4 className="text-white font-semibold mb-4">{t('layout.footer_resources')}</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link to={createPageUrl("Questionnaire")} className="text-slate-400 hover:text-white transition-colors text-sm">
-                    {t('layout.nav_questionnaire')}
-                  </Link>
-                </li>
-                <li>
-                  <Link to={createPageUrl("TermsOfService")} className="text-slate-400 hover:text-white transition-colors text-sm">
-                    {t('layout.footer_terms')}
-                  </Link>
-                </li>
-                <li>
-                  <Link to={createPageUrl("PrivacyPolicy")} className="text-slate-400 hover:text-white transition-colors text-sm">
-                    {language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy'}
-                  </Link>
-                </li>
-                <li>
-                  <Link to={createPageUrl("AccessibilityStatement")} className="text-slate-400 hover:text-white transition-colors text-sm">
-                    {language === 'he' ? 'הסדרי נגישות' : 'Accessibility Statement'}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Newsletter */}
-            <div>
-              <h4 className="text-white font-semibold mb-4">{t('layout.footer_newsletter')}</h4>
-              <p className="text-slate-400 text-sm mb-4">
-                {t('layout.footer_newsletter_desc')}
-              </p>
-              <form onSubmit={async (e) => {
-                e.preventDefault();
-                const email = e.target.email.value;
-                if (!email) return;
-
-                try {
-                  await base44.entities.ContactInquiry.create({
-                    name: 'Newsletter Subscriber',
-                    email: email,
-                    message: 'Newsletter subscription request',
-                    source: 'newsletter_footer'
-                  });
-                  alert(t('layout.footer_newsletter_success'));
-                  e.target.reset();
-                } catch (error) {
-                  console.error('Newsletter subscription error:', error);
-                }
-              }} className="flex gap-2">
-                <Input
-                  type="email"
-                  name="email"
-                  placeholder={t('layout.footer_newsletter_placeholder')}
-                  required
-                  className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-accent"
-                />
-                <Button type="submit" className="gradient-accent px-6 whitespace-nowrap">
-                  {t('layout.footer_newsletter_button')}
-                </Button>
-              </form>
-              <div className="text-slate-400 text-sm mt-4 space-y-1">
+              <div className="text-slate-500 text-sm space-y-1 text-start md:text-end">
                 <p>{language === 'he' ? 'צריך עזרה?' : 'Need help?'}</p>
-                <p>
-                  <a href="mailto:support@v107.co.il" className="text-amber-400 hover:text-amber-300">
-                    support@v107.co.il
-                  </a>
-                </p>
-                <p>
-                  <a href="tel:0552134848" className="text-amber-400 hover:text-amber-300">
-                    055-2134848
-                  </a>
-                </p>
+                <p><a href="mailto:support@v107.co.il" className="text-[#FF8F00] hover:underline">support@v107.co.il</a></p>
+                <p><a href="tel:0552134848" className="text-[#FF8F00] hover:underline">055-2134848</a></p>
               </div>
             </div>
           </div>
 
-          {/* Bottom Bar */}
-          <div className="border-t border-slate-700 pt-8 text-center">
-            <p className="text-xs text-slate-500 leading-relaxed max-w-4xl mx-auto select-none" style={{ userSelect: 'none' }}>
+          {/* Bottom note */}
+          <div className="mt-6 text-center">
+            <p className="text-xs text-slate-400 select-none">
               V107™ Professional Framework | © 2026 V107 Global Strategist | Registered Intellectual Property
             </p>
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs text-slate-400 mt-1">
               {language === 'he' ? 'האתר נבנה על ידי ' : 'Website built by '}
-              <a href="https://roeielba.com/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
+              <a href="https://roeielba.com/" target="_blank" rel="noopener noreferrer" className="text-[#FF8F00] hover:underline">
                 {language === 'he' ? 'רועי אלבה' : 'Roei Elba'}
               </a>
             </p>
