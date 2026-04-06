@@ -2,567 +2,234 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import {
-  ArrowLeft,
-  CheckCircle,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  Target,
-  TrendingUp,
-  Users,
-  Award,
-  BookOpen,
-  Zap,
-  BarChart3,
-  FileText,
-  Rocket
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { useTranslation } from "@/components/i18n/useTranslation";
-import { motion } from "framer-motion";
+import { Users } from "lucide-react";
 
 export default function Home() {
-  const { t, language } = useTranslation();
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [testimonials, setTestimonials] = useState([]);
+  const [userCount, setUserCount] = useState(null);
 
   useEffect(() => {
-    const fetchTestimonials = async () => {
+    const fetchUserCount = async () => {
       try {
-        const data = await base44.entities.Testimonial.list('-created_date');
-        setTestimonials(data);
-      } catch (e) {}
+        const allResponses = await base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date', 500);
+        setUserCount(allResponses.length);
+      } catch (e) {
+        setUserCount(null);
+      }
     };
-    fetchTestimonials();
+    fetchUserCount();
   }, []);
 
-  useEffect(() => {
-    if (testimonials.length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
-
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % testimonials.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-
   return (
-    <div className="min-h-screen overflow-hidden" dir="rtl">
-      <style>{`
-        .hero-bg {
-          background: radial-gradient(ellipse at center, #1a2a6c 0%, #0d1b4b 40%, #060d2e 100%);
-          position: relative;
-          overflow: hidden;
-        }
-        .hero-bg::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background-image: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
-          background-size: 40px 40px;
-          opacity: 0.4;
-        }
-        .dark-section {
-          background: linear-gradient(180deg, #0d1b4b 0%, #060d2e 100%);
-        }
-        .gold-text { color: #d4a843; }
-        .gold-btn {
-          background: linear-gradient(135deg, #f59e0b, #d97706);
-          color: white;
-          font-weight: 700;
-          border: none;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 20px rgba(245,158,11,0.4);
-        }
-        .gold-btn:hover {
-          background: linear-gradient(135deg, #d97706, #b45309);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(245,158,11,0.5);
-          color: white;
-        }
-        .stat-card {
-          background: rgba(255,255,255,0.08);
-          border: 1px solid rgba(255,255,255,0.15);
-          backdrop-filter: blur(10px);
-          border-radius: 16px;
-        }
-        .step-card {
-          background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-          border-radius: 20px;
-          border: 1px solid #93c5fd;
-          box-shadow: 0 4px 20px rgba(59,130,246,0.12);
-          transition: all 0.3s ease;
-        }
-        .step-card:hover {
-          box-shadow: 0 12px 40px rgba(59,130,246,0.35);
-          transform: translateY(-4px);
-          border-color: #3b82f6;
-        }
-        .teal-card {
-          background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-          border: 1px solid #93c5fd;
-          box-shadow: 0 4px 20px rgba(59,130,246,0.12);
-          transition: all 0.3s ease;
-        }
-        .teal-card:hover {
-          box-shadow: 0 12px 40px rgba(59,130,246,0.35);
-          border-color: #3b82f6;
-        }
-        .benefit-card {
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 16px;
-          transition: all 0.3s ease;
-        }
-        .benefit-card:hover {
-          background: rgba(255,255,255,0.08);
-          border-color: rgba(212,168,67,0.4);
-        }
-        .archetype-section {
-          background: linear-gradient(135deg, #0d1b4b 0%, #1a2a6c 50%, #0d1b4b 100%);
-          position: relative;
-        }
-        .archetype-section::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
-          background-size: 30px 30px;
-        }
-        .cta-section {
-          background: linear-gradient(135deg, #0d1b4b 0%, #1a2a6c 100%);
-          position: relative;
-        }
-        .cta-section::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
-          background-size: 35px 35px;
-        }
-        .orange-icon-bg {
-          background: linear-gradient(135deg, #f59e0b, #d97706);
-          border-radius: 12px;
-          padding: 10px;
-          display: inline-flex;
-        }
-      `}</style>
+    <main className="pt-24" dir="rtl">
 
-      {/* ===== SECTION 1: HERO ===== */}
-      <section className="hero-bg min-h-screen flex flex-col justify-center py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 mb-8 px-5 py-3 rounded-full"
-            style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.4)' }}>
-            <CheckCircle className="w-5 h-5 gold-text" />
-            <span className="text-base gold-text font-semibold">מבוסס על 5 שנות מחקר</span>
-          </motion.div>
+      {/* ===== HERO ===== */}
+      <section className="relative px-8 py-20 lg:py-32 overflow-hidden">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
 
-          {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight text-white">
-            מרגישים תקועים מקצועית...<br />
-            <span className="gold-text">לא יודעים באיזה מקצוע לבחור ?</span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg md:text-xl text-blue-100 mb-10 max-w-3xl mx-auto leading-relaxed">
-            די לדחות | דאג/י לעצמך ולעתידך - מלאו את השאלון ותופתעו מרמת הדוח האישי שתקבלו.
-          </motion.p>
-
-          {/* CTA Button */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}>
-            <Link to={createPageUrl("Questionnaire")}>
-              <Button size="lg" className="gold-btn text-lg px-10 py-6 rounded-2xl">
-                <Zap className="w-5 h-5 ml-2" />
-                התחל את השאלון עכשיו
-              </Button>
-            </Link>
-          </motion.div>
-
-          {/* Trust line */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-6 text-sm text-blue-300">
-            הדרך הקלה, הנכונה, המהירה והכדאית לדעת יכולות אמיתיות שלך
-          </motion.p>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
-            {[
-              { value: '5011', label: 'משתתפים פעילים' },
-              { value: 'שאלון יכולות\nאמריקאי', label: 'תקן בינלאומי' },
-              { value: '11', label: 'ממדי יכולות נמדדים' },
-              { value: 'תוך עד 24 שעות\nדוח V107 אצלך במייל !', label: 'זמן אספקה' },
-            ].map((stat, i) => (
-              <div key={i} className="stat-card p-5 text-center">
-                <div className="text-2xl md:text-3xl font-black text-white whitespace-pre-line leading-tight mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-xs text-blue-300">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ===== SECTION 2: HOW IT WORKS ===== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #e0effe 0%, #bfdbfe 100%)'}}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">איך זה עובד?</h2>
-            <p className="text-lg text-gray-600">3 צעדים פשוטים לקבלת הדוח המקצועי שלך</p>
+          {/* Text side */}
+          <div className="relative z-10 text-right">
+            <span className="inline-block bg-[#FF8F00]/10 text-[#FF8F00] font-bold px-4 py-1 rounded-full text-sm mb-6 tracking-wide">
+              עתיד הקריירה שלך מתחיל כאן
+            </span>
+            <h1 className="text-6xl lg:text-8xl font-black tracking-tighter text-slate-900 leading-[0.9] mb-8">
+              תעצבו את <br /> <span className="text-[#FF8F00] italic">העתיד</span> שלכם
+            </h1>
+            <p className="text-xl text-slate-500 max-w-lg ml-auto leading-relaxed mb-10">
+              הצטרפו לדור החדש של המקצוענים – הפלטפורמה החכמה שמבינה את הכיוון הקריירה שלכם במבדק אחד בלבד
+            </p>
+            <div className="flex flex-row-reverse gap-4">
+              <Link to={createPageUrl("Questionnaire")}>
+                <button className="bg-[#FF8F00] text-white text-lg font-bold px-10 py-5 rounded-3xl flex items-center gap-2 hover:scale-105 transition-transform">
+                  <span>התחילו מיפוי אישי</span>
+                  <span>←</span>
+                </button>
+              </Link>
+              <button className="bg-slate-100 text-slate-700 px-8 py-5 rounded-3xl font-bold border border-slate-200 hover:bg-slate-200 transition-colors shadow-sm">
+                איך זה עובד?
+              </button>
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Rocket,
-                num: '1',
-                title: 'מתחילים עכשיו!',
-                desc: 'מלאו את השאלון בנוחות, בפרטיות ובקצב שלכם. כ-20 דקות שישנו את הכיוון המקצועי שלכם.',
-                time: 'כ-20 דקות'
-              },
-              {
-                icon: BarChart3,
-                num: '2',
-                title: 'קבלו דוח יכולות אישי',
-                desc: 'הדוח יאפשר לכם ללמוד את החוזקות ואת היכולות הטעונות שיפור שלכם. יחד עם הדוח תקבלו המלצות מותאמות אישית ואת ה-BOOSTER שלנו לשיפור היכולות.',
-                time: 'תוך עד 24 שעות'
-              },
-              {
-                icon: FileText,
-                num: '3',
-                title: 'ניתוח יכולות מול קורות החיים',
-                desc: 'אם תעלו בשאלון את קורות החיים שלכם, תוכלו בנוסף לקבל מסמך מקצועי המנתח את היכולות שלכם ביחס לקורות החיים — כלי רב עוצמה להבנת תהליכים אישיים.',
-                time: 'כלול בחבילה'
-              }
-            ].map((step, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15 }}>
-                <div className="step-card p-8 h-full relative">
-                  <div className="absolute -top-4 -right-4 w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-lg"
-                    style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
-                    {step.num}
-                  </div>
-                  <div className="orange-icon-bg mb-6 w-14 h-14 flex items-center justify-center">
-                    <step.icon className="w-7 h-7 text-white" />
-                  </div>
-                  <h3 className="text-xl font-black text-gray-900 mb-3 leading-snug">{step.title}</h3>
-                  <p className="text-gray-600 leading-relaxed mb-4">{step.desc}</p>
-                  <div className="flex items-center gap-2 text-amber-600 font-semibold text-sm">
-                    <CheckCircle className="w-4 h-4" />
-                    {step.time}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link to={createPageUrl("Questionnaire")}>
-              <Button size="lg" className="gold-btn text-lg px-10 py-5 rounded-2xl">
-                התחל עכשיו - כל זה 99 ש"ח בלבד
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== SECTION 3: TESTIMONIALS ===== */}
-      {testimonials.length > 0 && (
-        <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #e0effe 0%, #bfdbfe 100%)'}}>
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה אומרים עלינו</h2>
-              <p className="text-gray-500">סיפורי הצלחה אמיתיים</p>
+          {/* Image side */}
+          <div className="relative">
+            <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#FF8F00]/20 blur-[100px] rounded-full pointer-events-none"></div>
+            <div className="relative rounded-3xl overflow-hidden aspect-square shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-700">
+              <img
+                className="w-full h-full object-cover"
+                alt="Professional man and woman thinking about various career paths"
+                src="https://lh3.googleusercontent.com/aida/ADBb0ugClXlEQoSMv0X3RtIEKf8uHxtdiZo_brGKINsKop2mXLKhvxLfk7I5fCv3uOEVCFZI32_xcYHPWeVtQaK_7UGfz6gjlda5SemyBZXNTIAce7Jaq0qCMLz9KEEJKDQAHsuOrI-V7bnNcni_AS8BnktHKRwoprqyEo7gOtk6hyJ_FQkeI2WaTM2kbRwfyLivnkquUg-hxWFQYJIpH06SgskFAE_PLH_ufXVVPX6zcJH1T4nALfWrrboF-eXvt2roJ5utSM05CR-InDQ"
+              />
             </div>
 
-            <div className="relative">
-              <div className="overflow-hidden rounded-3xl shadow-xl teal-card">
-                <div className="p-12 md:p-16 text-center">
-                  <div className="text-8xl text-amber-400 font-serif leading-none mb-6 opacity-30">99</div>
-                  <p className="text-xl md:text-2xl text-gray-700 leading-relaxed mb-8 max-w-3xl mx-auto">
-                    "{testimonials[currentSlide]?.quote_he}"
-                  </p>
-                  <div className="flex justify-center gap-1 mb-6">
-                    {[...Array(testimonials[currentSlide]?.stars || 5)].map((_, i) => (
-                      <Star key={i} className="w-6 h-6 text-amber-400 fill-current" />
-                    ))}
+            {/* Stats glass panel */}
+            <div className="absolute -bottom-10 -left-10 bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-xl max-w-xs border border-white/20">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-[#FF8F00] rounded-2xl flex items-center justify-center text-white flex-shrink-0">
+                  <Users className="w-6 h-6" />
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-lg leading-tight">
+                    {userCount !== null ? `${userCount.toLocaleString()} משתמשים עברו את המבדק` : '... משתמשים עברו את המבדק'}
                   </div>
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold text-xl">
-                      {testimonials[currentSlide]?.name?.charAt(0)}
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-gray-900">{testimonials[currentSlide]?.name}</p>
-                      <p className="text-gray-500 text-sm">{testimonials[currentSlide]?.title_he}</p>
-                    </div>
-                  </div>
+                  <div className="text-sm text-slate-500">הצטרפו לקהילה הגדלה שלנו</div>
                 </div>
               </div>
-
-              {testimonials.length > 1 && (
-                <>
-                  <button onClick={prevSlide}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center hover:bg-amber-600 transition-colors shadow-lg">
-                    <ChevronRight className="w-6 h-6" />
-                  </button>
-                  <button onClick={nextSlide}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center hover:bg-amber-600 transition-colors shadow-lg">
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
-                  <div className="flex justify-center gap-2 mt-6">
-                    {testimonials.map((_, i) => (
-                      <button key={i} onClick={() => setCurrentSlide(i)}
-                        className={`h-2 rounded-full transition-all ${i === currentSlide ? 'w-8 bg-amber-500' : 'w-2 bg-gray-300'}`} />
-                    ))}
-                  </div>
-                </>
-              )}
+              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div className="bg-[#FF8F00] w-3/4 h-full rounded-full"></div>
+              </div>
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* ===== SECTION 4: ARCHETYPE + V107 CONTRIBUTIONS ===== */}
-      <section className="archetype-section py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto relative z-10">
-          
-          {/* Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-              גלה את מפת היכולות האמיתית שלך
-            </h2>
-            <p className="text-blue-200 max-w-2xl mx-auto leading-relaxed text-lg">
-              קבל את 11 היכולות המקצועיות שלך. תמונה מקצועית מלאה של מי את/ה — ולאן את/ה הולך/ת.
-            </p>
-          </div>
-
-          {/* 3 Product Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-10">
-            {[
-              {
-                emoji: '🗺️',
-                title: 'דוח אישי',
-                desc: '5 עמודות ניתוח מעמיק של הפרופיל שלך'
-              },
-              {
-                emoji: '⚡',
-                title: 'בוסטר 30 יום',
-                desc: 'משימה יומית אחת ממוקדת בדיוק בחוזקות שלך'
-              },
-              {
-                emoji: '📄',
-                title: 'ניתוח קורות חיים',
-                desc: 'השוואת הפרופיל שלך מול דרישות התפקיד שאת/ה רוצה'
-              },
-            ].map((card, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="benefit-card p-8 text-center rounded-2xl">
-                <div className="text-5xl mb-4">{card.emoji}</div>
-                <h4 className="font-black text-white text-xl mb-3">{card.title}</h4>
-                <p className="text-blue-300 text-sm leading-relaxed">{card.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Price line */}
-          <div className="text-center mb-10">
-            <p className="text-3xl font-black text-amber-400">כל זה — 99 ₪ בלבד</p>
-          </div>
-
-          {/* CTA Button */}
-          <div className="text-center mb-8">
-            <Link to={createPageUrl("Questionnaire")}>
-              <Button size="lg" className="gold-btn text-xl px-14 py-6 rounded-2xl">
-                התחל/י עכשיו ←
-              </Button>
-            </Link>
-          </div>
-
-          {/* 3 stats */}
-          <div className="flex flex-wrap justify-center gap-8 mb-6 text-center">
-            <span className="text-white font-bold">5,012 משתמשים</span>
-            <span className="text-white/40">|</span>
-            <span className="text-white font-bold">11 ממדים</span>
-            <span className="text-white/40">|</span>
-            <span className="text-white font-bold">מילוי קצר וענייני</span>
-          </div>
-
-          {/* Trust line */}
-          <div className="text-center">
-            <p className="text-blue-300 text-sm">✓ ללא התחייבות &nbsp;&nbsp; ✓ תוצאות מיידיות &nbsp;&nbsp; ✓ פרטיותך שמורה</p>
-          </div>
-
-          {/* What you'll get */}
-          <div className="border-t border-white/10 pt-16">
-            <h3 className="text-2xl md:text-3xl font-black text-white text-center mb-10">
-              מה תקבל/י — ומה ישתנה
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { num: '1', title: 'בהירות', desc: 'תבין/י סוף סוף מי את/ה מקצועית' },
-                { num: '2', title: 'כיוון', desc: 'תדע/י לאן להתקדם ומדוע' },
-                { num: '3', title: 'פעולה', desc: 'תצא/י עם תוכנית עבודה ל-30 יום, כמו גם הבנת יכולות אסטרטגית' },
-              ].map((item, i) => (
-                <motion.div key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="benefit-card p-8 text-center">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-black text-xl mx-auto mb-4"
-                    style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
-                    {item.num}
-                  </div>
-                  <h4 className="font-black text-white mb-3 text-xl">{item.title}</h4>
-                  <p className="text-blue-200 leading-relaxed">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* V107 BOOSTER */}
-          <div className="mt-16 p-8 md:p-12 rounded-3xl text-center"
-            style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.3)' }}>
-            <p className="text-xl md:text-2xl text-white leading-relaxed max-w-2xl mx-auto mb-8">
-              הדוח נותן לך את המפה. הבוסטר מוביל אותך בה — יום יום, 30 יום.
-            </p>
-            <Link to={createPageUrl("Questionnaire")}>
-              <Button size="lg" className="gold-btn text-xl px-12 py-6 rounded-2xl">
-                קבל/י את הכל — 99 ₪
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* ===== SECTION 5: WHAT YOU GET ===== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{background: 'linear-gradient(180deg, #e0effe 0%, #bfdbfe 100%)'}}>
-        <div className="max-w-5xl mx-auto">
+      {/* ===== FEATURES ===== */}
+      <section className="py-24 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">מה מקבלים ב-99 ₪?</h2>
+            <h2 className="text-4xl lg:text-5xl font-black tracking-tight mb-4">כל מה שצריך כדי לפרוץ</h2>
+            <p className="text-slate-500 text-lg">הכלים הכי מתקדמים בשוק, במקום אחד. <span className="font-bold text-[#FF8F00]">— רק ב 99 ש"ח</span></p>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {[
-              {
-                emoji: '🗺️',
-                title: 'דוח אישי מלא',
-                desc: 'שאלון יכולות מתוחכם. 11 ממדים. 5 עמודות שמסבירים לך מי את/ה, מה החוזקות שלך — ולאן כדאי לך ללכת.'
-              },
-              {
-                emoji: '⚡',
-                title: 'בוסטר 30 יום שלנו — מלווה אותך בביצוע',
-                desc: 'כל יום משימה אחת, קצרה וממוקדת — בנויה בדיוק על הפרופיל שלך. לא גנרי. שלך בלבד.'
-              },
-              {
-                emoji: '📄',
-                title: 'ניתוח קורות חיים',
-                desc: 'מעלה את קורות החיים שלך — ומקבל/ת ניתוח מה עובד, מה חסר, ואיך להתאים לתפקיד שאת/ה רוצה.'
-              },
-            ].map((item, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="teal-card rounded-2xl p-8 transition-all duration-300 text-center">
-                <div className="text-5xl mb-5">{item.emoji}</div>
-                <h3 className="font-black text-gray-900 text-xl mb-3 leading-snug">{item.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="text-center mb-8">
-            <p className="text-2xl font-black text-gray-900 mb-8">שלושה מוצרים. מחיר אחד. <span style={{color:'#d97706'}}>99 ₪ בלבד.</span></p>
-            <Link to={createPageUrl("Questionnaire")}>
-              <Button size="lg" className="gold-btn text-xl px-14 py-6 rounded-2xl">
-                התחל/י עכשיו ←
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* ===== SECTION 7 & 8: FINAL CTA ===== */}
-      <section className="cta-section py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center">
-
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-12">
-              מה מקבלים ב-99 ₪?
-            </h2>
-
-            <div className="grid sm:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
-              {[
-                { icon: '📊', title: 'דוח אישי מלא', desc: '5 עמודות. 11 ממדים. מי את/ה, מה החוזקות, ולאן כדאי ללכת.' },
-                { icon: '⚡', title: 'בוסטר 30 יום', desc: 'משימה יומית אחת — בנויה בדיוק על הפרופיל שלך.' },
-                { icon: '📄', title: 'ניתוח קורות חיים', desc: 'השוואת הפרופיל שלך מול התפקיד שאת/ה רוצה — פערים וחוזקות.' },
-              ].map((item, i) => (
-                <div key={i} className="benefit-card p-6 text-center">
-                  <div className="text-4xl mb-3">{item.icon}</div>
-                  <h4 className="font-black text-white mb-2 text-lg">{item.title}</h4>
-                  <p className="text-blue-300 text-sm leading-relaxed">{item.desc}</p>
+            {/* Card 1 */}
+            <div className="bg-white p-10 rounded-[2.5rem] flex flex-col justify-between group hover:shadow-xl transition-all border border-transparent hover:border-[#FF8F00]/10 text-right h-full">
+              <div>
+                <div className="w-16 h-16 bg-[#FF8F00]/10 text-[#FF8F00] rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform text-3xl">
+                  📋
                 </div>
-              ))}
+                <h3 className="text-2xl lg:text-3xl font-bold mb-4">מתחילים עכשיו!</h3>
+                <p className="text-slate-500 text-lg leading-relaxed">מלאו את השאלון בנוחות, בפרטיות ובקצב שלכם. כ-20 דקות שישנו את הכיוון המקצועי שלכם.</p>
+              </div>
+              <div className="mt-12 flex justify-between items-center">
+                <span className="text-slate-500 font-bold text-lg opacity-90">כ-20 דקות</span>
+                <span className="text-[#FF8F00] font-medium text-sm">כלול בחבילה</span>
+              </div>
             </div>
 
-            <p className="text-amber-400 font-bold text-xl mb-10">שלושה מוצרים. מחיר אחד. 99 ₪ בלבד.</p>
+            {/* Card 2 */}
+            <div className="bg-white p-10 rounded-[2.5rem] flex flex-col justify-between group hover:shadow-xl transition-all border border-transparent hover:border-[#FF8F00]/10 text-right h-full">
+              <div>
+                <div className="w-16 h-16 bg-[#FF8F00]/10 text-[#FF8F00] rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform text-3xl">
+                  📈
+                </div>
+                <h3 className="text-2xl lg:text-3xl font-bold mb-4">קבלו דוח יכולות אישי</h3>
+                <p className="text-slate-500 text-lg leading-relaxed">הדוח יאפשר לכם ללמוד את החוזקות ואת היכולות הטעונות שיפור שלכם. יחד עם הדוח תקבלו המלצות מותאמות אישית ואת ה-BOOSTER שלנו לשיפור היכולות.</p>
+              </div>
+              <div className="mt-12 flex justify-between items-center">
+                <span className="text-slate-500 font-bold text-lg opacity-90">תוך עד 24 שעות</span>
+                <span className="text-[#FF8F00] font-medium text-sm">כלול בחבילה</span>
+              </div>
+            </div>
 
-            <Link to={createPageUrl("Questionnaire")}>
-              <Button size="lg" className="gold-btn text-xl px-14 py-7 rounded-2xl">
-                התחל/י עכשיו ←
-              </Button>
-            </Link>
+            {/* Card 3 - Orange highlight */}
+            <div className="bg-[#FF8F00] p-10 rounded-[2.5rem] text-white flex flex-col justify-between hover:scale-[1.02] transition-transform text-right h-full">
+              <div className="w-16 h-16 bg-white/20 text-white rounded-2xl flex items-center justify-center mb-8 text-4xl">
+                🚀
+              </div>
+              <div>
+                <h3 className="text-2xl lg:text-3xl font-bold mb-4">ניתוח יכולות מול קורות החיים</h3>
+                <p className="text-white/90 text-lg leading-relaxed">אם תעלו בשאלון את קורות החיים שלכם, תוכלו בנוסף לקבל מסמך מקצועי המנתח את היכולות שלכם ביחס לקורות החיים — כלי רב עוצמה להבנת תהליכים אישיים.</p>
+              </div>
+              <div className="mt-12 flex justify-end">
+                <span className="text-white font-bold text-lg opacity-90">כלול בחבילה</span>
+              </div>
+            </div>
 
-            <p className="mt-6 text-blue-300 text-sm">
-              ✓ ללא התחייבות &nbsp;&nbsp; ✓ תוצאות מיידיות &nbsp;&nbsp; ✓ פרטיותך שמורה
-            </p>
-          </motion.div>
+          </div>
         </div>
       </section>
-    </div>
+
+      {/* ===== PRICING CTA ===== */}
+      <section className="py-24 px-8 bg-white">
+        <div className="max-w-4xl mx-auto bg-white p-8 lg:p-12 rounded-[2.5rem] shadow-sm border border-slate-100 text-right relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-32 h-32 bg-[#FF8F00]/5 rounded-br-full pointer-events-none"></div>
+          <div className="relative z-10 flex flex-col gap-12 items-center md:flex-row">
+            <div className="flex-1">
+              <div className="text-4xl font-black text-[#FF8F00] mb-2">רק 99 ש"ח בלבד</div>
+              <h2 className="text-3xl lg:text-4xl font-black mb-2">מוכנים לגלות מה באמת מתאים לכם?</h2>
+              <h3 className="text-2xl font-bold text-[#FF8F00] mb-6">מוכנים לקחת את הצעד הראשון?</h3>
+              <p className="text-slate-500 text-lg mb-8 leading-relaxed">
+                מתאים למי שרוצה לבדוק כיוון אחד ולהתחיל להבין את הפוטנציאל שלו.
+              </p>
+              <ul className="space-y-4 mb-10">
+                {[
+                  'מבדק אחד מותאם אישית',
+                  'דוח ניתוח יכולות אישי',
+                  'שירות בוסטר לשיפור התוצאות והכוונה חכמה',
+                  'אנליזה ניתוח קורות חיים אל מול דוח V107',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 flex-row">
+                    <div className="w-6 h-6 rounded-full bg-[#FF8F00]/10 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[#FF8F00] text-sm font-bold">✓</span>
+                    </div>
+                    <span className="text-slate-800 font-semibold">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex flex-col gap-4">
+                <Link to={createPageUrl("Questionnaire")}>
+                  <button className="bg-[#FF8F00] text-white text-xl font-bold px-12 py-5 rounded-2xl hover:shadow-lg hover:shadow-[#FF8F00]/20 active:scale-95 transition-all w-full md:w-max">
+                    התחילו מיפוי אישי
+                  </button>
+                </Link>
+                <p className="text-slate-400 text-sm flex items-center gap-2 justify-end">
+                  <span>💡 התחילו לגלות את עצמכם בלי להתחייב!</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full md:w-64 aspect-square rounded-3xl flex items-center justify-center overflow-hidden flex-shrink-0">
+              <img
+                alt="AI Brain"
+                className="w-full h-full object-cover rounded-3xl shadow-lg"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfQZvwwkpMpb3h8St9kZKBwmzenaynRFW1oZQkW56Pz-SbXZrCJzc-FwgfMWccZibUtfDia5hW2IwujNt0ThFO1q9GgmZqkw0VgoHmiwShShqw53qRkWgYrOaWra2mD0ps5nsN68w4aUE3oX8RpmsJRW7J-B5k-nQnDmJxozoAL4h_NyG-Xr_BVqvBDJDD87efkBh6GyBPTq5wVMaOHQK_tIv3e5oBuBs80C-wxsvGwFhN9XgtcMvW2_lCtN5RfU5M3u7UNNrBsYVY"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== COMMUNITY ===== */}
+      <section className="py-24 bg-[#FF8F00]">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="bg-slate-900 text-white p-10 rounded-[2.5rem] relative overflow-hidden group">
+            <div className="relative z-10 flex flex-col h-full justify-between">
+              <h3 className="text-3xl font-bold mb-4">קהילת ה-New Gen</h3>
+              <p className="text-slate-300 text-lg max-w-lg">
+                אלפי צעירים כבר מצאו את הדרך שלהם דרך v107. הצטרפו לרשת המקצועית שמשנה את כללי המשחק.
+              </p>
+              <div className="flex -space-x-3 space-x-reverse mt-8">
+                <img
+                  className="w-12 h-12 rounded-full border-4 border-slate-900 object-cover"
+                  alt="Profile"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvIPRdGoMGKW5xqxsZZVh28jCRTy-IekYhJAATNBGPoU_Cn1-9i4iwFJ3S0LnD9T8_nBIIE09MZSICoDlp7Ove4NZmUjAh6dktPoS2-aNElhpIW72XIU1I0kJOxk4kaY-ohFUuEHncJlezXJWHq6Bb6MBijBcYgPPS63Xtw4gwD30-A4AAk57DVFhzZZtEzY0r76hmTW269UZ4dWa7slquSgkVmV13kpJJdhzlL3PhbjqGNfQPeATKJZRoRdUCFKCl7-J6QL_QPMd8"
+                />
+                <img
+                  className="w-12 h-12 rounded-full border-4 border-slate-900 object-cover"
+                  alt="Profile"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpdRqQOjHjJaSaQDqwyJZ8QOWDafmsmWV4DXst049rT3WJS7oXqYbBOV8ittbVu06wDUN-A4bXCaSkqF8GsbVu8YmrsMxJ3pLgvrb7dK5PjZB-Vss8wxAExy3-yA4Dc7wAfqeFOR61axzKZtDEc1M1W9OlK4TS5yn1hxtatUqFJA9BP7D6r_PcdQFMhgANGoBvj92ViLRxN2HJPK7SPpfKr-z7nLDsWDg5wt2Ybl2m017OYs2XivO59dxvgV7LGplN7Uk2JfNznDs7"
+                />
+                <img
+                  className="w-12 h-12 rounded-full border-4 border-slate-900 object-cover"
+                  alt="Profile"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn4Lgb4ZwIyYhooe__pDFgFIKhnIVNWQA-ebrwt91Z_TNe4DrtxrAlsXCPZbepnv-87SpH0Ae9lZkhsA-JfmpgtKF47baPZCVjAbiNQ15GKIvf4vMiQrAdiGI4_rqey3JJjmaU6eLlwjn3aBzU566nLhieCcMOOEprS1Qie_X6nhGG-k4mEpMN4Q6TuWUxn_undyZWzcBz5lgNCZyf0ytEPrabIb00e8sxlZx0J3qRNtQKlpMsZtISyYRJ7oTooI4Iia7m-6XlOqj6"
+                />
+                <div className="w-12 h-12 rounded-full border-4 border-slate-900 bg-[#FF8F00] flex items-center justify-center text-xs font-bold text-white">
+                  +2k
+                </div>
+              </div>
+            </div>
+            <div className="absolute top-0 left-0 w-full h-full opacity-10 group-hover:opacity-20 transition-opacity">
+              <img
+                className="w-full h-full object-cover"
+                alt="Group of diverse young professionals"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqQQYwrBwx2QZK-J_Pu88gNjwrfaGwYmVE6C0LOOn8iKk__2ItetNhnQ1KFjqVcs0NEpV6L9GoTxOCDhk21aGFCVp1cA6OO0tMLvy036ju1D_zJVblUdQkJ5udn230gvDSCxFL1-KFc0EerIen60F9183MlEGM2MZXIHBRoOBKfeq_mv6VbCNL5o2DetICgJ06e-UieGLNeWIzLqU9mUFQ07KzO34gKjoUTLZKbjceq6Aqv43HN-QrIQBoYlKscBubG6Lcc3q4F5_d"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
   );
 }
