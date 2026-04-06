@@ -241,84 +241,80 @@ export default function MyAccount() {
             {/* Bento Grid */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
 
-              {/* Radar + Metrics Card */}
+              {/* Strengths Map Card */}
               <section className="md:col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-slate-100 overflow-hidden">
                 <div className="flex justify-between items-center mb-8">
                   <h2 className="text-2xl font-bold text-slate-900">מפת עוצמות (Strengths Map)</h2>
                   <span className="bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full font-bold">דאטה מעודכן</span>
                 </div>
-                <div className="grid lg:grid-cols-2 gap-8 items-center">
-                  {/* SVG Radar Chart */}
-                  <div className="flex justify-center">
-                    <div className="relative w-full max-w-[280px] aspect-square">
-                      <svg className="w-full h-full" viewBox="0 0 100 100">
-                        {/* Background circles */}
-                        <circle cx="50" cy="50" r="10" fill="#f0f4f8" stroke="#dfe3e7" strokeWidth="1" strokeDasharray="2 2" />
-                        <circle cx="50" cy="50" r="20" fill="none" stroke="#dfe3e7" strokeWidth="1" strokeDasharray="2 2" />
-                        <circle cx="50" cy="50" r="30" fill="none" stroke="#dfe3e7" strokeWidth="1" strokeDasharray="2 2" />
-                        <circle cx="50" cy="50" r="40" fill="none" stroke="#dfe3e7" strokeWidth="1" strokeDasharray="2 2" />
-                        <circle cx="50" cy="50" r="50" fill="none" stroke="#dfe3e7" strokeWidth="0.5" />
-                        {/* Axis lines */}
-                        <line x1="50" y1="50" x2="50" y2="0" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
-                        <line x1="50" y1="50" x2="100" y2="50" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
-                        <line x1="50" y1="50" x2="50" y2="100" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
-                        <line x1="50" y1="50" x2="0" y2="50" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
-                        <line x1="50" y1="50" x2="15" y2="15" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
-                        <line x1="50" y1="50" x2="85" y2="15" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
-                        <line x1="50" y1="50" x2="85" y2="85" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
-                        <line x1="50" y1="50" x2="15" y2="85" stroke="#dfe3e7" strokeWidth="0.5" opacity="0.5" />
-                        {/* Dynamic radar polygon from domain scores */}
-                        {latestReport?.domain_scores ? (() => {
-                          const entries = Object.entries(latestReport.domain_scores).slice(0, 8);
-                          const n = entries.length || 1;
-                          const points = entries.map(([, score], i) => {
-                            const rawScore = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
-                            const pct = typeof rawScore === 'number' ? Math.min(1, rawScore <= 7 ? rawScore / 7 : rawScore / 100) : 0;
-                            const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
-                            const r = pct * 45;
-                            return [50 + r * Math.cos(angle), 50 + r * Math.sin(angle)];
-                          });
-                          const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ') + ' Z';
-                          return <path d={d} fill="rgba(255,140,0,0.25)" stroke="#FF8F00" strokeWidth="2" />;
-                        })() : (
-                          <path d="M 50 14 L 72 27 L 81 55 L 65 78 L 35 78 L 19 55 L 28 27 Z" fill="rgba(255,140,0,0.25)" stroke="#FF8F00" strokeWidth="2" />
-                        )}
-                      </svg>
-                    </div>
-                  </div>
-                  {/* Metrics List */}
-                  <div className="space-y-3 max-h-72 overflow-y-auto">
-                    {latestReport?.domain_scores
-                      ? Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
-                          const rawScore = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
-                          const pct = typeof rawScore === 'number' ? Math.min(100, Math.round(rawScore <= 7 ? rawScore * 100 / 7 : rawScore)) : 0;
-                          const isLow = pct < 60;
-                          return (
-                            <div key={domain} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
-                              <span className={`font-medium text-sm ${isLow ? 'text-red-600' : 'text-slate-800'}`}>{domain}</span>
-                              <div className="flex items-center gap-3">
-                                <span className={`text-sm font-bold ${isLow ? 'text-red-500' : 'text-slate-400'}`}>{pct}%</span>
-                                <div className={`w-24 h-2 rounded-full overflow-hidden ${isLow ? 'bg-red-100' : 'bg-slate-100'}`}>
-                                  <div
-                                    className={`h-full rounded-full ${pct >= 75 ? 'bg-green-500' : pct >= 60 ? 'bg-blue-500' : 'bg-yellow-500'}`}
-                                    style={{ width: `${pct}%` }}
-                                  />
-                                </div>
-                              </div>
+                {latestReport?.domain_scores ? (() => {
+                  const domainEntries = Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
+                    const rawScore = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
+                    const pct = typeof rawScore === 'number' ? Math.min(100, Math.round(rawScore <= 7 ? rawScore * 100 / 7 : rawScore)) : 0;
+                    const isLow = pct < 60;
+                    const isYellow = !isLow && pct < 75;
+                    const color = isLow ? '#f59e0b' : isYellow ? '#3b82f6' : '#22c55e';
+                    return { domain, pct, isLow, color };
+                  });
+                  const pieData = domainEntries.map(d => ({ value: d.pct, color: d.color }));
+                  // Build SVG pie chart
+                  const total = pieData.reduce((s, d) => s + d.value, 0) || 1;
+                  let cumAngle = -Math.PI / 2;
+                  const slices = pieData.map((d) => {
+                    const angle = (d.value / total) * 2 * Math.PI;
+                    const x1 = 50 + 46 * Math.cos(cumAngle);
+                    const y1 = 50 + 46 * Math.sin(cumAngle);
+                    cumAngle += angle;
+                    const x2 = 50 + 46 * Math.cos(cumAngle);
+                    const y2 = 50 + 46 * Math.sin(cumAngle);
+                    const largeArc = angle > Math.PI ? 1 : 0;
+                    return { x1, y1, x2, y2, largeArc, color: d.color };
+                  });
+                  return (
+                    <div className="flex flex-col md:flex-row gap-8 items-center">
+                      {/* Left: bars list */}
+                      <div className="flex-1 space-y-5 w-full">
+                        {domainEntries.map(({ domain, pct, isLow, color }) => (
+                          <div key={domain} className="flex items-center gap-3" dir="rtl">
+                            {/* Bar */}
+                            <div className="w-24 h-2.5 bg-slate-100 rounded-full overflow-hidden shrink-0">
+                              <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color }} />
                             </div>
-                          );
-                        })
-                      : (
-                        <div className="text-center py-8 text-slate-400">
-                          <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות את מפת העוצמות</p>
-                          <Link to={createPageUrl('Questionnaire')}>
-                            <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
-                          </Link>
-                        </div>
-                      )
-                    }
+                            {/* Percent */}
+                            <span className={`text-sm font-bold shrink-0 ${isLow ? 'text-amber-500' : 'text-slate-600'}`}>
+                              {pct}%{isLow ? ' ▲' : ''}
+                            </span>
+                            {/* Name */}
+                            <span className="text-sm text-slate-700 font-medium leading-tight">{domain}</span>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Right: pie chart SVG */}
+                      <div className="shrink-0 w-48 h-48">
+                        <svg viewBox="0 0 100 100" className="w-full h-full">
+                          <circle cx="50" cy="50" r="48" fill="#f1f5f9" />
+                          {slices.map((s, i) => (
+                            <path
+                              key={i}
+                              d={`M 50 50 L ${s.x1.toFixed(2)} ${s.y1.toFixed(2)} A 46 46 0 ${s.largeArc} 1 ${s.x2.toFixed(2)} ${s.y2.toFixed(2)} Z`}
+                              fill={s.color}
+                              stroke="white"
+                              strokeWidth="1.5"
+                            />
+                          ))}
+                          <circle cx="50" cy="50" r="18" fill="white" />
+                        </svg>
+                      </div>
+                    </div>
+                  );
+                })() : (
+                  <div className="text-center py-8 text-slate-400">
+                    <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות את מפת העוצמות</p>
+                    <Link to={createPageUrl('Questionnaire')}>
+                      <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
+                    </Link>
                   </div>
-                </div>
+                )}
               </section>
 
               {/* Right Column */}
