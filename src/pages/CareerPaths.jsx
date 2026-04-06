@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
-import { Loader2, ArrowLeft, Zap, Compass } from 'lucide-react';
+import { Loader2, ArrowLeft, Zap, Compass, LayoutDashboard, FileText, Award, Gift, ShoppingCart, LogOut, User as UserIcon } from 'lucide-react';
+
+const SIDEBAR_ITEMS = [
+  { key: 'dashboard', label: 'לוח בקרה', icon: LayoutDashboard, href: 'MyAccount' },
+  { key: 'career', label: 'נתיבי קריירה', icon: Compass, href: 'CareerPaths', active: true },
+  { key: 'questionnaires', label: 'שאלונים', icon: FileText, href: 'MyAccount' },
+  { key: 'reports', label: 'דוחות', icon: Award, href: 'MyAccount' },
+  { key: 'coupons', label: 'קופונים', icon: Gift, href: 'MyAccount' },
+  { key: 'orders', label: 'רכישות', icon: ShoppingCart, href: 'MyAccount' },
+];
 
 const DEFAULT_CAREER_PATHS = [
   {
@@ -149,7 +158,7 @@ export default function CareerPaths() {
         <div className="px-5 mb-8">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-full bg-[#FF8F00] flex items-center justify-center text-white flex-shrink-0 shadow-md">
-              <span className="text-sm font-bold">{user?.full_name?.[0] || '?'}</span>
+              <UserIcon className="w-5 h-5" />
             </div>
             <div className="overflow-hidden">
               <h3 className="font-bold text-slate-900 text-sm leading-tight truncate">{user?.full_name || 'שלום'}</h3>
@@ -159,29 +168,35 @@ export default function CareerPaths() {
         </div>
 
         <nav className="flex flex-col gap-0.5 px-3 flex-1">
-          {[
-            { key: 'dashboard', label: 'לוח בקרה', href: createPageUrl('MyAccount') },
-            { key: 'career', label: 'נתיבי קריירה', href: createPageUrl('CareerPaths'), active: true },
-          ].map(({ key, label, href, active }) => (
-            <Link key={key} to={href}
+          {SIDEBAR_ITEMS.map(({ key, label, icon: Icon, href, active }) => (
+            <Link
+              key={key}
+              to={createPageUrl(href)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full text-right ${
                 active
                   ? 'text-[#FF8F00] bg-orange-50 font-bold border-r-4 border-[#FF8F00]'
                   : 'text-slate-500 hover:bg-slate-100'
               }`}
             >
-              <Compass className="w-5 h-5 flex-shrink-0" />
+              <Icon className="w-5 h-5 flex-shrink-0" />
               <span>{label}</span>
             </Link>
           ))}
         </nav>
 
-        <div className="px-4 mt-4">
-          <Link to={createPageUrl('MyAccount')}>
-            <button className="w-full text-slate-500 py-2 rounded-xl text-sm hover:bg-slate-100 transition-colors">
-              ← חזור לאזור האישי
+        <div className="px-4 space-y-2 mt-4">
+          <Link to={createPageUrl('Questionnaire')} className="block">
+            <button className="w-full text-white py-3 rounded-xl font-bold shadow-md hover:scale-105 transition-transform text-sm" style={{ backgroundColor: '#FF8F00' }}>
+              התחל מיפוי חדש
             </button>
           </Link>
+          <button
+            onClick={() => base44.auth.logout(createPageUrl('Home'))}
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors text-sm"
+          >
+            <LogOut className="w-4 h-4" />
+            התנתק
+          </button>
         </div>
       </aside>
 
