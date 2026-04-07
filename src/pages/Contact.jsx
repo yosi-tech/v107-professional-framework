@@ -127,14 +127,12 @@ export default function Contact() {
           name: "ליה ליין", 
           role: 'סמנכ"לית שיווק ומכירות', 
           img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/5fe161b9b_3-removebg-preview.png",
-          // ליה מצולמת מרחוק - הגדלה ומיקום למטה יותר
           styles: "scale-[1.94] object-[60%_100%]"
         },
         { 
           name: "גיא פרנסס", 
           role: "ראש מחלקת מערכות מידע", 
           img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/9d28f27d2_1-removebg-preview.png",
-          // גיא מרחוק - הגדלה ומיקום שיתאים לליה
           styles: "scale-[1.94] object-[center_20%]" 
         }
       ].map(({ name, role, img, styles }) => (
