@@ -122,7 +122,7 @@ export default function MyAccount() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 lg:flex lg:flex-row-reverse" dir="rtl">
+    <div className="min-h-screen bg-slate-50 lg:flex" dir="rtl">
 
       {/* Desktop Sidebar */}
       <aside className="bg-white w-64 hidden lg:flex flex-col flex-shrink-0 sticky top-[73px] self-start h-[calc(100vh-73px)] pt-6 pb-6 border-l border-slate-100 shadow-sm overflow-y-auto">
