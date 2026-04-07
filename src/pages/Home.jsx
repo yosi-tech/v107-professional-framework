@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { Users } from "lucide-react";
+import { Users, Rocket, TrendingUp, ClipboardList } from "lucide-react";
 
 export default function Home() {
   const [userCount, setUserCount] = useState(null);
@@ -94,8 +94,8 @@ export default function Home() {
             {/* Card 1 */}
             <div className="bg-white p-10 rounded-[2.5rem] flex flex-col justify-between group hover:shadow-xl transition-all border border-transparent hover:border-[#FF8F00]/10 text-right h-full">
               <div>
-                <div className="w-16 h-16 bg-[#FF8F00]/10 text-[#FF8F00] rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform text-3xl">
-                  📋
+                <div className="w-16 h-16 bg-[#FF8F00]/10 text-[#FF8F00] rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  <ClipboardList className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl lg:text-3xl font-bold mb-4">מתחילים עכשיו!</h3>
                 <p className="text-slate-500 text-lg leading-relaxed">מלאו את השאלון בנוחות, בפרטיות ובקצב שלכם. כ-20 דקות שישנו את הכיוון המקצועי שלכם.</p>
@@ -109,8 +109,8 @@ export default function Home() {
             {/* Card 2 */}
             <div className="bg-white p-10 rounded-[2.5rem] flex flex-col justify-between group hover:shadow-xl transition-all border border-transparent hover:border-[#FF8F00]/10 text-right h-full">
               <div>
-                <div className="w-16 h-16 bg-[#FF8F00]/10 text-[#FF8F00] rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform text-3xl">
-                  📈
+                <div className="w-16 h-16 bg-[#FF8F00]/10 text-[#FF8F00] rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  <TrendingUp className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl lg:text-3xl font-bold mb-4">קבלו דוח יכולות אישי</h3>
                 <p className="text-slate-500 text-lg leading-relaxed">הדוח יאפשר לכם ללמוד את החוזקות ואת היכולות הטעונות שיפור שלכם. יחד עם הדוח תקבלו המלצות מותאמות אישית ואת ה-BOOSTER שלנו לשיפור היכולות.</p>
@@ -123,8 +123,8 @@ export default function Home() {
 
             {/* Card 3 - Orange highlight */}
             <div className="bg-[#FF8F00] p-10 rounded-[2.5rem] text-white flex flex-col justify-between hover:scale-[1.02] transition-transform text-right h-full">
-              <div className="w-16 h-16 bg-white/20 text-white rounded-2xl flex items-center justify-center mb-8 text-4xl">
-                🚀
+              <div className="w-16 h-16 bg-white/20 text-white rounded-2xl flex items-center justify-center mb-8">
+                <Rocket className="w-8 h-8" />
               </div>
               <div>
                 <h3 className="text-2xl lg:text-3xl font-bold mb-4">ניתוח יכולות מול קורות החיים</h3>
