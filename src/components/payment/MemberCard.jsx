@@ -14,7 +14,7 @@ export default function MemberCard({ userName, planName }) {
 
         {/* Middle & Bottom */}
         <div className="space-y-4 relative z-10">
-          <div className="text-2xl font-mono text-slate-400 tracking-widest">v107 MEMBER</div>
+          <div className="text-2xl font-mono text-slate-400 tracking-widest"></div>
           <div className="flex justify-between items-end">
             <div className="space-y-1">
               <div className="text-[10px] uppercase tracking-tighter text-slate-400">Name</div>
