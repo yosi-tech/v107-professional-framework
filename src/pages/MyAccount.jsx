@@ -125,7 +125,7 @@ export default function MyAccount() {
     <div className="min-h-screen bg-slate-50" dir="rtl">
 
       {/* Desktop Sidebar */}
-      <aside className="bg-white h-screen w-64 fixed right-0 top-0 z-40 hidden lg:flex flex-col pt-24 pb-6 border-l border-slate-100 shadow-sm">
+      <aside className="bg-white w-64 fixed right-0 top-0 bottom-0 z-40 hidden lg:flex flex-col pt-24 pb-6 border-l border-slate-100 shadow-sm overflow-y-auto">
         {/* User Info */}
         <div className="px-5 mb-8">
           <div className="flex items-center gap-3">
@@ -218,7 +218,7 @@ export default function MyAccount() {
       </nav>
 
       {/* Main Content */}
-      <main className="lg:mr-64 pt-8 pb-28 lg:pb-24 px-4 md:px-12 max-w-7xl mx-auto w-full">
+      <main className="lg:mr-64 pt-8 pb-28 lg:pb-32 px-4 md:px-12 max-w-7xl mx-auto w-full">
 
         {/* Header */}
         <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
