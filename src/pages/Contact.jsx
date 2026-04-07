@@ -128,7 +128,7 @@ export default function Contact() {
           role: 'סמנכ"לית שיווק ומכירות', 
           img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/5fe161b9b_3-removebg-preview.png",
           // ליה מצולמת מרחוק - הגדלה ומיקום למטה יותר
-          styles: "scale-[1.8] object-[60%_70%]"
+          styles: "scale-[1.8] object-[60%_100%]"
         },
         { 
           name: "גיא פרנסס", 
