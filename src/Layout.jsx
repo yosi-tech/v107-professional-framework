@@ -611,6 +611,9 @@ function AppLayout({ children }) {
               <Link to={createPageUrl("AccessibilityStatement")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
                 {language === 'he' ? 'נגישות' : 'Accessibility'}
               </Link>
+              <Link to="/Contact" className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
+                {language === 'he' ? 'צור קשר' : 'Contact Us'}
+              </Link>
             </nav>
 
             {/* Copyright */}
