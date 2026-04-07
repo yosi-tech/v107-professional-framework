@@ -200,8 +200,33 @@ export default function CareerPaths() {
         </div>
       </aside>
 
+      {/* Mobile Bottom Nav */}
+      <nav className="lg:hidden fixed bottom-0 right-0 left-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+        <div className="flex items-center justify-around py-2">
+          {SIDEBAR_ITEMS.map(({ key, label, icon: Icon, href, active }) => (
+            <Link
+              key={key}
+              to={createPageUrl(href)}
+              className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-colors ${
+                active ? 'text-[#FF8F00]' : 'text-slate-400'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-[10px] font-medium">{label}</span>
+            </Link>
+          ))}
+          <button
+            onClick={() => base44.auth.logout(createPageUrl('Home'))}
+            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-slate-400"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="text-[10px] font-medium">יציאה</span>
+          </button>
+        </div>
+      </nav>
+
       {/* Main Content */}
-      <main className="flex-1 min-w-0 px-6 md:px-12 pb-24 pt-8">
+      <main className="flex-1 min-w-0 px-6 md:px-12 pb-28 lg:pb-24 pt-8">
 
         {/* Hero Section */}
         <section className="max-w-5xl mx-auto mb-16">

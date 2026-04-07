@@ -496,7 +496,7 @@ function AppLayout({ children }) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 py-4">
+          <div className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 py-4" dir={language === 'he' ? 'rtl' : 'ltr'}>
             <nav className="flex flex-col gap-2 px-8">
               <Link
                 to={createPageUrl("Home")}
