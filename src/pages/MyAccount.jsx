@@ -295,7 +295,7 @@ export default function MyAccount() {
                   </div>
 
                   {/* Metrics list */}
-                  <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2" dir="rtl">
+                  <div className="space-y-4 pr-2" dir="rtl">
                     {latestReport?.domain_scores ? (() => {
                       const entries = Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
                         const raw = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
