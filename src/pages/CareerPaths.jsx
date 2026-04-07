@@ -151,10 +151,10 @@ export default function CareerPaths() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50" dir="rtl">
+    <div className="min-h-screen bg-slate-50 lg:flex" dir="rtl">
 
       {/* Desktop Sidebar */}
-      <aside className="bg-white h-screen w-64 fixed right-0 top-0 z-40 hidden lg:flex flex-col pt-24 pb-6 border-l border-slate-100 shadow-sm">
+      <aside className="bg-white w-64 hidden lg:flex flex-col flex-shrink-0 sticky top-[73px] self-start h-[calc(100vh-73px)] pt-6 pb-6 border-l border-slate-100 shadow-sm overflow-y-auto">
         <div className="px-5 mb-8">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-full bg-[#FF8F00] flex items-center justify-center text-white flex-shrink-0 shadow-md">
@@ -201,7 +201,7 @@ export default function CareerPaths() {
       </aside>
 
       {/* Main Content */}
-      <main className="lg:mr-64 min-h-screen px-6 md:px-12 pb-24 pt-28">
+      <main className="flex-1 min-w-0 px-6 md:px-12 pb-24 pt-8">
 
         {/* Hero Section */}
         <section className="max-w-5xl mx-auto mb-16">
