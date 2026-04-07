@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { QuestionnaireResponse } from "@/entities/QuestionnaireResponse";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -578,11 +578,14 @@ export default function Questionnaire() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoginRequired, setIsLoginRequired] = useState(false);
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false);
+  const isDataLoadedRef = useRef(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   const questions = language === 'he' ? questionsHe : questionsEn;
   const sectionTitles = language === 'he' ? sectionTitlesHe : sectionTitlesEn;
+
+
 
   const loadExistingResponses = useCallback(async (currentUser) => {
     try {
@@ -591,18 +594,27 @@ export default function Questionnaire() {
         status: 'in_progress',
         version: 'V8_B2B'
       }, '-updated_date', 1);
-//
+
       if (existingResponses.length > 0) {
         const savedResponse = existingResponses[0];
-          console.log('LOADED:', {
-          responsesCount: Object.keys(savedResponse.responses || {}).length,
-          responses: savedResponse.responses
-        });
-        setPersonalInfo(savedResponse.personal_info || {});
-        setResponses(savedResponse.responses || {});
-        setOptionalComment(savedResponse.optional_comment || '');
-        setSavedResponseId(savedResponse.id);
+        const loadedPersonalInfo = savedResponse.personal_info || {};
+        const loadedResponses = savedResponse.responses || {};
+        const loadedComment = savedResponse.optional_comment || '';
+        const loadedId = savedResponse.id;
         const savedStep = savedResponse.current_step;
+
+        // Clean null values from responses (DB stores unset as null, we need them absent)
+        const cleanResponses = {};
+        for (const [key, val] of Object.entries(loadedResponses)) {
+          if (val !== null && val !== undefined) {
+            cleanResponses[key] = val;
+          }
+        }
+
+        setPersonalInfo(loadedPersonalInfo);
+        setResponses(cleanResponses);
+        setOptionalComment(loadedComment);
+        setSavedResponseId(loadedId);
         if (savedStep !== undefined && savedStep !== null) {
           setCurrentStep(Math.max(0, savedStep));
         } else {
@@ -610,7 +622,7 @@ export default function Questionnaire() {
         }
       }
     } catch (error) {
-      console.error('Error loading existing responses:', error);
+      // Error loading
     }
   }, []);
 
@@ -622,12 +634,28 @@ export default function Questionnaire() {
     } catch (error) {
       setIsLoginRequired(true);
     }
+    // Don't set isLoading=false here directly — we need React to process
+    // the setState calls from loadExistingResponses first.
+    // Use a flag to trigger it in the next render cycle.
     setIsLoading(false);
   }, [loadExistingResponses]);
 
   useEffect(() => {
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
+
+  // This effect marks loading as truly complete AFTER the loaded data
+  // has been committed to state (next render cycle after isLoading=false).
+  useEffect(() => {
+    if (!isLoading && user) {
+      // Use requestAnimationFrame to ensure this runs after React
+      // has flushed all state updates from loadExistingResponses
+      const rafId = requestAnimationFrame(() => {
+        isDataLoadedRef.current = true;
+      });
+      return () => cancelAnimationFrame(rafId);
+    }
+  }, [isLoading, user]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -697,76 +725,68 @@ export default function Questionnaire() {
     return () => {
       document.removeEventListener('click', handleClick, true);
     };
-  }, [shouldBlockNavigation, savedResponseId, user, personalInfo]);
+  }, [shouldBlockNavigation, savedResponseId, user, personalInfo, responses, optionalComment, language]);
 
-  const autoSaveProgress = useCallback(async (stepOverride) => {
-    if (!user) return;
+  // הפונקציה מקבלת את כל הערכים ישירות - אין תלות ב-closure או refs
+  const saveToBackend = useCallback(async (currentResponses, currentPersonalInfo, currentComment, currentSavedId, currentUser, stepToSave) => {
+    if (!currentUser) return;
+    if (!currentPersonalInfo && !currentResponses && !currentComment) return;
+
+    const hasData = Object.keys(currentResponses || {}).length > 0 ||
+                    Object.keys(currentPersonalInfo || {}).length > 0 ||
+                    (currentComment || '').trim().length > 0;
+    if (!hasData) return;
+
+    const data = {
+      personal_info: { ...(currentPersonalInfo || {}), email: currentUser.email },
+      responses: currentResponses || {},
+      optional_comment: currentComment || '',
+      data_usage_consent: (currentPersonalInfo || {}).data_usage_consent || false,
+      language: language,
+      version: 'V8_B2B',
+      status: 'in_progress',
+      current_step: stepToSave ?? 0
+    };
 
     try {
-      // const hasResponses = Object.keys(responses).length > 0;
-      // const hasPersonalInfo = personalInfo.full_name?.trim().length > 0;
-      // const hasComment = optionalComment.trim().length > 0;
-    const hasPersonalInfo = Object.keys(personalInfo).length > 0;
-    const hasResponses = Object.keys(responses).length > 0;
-    const hasComment = optionalComment.trim().length > 0;
-    console.log('autoSave running:', { hasPersonalInfo, hasResponses, hasComment, savedResponseId, responsesCount: Object.keys(responses).length });
-
-      if (!hasPersonalInfo && !hasResponses && !hasComment) return;
-
-      const stepToSave = stepOverride !== undefined ? stepOverride : currentStep;
-
-      const data = {
-        personal_info: { ...personalInfo, email: user.email },
-        responses: responses,
-        optional_comment: optionalComment,
-        data_usage_consent: personalInfo.data_usage_consent || false,
-        language: language,
-        version: 'V8_B2B',
-        status: 'in_progress',
-        current_step: stepToSave
-      };
-
-      if (savedResponseId) {
-    await QuestionnaireResponse.update(savedResponseId, data);
-    console.log('SAVED SUCCESSFULLY', data.responses);
-  } else {
-    const newResponse = await QuestionnaireResponse.create(data);
-    setSavedResponseId(newResponse.id);
-    console.log('CREATED SUCCESSFULLY', newResponse.id);
-  }
+      if (currentSavedId) {
+        await QuestionnaireResponse.update(currentSavedId, data);
+      } else {
+        const newResponse = await QuestionnaireResponse.create(data);
+        setSavedResponseId(newResponse.id);
+      }
     } catch (error) {
-      // Silently fail auto-save to avoid console logging
+      // Silently fail
     }
-  }, [user, personalInfo, responses, optionalComment, language, savedResponseId, currentStep]);
+  }, [language]);
 
   useEffect(() => {
-    if (user && currentStep >= 0) {
-      const hasData = Object.keys(responses).length > 0 || 
-                     Object.keys(personalInfo).length > 0 || 
-                     optionalComment.trim().length > 0;
-      
-      if (hasData) {
-        // שמור מיידית אם הועלה קובץ CV, אחרת עם השהייה
-        const delay = personalInfo.cv_file_url ? 0 : 2000;
-        const timeoutId = setTimeout(() => {
-          autoSaveProgress();
-        }, delay);
+    if (!user || currentStep < 0 || isLoading) return;
+    // Don't save until loadExistingResponses has finished - prevents overwriting with empty state
+    if (!isDataLoadedRef.current) return;
 
-        return () => clearTimeout(timeoutId);
-      }
-    }
-  }, [user, responses, personalInfo, optionalComment, currentStep, autoSaveProgress]);
+    const hasData = Object.keys(responses).length > 0 ||
+                    Object.keys(personalInfo).length > 0 ||
+                    optionalComment.trim().length > 0;
+    if (!hasData) return;
+
+    const timeoutId = setTimeout(() => {
+      saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, currentStep);
+    }, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }, [user, responses, personalInfo, optionalComment, currentStep, savedResponseId, saveToBackend, isLoading]);
 
   const handleLogin = () => {
     base44.auth.redirectToLogin(window.location.href);
   };
 
-  const updateResponse = (questionNumber, value) => {
-    setResponses((prev) => ({
-      ...prev,
-      [`q${questionNumber}`]: value
-    }));
-  };
+const updateResponse = (questionNumber, value) => {
+  setResponses((prev) => ({
+    ...prev,
+    [`q${questionNumber}`]: value
+  }));
+};
 
   const validatePersonalInfo = () => {
     if (!personalInfo.full_name?.trim()) {
@@ -839,14 +859,14 @@ export default function Questionnaire() {
     }
     const newStep = Math.min(currentStep + 1, 6);
     setCurrentStep(newStep);
-    autoSaveProgress(newStep);
+    saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, newStep);
     window.scrollTo(0, 0);
   };
 
   const prevStep = () => {
     const newStep = Math.max(currentStep - 1, -1);
     setCurrentStep(newStep);
-    if (newStep >= 0) autoSaveProgress(newStep);
+    if (newStep >= 0) saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, newStep);
     window.scrollTo(0, 0);
   };
 
@@ -882,10 +902,7 @@ export default function Questionnaire() {
     };
       if (savedResponseId) {
         await QuestionnaireResponse.update(savedResponseId, saveData);
-      } else {
-        const newResponse = await QuestionnaireResponse.create(saveData);
-        setSavedResponseId(newResponse.id);
-      }
+      } 
     } catch (e) {
       console.error('CV immediate save failed:', e);
     }
@@ -1093,7 +1110,7 @@ export default function Questionnaire() {
                 {[0, 1, 2, 3, 4, 5, 6].map((step) => (
                   <button
                     key={step}
-                    onClick={() => { setCurrentStep(step); autoSaveProgress(step); }}
+                    onClick={() => { setCurrentStep(step); saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, step); }}
                     disabled={step === currentStep}
                     className={`w-8 h-8 rounded-full text-sm font-medium transition-all ${
                       step === currentStep
