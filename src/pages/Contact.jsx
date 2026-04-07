@@ -121,7 +121,7 @@ export default function Contact() {
           role: "בעלים ומייסד", 
           img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/527cad406_WhatsApp_Image_2026-04-07_at_122014-removebg-preview.png",
           // יוסי מצולם מאוד מקרוב - לכן הקטנתי את הסקייל
-          styles: "scale-[0.8] object-[center_30%]" 
+          styles: "scale-[1] object-[center_30%]" 
         },
         { 
           name: "ליה ליין", 
