@@ -677,8 +677,8 @@ function AppLayout({ children }) {
             </p>
             <p className="text-xs text-slate-400 mt-1">
               {language === 'he' ? 'האתר נבנה על ידי ' : 'Website built by '}
-              <a href="https://roeielba.com/" target="_blank" rel="noopener noreferrer" className="text-[#FF8F00] hover:underline">
-                {language === 'he' ? 'רועי אלבה' : 'Roei Elba'}
+              <a href="https://portfolio-pi-six-ylo5chsg08.vercel.app/dashboard" target="_blank" rel="noopener noreferrer" className="text-[#FF8F00] hover:underline">
+                {language === 'he' ? 'גיא פרנסס' : 'Guy Frances'}
               </a>
             </p>
           </div>
