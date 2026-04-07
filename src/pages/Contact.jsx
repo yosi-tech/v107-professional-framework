@@ -123,7 +123,7 @@ export default function Contact() {
                 <div className="relative w-48 h-48 mb-8">
                   <div className="absolute inset-0 bg-[#FF8F00]/10 rounded-full scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg relative z-10">
-                    <img className={`w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 ${name === "ליה ליין" ? "object-contain scale-[1.94] object-[center_80%]" : name === "גיא פרנסס" ? "object-contain scale-[1.94] object-center" : "object-cover"}`} src={img} alt={name} />
+                    <img className={`w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 ${name === "ליה ליין" ? "object-contain scale-[1.94] object-[center_80%]" : name === "גיא פרנסס" ? "object-contain scale-[1.94] object-center" : "object-contain scale-[0.85] object-center"}`} src={img} alt={name} />
                   </div>
                 </div>
                 <div className="text-center">
