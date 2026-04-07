@@ -9,9 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X, Tag } from "lucide-react";
+import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X, Tag, Lock } from "lucide-react";
 import { useTranslation } from "@/components/i18n/useTranslation";
 import MemberCard from "@/components/payment/MemberCard";
+import OrderSummary from "@/components/payment/OrderSummary";
 
 const ReportInfoModal = ({ isOpen, onClose }) => {
   const { language } = useTranslation();
@@ -328,11 +329,18 @@ export default function Payment() {
   const CurrentProductIcon = productDetails[product]?.icon || Star;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-900">{language === 'he' ? 'תשלום מאובטח' : 'Secure Payment'}</h1>
-          <p className="mt-2 text-lg text-gray-600">{language === 'he' ? 'צעד אחד לפני קבלת התוצרים שלך' : 'One step before receiving your products'}</p>
+    <div className="min-h-screen bg-slate-50 pt-12 pb-20 px-4 md:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
+      <div className="max-w-5xl mx-auto">
+        {/* Page Header */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-black text-slate-900 tracking-tighter mb-2">
+            {language === 'he' ? 'עמוד סליקה מאובטח' : 'Secure Checkout'}
+          </h1>
+          <p className="text-slate-500 max-w-md">
+            {language === 'he'
+              ? 'השלם את רכישת החבילה שלך ל-v107 AI והתחל לעצב את העתיד המקצועי שלך עוד היום.'
+              : 'Complete your v107 AI package purchase and start shaping your professional future today.'}
+          </p>
         </div>
 
         {!user && (
@@ -344,23 +352,35 @@ export default function Payment() {
             </AlertDescription>
           </Alert>
         )}
-        
 
+        {/* 12-column grid layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          {/* LEFT: Payment section (7 cols) */}
+          <div className="lg:col-span-7 space-y-10">
+            <section className="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+              {/* Section title */}
+              <div className="mb-8">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Lock className="w-5 h-5 text-[#FF8F00]" />
+                  {language === 'he' ? 'פרטי תשלום' : 'Payment Details'}
+                </h2>
+              </div>
 
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Payment Form */}
-          <Card className="shadow-xl">
-            <CardHeader>
-              <CardTitle className="text-2xl">{language === 'he' ? 'תשלום מאובטח' : 'Secure Payment'}</CardTitle>
-            </CardHeader>
-            <CardContent>
+              {/* Member Card */}
+              <MemberCard
+                userName={user?.full_name}
+                planName={productDetails[product]?.title}
+              />
+
+              {/* Pre-handshake: coupon + terms + button */}
               {!handshakeData ? (
                 <div className="space-y-6">
-                  <div className="text-center pt-4">
+                  <div className="text-center">
                     <button
                       type="button"
                       onClick={() => setIsReportInfoOpen(true)}
-                      className="text-blue-600 hover:text-blue-800 underline text-sm mb-6"
+                      className="text-blue-600 hover:text-blue-800 underline text-sm"
                     >
                       {language === 'he' ? '📋 רוצה לדעת יותר על התהליך המקצועי?' : '📋 Want to know more about the professional process?'}
                     </button>
@@ -413,12 +433,7 @@ export default function Payment() {
                             </p>
                           </div>
                         </div>
-                        <Button
-                          type="button"
-                          onClick={removeCoupon}
-                          variant="ghost"
-                          size="sm"
-                        >
+                        <Button type="button" onClick={removeCoupon} variant="ghost" size="sm">
                           <X className="w-4 h-4" />
                         </Button>
                       </div>
@@ -426,11 +441,7 @@ export default function Payment() {
                   )}
 
                   <div className="flex items-start space-x-2 space-x-reverse">
-                    <Checkbox 
-                      id="terms" 
-                      checked={termsAccepted}
-                      onCheckedChange={setTermsAccepted} 
-                    />
+                    <Checkbox id="terms" checked={termsAccepted} onCheckedChange={setTermsAccepted} />
                     <div className="grid gap-1.5 leading-none">
                       <label htmlFor="terms" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         {language === 'he' ? (
@@ -441,12 +452,12 @@ export default function Payment() {
                       </label>
                     </div>
                   </div>
-                  
-                  <Button 
+
+                  <Button
                     onClick={initializePayment}
-                    size="lg" 
+                    size="lg"
                     disabled={isLoadingHandshake || !termsAccepted}
-                    className="w-full bg-gradient-to-l from-blue-600 to-purple-600 text-lg py-7 mt-6"
+                    className="w-full bg-[#FF8F00] hover:bg-[#e07e00] text-white text-lg py-7 rounded-xl mt-4"
                   >
                     {isLoadingHandshake ? (
                       <>
@@ -454,18 +465,13 @@ export default function Payment() {
                         {language === 'he' ? 'מכין תשלום...' : 'Preparing payment...'}
                       </>
                     ) : (
-                      <>
-                        {language === 'he' ? `המשך לתשלום ${price}₪` : `Continue to Payment ${price}₪`}
-                      </>
+                      language === 'he' ? `המשך לתשלום ${price}₪` : `Continue to Payment ${price}₪`
                     )}
                   </Button>
                 </div>
               ) : (
+                /* Post-handshake: Tranzila iframe */
                 <div className="space-y-4">
-                  <MemberCard
-                    userName={user?.full_name}
-                    planName={productDetails[product]?.title}
-                  />
                   <iframe
                     name="tranzila-frame"
                     id="tranzila-frame"
@@ -479,76 +485,32 @@ export default function Payment() {
                       borderRadius: '8px'
                     }}
                   />
-                  
-                  <p className="text-sm text-gray-600 text-center">
+                  <p className="text-sm text-slate-500 text-center">
                     {language === 'he' ? 'ממתין לתשלום...' : 'Waiting for payment...'}
                   </p>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </section>
+          </div>
 
-          {/* Order Summary */}
-          <div className="space-y-8">
-            <Card className="shadow-xl bg-gray-100">
-              <CardHeader>
-                <CardTitle className="text-2xl">{language === 'he' ? 'סיכום הזמנה' : 'Order Summary'}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center text-lg">
-                  <span className="font-medium flex items-center gap-2">
-                    <CurrentProductIcon className="w-5 h-5" />
-                    {productDetails[product]?.title}
-                  </span>
-                  <span>{originalPrice}₪</span>
-                </div>
-                
-                {isExpress && (
-                    <div className="flex justify-between items-center text-lg text-orange-600">
-                    <span className="font-medium flex items-center gap-2">
-                        <Zap className="w-5 h-5" />
-                        {language === 'he' ? 'אספקה מואצת (3 ימי עבודה)' : 'Express Delivery (3 business days)'}
-                    </span>
-                    <span>{language === 'he' ? 'כלול במחיר' : 'Included'}</span>
-                    </div>
-                )}
-
-                {appliedCoupon && (
-                  <div className="flex justify-between items-center text-lg text-green-600">
-                    <span className="font-medium flex items-center gap-2">
-                      <Tag className="w-5 h-5" />
-                      {language === 'he' ? 'הנחת קופון' : 'Coupon Discount'}
-                    </span>
-                    <span>-{originalPrice - price}₪</span>
-                  </div>
-                )}
-                
-                <div className="border-t border-gray-300 my-4"></div>
-                <div className="flex justify-between items-center text-3xl font-bold">
-                  <span>{language === 'he' ? 'סה"כ לתשלום:' : 'Total:'}</span>
-                  <span>{price}₪</span>
-                </div>
-                
-                <div className="text-sm text-gray-600 mt-4">
-                  <p className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    {productDetails[product]?.deliveryText}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="text-center text-gray-600 flex items-center justify-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-green-600" />
-                <span>{language === 'he' ? 'תשלום מאובטח בתקן PCI DSS' : 'Secure Payment PCI DSS Compliant'}</span>
-            </div>
+          {/* RIGHT: Order Summary sidebar (5 cols) */}
+          <div className="lg:col-span-5">
+            <OrderSummary
+              language={language}
+              productTitle={productDetails[product]?.title}
+              originalPrice={originalPrice}
+              price={price}
+              appliedCoupon={appliedCoupon}
+              isExpress={isExpress}
+              deliveryText={productDetails[product]?.deliveryText}
+            />
           </div>
         </div>
       </div>
-      
-      <ReportInfoModal 
-        isOpen={isReportInfoOpen} 
-        onClose={() => setIsReportInfoOpen(false)} 
+
+      <ReportInfoModal
+        isOpen={isReportInfoOpen}
+        onClose={() => setIsReportInfoOpen(false)}
       />
     </div>
   );
