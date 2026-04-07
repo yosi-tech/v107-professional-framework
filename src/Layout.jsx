@@ -390,8 +390,29 @@ function AppLayout({ children }) {
       
       <header className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl transition-all duration-300">
         <div className="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+          {/* Mobile Hamburger - shown first in DOM so it appears on the right in RTL */}
+          <div className="lg:hidden flex items-center gap-2 order-first">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6 text-slate-700" />
+              ) : (
+                <Menu className="w-6 h-6 text-slate-700" />
+              )}
+            </button>
+            {!isLoadingUser && user && hasAbandonedQuestionnaire && (
+              <Link to={createPageUrl("Questionnaire")}>
+                <button className="bg-[#FF8F00] text-white text-xs px-3 py-1.5 rounded-full font-bold">
+                  {language === 'he' ? 'המשך' : 'Continue'}
+                </button>
+              </Link>
+            )}
+          </div>
+
           {/* Logo */}
-          <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+          <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity order-last lg:order-first">
             <span className="text-2xl font-black tracking-tighter text-slate-900 flex items-center">
               107<span className="text-[#FF8F00]">V</span>
             </span>
@@ -469,26 +490,7 @@ function AppLayout({ children }) {
             )}
           </div>
 
-          {/* Mobile Quick Actions */}
-          <div className="lg:hidden flex items-center gap-2">
-            {!isLoadingUser && user && hasAbandonedQuestionnaire && (
-              <Link to={createPageUrl("Questionnaire")}>
-                <button className="bg-[#FF8F00] text-white text-xs px-3 py-1.5 rounded-full font-bold">
-                  {language === 'he' ? 'המשך' : 'Continue'}
-                </button>
-              </Link>
-            )}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6 text-slate-700" />
-              ) : (
-                <Menu className="w-6 h-6 text-slate-700" />
-              )}
-            </button>
-          </div>
+          {/* Desktop CTA spacer for mobile - keep flex layout balanced */}
         </div>
 
         {/* Divider */}
