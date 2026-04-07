@@ -117,17 +117,13 @@ export default function Contact() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
             {[
               { name: "יוסי אלון", role: "בעלים ומייסד", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC613OU3Qh5NA4gS-tn86H7wexIYrKpyyWt5aRJtIC8Gf9hDFa93gftXUEBZLemAOAWy8eK6liiCQ8or7qJcjdbnA7sCnKgHl3N1rf_Lm2i-R8sI1whvZ1dEWnbBUnl-SbVcJIJviFdqZku8Js02_0jLbaPJ5EenfvxB4BejnXJDC1Tw7f7yBBFyEzLhUo7yZQiY4BCI05oilR_9OAoOhAnHp1QdOk-XgU1SrGejJnQYCVJX33_zeguFNFEERBzOXZ0ZSZWxNCqyIwp" },
-              { name: "ליה ליין", role: 'סמנכ"לית שיווק ומכירות', img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBZCKdsE2wWnjet72v6dDv6Igb5DzMCn_66nm1lUPqH4fTiB7hp-BnUSXYWSAuP6rQx6S_JUOH-UPHk7T5d6UH0pc2wDkykz_VwtfjHObzeCHeEYHrtt6a_LJOHDWHYoE-_DjpHtKZVz3UXxmaveuFwdOdmq8pfAPquFryCk9SA9QmfF9vsoiLTiBHJfFGWz4pyp9q7n1fq6K0DVc7vTheC0upbyyGIS8FWbvXHJ_82RdxWJAmeUoK4Nk8RvgvEodFdgzDEUeJyTcto" },
-{
-  name: "גיא פרנסס",
-  role: "ראש מחלקת מערכות מידע",
-  img: "https://drive.google.com/thumbnail?id=1wD4f3Sl2G3BXZtZODBfKWAbG6ZQd-mRn&sz=w1000"
-}            ].map(({ name, role, img }) => (
+              { name: "ליה ליין", role: 'סמנכ"לית שיווק ומכירות', img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/5fe161b9b_3-removebg-preview.png", special: true },
+              { name: "גיא פרנסס", role: "ראש מחלקת מערכות מידע", img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/9d28f27d2_1-removebg-preview.png", special: true }            ].map(({ name, role, img, special }) => (
               <div key={name} className="flex flex-col items-center group">
                 <div className="relative w-48 h-48 mb-8">
                   <div className="absolute inset-0 bg-[#FF8F00]/10 rounded-full scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg relative z-10">
-                    <img className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src={img} alt={name} />
+                    <img className={`w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 ${special && name === "ליה ליין" ? "object-contain scale-[1.94] object-[center_80%]" : special ? "object-contain scale-[1.94] object-center" : "object-cover"}`} src={img} alt={name} />
                   </div>
                 </div>
                 <div className="text-center">
