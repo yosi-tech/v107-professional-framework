@@ -104,36 +104,61 @@ export default function Contact() {
 
       {/* Team */}
       <section className="bg-slate-50 py-32 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="absolute -left-20 top-40 w-64 h-64 bg-[#FF8F00]/5 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -right-20 bottom-0 w-80 h-80 bg-[#FF8F00]/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold tracking-tight text-slate-900 relative inline-block">
-              <span className="relative z-10">הצוות שלנו</span>
-              <div className="absolute -top-4 -right-4 w-12 h-12 bg-[#FF8F00]/20 rounded-full blur-xl"></div>
-            </h2>
-            <div className="w-24 h-1.5 bg-[#FF8F00] mx-auto mt-6 rounded-full"></div>
+  <div className="max-w-7xl mx-auto px-8">
+    <div className="absolute -left-20 top-40 w-64 h-64 bg-[#FF8F00]/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="absolute -right-20 bottom-0 w-80 h-80 bg-[#FF8F00]/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="text-center mb-20">
+      <h2 className="text-5xl font-bold tracking-tight text-slate-900 relative inline-block">
+        <span className="relative z-10">הצוות שלנו</span>
+        <div className="absolute -top-4 -right-4 w-12 h-12 bg-[#FF8F00]/20 rounded-full blur-xl"></div>
+      </h2>
+      <div className="w-24 h-1.5 bg-[#FF8F00] mx-auto mt-6 rounded-full"></div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+      {[
+        { 
+          name: "יוסי אלון", 
+          role: "בעלים ומייסד", 
+          img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/527cad406_WhatsApp_Image_2026-04-07_at_122014-removebg-preview.png",
+          // יוסי מצולם מאוד מקרוב - לכן הקטנתי את הסקייל
+          styles: "scale-[0.8] object-[center_30%]" 
+        },
+        { 
+          name: "ליה ליין", 
+          role: 'סמנכ"לית שיווק ומכירות', 
+          img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/5fe161b9b_3-removebg-preview.png",
+          // ליה מצולמת מרחוק - הגדלה ומיקום למטה יותר
+          styles: "scale-[1.9] object-[center_15%]" 
+        },
+        { 
+          name: "גיא פרנסס", 
+          role: "ראש מחלקת מערכות מידע", 
+          img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/9d28f27d2_1-removebg-preview.png",
+          // גיא מרחוק - הגדלה ומיקום שיתאים לליה
+          styles: "scale-[1.94] object-[center_20%]" 
+        }
+      ].map(({ name, role, img, styles }) => (
+        <div key={name} className="flex flex-col items-center group">
+          <div className="relative w-48 h-48 mb-8">
+            <div className="absolute inset-0 bg-[#FF8F00]/10 rounded-full scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg relative z-10 bg-white">
+              {/* השתמשנו במשתנה styles כאן כדי להחיל את העיצוב הייחודי לכל אחד */}
+              <img 
+                className={`w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 object-contain ${styles}`} 
+                src={img} 
+                alt={name} 
+              />
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-            {[
-              { name: "יוסי אלון", role: "בעלים ומייסד", img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/527cad406_WhatsApp_Image_2026-04-07_at_122014-removebg-preview.png", special: true },
-              { name: "ליה ליין", role: 'סמנכ"לית שיווק ומכירות', img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/5fe161b9b_3-removebg-preview.png", special: true },
-              { name: "גיא פרנסס", role: "ראש מחלקת מערכות מידע", img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/9d28f27d2_1-removebg-preview.png", special: true }            ].map(({ name, role, img, special }) => (
-              <div key={name} className="flex flex-col items-center group">
-                <div className="relative w-48 h-48 mb-8">
-                  <div className="absolute inset-0 bg-[#FF8F00]/10 rounded-full scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg relative z-10">
-<img className={`w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 ${name === "ליה ליין" ? "object-contain scale-[1.94] object-[center_90%]" : name === "גיא פרנסס" ? "object-contain scale-[1.94] object-center" : "object-contain scale-[1] object-center"}`} src={img} alt={name} />                  </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-xl font-bold text-slate-900 mb-1">{name}</h3>
-                  <p className="text-[#FF8F00] font-medium">{role}</p>
-                </div>
-              </div>
-            ))}
+          <div className="text-center">
+            <h3 className="text-xl font-bold text-slate-900 mb-1">{name}</h3>
+            <p className="text-[#FF8F00] font-medium">{role}</p>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Social */}
       <section className="max-w-7xl mx-auto px-8 py-32 text-center">
