@@ -7,26 +7,22 @@ export default function About() {
     <main className="pt-24" dir="rtl">
 
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-8 py-20 text-center">
-        <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-8 text-slate-900">איך זה עובד?</h1>
-        <div className="relative w-full aspect-video md:aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl bg-slate-200 group cursor-pointer">
-          <img
-            alt="futuristic digital visualization of data streams and neural networks"
-            className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM6651Mg4AS-3--uSTDOJqbN0cmpXdP1bHrohx3dZJ8Jya8jDbpjrGJllxC5J3rOL3FJkEh6CAA7efGvnFVQXjixROaITKaJhkTQvW7Kv04EWcQoJ7V_4vynivJy5AZ2BAAPTeHwFSraZaSDybtDXxvjkJJNwzT3bjPRbLAV_buev3oc1HTH7nmzwTNF_uZmCymHA7_5EPy_ugVyb6i6LNs5AauDOMOcGuY0fNPq75BIbRHw7a879bafaEk79t06UCPrWh92KA9OIi"
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-24 h-24 bg-[#ff8f00]/90 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-transform group-hover:scale-110">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12" viewBox="0 0 24 24" fill="white">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-          </div>
-          <div className="absolute bottom-6 right-6 text-right">
-            <p className="text-white text-sm font-bold uppercase tracking-widest opacity-80">צפה בסרטון ההסבר</p>
-          </div>
-        </div>
-      </section>
+<section className="max-w-7xl mx-auto px-8 py-20 text-center">
+  <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-8 text-slate-900">
+    איך זה עובד?
+  </h1>
+
+  <div className="relative w-full aspect-video md:aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl bg-slate-200">
+    
+    <iframe
+      src="https://drive.google.com/file/d/1Dn073v9oL3M40--1lSdv03OnBXttTJin/preview"
+      className="w-full h-full"
+      allow="autoplay"
+      allowFullScreen
+    ></iframe>
+
+  </div>
+</section>
 
       {/* What is V107 */}
       <section className="bg-white py-32 relative overflow-hidden">
