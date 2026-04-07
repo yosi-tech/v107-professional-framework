@@ -127,7 +127,7 @@ export default function Contact() {
           name: "ליה ליין", 
           role: 'סמנכ"לית שיווק ומכירות', 
           img: "https://media.base44.com/images/public/68beedf299352a857559c5a4/5fe161b9b_3-removebg-preview.png",
-        styles: "scale-[1.9] translate-x-[10px] translate-y-[15px]"
+        styles: "scale-[1.9] translate-x-[5%] translate-y-[8%]"
         },
         { 
           name: "גיא פרנסס", 
