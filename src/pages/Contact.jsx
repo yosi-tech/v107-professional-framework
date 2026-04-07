@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Loader2, CheckCircle } from "lucide-react";
+import { Loader2, CheckCircle, Facebook, Instagram, Linkedin } from "lucide-react";
 
 export default function Contact() {
   const [form, setForm] = useState({ firstName: "", lastName: "", subject: "", message: "" });
@@ -163,13 +163,13 @@ export default function Contact() {
         <h2 className="text-3xl font-bold text-slate-900 mb-8">עקבו אחרינו במדיה החברתית</h2>
         <div className="flex justify-center gap-12">
           {[
-            { label: "Instagram", icon: "📷" },
-            { label: "Facebook", icon: "👥" },
-            { label: "LinkedIn", icon: "💼" },
-          ].map(({ label, icon }) => (
-            <a key={label} className="flex flex-col items-center group" href="#">
-              <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-[#FF8F00] group-hover:bg-[#FF8F00] group-hover:text-white transition-all duration-300 shadow-sm text-2xl">
-                {icon}
+            { label: "Instagram", icon: Instagram, href: "https://www.instagram.com/v107.global/" },
+            { label: "Facebook", icon: Facebook, href: "https://www.facebook.com/profile.php?id=61575283498498" },
+            { label: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/company/v107-global/" },
+          ].map(({ label, icon: Icon, href }) => (
+            <a key={label} className="flex flex-col items-center group" href={href} target="_blank" rel="noopener noreferrer">
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-[#FF8F00] group-hover:bg-[#FF8F00] group-hover:text-white transition-all duration-300 shadow-sm">
+                <Icon className="w-7 h-7" />
               </div>
               <span className="mt-3 font-semibold text-slate-500">{label}</span>
             </a>
