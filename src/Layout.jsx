@@ -582,7 +582,7 @@ function AppLayout({ children }) {
         {children}
       </main>
       
-      <footer className="bg-slate-50 border-t border-slate-200 w-full py-12">
+      <footer className="bg-slate-50 border-t border-slate-200 w-full py-12 pb-20 xl:pb-12">
         <div className="max-w-7xl mx-auto px-12">
           {/* Main footer row */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
