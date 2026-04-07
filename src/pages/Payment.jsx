@@ -461,6 +461,29 @@ export default function Payment() {
                 </div>
               ) : (
                 <div className="space-y-4">
+                  {/* Order summary card above iframe */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium flex items-center gap-2 text-slate-800">
+                        <CurrentProductIcon className="w-5 h-5" />
+                        {productDetails[product]?.title}
+                      </span>
+                    </div>
+                    {appliedCoupon && (
+                      <div className="flex justify-between items-center text-sm text-green-600 mb-1">
+                        <span className="flex items-center gap-1">
+                          <Tag className="w-3.5 h-3.5" />
+                          {language === 'he' ? 'הנחת קופון' : 'Coupon Discount'} ({appliedCoupon.code})
+                        </span>
+                        <span>-{originalPrice - price}₪</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-lg font-bold text-slate-900 border-t border-slate-200 pt-2 mt-2">
+                      <span>{language === 'he' ? 'סה"כ לתשלום:' : 'Total:'}</span>
+                      <span>{price}₪</span>
+                    </div>
+                  </div>
+
                   <iframe
                     name="tranzila-frame"
                     id="tranzila-frame"
