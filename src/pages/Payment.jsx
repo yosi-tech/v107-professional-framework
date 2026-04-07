@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X, Tag } from "lucide-react";
 import { useTranslation } from "@/components/i18n/useTranslation";
+import MemberCard from "@/components/payment/MemberCard";
 
 const ReportInfoModal = ({ isOpen, onClose }) => {
   const { language } = useTranslation();
@@ -461,6 +462,10 @@ export default function Payment() {
                 </div>
               ) : (
                 <div className="space-y-4">
+                  <MemberCard
+                    userName={user?.full_name}
+                    planName={productDetails[product]?.title}
+                  />
                   <iframe
                     name="tranzila-frame"
                     id="tranzila-frame"
