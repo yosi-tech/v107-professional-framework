@@ -125,7 +125,7 @@ export default function MyAccount() {
     <div className="min-h-screen bg-slate-50" dir="rtl">
 
       {/* Desktop Sidebar */}
-      <aside className="bg-white w-64 fixed right-0 top-0 bottom-0 z-40 hidden lg:flex flex-col pt-24 pb-6 border-l border-slate-100 shadow-sm overflow-y-auto">
+      <aside className="bg-white w-64 fixed right-0 top-[73px] bottom-0 z-30 hidden lg:flex flex-col pt-6 pb-6 border-l border-slate-100 shadow-sm overflow-y-auto">
         {/* User Info */}
         <div className="px-5 mb-8">
           <div className="flex items-center gap-3">
