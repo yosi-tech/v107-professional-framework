@@ -616,6 +616,7 @@ function AppLayout({ children }) {
               </Link>
             </nav>
 
+
             {/* Copyright */}
             <div className="text-slate-500 text-sm">
               © 2026 v107. {language === 'he' ? 'כל הזכויות שמורות.' : 'All rights reserved.'}
@@ -660,8 +661,9 @@ function AppLayout({ children }) {
 
               <div className="text-slate-500 text-sm space-y-1 text-start md:text-end">
                 <p>{language === 'he' ? 'צריך עזרה?' : 'Need help?'}</p>
-                <p><a href="mailto:support@v107.co.il" className="text-[#FF8F00] hover:underline">support@v107.co.il</a></p>
-                <p><a href="tel:0552134848" className="text-[#FF8F00] hover:underline">055-2134848</a></p>
+                <Link to="/Contact" className="text-[#FF8F00] hover:underline font-medium">
+                  {language === 'he' ? 'צרו קשר כאן' : 'Contact us here'}
+                </Link>
               </div>
             </div>
           </div>
