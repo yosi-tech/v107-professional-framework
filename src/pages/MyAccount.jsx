@@ -122,10 +122,10 @@ export default function MyAccount() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 lg:flex" dir="rtl">
+    <div className="min-h-screen bg-slate-50 xl:flex" dir="rtl">
 
       {/* Desktop Sidebar */}
-      <aside className="bg-white w-64 hidden lg:flex flex-col flex-shrink-0 sticky top-[73px] self-start h-[calc(100vh-73px)] pt-6 pb-6 border-l border-slate-100 shadow-sm overflow-y-auto">
+      <aside className="bg-white w-64 hidden xl:flex flex-col flex-shrink-0 sticky top-[73px] self-start h-[calc(100vh-73px)] pt-6 pb-6 border-l border-slate-100 shadow-sm overflow-y-auto">
         {/* User Info */}
         <div className="px-5 mb-8">
           <div className="flex items-center gap-3">
@@ -186,13 +186,13 @@ export default function MyAccount() {
       </aside>
 
       {/* Mobile Bottom Nav */}
-      <nav className="lg:hidden fixed bottom-0 right-0 left-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+      <nav className="xl:hidden fixed bottom-0 right-0 left-0 z-50 bg-white border-t border-slate-200 shadow-lg">
         <div className="flex items-center justify-evenly py-1.5">
           {NAV_ITEMS.map(({ key, label, icon: Icon, href }) => (
             href ? (
               <Link key={key} to={createPageUrl(href)} className="flex flex-col items-center gap-0.5 min-w-0 px-1 py-1 rounded-lg transition-colors text-slate-400">
-                <Icon className="w-4.5 h-4.5 flex-shrink-0" />
-                <span className="text-[9px] font-medium truncate max-w-[52px] text-center">{label}</span>
+                <Icon className="w-5 h-5 flex-shrink-0" />
+                <span className="text-[10px] font-medium truncate max-w-[56px] text-center">{label}</span>
               </Link>
             ) : (
             <button
@@ -202,8 +202,8 @@ export default function MyAccount() {
                 activeTab === key ? 'text-[#FF8F00]' : 'text-slate-400'
               }`}
             >
-              <Icon className="w-4.5 h-4.5 flex-shrink-0" />
-              <span className="text-[9px] font-medium truncate max-w-[52px] text-center">{label}</span>
+              <Icon className="w-5 h-5 flex-shrink-0" />
+              <span className="text-[10px] font-medium truncate max-w-[56px] text-center">{label}</span>
             </button>
             )
           ))}
@@ -211,7 +211,7 @@ export default function MyAccount() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 min-w-0 pt-8 pb-28 lg:pb-16 px-4 md:px-12 max-w-7xl mx-auto w-full">
+      <main className="flex-1 min-w-0 pt-8 pb-28 xl:pb-16 px-4 md:px-12 max-w-7xl mx-auto w-full">
 
         {/* Header */}
         <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
