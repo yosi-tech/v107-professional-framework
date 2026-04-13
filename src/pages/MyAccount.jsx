@@ -324,8 +324,15 @@ export default function MyAccount() {
                           </div>
                         </div>
                       ));
-                    })() : (
-                  </div>
+                      })() : (
+                      <div className="text-center py-8 text-slate-400">
+                        <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות את מפת העוצמות</p>
+                        <Link to={createPageUrl('Questionnaire')}>
+                          <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
+                        </Link>
+                      </div>
+                      )}
+                      </div>
                 </div>
               </section>
 
