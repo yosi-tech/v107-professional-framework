@@ -420,18 +420,68 @@ export default function MyAccount() {
                   )}
                 </div>
 
-                {/* Recent Questionnaires */}
+                {/* Recent Activities - unified feed */}
                 <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
                   <h2 className="text-xl font-bold text-slate-900 mb-6">פעילויות אחרונות</h2>
                   <div className="space-y-3">
-                    {questionnaireResponses.slice(0, 3).length > 0 ? questionnaireResponses.slice(0, 3).map((r) => (
-                      <div key={r.id} className="p-4 rounded-2xl bg-slate-50 border-r-4 border-slate-300 hover:bg-slate-100 transition-colors">
-                        <h3 className="font-bold text-slate-900 mb-1 text-sm">{getStatusText(r.status)}</h3>
-                        <p className="text-xs text-slate-500">{new Date(r.created_date).toLocaleDateString('he-IL')}</p>
-                      </div>
-                    )) : (
-                      <p className="text-sm text-slate-400 text-center py-4">אין פעילויות עדיין</p>
-                    )}
+                    {(() => {
+                      const activities = [
+                        ...questionnaireResponses.map(r => ({
+                          id: 'q-' + r.id,
+                          type: 'questionnaire',
+                          status: r.status,
+                          date: r.created_date,
+                          label: r.status === 'completed' ? 'שאלון הושלם' : r.status === 'in_progress' ? 'שאלון בתהליך' : 'שאלון נזנח',
+                          icon: r.status === 'completed' ? <CheckCircle className="w-4 h-4 text-green-600" /> : r.status === 'in_progress' ? <Clock className="w-4 h-4 text-blue-600" /> : <AlertCircle className="w-4 h-4 text-orange-500" />,
+                          borderColor: r.status === 'completed' ? 'border-green-400' : r.status === 'in_progress' ? 'border-blue-400' : 'border-orange-400',
+                          link: r.status === 'completed'
+                            ? createPageUrl(`Completion?responseId=${r.id}`)
+                            : (r.status === 'in_progress' || r.status === 'abandoned') ? createPageUrl('Questionnaire') : null,
+                          actionLabel: r.status === 'completed' ? 'צפה באפשרויות' : (r.status === 'in_progress' || r.status === 'abandoned') ? 'המשך למלא' : null,
+                        })),
+                        ...reports.map(r => ({
+                          id: 'r-' + r.id,
+                          type: 'report',
+                          date: r.created_date,
+                          label: `דוח ${r.report_id || 'מקצועי'}`,
+                          icon: <Award className="w-4 h-4 text-purple-600" />,
+                          borderColor: 'border-purple-400',
+                          link: (r.purchased !== false || user?.has_purchased_full_report || user?.has_purchased_answers_download)
+                            ? createPageUrl(`ReportView?reportid=${r.id}`)
+                            : createPageUrl(`Completion?responseId=${r.questionnaire_response_id}`),
+                          actionLabel: (r.purchased !== false || user?.has_purchased_full_report || user?.has_purchased_answers_download) ? 'צפה בדוח' : 'רכוש דוח',
+                        })),
+                        ...paymentOrders.filter(o => o.status === 'paid').map(o => ({
+                          id: 'o-' + o.id,
+                          type: 'order',
+                          date: o.created_date,
+                          label: o.product_type === 'full_report' ? 'רכישת דוח מלא' : o.product_type === 'answers_download' ? 'רכישת הורדת תשובות' : 'רכישת ליווי',
+                          icon: <ShoppingCart className="w-4 h-4 text-green-600" />,
+                          borderColor: 'border-green-400',
+                          link: null,
+                          actionLabel: null,
+                        })),
+                      ];
+                      activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+                      const topActivities = activities.slice(0, 5);
+                      if (topActivities.length === 0) return <p className="text-sm text-slate-400 text-center py-4">אין פעילויות עדיין</p>;
+                      return topActivities.map(a => (
+                        <div key={a.id} className={`p-4 rounded-2xl bg-slate-50 border-r-4 ${a.borderColor} hover:bg-slate-100 transition-colors`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {a.icon}
+                              <h3 className="font-bold text-slate-900 text-sm">{a.label}</h3>
+                            </div>
+                            <p className="text-xs text-slate-400">{new Date(a.date).toLocaleDateString('he-IL')}</p>
+                          </div>
+                          {a.link && a.actionLabel && (
+                            <Link to={a.link}>
+                              <button className="mt-2 w-full text-center text-xs font-bold text-[#FF8F00] hover:underline">{a.actionLabel} ←</button>
+                            </Link>
+                          )}
+                        </div>
+                      ));
+                    })()}
                   </div>
                 </div>
 
