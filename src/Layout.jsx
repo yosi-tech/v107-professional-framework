@@ -389,8 +389,8 @@ function AppLayout({ children }) {
       `}</style>
       
       <header className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl transition-all duration-300">
-        <div className="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
-          {/* Mobile Hamburger - shown first in DOM so it appears on the right in RTL */}
+        <div className="flex items-center w-full px-8 py-4 max-w-7xl mx-auto">
+          {/* Mobile Hamburger */}
           <div className="lg:hidden flex items-center gap-2 order-first">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -411,15 +411,15 @@ function AppLayout({ children }) {
             )}
           </div>
 
-          {/* Logo */}
-          <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity order-last lg:order-first">
+          {/* Logo - right side */}
+          <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity flex-shrink-0">
             <span className="text-2xl font-black tracking-tighter text-slate-900 flex items-center">
               107<span className="text-[#FF8F00]">V</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex gap-8 items-center">
+          {/* Desktop Navigation - centered */}
+          <nav className="hidden lg:flex items-center justify-center flex-1 gap-8">
             <Link
               to={createPageUrl("Home")}
               className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("Home") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
@@ -457,7 +457,10 @@ function AppLayout({ children }) {
                 {language === 'he' ? 'אדמין' : 'Admin'}
               </Link>
             )}
+          </nav>
 
+          {/* Action buttons - left side */}
+          <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
             <Link to={createPageUrl("Questionnaire")}>
               <button className="bg-[#FF8F00] text-white py-2.5 px-6 rounded-full font-bold transition-all hover:scale-105">
                 {hasAbandonedQuestionnaire
@@ -484,7 +487,7 @@ function AppLayout({ children }) {
                 {language === 'he' ? 'התנתק' : 'Logout'}
               </button>
             )}
-          </nav>
+          </div>
         </div>
 
         {/* Mobile Menu Dropdown */}
