@@ -290,35 +290,41 @@ export default function MyAccount() {
                   {/* Metrics list */}
                   <div className="space-y-4 pr-2" dir="rtl">
                     {latestReport?.domain_scores ? (() => {
+                      const domainColorMap = {
+                        resilience: { he: 'חוסן', color: '#FF8F00' },
+                        flexibility: { he: 'גמישות', color: '#0BC5EA' },
+                        leadership: { he: 'מנהיגות', color: '#FF0000' },
+                        communication: { he: 'תקשורת', color: '#FFFC00' },
+                        planning: { he: 'תכנון', color: '#25D366' },
+                        learning: { he: 'למידה', color: '#9146FF' },
+                        vision: { he: 'חזון', color: '#FA1BE4' },
+                        tech: { he: 'טכנולוגיה', color: '#6af8f4' },
+                        technology: { he: 'טכנולוגיה', color: '#6af8f4' },
+                        balance: { he: 'איזון', color: '#25D366' },
+                        change: { he: 'ניהול שינוי', color: '#9146FF' },
+                        networking: { he: 'נטוורקינג', color: '#0BC5EA' },
+                      };
                       const entries = Object.entries(latestReport.domain_scores).slice(0, 8).map(([domain, score]) => {
                         const raw = typeof score === 'object' && score !== null ? (score.score ?? score.percentile ?? 0) : score;
                         const pct = typeof raw === 'number' ? Math.min(100, parseFloat((raw <= 7 ? raw * 100 / 7 : raw).toFixed(1))) : 0;
-                        const isLow = pct < 60;
-                        const barColor = isLow ? '#eab308' : pct >= 75 ? '#22c55e' : '#3b82f6';
-                        return { domain, pct, isLow, barColor };
+                        const mapped = domainColorMap[domain.toLowerCase()] || { he: domain, color: '#94a3b8' };
+                        return { domain, heLabel: mapped.he, pct, barColor: mapped.color };
                       });
-                      return entries.map(({ domain, pct, isLow, barColor }) => (
+                      return entries.map(({ domain, heLabel, pct, barColor }) => (
                         <div key={domain} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
-                          <span className={`font-medium text-sm flex items-center gap-1 ${isLow ? 'text-red-600' : 'text-slate-800'}`}>
-                            {isLow && <span className="text-amber-500 text-xs">▲</span>}
-                            {domain}
+                          <span className="font-medium text-sm flex items-center gap-2 text-slate-800">
+                            <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: barColor }} />
+                            {heLabel}
                           </span>
                           <div className="flex items-center gap-3">
-                            <span className={`text-sm font-bold ${isLow ? 'text-red-600' : 'text-slate-400'}`}>{pct}%</span>
-                            <div className={`w-24 h-2 rounded-full overflow-hidden ${isLow ? 'bg-red-100' : 'bg-slate-100'}`}>
+                            <span className="text-sm font-bold text-slate-500">{pct}%</span>
+                            <div className="w-24 h-2 rounded-full overflow-hidden bg-slate-100">
                               <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: barColor }} />
                             </div>
                           </div>
                         </div>
                       ));
                     })() : (
-                      <div className="text-center py-8 text-slate-400">
-                        <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות את מפת העוצמות</p>
-                        <Link to={createPageUrl('Questionnaire')}>
-                          <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
-                        </Link>
-                      </div>
-                    )}
                   </div>
                 </div>
               </section>
