@@ -263,27 +263,70 @@ export default function MyAccount() {
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
-                  {/* SVG Radar / Pie */}
+                  {/* SVG Pie Chart */}
                   <div className="flex justify-center">
                     <div className="relative w-full max-w-[400px] aspect-square">
-                      <svg className="w-full h-full -rotate-[18deg]" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" fill="none" r="10" stroke="#e2e8f0" strokeDasharray="2 2" />
-                        <circle cx="50" cy="50" fill="none" r="20" stroke="#e2e8f0" strokeDasharray="2 2" />
-                        <circle cx="50" cy="50" fill="none" r="30" stroke="#e2e8f0" strokeDasharray="2 2" />
-                        <circle cx="50" cy="50" fill="none" r="40" stroke="#e2e8f0" strokeDasharray="2 2" />
-                        <circle cx="50" cy="50" fill="none" r="50" stroke="#e2e8f0" strokeWidth="0.5" />
-
-                        <path d="M 50 50 L 50 10 A 40 40 0 0 1 85 27 Z" fill="#22c55e" opacity="0.6" stroke="#16a34a" strokeWidth="1" />
-                        <path d="M 50 50 L 85 27 A 40 40 0 0 1 89 65 Z" fill="#22c55e" opacity="0.6" stroke="#16a34a" strokeWidth="1" />
-                        <path d="M 50 50 L 89 65 A 40 40 0 0 1 60 88 Z" fill="#3b82f6" opacity="0.6" stroke="#2563eb" strokeWidth="1" />
-                        <path d="M 50 50 L 60 88 A 40 40 0 0 1 25 80 Z" fill="#ef4444" opacity="0.6" stroke="#dc2626" strokeWidth="1" />
-                        <path d="M 50 50 L 25 80 A 40 40 0 0 1 12 35 Z" fill="#3b82f6" opacity="0.6" stroke="#2563eb" strokeWidth="1" />
-
-                        <line x1="50" x2="50" y1="50" y2="0" stroke="#e2e8f0" opacity="0.5" />
-                        <line x1="50" x2="100" y1="50" y2="50" stroke="#e2e8f0" opacity="0.5" />
-                        <line x1="50" x2="50" y1="50" y2="100" stroke="#e2e8f0" opacity="0.5" />
-                        <line x1="50" x2="0" y1="50" y2="50" stroke="#e2e8f0" opacity="0.5" />
-                      </svg>
+                      {latestReport?.domain_scores ? (() => {
+                        const domainColorMap = {
+                          resilience: '#FF8F00', flexibility: '#0BC5EA', leadership: '#FF0000',
+                          communication: '#FFFC00', planning: '#25D366', learning: '#9146FF',
+                          vision: '#FA1BE4', tech: '#6af8f4', technology: '#6af8f4',
+                          balance: '#25D366', change: '#9146FF', networking: '#0BC5EA',
+                        };
+                        const entries = Object.entries(latestReport.domain_scores).slice(0, 8);
+                        const total = entries.reduce((sum, [, s]) => {
+                          const raw = typeof s === 'object' && s !== null ? (s.score ?? s.percentile ?? 0) : s;
+                          return sum + (typeof raw === 'number' ? (raw <= 7 ? raw * 100 / 7 : raw) : 0);
+                        }, 0);
+                        let cumAngle = 0;
+                        const slices = entries.map(([domain, s]) => {
+                          const raw = typeof s === 'object' && s !== null ? (s.score ?? s.percentile ?? 0) : s;
+                          const pct = typeof raw === 'number' ? (raw <= 7 ? raw * 100 / 7 : raw) : 0;
+                          const angle = total > 0 ? (pct / total) * 360 : 45;
+                          const startAngle = cumAngle;
+                          cumAngle += angle;
+                          const color = domainColorMap[domain.toLowerCase()] || '#94a3b8';
+                          return { domain, startAngle, angle, color };
+                        });
+                        const toRad = (deg) => (deg - 90) * Math.PI / 180;
+                        const cx = 50, cy = 50, r = 40;
+                        return (
+                          <svg className="w-full h-full" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" fill="none" r="10" stroke="#e2e8f0" strokeDasharray="2 2" />
+                            <circle cx="50" cy="50" fill="none" r="20" stroke="#e2e8f0" strokeDasharray="2 2" />
+                            <circle cx="50" cy="50" fill="none" r="30" stroke="#e2e8f0" strokeDasharray="2 2" />
+                            <circle cx="50" cy="50" fill="none" r="40" stroke="#e2e8f0" strokeDasharray="2 2" />
+                            <circle cx="50" cy="50" fill="none" r="50" stroke="#e2e8f0" strokeWidth="0.5" />
+                            {slices.map(({ domain, startAngle, angle, color }) => {
+                              const largeArc = angle > 180 ? 1 : 0;
+                              const x1 = cx + r * Math.cos(toRad(startAngle));
+                              const y1 = cy + r * Math.sin(toRad(startAngle));
+                              const x2 = cx + r * Math.cos(toRad(startAngle + angle));
+                              const y2 = cy + r * Math.sin(toRad(startAngle + angle));
+                              return (
+                                <path
+                                  key={domain}
+                                  d={`M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                                  fill={color}
+                                  opacity="0.7"
+                                  stroke="white"
+                                  strokeWidth="0.5"
+                                />
+                              );
+                            })}
+                            <line x1="50" x2="50" y1="50" y2="0" stroke="#e2e8f0" opacity="0.5" />
+                            <line x1="50" x2="100" y1="50" y2="50" stroke="#e2e8f0" opacity="0.5" />
+                            <line x1="50" x2="50" y1="50" y2="100" stroke="#e2e8f0" opacity="0.5" />
+                            <line x1="50" x2="0" y1="50" y2="50" stroke="#e2e8f0" opacity="0.5" />
+                          </svg>
+                        );
+                      })() : (
+                        <svg className="w-full h-full" viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" fill="none" r="40" stroke="#e2e8f0" strokeDasharray="2 2" />
+                          <circle cx="50" cy="50" fill="none" r="50" stroke="#e2e8f0" strokeWidth="0.5" />
+                          <text x="50" y="52" textAnchor="middle" fill="#94a3b8" fontSize="6">אין נתונים</text>
+                        </svg>
+                      )}
                     </div>
                   </div>
 
