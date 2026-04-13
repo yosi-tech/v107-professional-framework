@@ -390,7 +390,7 @@ function AppLayout({ children }) {
       
       <header className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl transition-all duration-300">
         <div className="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
-          {/* Mobile Hamburger - shown first in DOM so it appears on the right in RTL */}
+          {/* Mobile Hamburger */}
           <div className="lg:hidden flex items-center gap-2 order-first">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -402,13 +402,6 @@ function AppLayout({ children }) {
                 <Menu className="w-6 h-6 text-slate-700" />
               )}
             </button>
-            {!isLoadingUser && user && hasAbandonedQuestionnaire && (
-              <Link to={createPageUrl("Questionnaire")}>
-                <button className="bg-[#FF8F00] text-white text-xs px-3 py-1.5 rounded-full font-bold">
-                  {language === 'he' ? 'המשך' : 'Continue'}
-                </button>
-              </Link>
-            )}
           </div>
 
           {/* Logo */}
@@ -419,7 +412,7 @@ function AppLayout({ children }) {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex gap-8 items-center">
+          <nav className="hidden lg:flex gap-6 items-center">
             <Link
               to={createPageUrl("Home")}
               className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("Home") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
@@ -436,142 +429,81 @@ function AppLayout({ children }) {
               to={createPageUrl("About")}
               className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("About") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
             >
-              {language === 'he' ? 'אודות' : 'About'}
+              {language === 'he' ? 'איך זה עובד?' : 'How it works?'}
             </Link>
-
             {!isLoadingUser && user && (
               <Link
                 to={createPageUrl("MyAccount")}
-                className={`font-bold tracking-tight transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("MyAccount") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+                className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("MyAccount") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
               >
-                <UserIcon className="w-4 h-4" />
                 {language === 'he' ? 'האזור שלי' : 'My Account'}
               </Link>
             )}
-
             {!isLoadingUser && isAdmin && (
               <Link
                 to={createPageUrl("AdminReports")}
-                className={`font-bold tracking-tight transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+                className={`font-bold tracking-tight flex items-center gap-1 transition-colors ${location.pathname === createPageUrl("AdminReports") ? 'text-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
               >
                 <Shield className="w-4 h-4" />
                 {language === 'he' ? 'אדמין' : 'Admin'}
               </Link>
             )}
-          </nav>
-
-          {/* Desktop CTA Buttons */}
-          <div className="hidden lg:flex gap-4 items-center">
             <Link to={createPageUrl("Questionnaire")}>
-              <button className="bg-[#FF8F00] text-white px-6 py-2.5 rounded-full font-bold hover:scale-105 active:scale-95 transition-all duration-200">
+              <button className="bg-[#FF8F00] text-white px-6 py-2.5 rounded-full font-bold hover:bg-[#e07e00] transition-colors">
                 {hasAbandonedQuestionnaire
-                  ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
+                  ? (language === 'he' ? 'המשך שאלון' : 'Continue')
                   : t('layout.start_questionnaire_btn')
                 }
               </button>
             </Link>
-
             {!isLoadingUser && !user && (
               <button
                 onClick={() => base44.auth.redirectToLogin(window.location.href)}
-                className="text-slate-600 font-semibold hover:bg-slate-50 px-4 py-2 rounded-full transition-all"
+                className="text-slate-600 font-semibold hover:bg-slate-50 px-4 py-2 rounded-full transition-all border border-slate-200"
               >
                 {language === 'he' ? 'התחבר' : 'Login'}
               </button>
             )}
-
             {!isLoadingUser && user && (
               <button
                 onClick={() => base44.auth.logout(createPageUrl('Home'))}
-                className="text-slate-600 font-semibold hover:bg-slate-50 px-4 py-2 rounded-full transition-all"
+                className="text-slate-600 font-semibold hover:bg-slate-50 px-4 py-2 rounded-full transition-all border border-slate-200"
               >
                 {language === 'he' ? 'התנתק' : 'Logout'}
               </button>
             )}
-          </div>
-
-          {/* Desktop CTA spacer for mobile - keep flex layout balanced */}
+          </nav>
         </div>
 
-        {/* Divider */}
-        <div className="bg-slate-100/50 h-[1px] w-full"></div>
-
-        {/* Mobile Menu */}
+        {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 py-4" dir={language === 'he' ? 'rtl' : 'ltr'}>
-            <nav className="flex flex-col gap-2 px-8">
-              <Link
-                to={createPageUrl("Home")}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("Home") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
-              >
-                {t('layout.nav_home')}
+          <div className="lg:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-3">
+            <Link to={createPageUrl("Home")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2">{t('layout.nav_home')}</Link>
+            <Link to={createPageUrl("Articles")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2">{t('layout.nav_articles')}</Link>
+            <Link to={createPageUrl("About")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2">{language === 'he' ? 'איך זה עובד?' : 'How it works?'}</Link>
+            {!isLoadingUser && user && (
+              <Link to={createPageUrl("MyAccount")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2">{language === 'he' ? 'האזור שלי' : 'My Account'}</Link>
+            )}
+            {!isLoadingUser && isAdmin && (
+              <Link to={createPageUrl("AdminReports")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2 flex items-center gap-1"><Shield className="w-4 h-4" />{language === 'he' ? 'אדמין' : 'Admin'}</Link>
+            )}
+            <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+              <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)}>
+                <button className="w-full bg-[#FF8F00] text-white py-2.5 rounded-full font-bold">
+                  {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך שאלון' : 'Continue') : t('layout.start_questionnaire_btn')}
+                </button>
               </Link>
-              <Link
-                to={createPageUrl("Articles")}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname.startsWith(createPageUrl("Articles")) ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
-              >
-                {t('layout.nav_articles')}
-              </Link>
-              <Link
-                to={createPageUrl("About")}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("About") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
-              >
-                {language === 'he' ? 'אודות' : 'About'}
-              </Link>
-
+              {!isLoadingUser && !user && (
+                <button onClick={() => { base44.auth.redirectToLogin(window.location.href); setIsMobileMenuOpen(false); }} className="w-full text-slate-600 font-semibold border border-slate-200 py-2 rounded-full">
+                  {language === 'he' ? 'התחבר' : 'Login'}
+                </button>
+              )}
               {!isLoadingUser && user && (
-                <Link
-                  to={createPageUrl("MyAccount")}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("MyAccount") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
-                >
-                  {language === 'he' ? 'האזור שלי' : 'My Account'}
-                </Link>
+                <button onClick={() => { base44.auth.logout(createPageUrl('Home')); setIsMobileMenuOpen(false); }} className="w-full text-slate-600 font-semibold border border-slate-200 py-2 rounded-full">
+                  {language === 'he' ? 'התנתק' : 'Logout'}
+                </button>
               )}
-
-              {!isLoadingUser && isAdmin && (
-                <Link
-                  to={createPageUrl("AdminReports")}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`font-bold tracking-tight flex items-center gap-2 py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("AdminReports") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
-                >
-                  <Shield className="w-4 h-4" />
-                  {language === 'he' ? 'אדמין' : 'Admin'}
-                </Link>
-              )}
-
-              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)}>
-                  <button className="w-full bg-[#FF8F00] text-white py-2.5 rounded-full font-bold transition-all">
-                    {hasAbandonedQuestionnaire
-                      ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
-                      : t('layout.start_questionnaire_btn')
-                    }
-                  </button>
-                </Link>
-
-                {!isLoadingUser && !user && (
-                  <button
-                    onClick={() => { base44.auth.redirectToLogin(window.location.href); setIsMobileMenuOpen(false); }}
-                    className="w-full text-slate-600 font-semibold hover:bg-slate-50 py-2 rounded-full transition-all border border-slate-200"
-                  >
-                    {language === 'he' ? 'התחבר' : 'Login'}
-                  </button>
-                )}
-
-                {!isLoadingUser && user && (
-                  <button
-                    onClick={() => { base44.auth.logout(createPageUrl('Home')); setIsMobileMenuOpen(false); }}
-                    className="w-full text-slate-600 font-semibold hover:bg-slate-50 py-2 rounded-full transition-all border border-slate-200"
-                  >
-                    {language === 'he' ? 'התנתק' : 'Logout'}
-                  </button>
-                )}
-              </div>
-            </nav>
+            </div>
           </div>
         )}
       </header>
