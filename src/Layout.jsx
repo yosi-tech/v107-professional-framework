@@ -458,34 +458,32 @@ function AppLayout({ children }) {
               </Link>
             )}
 
-            <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-              <Link to={createPageUrl("Questionnaire")}>
-                <button className="w-full bg-[#FF8F00] text-white py-2.5 rounded-full font-bold transition-all">
-                  {hasAbandonedQuestionnaire
-                    ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
-                    : t('layout.start_questionnaire_btn')
-                  }
-                </button>
-              </Link>
+            <Link to={createPageUrl("Questionnaire")}>
+              <button className="bg-[#FF8F00] text-white py-2.5 px-6 rounded-full font-bold transition-all hover:scale-105">
+                {hasAbandonedQuestionnaire
+                  ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
+                  : t('layout.start_questionnaire_btn')
+                }
+              </button>
+            </Link>
 
-              {!isLoadingUser && !user && (
-                <button
-                  onClick={() => base44.auth.redirectToLogin(window.location.href)}
-                  className="w-full text-slate-600 font-semibold hover:bg-slate-50 py-2 rounded-full transition-all border border-slate-200"
-                >
-                  {language === 'he' ? 'התחבר' : 'Login'}
-                </button>
-              )}
+            {!isLoadingUser && !user && (
+              <button
+                onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                className="text-slate-600 font-semibold hover:text-[#FF8F00] transition-colors"
+              >
+                {language === 'he' ? 'התחבר' : 'Login'}
+              </button>
+            )}
 
-              {!isLoadingUser && user && (
-                <button
-                  onClick={() => base44.auth.logout(createPageUrl('Home'))}
-                  className="w-full text-slate-600 font-semibold hover:bg-slate-50 py-2 rounded-full transition-all border border-slate-200"
-                >
-                  {language === 'he' ? 'התנתק' : 'Logout'}
-                </button>
-              )}
-            </div>
+            {!isLoadingUser && user && (
+              <button
+                onClick={() => base44.auth.logout(createPageUrl('Home'))}
+                className="text-slate-600 font-semibold hover:text-[#FF8F00] transition-colors"
+              >
+                {language === 'he' ? 'התנתק' : 'Logout'}
+              </button>
+            )}
           </nav>
         </div>
 
