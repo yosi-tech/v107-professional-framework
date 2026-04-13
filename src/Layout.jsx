@@ -434,10 +434,92 @@ function AppLayout({ children }) {
             </Link>
             <Link
               to={createPageUrl("About")}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("About") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+              className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("About") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+            >
+              {language === 'he' ? 'אודות' : 'About'}
+            </Link>
+
+            {!isLoadingUser && user && (
+              <Link
+                to={createPageUrl("MyAccount")}
+                className={`font-bold tracking-tight transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("MyAccount") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
               >
-                {language === 'he' ? 'איך זה עובד?' : 'How it works?'}
+                <UserIcon className="w-4 h-4" />
+                {language === 'he' ? 'האזור שלי' : 'My Account'}
+              </Link>
+            )}
+
+            {!isLoadingUser && isAdmin && (
+              <Link
+                to={createPageUrl("AdminReports")}
+                className={`font-bold tracking-tight transition-colors flex items-center gap-1 ${location.pathname === createPageUrl("AdminReports") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+              >
+                <Shield className="w-4 h-4" />
+                {language === 'he' ? 'אדמין' : 'Admin'}
+              </Link>
+            )}
+          </nav>
+
+          {/* Desktop CTA Buttons */}
+          <div className="hidden lg:flex gap-4 items-center">
+            <Link to={createPageUrl("Questionnaire")}>
+              <button className="bg-[#FF8F00] text-white px-6 py-2.5 rounded-full font-bold hover:scale-105 active:scale-95 transition-all duration-200">
+                {hasAbandonedQuestionnaire
+                  ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
+                  : t('layout.start_questionnaire_btn')
+                }
+              </button>
+            </Link>
+
+            {!isLoadingUser && !user && (
+              <button
+                onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                className="text-slate-600 font-semibold hover:bg-slate-50 px-4 py-2 rounded-full transition-all"
+              >
+                {language === 'he' ? 'התחבר' : 'Login'}
+              </button>
+            )}
+
+            {!isLoadingUser && user && (
+              <button
+                onClick={() => base44.auth.logout(createPageUrl('Home'))}
+                className="text-slate-600 font-semibold hover:bg-slate-50 px-4 py-2 rounded-full transition-all"
+              >
+                {language === 'he' ? 'התנתק' : 'Logout'}
+              </button>
+            )}
+          </div>
+
+          {/* Desktop CTA spacer for mobile - keep flex layout balanced */}
+        </div>
+
+        {/* Divider */}
+        <div className="bg-slate-100/50 h-[1px] w-full"></div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 py-4" dir={language === 'he' ? 'rtl' : 'ltr'}>
+            <nav className="flex flex-col gap-2 px-8">
+              <Link
+                to={createPageUrl("Home")}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("Home") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+              >
+                {t('layout.nav_home')}
+              </Link>
+              <Link
+                to={createPageUrl("Articles")}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname.startsWith(createPageUrl("Articles")) ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+              >
+                {t('layout.nav_articles')}
+              </Link>
+              <Link
+                to={createPageUrl("About")}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-bold tracking-tight py-2 px-3 rounded-lg transition-colors ${location.pathname === createPageUrl("About") ? 'text-[#FF8F00] bg-orange-50' : 'text-slate-600 hover:text-[#FF8F00] hover:bg-slate-50'}`}
+              >
+                {language === 'he' ? 'אודות' : 'About'}
               </Link>
 
               {!isLoadingUser && user && (
