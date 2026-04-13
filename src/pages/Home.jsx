@@ -44,9 +44,11 @@ export default function Home() {
                   <span>←</span>
                 </button>
               </Link>
-              <button className="bg-slate-100 text-slate-700 px-8 py-5 rounded-3xl font-bold border border-slate-200 hover:bg-slate-200 transition-colors shadow-sm">
-                איך זה עובד?
-              </button>
+              <Link to={createPageUrl("About")}>
+                <button className="bg-slate-100 text-slate-700 px-8 py-5 rounded-3xl font-bold border border-slate-200 hover:bg-slate-200 transition-colors shadow-sm">
+                  איך זה עובד?
+                </button>
+              </Link>
             </div>
           </div>
 
