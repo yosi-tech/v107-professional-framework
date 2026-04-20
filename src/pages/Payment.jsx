@@ -134,10 +134,30 @@ export default function Payment() {
     setPrice(priceFromUrl);
     setOriginalPrice(priceFromUrl);
     setIsExpress(params.get('express') === 'true');
-    setResponseId(params.get('responseId'));
+    const urlResponseId = params.get('responseId') || params.get('responseid');
+    setResponseId(urlResponseId && urlResponseId !== 'null' ? urlResponseId : null);
 
     checkUserStatus();
   }, [location.search]);
+
+  // If responseId is missing, try to find it from the user's latest completed questionnaire
+  useEffect(() => {
+    const fetchResponseId = async () => {
+      if (responseId || !user) return;
+      try {
+        const responses = await base44.entities.QuestionnaireResponse.filter(
+          { created_by: user.email, status: 'completed' },
+          '-updated_date', 1
+        );
+        if (responses.length > 0) {
+          setResponseId(responses[0].id);
+        }
+      } catch (e) {
+        console.log('Could not fetch questionnaire response:', e.message);
+      }
+    };
+    fetchResponseId();
+  }, [user, responseId]);
 
   const checkUserStatus = async () => {
     try {

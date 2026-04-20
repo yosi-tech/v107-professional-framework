@@ -93,12 +93,19 @@ Deno.serve(async (req) => {
 
         if (order.questionnaire_response_id && order.questionnaire_response_id !== 'null' && order.product_type === 'full_report') {
           try {
-            await base44.asServiceRole.entities.GeneratedReport.update(order.questionnaire_response_id, { 
-              purchased: true 
-            });
-            console.log('GeneratedReport marked as purchased');
+            const reports = await base44.asServiceRole.entities.GeneratedReport.filter({
+              questionnaire_response_id: order.questionnaire_response_id
+            }, '-created_date', 1);
+            if (reports.length > 0) {
+              await base44.asServiceRole.entities.GeneratedReport.update(reports[0].id, { 
+                purchased: true 
+              });
+              console.log('GeneratedReport marked as purchased:', reports[0].id);
+            } else {
+              console.log('No GeneratedReport found for questionnaire_response_id:', order.questionnaire_response_id);
+            }
           } catch (error) {
-            console.log('Could not update GeneratedReport (might not exist yet):', error.message);
+            console.log('Could not update GeneratedReport:', error.message);
           }
         }
 
