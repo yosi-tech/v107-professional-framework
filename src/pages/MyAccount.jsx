@@ -423,11 +423,16 @@ export default function MyAccount() {
                       </div>
                     );
                   })()}
-                  <Link to="/CareerPaths">
-                    <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
-                      לצפייה בנתיבי קריירה ←
-                    </button>
-                  </Link>
+                  {(() => {
+                    const hasRealPaths = latestReport?.archetype || latestReport?.recommended_booster_track || (Array.isArray(latestReport?.focused_recommendations) && latestReport.focused_recommendations.length > 0);
+                    return hasRealPaths ? (
+                      <Link to="/CareerPaths">
+                        <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
+                          לצפייה בנתיבי קריירה ←
+                        </button>
+                      </Link>
+                    ) : null;
+                  })()}
                 </div>
 
                 {/* Recent Activities - unified feed */}

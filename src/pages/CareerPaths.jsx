@@ -83,14 +83,13 @@ export default function CareerPaths() {
           const myReport = allReports.find(r => r.user_email === currentUser.email && r.purchased === true);
           if (myReport) {
             setLatestReport(myReport);
-            // Build career paths from report data
             const paths = buildPathsFromReport(myReport);
-            setCareerPaths(paths.length > 0 ? paths : DEFAULT_CAREER_PATHS);
+            setCareerPaths(paths);
           } else {
-            setCareerPaths(DEFAULT_CAREER_PATHS);
+            setCareerPaths([]);
           }
         } catch (e) {
-          setCareerPaths(DEFAULT_CAREER_PATHS);
+          setCareerPaths([]);
         }
       } catch (e) {
         base44.auth.redirectToLogin(window.location.href);
@@ -234,50 +233,62 @@ export default function CareerPaths() {
           </p>
         </section>
 
-        {/* Career Cards Grid */}
-        <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          {careerPaths.map((path) => (
-            <div
-              key={path.id}
-              className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-transparent hover:border-orange-200"
-            >
-              {/* Card Header */}
-              <div className="flex justify-between items-start mb-8">
-                <div className="h-12 w-12 bg-orange-50 text-[#FF8F00] flex items-center justify-center rounded-2xl group-hover:scale-110 transition-transform flex-shrink-0">
-                  <Compass className="w-6 h-6" />
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">{path.category}</p>
-                  <h3 className="text-xl font-extrabold text-slate-900">{path.title}</h3>
-                </div>
-              </div>
-
-              {/* Description */}
-              <p className="text-slate-500 text-sm leading-relaxed mb-6">{path.description}</p>
-
-              {/* Footer */}
-              <div className="mt-auto space-y-6">
-                {path.skills && path.skills.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <span className="text-xs font-bold text-[#FF8F00]">מיומנויות ליבה:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {path.skills.map((skill, i) => (
-                        <span key={i} className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] rounded-lg">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
+        {/* Career Cards Grid or Empty State */}
+        {careerPaths.length > 0 ? (
+          <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+            {careerPaths.map((path) => (
+              <div
+                key={path.id}
+                className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-transparent hover:border-orange-200"
+              >
+                <div className="flex justify-between items-start mb-8">
+                  <div className="h-12 w-12 bg-orange-50 text-[#FF8F00] flex items-center justify-center rounded-2xl group-hover:scale-110 transition-transform flex-shrink-0">
+                    <Compass className="w-6 h-6" />
                   </div>
-                )}
-                <div className="pt-6 border-t border-slate-100 flex justify-start">
-                  <button className="h-10 w-10 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-[#FF8F00] transition-colors">
-                    <ArrowLeft className="w-4 h-4" />
-                  </button>
+                  <div className="text-right">
+                    <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">{path.category}</p>
+                    <h3 className="text-xl font-extrabold text-slate-900">{path.title}</h3>
+                  </div>
+                </div>
+                <p className="text-slate-500 text-sm leading-relaxed mb-6">{path.description}</p>
+                <div className="mt-auto space-y-6">
+                  {path.skills && path.skills.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      <span className="text-xs font-bold text-[#FF8F00]">מיומנויות ליבה:</span>
+                      <div className="flex flex-wrap gap-2">
+                        {path.skills.map((skill, i) => (
+                          <span key={i} className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] rounded-lg">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="pt-6 border-t border-slate-100 flex justify-start">
+                    <button className="h-10 w-10 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-[#FF8F00] transition-colors">
+                      <ArrowLeft className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
+            ))}
+          </section>
+        ) : (
+          <section className="max-w-3xl mx-auto mb-16">
+            <div className="bg-white rounded-3xl p-12 text-center shadow-sm border border-slate-100">
+              <Compass className="w-16 h-16 text-slate-300 mx-auto mb-6" />
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">עדיין אין לך נתיבי קריירה מותאמים אישית</h2>
+              <p className="text-slate-500 text-lg mb-8 leading-relaxed max-w-lg mx-auto">
+                השלם את השאלון ורכוש את הדוח המקצועי כדי לקבל המלצות קריירה מותאמות אישית המבוססות על הפרופיל הייחודי שלך.
+              </p>
+              <Link to={createPageUrl('Questionnaire')}>
+                <button className="bg-[#FF8F00] text-white text-lg font-bold px-10 py-4 rounded-2xl hover:scale-105 transition-transform shadow-md shadow-orange-200">
+                  התחל שאלון עכשיו
+                </button>
+              </Link>
             </div>
-          ))}
-        </section>
+          </section>
+        )}
 
         {/* Booster Banner */}
         <section className="max-w-6xl mx-auto mt-16 bg-white rounded-[2rem] overflow-hidden flex flex-col lg:flex-row-reverse border border-slate-100 shadow-sm">
