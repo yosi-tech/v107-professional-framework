@@ -388,7 +388,11 @@ export default function MyAccount() {
                     const pathTitles = [];
                     if (Array.isArray(latestReport?.focused_recommendations) && latestReport.focused_recommendations.length > 0) {
                       latestReport.focused_recommendations.slice(0, 4).forEach(rec => {
-                        const title = typeof rec === 'object' ? (rec.title || rec.role || '') : rec;
+                        let parsed = rec;
+                        if (typeof rec === 'string') {
+                          try { parsed = JSON.parse(rec); } catch (e) { parsed = rec; }
+                        }
+                        const title = typeof parsed === 'object' ? (parsed.title || parsed.role || '') : parsed;
                         if (title) pathTitles.push(title);
                       });
                     }

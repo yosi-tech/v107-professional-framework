@@ -129,12 +129,18 @@ export default function CareerPaths() {
     // Add from focused_recommendations
     if (Array.isArray(report.focused_recommendations)) {
       report.focused_recommendations.slice(0, 4).forEach((rec, i) => {
+        let parsed = rec;
+        if (typeof rec === 'string') {
+          try { parsed = JSON.parse(rec); } catch (e) { parsed = { title: rec }; }
+        }
         paths.push({
           id: `rec_${i}`,
-          title: typeof rec === 'object' ? (rec.title || rec.role || `המלצה ${i + 1}`) : rec,
-          category: typeof rec === 'object' ? (rec.category || 'המלצה מותאמת') : 'המלצה מותאמת',
-          description: typeof rec === 'object' ? (rec.description || '') : '',
-          skills: typeof rec === 'object' && Array.isArray(rec.required_skills || rec.skills) ? (rec.required_skills || rec.skills).slice(0, 3) : [],
+          title: typeof parsed === 'object' ? (parsed.title || parsed.role || `המלצה ${i + 1}`) : parsed,
+          category: typeof parsed === 'object' ? (parsed.category || 'המלצה מותאמת') : 'המלצה מותאמת',
+          description: typeof parsed === 'object' ? (parsed.description || '') : '',
+          skills: typeof parsed === 'object' && Array.isArray(parsed.required_skills || parsed.skills) ? (parsed.required_skills || parsed.skills).slice(0, 3) : [],
+          matchPercentage: typeof parsed === 'object' ? parsed.match_percentage : null,
+          growthPotential: typeof parsed === 'object' ? parsed.growth_potential : null,
         });
       });
     }

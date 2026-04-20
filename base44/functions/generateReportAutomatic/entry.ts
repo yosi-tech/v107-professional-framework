@@ -819,11 +819,20 @@ Deno.serve(async (req) => {
       });
 
       const careerText = careerResponse.content[0].text;
-      // Extract JSON from the response (handle potential markdown wrapping)
-      const jsonMatch = careerText.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        focusedRecommendations = JSON.parse(jsonMatch[0]);
+      console.log('Raw career response:', careerText.substring(0, 200));
+      // Extract JSON from the response (handle markdown wrapping)
+      let parsedRecs = [];
+      const mdMatch = careerText.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+      if (mdMatch) {
+        parsedRecs = JSON.parse(mdMatch[1].trim());
+      } else {
+        const jsonMatch = careerText.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+          parsedRecs = JSON.parse(jsonMatch[0]);
+        }
       }
+      // Convert to array of JSON strings (entity schema expects string array)
+      focusedRecommendations = parsedRecs.map(r => JSON.stringify(r));
     } catch (recError) {
       console.error('Error generating focused_recommendations:', recError);
       // Continue without recommendations - don't block report creation
