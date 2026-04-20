@@ -77,19 +77,41 @@ export default function CareerPaths() {
           setUserCount(allResponses.length);
         } catch (e) {}
 
-        // Fetch latest report
+        // Fetch latest report for this user
         try {
-          const allReports = await base44.entities.GeneratedReport.list('-created_date');
-          const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
-          const myReport = allReports.find(r => r.user_email === currentUser.email && (r.purchased === true || hasPurchased));
-          if (myReport) {
-            setLatestReport(myReport);
-            const paths = buildPathsFromReport(myReport);
+          console.log('CareerPaths: Looking for reports for email:', currentUser.email);
+          const myReports = await base44.entities.GeneratedReport.filter(
+            { user_email: currentUser.email, purchased: true },
+            '-created_date',
+            1
+          );
+          console.log('CareerPaths: Found purchased reports:', myReports.length);
+          if (myReports.length > 0) {
+            setLatestReport(myReports[0]);
+            const paths = buildPathsFromReport(myReports[0]);
             setCareerPaths(paths);
           } else {
-            setCareerPaths([]);
+            // Fallback: check if user has purchased flag on their profile
+            const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
+            if (hasPurchased) {
+              const allMyReports = await base44.entities.GeneratedReport.filter(
+                { user_email: currentUser.email },
+                '-created_date',
+                1
+              );
+              if (allMyReports.length > 0) {
+                setLatestReport(allMyReports[0]);
+                const paths = buildPathsFromReport(allMyReports[0]);
+                setCareerPaths(paths);
+              } else {
+                setCareerPaths([]);
+              }
+            } else {
+              setCareerPaths([]);
+            }
           }
         } catch (e) {
+          console.error('Error fetching reports for career paths:', e);
           setCareerPaths([]);
         }
       } catch (e) {
