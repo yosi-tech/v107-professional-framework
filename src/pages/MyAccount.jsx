@@ -44,13 +44,18 @@ export default function MyAccount() {
         setQuestionnaireResponses(responses);
 
         try {
-          const allReports = await base44.entities.GeneratedReport.list('-created_date');
-          const myReports = allReports.filter(report =>
-            report.user_email === currentUser.email &&
-            (report.purchased === true || currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download)
+          let myReports = await base44.entities.GeneratedReport.filter(
+            { user_email: currentUser.email, purchased: true }, '-created_date'
           );
+          if (myReports.length === 0 && (currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download)) {
+            myReports = await base44.entities.GeneratedReport.filter(
+              { user_email: currentUser.email }, '-created_date'
+            );
+          }
           setReports(myReports);
-        } catch (e) {}
+        } catch (e) {
+          console.error('Error fetching reports:', e);
+        }
 
         try {
           const surveys = await base44.entities.SurveyResponse.filter({ created_by: currentUser.email }, '-created_date');
@@ -385,23 +390,24 @@ export default function MyAccount() {
                 <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
                   <h2 className="text-xl font-bold text-slate-900 mb-6">נתיבי קריירה מומלצים</h2>
                   {(() => {
-                    const pathTitles = [];
+                    const recs = [];
                     if (Array.isArray(latestReport?.focused_recommendations) && latestReport.focused_recommendations.length > 0) {
                       latestReport.focused_recommendations.slice(0, 4).forEach(rec => {
                         let parsed = rec;
                         if (typeof rec === 'string') {
-                          try { parsed = JSON.parse(rec); } catch (e) { parsed = rec; }
+                          try { parsed = JSON.parse(rec); } catch (e) { return; }
                         }
-                        const title = typeof parsed === 'object' ? (parsed.title || parsed.role || '') : parsed;
-                        if (title) pathTitles.push(title);
+                        if (typeof parsed === 'object' && parsed.title) {
+                          recs.push(parsed);
+                        }
                       });
                     }
 
-                    if (pathTitles.length === 0) {
+                    if (recs.length === 0) {
                       return (
                         <div className="text-center py-8 text-slate-400">
                           <Compass className="w-10 h-10 mx-auto mb-3 text-slate-300" />
-                          <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות נתיבי קריירה מותאמים אישית</p>
+                          <p className="text-sm">נתיבי הקריירה שלך יופיעו כאן לאחר הפקת הדוח</p>
                           <Link to={createPageUrl('Questionnaire')}>
                             <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
                           </Link>
@@ -409,28 +415,29 @@ export default function MyAccount() {
                       );
                     }
 
-                    const colors = ['border-purple-500 hover:bg-purple-50', 'border-green-500 hover:bg-green-50', 'border-yellow-500 hover:bg-yellow-50', 'border-blue-500 hover:bg-blue-50', 'border-pink-500 hover:bg-pink-50', 'border-indigo-500 hover:bg-indigo-50'];
+                    const colors = ['border-purple-500 hover:bg-purple-50', 'border-green-500 hover:bg-green-50', 'border-yellow-500 hover:bg-yellow-50', 'border-blue-500 hover:bg-blue-50'];
                     return (
-                      <div className="space-y-3">
-                        {pathTitles.map((title, i) => (
-                          <Link key={i} to="/CareerPaths">
-                            <div className={`p-4 rounded-2xl bg-slate-50 border-r-4 ${colors[i % colors.length]} transition-colors cursor-pointer`}>
-                              <h3 className="font-bold text-slate-900">{title}</h3>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
+                      <>
+                        <div className="space-y-3">
+                          {recs.map((rec, i) => (
+                            <Link key={i} to="/CareerPaths">
+                              <div className={`p-4 rounded-2xl bg-slate-50 border-r-4 ${colors[i % colors.length]} transition-colors cursor-pointer`}>
+                                <h3 className="font-bold text-slate-900 text-sm">{rec.title}</h3>
+                                <div className="flex items-center gap-3 mt-1">
+                                  {rec.salary_range && <span className="text-xs text-slate-500">{rec.salary_range}</span>}
+                                  {rec.match_percentage && <span className="text-xs text-[#FF8F00] font-bold">{rec.match_percentage}% התאמה</span>}
+                                </div>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                        <Link to="/CareerPaths">
+                          <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
+                            לצפייה בנתיבי קריירה ←
+                          </button>
+                        </Link>
+                      </>
                     );
-                  })()}
-                  {(() => {
-                    const hasRealPaths = Array.isArray(latestReport?.focused_recommendations) && latestReport.focused_recommendations.length > 0;
-                    return hasRealPaths ? (
-                      <Link to="/CareerPaths">
-                        <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
-                          לצפייה בנתיבי קריירה ←
-                        </button>
-                      </Link>
-                    ) : null;
                   })()}
                 </div>
 
@@ -614,14 +621,7 @@ export default function MyAccount() {
         {activeTab === 'reports' && (
           <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">הדוחות שלי <span className="text-slate-400 font-normal text-lg">({reports.length})</span></h2>
-            {/* Debug */}
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-6 text-sm">
-              <p><strong>מייל מחובר:</strong> {user?.email}</p>
-              <p><strong>סה"כ דוחות:</strong> {reports.length}</p>
-              {reports.map((r, i) => (
-                <p key={i} className="text-xs mt-1">{i + 1}. {r.report_id} | {r.user_email} | נרכש: {r.purchased ? 'כן' : 'לא'}</p>
-              ))}
-            </div>
+
             {reports.length === 0 ? (
               <div className="text-center py-16">
                 <Award className="w-16 h-16 text-slate-200 mx-auto mb-4" />

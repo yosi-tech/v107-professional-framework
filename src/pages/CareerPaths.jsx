@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
-import { Loader2, ArrowLeft, Zap, Compass, LayoutDashboard, FileText, Award, Gift, ShoppingCart, LogOut, User as UserIcon } from 'lucide-react';
+import { Loader2, ArrowLeft, Zap, Compass, LayoutDashboard, FileText, Award, Gift, ShoppingCart, LogOut, User as UserIcon, TrendingUp, Banknote, Target } from 'lucide-react';
 
 const SIDEBAR_ITEMS = [
   { key: 'dashboard', label: 'לוח בקרה', icon: LayoutDashboard, href: 'MyAccount' },
@@ -77,38 +77,21 @@ export default function CareerPaths() {
           setUserCount(allResponses.length);
         } catch (e) {}
 
-        // Fetch latest report for this user
+        // Fetch latest purchased report for this user
         try {
-          console.log('CareerPaths: Looking for reports for email:', currentUser.email);
-          const myReports = await base44.entities.GeneratedReport.filter(
-            { user_email: currentUser.email, purchased: true },
-            '-created_date',
-            1
+          let myReports = await base44.entities.GeneratedReport.filter(
+            { user_email: currentUser.email, purchased: true }, '-created_date', 1
           );
-          console.log('CareerPaths: Found purchased reports:', myReports.length);
+          if (myReports.length === 0 && (currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download)) {
+            myReports = await base44.entities.GeneratedReport.filter(
+              { user_email: currentUser.email }, '-created_date', 1
+            );
+          }
           if (myReports.length > 0) {
             setLatestReport(myReports[0]);
-            const paths = buildPathsFromReport(myReports[0]);
-            setCareerPaths(paths);
+            setCareerPaths(buildPathsFromReport(myReports[0]));
           } else {
-            // Fallback: check if user has purchased flag on their profile
-            const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
-            if (hasPurchased) {
-              const allMyReports = await base44.entities.GeneratedReport.filter(
-                { user_email: currentUser.email },
-                '-created_date',
-                1
-              );
-              if (allMyReports.length > 0) {
-                setLatestReport(allMyReports[0]);
-                const paths = buildPathsFromReport(allMyReports[0]);
-                setCareerPaths(paths);
-              } else {
-                setCareerPaths([]);
-              }
-            } else {
-              setCareerPaths([]);
-            }
+            setCareerPaths([]);
           }
         } catch (e) {
           console.error('Error fetching reports for career paths:', e);
@@ -125,45 +108,25 @@ export default function CareerPaths() {
 
   const buildPathsFromReport = (report) => {
     const paths = [];
-    if (report.archetype) {
-      paths.push({
-        id: 'archetype',
-        title: report.archetype,
-        category: 'ארכיטיפ אישי',
-        description: report.executive_summary?.summary || 'תפקיד מותאם אישית על בסיס פרופיל הכישורים שלך.',
-        skills: report.executive_summary?.strengths?.slice(0, 3) || [],
-      });
-    }
-    if (report.recommended_booster_track) {
-      const trackMap = {
-        resilience: 'חוסן', flexibility: 'גמישות', leadership: 'מנהיגות',
-        communication: 'תקשורת', planning: 'תכנון', learning: 'למידה',
-        vision: 'חזון', technology: 'טכנולוגיה', networking: 'נטוורקינג',
-        balance: 'איזון', change: 'ניהול שינוי',
-      };
-      paths.push({
-        id: 'booster',
-        title: `מסלול ${trackMap[report.recommended_booster_track] || report.recommended_booster_track}`,
-        category: 'מסלול מומלץ',
-        description: 'מסלול הבוסטר המומלץ עבורך על בסיס תוצאות האבחון.',
-        skills: [trackMap[report.recommended_booster_track] || report.recommended_booster_track],
-      });
-    }
-    // Add from focused_recommendations
-    if (Array.isArray(report.focused_recommendations)) {
+    // Only use focused_recommendations - real career paths from AI
+    if (Array.isArray(report.focused_recommendations) && report.focused_recommendations.length > 0) {
       report.focused_recommendations.slice(0, 4).forEach((rec, i) => {
         let parsed = rec;
         if (typeof rec === 'string') {
-          try { parsed = JSON.parse(rec); } catch (e) { parsed = { title: rec }; }
+          try { parsed = JSON.parse(rec); } catch (e) { return; }
         }
+        if (typeof parsed !== 'object' || !parsed.title) return;
         paths.push({
           id: `rec_${i}`,
-          title: typeof parsed === 'object' ? (parsed.title || parsed.role || `המלצה ${i + 1}`) : parsed,
-          category: typeof parsed === 'object' ? (parsed.category || 'המלצה מותאמת') : 'המלצה מותאמת',
-          description: typeof parsed === 'object' ? (parsed.description || '') : '',
-          skills: typeof parsed === 'object' && Array.isArray(parsed.required_skills || parsed.skills) ? (parsed.required_skills || parsed.skills).slice(0, 3) : [],
-          matchPercentage: typeof parsed === 'object' ? parsed.match_percentage : null,
-          growthPotential: typeof parsed === 'object' ? parsed.growth_potential : null,
+          title: parsed.title,
+          category: parsed.category || parsed.industry || '',
+          description: parsed.description || '',
+          skills: Array.isArray(parsed.required_skills) ? parsed.required_skills.slice(0, 5) : [],
+          matchPercentage: parsed.match_percentage || null,
+          growthPotential: parsed.growth_potential || null,
+          averageSalary: parsed.average_salary || null,
+          salaryRange: parsed.salary_range || null,
+          industry: parsed.industry || null,
         });
       });
     }
@@ -264,25 +227,63 @@ export default function CareerPaths() {
 
         {/* Career Cards Grid or Empty State */}
         {careerPaths.length > 0 ? (
-          <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             {careerPaths.map((path) => (
               <div
                 key={path.id}
-                className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-transparent hover:border-orange-200 text-center"
+                className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-transparent hover:border-orange-200"
               >
-                <div className="flex flex-col items-center mb-6">
-                  <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-3">{path.category}</p>
-                  <div className="h-12 w-12 bg-orange-50 text-[#FF8F00] flex items-center justify-center rounded-2xl group-hover:scale-110 transition-transform mb-4">
-                    <Compass className="w-6 h-6" />
+                {/* Header */}
+                <div className="flex items-start justify-between mb-5">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      {path.category && <span className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">{path.category}</span>}
+                      {path.industry && path.industry !== path.category && (
+                        <span className="text-[10px] uppercase font-bold text-[#FF8F00] tracking-widest">• {path.industry}</span>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-extrabold text-slate-900">{path.title}</h3>
                   </div>
-                  <h3 className="text-xl font-extrabold text-slate-900">{path.title}</h3>
+                  {path.matchPercentage && (
+                    <div className="flex flex-col items-center bg-orange-50 rounded-2xl px-4 py-3 flex-shrink-0">
+                      <Target className="w-4 h-4 text-[#FF8F00] mb-1" />
+                      <span className="text-lg font-black text-[#FF8F00]">{path.matchPercentage}%</span>
+                      <span className="text-[9px] text-slate-500 font-bold">התאמה</span>
+                    </div>
+                  )}
                 </div>
+
+                {/* Description */}
                 <p className="text-slate-500 text-sm leading-relaxed mb-6">{path.description}</p>
-                <div className="mt-auto space-y-6">
+
+                {/* Salary & Growth */}
+                <div className="flex gap-4 mb-6">
+                  {path.salaryRange && (
+                    <div className="flex items-center gap-2 bg-green-50 rounded-xl px-4 py-2.5 flex-1">
+                      <Banknote className="w-4 h-4 text-green-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-green-700 font-bold">שכר ממוצע</p>
+                        <p className="text-sm font-extrabold text-green-800">{path.salaryRange}</p>
+                      </div>
+                    </div>
+                  )}
+                  {path.growthPotential && (
+                    <div className="flex items-center gap-2 bg-blue-50 rounded-xl px-4 py-2.5 flex-1">
+                      <TrendingUp className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs text-blue-700 font-bold">פוטנציאל צמיחה</p>
+                        <p className="text-sm font-extrabold text-blue-800">{path.growthPotential}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Skills */}
+                <div className="mt-auto">
                   {path.skills && path.skills.length > 0 && (
-                    <div className="flex flex-col items-center gap-2">
-                      <span className="text-xs font-bold text-[#FF8F00]">מיומנויות ליבה:</span>
-                      <div className="flex flex-wrap justify-center gap-2">
+                    <div>
+                      <span className="text-xs font-bold text-slate-500 mb-2 block">מיומנויות נדרשות:</span>
+                      <div className="flex flex-wrap gap-2">
                         {path.skills.map((skill, i) => (
                           <span key={i} className="px-3 py-1 bg-slate-100 text-slate-600 text-[11px] rounded-full font-medium">
                             {skill}
@@ -291,11 +292,6 @@ export default function CareerPaths() {
                       </div>
                     </div>
                   )}
-                  <div className="pt-6 border-t border-slate-100 flex justify-center">
-                    <button className="h-10 w-10 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-[#FF8F00] transition-colors">
-                      <ArrowLeft className="w-4 h-4" />
-                    </button>
-                  </div>
                 </div>
               </div>
             ))}
