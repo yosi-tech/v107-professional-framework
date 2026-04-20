@@ -246,32 +246,30 @@ export default function CareerPaths() {
             {careerPaths.map((path) => (
               <div
                 key={path.id}
-                className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-transparent hover:border-orange-200"
+                className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-transparent hover:border-orange-200 text-center"
               >
-                <div className="flex justify-between items-start mb-8">
-                  <div className="h-12 w-12 bg-orange-50 text-[#FF8F00] flex items-center justify-center rounded-2xl group-hover:scale-110 transition-transform flex-shrink-0">
+                <div className="flex flex-col items-center mb-6">
+                  <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-3">{path.category}</p>
+                  <div className="h-12 w-12 bg-orange-50 text-[#FF8F00] flex items-center justify-center rounded-2xl group-hover:scale-110 transition-transform mb-4">
                     <Compass className="w-6 h-6" />
                   </div>
-                  <div className="text-right">
-                    <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">{path.category}</p>
-                    <h3 className="text-xl font-extrabold text-slate-900">{path.title}</h3>
-                  </div>
+                  <h3 className="text-xl font-extrabold text-slate-900">{path.title}</h3>
                 </div>
                 <p className="text-slate-500 text-sm leading-relaxed mb-6">{path.description}</p>
                 <div className="mt-auto space-y-6">
                   {path.skills && path.skills.length > 0 && (
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col items-center gap-2">
                       <span className="text-xs font-bold text-[#FF8F00]">מיומנויות ליבה:</span>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap justify-center gap-2">
                         {path.skills.map((skill, i) => (
-                          <span key={i} className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] rounded-lg">
+                          <span key={i} className="px-3 py-1 bg-slate-100 text-slate-600 text-[11px] rounded-full font-medium">
                             {skill}
                           </span>
                         ))}
                       </div>
                     </div>
                   )}
-                  <div className="pt-6 border-t border-slate-100 flex justify-start">
+                  <div className="pt-6 border-t border-slate-100 flex justify-center">
                     <button className="h-10 w-10 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-[#FF8F00] transition-colors">
                       <ArrowLeft className="w-4 h-4" />
                     </button>
