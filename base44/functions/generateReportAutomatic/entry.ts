@@ -957,14 +957,15 @@ Deno.serve(async (req) => {
       language: response.language || 'he'
     });
 
-    // Trigger career paths generation asynchronously via separate function
+    // Generate career paths synchronously before returning response
+    // (async invoke was failing silently because the isolate closes after response)
+    let careerPathsResult = null;
     try {
-      console.log('Triggering generateCareerPaths for report:', savedReport.id);
-      base44.functions.invoke('generateCareerPaths', { reportId: savedReport.id }).catch(e => {
-        console.error('Async career paths generation failed:', e.message);
-      });
+      console.log('Generating career paths for report:', savedReport.id);
+      careerPathsResult = await base44.asServiceRole.functions.invoke('generateCareerPaths', { reportId: savedReport.id });
+      console.log('Career paths generated successfully:', careerPathsResult?.recommendations_count || 0, 'recommendations');
     } catch (e) {
-      console.error('Failed to trigger career paths:', e.message);
+      console.error('Career paths generation failed:', e.message);
     }
 
     return Response.json({
@@ -972,7 +973,8 @@ Deno.serve(async (req) => {
       reportId: savedReport.id,
       report_number: reportId,
       model_used: 'claude-sonnet-4-5',
-      message: 'V8 FINAL A report generated successfully. Career paths generating in background.'
+      career_paths_generated: careerPathsResult?.success || false,
+      message: 'V8 FINAL A report generated successfully.'
     });
 
   } catch (error) {
