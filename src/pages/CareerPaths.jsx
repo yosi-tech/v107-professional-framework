@@ -135,7 +135,7 @@ export default function CareerPaths() {
           title: typeof rec === 'object' ? (rec.title || rec.role || `המלצה ${i + 1}`) : rec,
           category: typeof rec === 'object' ? (rec.category || 'המלצה מותאמת') : 'המלצה מותאמת',
           description: typeof rec === 'object' ? (rec.description || '') : '',
-          skills: typeof rec === 'object' && Array.isArray(rec.skills) ? rec.skills.slice(0, 3) : [],
+          skills: typeof rec === 'object' && Array.isArray(rec.required_skills || rec.skills) ? (rec.required_skills || rec.skills).slice(0, 3) : [],
         });
       });
     }
