@@ -771,6 +771,64 @@ Deno.serve(async (req) => {
 
     const reportId = `V107-V11-${(response.language || 'HE').toUpperCase()}-${Date.now().toString().slice(-6)}`;
 
+    // Generate focused_recommendations using a second LLM call
+    let focusedRecommendations = [];
+    try {
+      const top3Names = top3.map(d => DIMENSIONS[d.key]?.nameHe).join(', ');
+      const bottom2Names = bottom2.map(d => DIMENSIONS[d.key]?.nameHe).join(', ');
+      const occupation = response.personal_info.occupation_field || 'לא צוין';
+      const interests = (response.personal_info.interest_areas || []).join(', ') || 'לא צוינו';
+      const userName = response.personal_info.full_name;
+
+      const careerPrompt = `בהתבסס על הפרופיל המקצועי הבא, צור בדיוק 4 המלצות נתיבי קריירה מותאמים אישית בעברית.
+
+פרטי המשתמש:
+- שם: ${userName}
+- גיל: ${effectiveAge}
+- תחום עיסוק: ${occupation}
+- תחומי עניין: ${interests}
+- ארכיטיפ: ${archetype}
+- 3 חוזקות מובילות: ${top3Names}
+- 2 אזורי פיתוח: ${bottom2Names}
+- ציוני ממדים: ${JSON.stringify(domainScores)}
+
+עבור כל נתיב קריירה, ספק:
+1. title - כותרת התפקיד/הנתיב (בעברית)
+2. category - קטגוריה (אחת מ: ניהול, טכנולוגיה, יזמות, ייעוץ, חינוך, שיווק, מכירות, תקשורת, פיננסים, אחר)
+3. description - תיאור קצר של למה הנתיב מתאים לפרופיל (2-3 משפטים)
+4. required_skills - רשימה של 3-5 מיומנויות נדרשות
+5. match_percentage - אחוז התאמה (מספר בין 60 ל-95)
+6. growth_potential - פוטנציאל צמיחה (גבוה/בינוני/נמוך)
+
+החזר JSON בלבד בפורמט הבא (ללא טקסט נוסף):
+[
+  {
+    "title": "...",
+    "category": "...",
+    "description": "...",
+    "required_skills": ["...", "..."],
+    "match_percentage": 85,
+    "growth_potential": "גבוה"
+  }
+]`;
+
+      const careerResponse = await anthropic.messages.create({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: careerPrompt }]
+      });
+
+      const careerText = careerResponse.content[0].text;
+      // Extract JSON from the response (handle potential markdown wrapping)
+      const jsonMatch = careerText.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        focusedRecommendations = JSON.parse(jsonMatch[0]);
+      }
+    } catch (recError) {
+      console.error('Error generating focused_recommendations:', recError);
+      // Continue without recommendations - don't block report creation
+    }
+
     const savedReport = await base44.asServiceRole.entities.GeneratedReport.create({
       questionnaire_response_id: responseId,
       user_name: response.personal_info.full_name,
@@ -786,6 +844,7 @@ Deno.serve(async (req) => {
         bottom2: bottom2.map(d => ({ name: DIMENSIONS[d.key]?.nameHe, score: d.score })),
         archetype: archetype
       },
+      focused_recommendations: focusedRecommendations,
       status: 'completed',
       language: response.language || 'he'
     });
@@ -795,7 +854,8 @@ Deno.serve(async (req) => {
       reportId: savedReport.id,
       report_number: reportId,
       model_used: 'claude-sonnet-4-5',
-      message: 'V11 report generated successfully'
+      message: 'V11 report generated successfully',
+      focused_recommendations_count: focusedRecommendations.length
     });
 
   } catch (error) {
