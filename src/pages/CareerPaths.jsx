@@ -77,19 +77,19 @@ export default function CareerPaths() {
           setUserCount(allResponses.length);
         } catch (e) {}
 
-        // Fetch latest purchased report for this user
+        // Fetch latest report with career paths for this user
         try {
-          let myReports = await base44.entities.GeneratedReport.filter(
-            { user_email: currentUser.email, purchased: true }, '-created_date', 1
+          const myReports = await base44.entities.GeneratedReport.filter(
+            { user_email: currentUser.email }, '-created_date', 10
           );
-          if (myReports.length === 0 && (currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download)) {
-            myReports = await base44.entities.GeneratedReport.filter(
-              { user_email: currentUser.email }, '-created_date', 1
-            );
-          }
-          if (myReports.length > 0) {
-            setLatestReport(myReports[0]);
-            setCareerPaths(buildPathsFromReport(myReports[0]));
+          // Find the first report that has focused_recommendations
+          const reportWithPaths = myReports.find(r => 
+            Array.isArray(r.focused_recommendations) && r.focused_recommendations.length > 0
+          ) || myReports[0];
+          
+          if (reportWithPaths) {
+            setLatestReport(reportWithPaths);
+            setCareerPaths(buildPathsFromReport(reportWithPaths));
           } else {
             setCareerPaths([]);
           }

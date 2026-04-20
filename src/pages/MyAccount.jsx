@@ -44,14 +44,9 @@ export default function MyAccount() {
         setQuestionnaireResponses(responses);
 
         try {
-          let myReports = await base44.entities.GeneratedReport.filter(
-            { user_email: currentUser.email, purchased: true }, '-created_date'
+          const myReports = await base44.entities.GeneratedReport.filter(
+            { user_email: currentUser.email }, '-created_date'
           );
-          if (myReports.length === 0 && (currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download)) {
-            myReports = await base44.entities.GeneratedReport.filter(
-              { user_email: currentUser.email }, '-created_date'
-            );
-          }
           setReports(myReports);
         } catch (e) {
           console.error('Error fetching reports:', e);
