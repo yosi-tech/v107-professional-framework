@@ -384,40 +384,50 @@ export default function MyAccount() {
                 {/* Career Paths */}
                 <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
                   <h2 className="text-xl font-bold text-slate-900 mb-6">נתיבי קריירה מומלצים</h2>
-                  {latestReport?.archetype ? (
-                    <div className="space-y-3">
-                      <div className="p-4 rounded-2xl bg-slate-50 border-r-4 border-purple-500 hover:bg-purple-50 transition-colors cursor-pointer">
-                        <h3 className="font-bold text-slate-900 mb-1">{latestReport.archetype}</h3>
-                        <p className="text-sm text-slate-500">ארכיטיפ מקצועי מותאם אישית</p>
+                  {(() => {
+                    const pathTitles = [];
+                    if (latestReport?.archetype) pathTitles.push(latestReport.archetype);
+                    if (latestReport?.recommended_booster_track) {
+                      const trackMap = { resilience: 'חוסן', flexibility: 'גמישות', leadership: 'מנהיגות', communication: 'תקשורת', planning: 'תכנון', learning: 'למידה', vision: 'חזון', technology: 'טכנולוגיה', networking: 'נטוורקינג', balance: 'איזון', change: 'ניהול שינוי' };
+                      pathTitles.push(`מסלול ${trackMap[latestReport.recommended_booster_track] || latestReport.recommended_booster_track}`);
+                    }
+                    if (Array.isArray(latestReport?.focused_recommendations)) {
+                      latestReport.focused_recommendations.slice(0, 4).forEach(rec => {
+                        const title = typeof rec === 'object' ? (rec.title || rec.role || '') : rec;
+                        if (title) pathTitles.push(title);
+                      });
+                    }
+
+                    if (pathTitles.length === 0) {
+                      return (
+                        <div className="text-center py-8 text-slate-400">
+                          <Compass className="w-10 h-10 mx-auto mb-3 text-slate-300" />
+                          <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות נתיבי קריירה מותאמים אישית</p>
+                          <Link to={createPageUrl('Questionnaire')}>
+                            <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
+                          </Link>
+                        </div>
+                      );
+                    }
+
+                    const colors = ['border-purple-500 hover:bg-purple-50', 'border-green-500 hover:bg-green-50', 'border-yellow-500 hover:bg-yellow-50', 'border-blue-500 hover:bg-blue-50', 'border-pink-500 hover:bg-pink-50', 'border-indigo-500 hover:bg-indigo-50'];
+                    return (
+                      <div className="space-y-3">
+                        {pathTitles.map((title, i) => (
+                          <Link key={i} to="/CareerPaths">
+                            <div className={`p-4 rounded-2xl bg-slate-50 border-r-4 ${colors[i % colors.length]} transition-colors cursor-pointer`}>
+                              <h3 className="font-bold text-slate-900">{title}</h3>
+                            </div>
+                          </Link>
+                        ))}
                       </div>
-                      {latestReport.recommended_booster_track && (
-                        <div className="p-4 rounded-2xl bg-slate-50 border-r-4 border-green-500 hover:bg-green-50 transition-colors cursor-pointer">
-                          <h3 className="font-bold text-slate-900 mb-1">מסלול: {latestReport.recommended_booster_track}</h3>
-                          <p className="text-sm text-slate-500">מסלול הבוסטר המומלץ עבורך</p>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {[
-                        { title: 'מנהל מוצר טכנולוגי', desc: 'התאמה גבוהה על בסיס מיומנויות תכנון', color: 'border-purple-500 hover:bg-purple-50' },
-                        { title: 'יועץ אסטרטגי בכיר', desc: 'התאמה גבוהה על בסיס חזון וניהול שינוי', color: 'border-green-500 hover:bg-green-50' },
-                        { title: 'מוביל צוות פיתוח', desc: 'התאמה על בסיס מנהיגות', color: 'border-yellow-500 hover:bg-yellow-50' },
-                      ].map((item) => (
-                        <div key={item.title} className={`p-4 rounded-2xl bg-slate-50 border-r-4 ${item.color} transition-colors cursor-pointer`}>
-                          <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
-                          <p className="text-sm text-slate-500">{item.desc}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {latestReport && (
-                    <Link to={createPageUrl(`ReportView?reportid=${latestReport.id}`)}>
-                      <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
-                        צפה בדוח המלא ←
-                      </button>
-                    </Link>
-                  )}
+                    );
+                  })()}
+                  <Link to="/CareerPaths">
+                    <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
+                      לצפייה בנתיבי קריירה ←
+                    </button>
+                  </Link>
                 </div>
 
                 {/* Recent Activities - unified feed */}
