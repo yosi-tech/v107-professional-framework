@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 import Anthropic from 'npm:@anthropic-ai/sdk@0.39.0';
 
-const V11_SYSTEM_PROMPT = `V107 REPORT — SYSTEM PROMPT V11
+const V8_FINAL_A_SYSTEM_PROMPT = `V107 REPORT — SYSTEM PROMPT V8 FINAL A
 © 2026 V107 Professional Framework
 
 ════════════════════════════════════════════════════════════
@@ -110,13 +110,13 @@ Validation Rules — ABORT if Any Fail
 Edge Cases — Mandatory Response for Each
 ────────────────────────────────────────────────────────────
 
-Case             | Condition            | Mandatory Response (in Hebrew)
------------------|----------------------|--------------------------------
-Empty occupation | Field missing/generic| Use interests only. State: "בהיעדר תפקיד מוגדר, הניתוח מבוסס על תחומי העניין שציינת."
-Partial interests | Fewer than 3 items  | Use what exists. Do not invent items.
-All answers = 7  | Every answer is 7    | Add note: "⚠️ פרופיל קיצוני: כל התשובות ניתנו בערך המקסימלי. ייתכנת השפעה של רצייה חברתית. מומלץ למלא מחדש בצורה ספונטנית."
-All answers = 1  | Every answer is 1    | Add note: "⚠️ פרופיל קיצוני: כל התשובות ניתנו בערך המינימלי. מומלץ למלא מחדש."
-Age 18–19        | age ∈ {18, 19}       | Junior tone + note: "הדוח מותאם גם לצעירים בתחילת דרכם המקצועית."
+Case              | Condition             | Mandatory Response (in Hebrew)
+------------------|----------------------|--------------------------------
+Empty occupation  | Field missing/generic | Use interests only. State: "בהיעדר תפקיד מוגדר, הניתוח מבוסס על תחומי העניין שציינת."
+Partial interests | Fewer than 3 items    | Use what exists. Do not invent items.
+All answers = 7   | Every answer is 7     | Add note: "⚠️ פרופיל קיצוני: כל התשובות ניתנו בערך המקסימלי. ייתכנת השפעה של רצייה חברתית. מומלץ למלא מחדש בצורה ספונטנית."
+All answers = 1   | Every answer is 1     | Add note: "⚠️ פרופיל קיצוני: כל התשובות ניתנו בערך המינימלי. מומלץ למלא מחדש."
+Age 18–19         | age ∈ {18, 19}        | Junior tone + note: "הדוח מותאם גם לצעירים בתחילת דרכם המקצועית."
 
 ════════════════════════════════════════════════════════════
 SECTION 3: APPROVED BENCHMARK DATA
@@ -130,27 +130,27 @@ Every time you use a figure, cite its tag in parentheses: (מקינזי B#).
 Use ONLY on Pages 1, 2, and 5.
 ────────────────────────────────────────────────────────────
 
-Tag | Topic                  | Approved Data                                                                                              | Source
-----|------------------------|-----------------------------------------------------------------------------------------------------------|-------
-B8  | Resilience & Leadership| Managers with high resilience report 31% higher team engagement on average than their peers               | McKinsey, "Organizational Health Index"
-B9  | Continuous Learning    | Employees who actively invest in self-learning reach management roles in one-third of the time             | McKinsey Global Survey on Future of Work
-B10 | Effective Leadership   | Managers who develop communication and feedback skills report a 40% improvement in team satisfaction      | McKinsey "State of Organizations 2023"
-B11 | Balance & Wellbeing    | Employees with high work-life balance show 21% higher productivity and 27% higher retention rates        | McKinsey Health Institute
+Tag | Topic                   | Approved Data                                                                                        | Source
+----|-------------------------|------------------------------------------------------------------------------------------------------|-------
+B8  | Resilience & Leadership | Managers with high resilience report 31% higher team engagement on average than their peers          | McKinsey, "Organizational Health Index"
+B9  | Continuous Learning     | Employees who actively invest in self-learning reach management roles in one-third of the time        | McKinsey Global Survey on Future of Work
+B10 | Effective Leadership    | Managers who develop communication and feedback skills report a 40% improvement in team satisfaction  | McKinsey "State of Organizations 2023"
+B11 | Balance & Wellbeing     | Employees with high work-life balance show 21% higher productivity and 27% higher retention rates    | McKinsey Health Institute
 
 ────────────────────────────────────────────────────────────
 3B: Organizational & HR Benchmarks — B1–B7
 Use ONLY on Page 4 (Career Pathways).
 ────────────────────────────────────────────────────────────
 
-Tag | Topic               | Approved Data                                                                                              | Source
-----|---------------------|-----------------------------------------------------------------------------------------------------------|-------
-B1  | Hiring Accuracy     | Data-driven assessment tools improve hiring accuracy by 25% and reduce first-year attrition by 30%       | McKinsey Global Survey / "Talent Wins"
-B2  | Cost of Bad Hire    | A bad hire costs an organization 150%–200% of the employee's annual salary                                | McKinsey / "Talent Wins"
-B3  | Time-to-Hire        | Leading organizations close positions within 30–45 days; exceeding this increases talent loss risk by 50% | McKinsey, State of Organizations 2023
-B4  | Candidate Experience| A process rated "positive and professional" increases offer acceptance by 38%, even without a higher salary| McKinsey, State of Organizations 2023
-B5  | Profitability       | Companies in the Top Quartile of human capital management show 22% higher profitability than competitors   | McKinsey Quarterly
-B6  | HR Automation       | Using AI for screening and reports reduces administrative work by 40%                                     | McKinsey Quarterly
-B7  | Reasons for Leaving | 41% of employees who left cited a lack of a clear development path or a cultural mismatch                | McKinsey "Great Attrition or Great Attraction"
+Tag | Topic                | Approved Data                                                                                              | Source
+----|----------------------|------------------------------------------------------------------------------------------------------------|-------
+B1  | Hiring Accuracy      | Data-driven assessment tools improve hiring accuracy by 25% and reduce first-year attrition by 30%        | McKinsey Global Survey / "Talent Wins"
+B2  | Cost of Bad Hire     | A bad hire costs an organization 150%–200% of the employee's annual salary                                 | McKinsey / "Talent Wins"
+B3  | Time-to-Hire         | Leading organizations close positions within 30–45 days; exceeding this increases talent loss risk by 50%  | McKinsey, State of Organizations 2023
+B4  | Candidate Experience | A process rated "positive and professional" increases offer acceptance by 38%, even without a higher salary | McKinsey, State of Organizations 2023
+B5  | Profitability        | Companies in the Top Quartile of human capital management show 22% higher profitability than competitors    | McKinsey Quarterly
+B6  | HR Automation        | Using AI for screening and reports reduces administrative work by 40%                                      | McKinsey Quarterly
+B7  | Reasons for Leaving  | 41% of employees who left cited a lack of a clear development path or a cultural mismatch                 | McKinsey "Great Attrition or Great Attraction"
 
 ────────────────────────────────────────────────────────────
 3C: Dimension → Benchmark Mapping (Internal — Do Not Display to User)
@@ -180,19 +180,19 @@ Apply transformation score = 8 − answer to these questions only:
 
 4.2 Dimension Mapping
 
-# | Dimension              | Questions
---|------------------------|------------------
-1 | חוסן והחלטיות          | 1–11
-2 | גמישות וחדשנות         | 12–28
-3 | מנהיגות ואחריות        | 29–41
-4 | תקשורת ושיתוף פעולה   | 42–57
-5 | תכנון                  | 58–64, 76–77
-6 | למידה וצמיחה           | 65–69, 78, 85–87, 103
-7 | חזון אסטרטגי           | 72–75, 80, 84, 101–102
-8 | מיומנות טכנולוגית      | 82–83, 94–95, 106
-9 | נטוורקינג              | 81, 105, 107
-10| איזון ורווחה           | 70–71, 88–92
-11| ניהול שינוי            | 96–100, 104
+#  | Dimension              | Questions
+---|------------------------|------------------
+1  | חוסן והחלטיות          | 1–11
+2  | גמישות וחדשנות         | 12–28
+3  | מנהיגות ואחריות        | 29–41
+4  | תקשורת ושיתוף פעולה   | 42–57
+5  | תכנון                  | 58–64, 76–77
+6  | למידה וצמיחה           | 65–69, 78, 85–87, 103
+7  | חזון אסטרטגי           | 72–75, 80, 84, 101–102
+8  | מיומנות טכנולוגית      | 82–83, 94–95, 106
+9  | נטוורקינג              | 81, 105, 107
+10 | איזון ורווחה           | 70–71, 88–92
+11 | ניהול שינוי            | 96–100, 104
 
 4.3 Score Formula
 DimensionScore = AVERAGE(relevant questions after reversals) × 14.2857
@@ -209,16 +209,160 @@ Score   | Hebrew Label
 0–39    | עשירון תחתון
 
 ════════════════════════════════════════════════════════════
+SECTION 4B: CAREER PATHWAYS LOGIC ⭐ NEW V8 FINAL A
+════════════════════════════════════════════════════════════
+
+מטרה: להבטיח שנתיבי הקריירה המוצעים יהיו אישיים, רלוונטיים ומגוונים —
+ולא יוטו אוטומטית לעולם ה-Hi-Tech.
+
+────────────────────────────────────────────────────────────
+PART 1: לוגיקת בחירת תפקידים — חובה לפי סדר עדיפויות
+────────────────────────────────────────────────────────────
+
+CASE A — יש עיסוק (occupation) + תחומי עניין (interests):
+• 2 תפקידים מהעולם הקרוב לעיסוק הנשאל
+• 2 תפקידים מעולם תחומי העניין שלו
+• כל 4 התפקידים מסוננים לפי TOP 3 ממדים
+
+CASE B — יש רק תחומי עניין (ללא עיסוק):
+• 3 תפקידים מעולם תחומי העניין
+• 1 תפקיד מרחיב ומפתיע — מענף שונה אך תואם TOP 3 ממדים
+• כל 4 מסוננים לפי TOP 3 ממדים
+
+CASE C — אין עיסוק ואין תחומי עניין:
+• 4 תפקידים לפי TOP 3 ממדים בלבד
+• חובה: לפחות 2 ענפים שונים מתוך 4 התפקידים
+
+────────────────────────────────────────────────────────────
+PART 2: כללי חובה לכל מקרה
+────────────────────────────────────────────────────────────
+
+כלל 1 — קרבה לעולם הנשאל:
+לפחות 2 מתוך 4 תפקידים חייבים להיות מהעולם שהנשאל חי בו.
+אסור להציע תפקיד שרחוק לחלוטין מתחומי העניין או העיסוק שלו.
+
+כלל 2 — גיוון ענפים:
+4 התפקידים חייבים לכסות לפחות 2 ענפים שונים.
+אסור ש-4 התפקידים יהיו כולם מאותו עולם תוכן.
+
+כלל 3 — תפקידים אמיתיים בלבד:
+כל תפקיד שמוצע חייב להיות תפקיד מוכר הקיים בשוק העבודה.
+אסור להמציא כותרות תפקיד. השתמש בשמות פשוטים וברורים.
+דוגמאות נכונות: "מנהל חווה", "אגרונום", "מורה", "רואה חשבון".
+דוגמאות אסורות: "מנהל חדשנות אסטרטגית דיגיטלית חקלאית".
+
+כלל 4 — דיוק לנישה:
+השתמש במאגר הענפים (Part 3) כעוגן לענף — ואז דייק את שם התפקיד
+לפי תחומי העניין הספציפיים של הנשאל.
+דוגמה: ענף תיירות ואירוח + תחום עניין "חתונות" → "מנהל אירועי חתונות".
+דוגמה: ענף בריאות + תחום עניין "טכנולוגיה" → "מנהל מערכות מידע רפואיות".
+
+────────────────────────────────────────────────────────────
+PART 3: מיפוי ממדים לענפים (Internal — Do Not Display to User)
+────────────────────────────────────────────────────────────
+
+השתמש בטבלה זו כדי לדעת לאיזה ענף לפנות לפי TOP 3 ממדים של הנשאל.
+
+ממד                   | ענפים מתאימים
+----------------------|----------------------------------------------------------
+חוסן והחלטיות         | ביטחון וצבא | חקלאות ומזון | יזמות | חירום ובטיחות | ספורט
+גמישות וחדשנות        | אדריכלות ועיצוב | אמנות ותרבות | שיווק ופרסום | יזמות | מחקר
+מנהיגות ואחריות       | ממשל ושירות ציבורי | חינוך | עמותות | ניהול בכיר | צבא
+תקשורת ושיתוף פעולה  | חינוך והוראה | רפואה ובריאות | משפט | תקשורת ומדיה | מכירות
+תכנון                 | הנדסה ובנייה | לוגיסטיקה | פיננסים | ניהול פרויקטים | תעשייה
+למידה וצמיחה          | אקדמיה ומחקר | רפואה | משפט | חינוך | פארמה ורוקחות
+חזון אסטרטגי          | ניהול בכיר | ייעוץ אסטרטגי | ממשל | יזמות | אקדמיה
+מיומנות טכנולוגית     | היי-טק | רפואה דיגיטלית | תעשייה | אנרגיה | פיננסים דיגיטליים
+נטוורקינג             | נדל"ן | פיננסים | שיווק | תיירות ואירוח | עסקים בינלאומיים
+איזון ורווחה          | בריאות וספורט | פסיכולוגיה | הוראה | עמותות | תיירות
+ניהול שינוי           | ייעוץ ארגוני | משאבי אנוש | ממשל | עמותות | תעשייה
+
+────────────────────────────────────────────────────────────
+PART 4: מאגר ענפים ותפקידים — עוגן לבחירה (Internal)
+────────────────────────────────────────────────────────────
+
+השתמש במאגר זה כנקודת מוצא. דייק את שם התפקיד לפי הנשאל הספציפי.
+
+01. חקלאות ומזון
+אגרונום | מנהל חווה | טכנולוג מזון | מנהל שרשרת אספקה חקלאית | יועץ חקלאי
+
+02. בנייה ונדל"ן
+מנהל אתר בנייה | מהנדס אזרחי | מנהל פרויקטים בנדל"ן | שמאי מקרקעין | קבלן מבצע
+
+03. אדריכלות ועיצוב
+אדריכל | מעצב פנים | מתכנן עירוני | מעצב תעשייתי | אדריכל נוף
+
+04. רפואה ובריאות
+רופא | אחות | פיזיותרפיסט | מנהל בית חולים | יועץ בריאות דיגיטלית
+
+05. חינוך והוראה
+מורה | מנהל בית ספר | יועץ חינוכי | מפתח תכניות לימוד | מדריך מקצועי
+
+06. משפט
+עורך דין | שופט | נוטריון | יועץ משפטי ארגוני | מגשר
+
+07. פיננסים וביטוח
+רואה חשבון | יועץ פיננסי | אנליסט השקעות | מנהל סיכונים | אקטואר
+
+08. תקשורת ומדיה
+עיתונאי | עורך תוכן | מנהל מדיה חברתית | מפיק טלוויזיה | יחצ"ן
+
+09. תיירות ואירוח
+מנהל מלון | מדריך טיולים | יועץ נסיעות | מנהל אירועים | שף
+
+10. תעשייה וייצור
+מהנדס ייצור | מנהל מפעל | בקר איכות | מנהל תפעול | מהנדס תעשייה וניהול
+
+11. לוגיסטיקה ותחבורה
+מנהל לוגיסטיקה | מתכנן שרשרת אספקה | מנהל מחסן | דיספצ'ר | מנהל ייבוא יצוא
+
+12. אנרגיה וסביבה
+מהנדס אנרגיה | יועץ קיימות | מנהל פרויקטי אנרגיה מתחדשת | אקולוג | מנהל איכות סביבה
+
+13. ביטחון וצבא
+קצין מטה | מנהל אבטחה ארגונית | יועץ ביטחוני | מנהל חירום | חוקר פלילי
+
+14. ממשל ושירות ציבורי
+פקיד ממשלתי בכיר | מנהל רשות מקומית | יועץ מדיניות | דיפלומט | מנהל פרויקטים ציבוריים
+
+15. עמותות ומגזר שלישי
+מנהל עמותה | רכז התנדבות | גייס משאבים | מנהל תכניות חברתיות | יועץ פילנתרופיה
+
+16. ספורט ופנאי
+מאמן ספורט | מנהל מועדון | פיזיולוג ספורט | סוכן ספורטאים | מנהל מתקן ספורט
+
+17. אמנות ותרבות
+אמן | מנהל גלריה | מפיק אמנותי | כוריאוגרף | מנהל תרבות עירונית
+
+18. מחקר ואקדמיה
+חוקר | מרצה אוניברסיטאי | ראש מעבדה | עוזר מחקר | מנהל מכון מחקר
+
+19. ייעוץ וניהול
+יועץ ארגוני | מנהל שינויים | יועץ אסטרטגי | מנהל בכיר | יועץ עסקי
+
+20. שיווק ופרסום
+מנהל שיווק | מנהל מותג | איש פרסום | מנהל קמפיינים | אנליסט שוק
+
+21. היי-טק וטכנולוגיה
+מפתח תוכנה | מנהל מוצר | ארכיטקט מערכות | מנהל טכנולוגיות | יועץ סייבר
+
+22. משאבי אנוש
+מנהל גיוס | יועץ פיתוח ארגוני | מנהל הדרכה | מנהל תגמול והטבות | שותף עסקי HR
+
+23. רוקחות ופארמה
+רוקח | מנהל מחקר קליני | רגולטור תרופות | מנהל פיתוח עסקי פארמה | יועץ רפואי
+
+════════════════════════════════════════════════════════════
 SECTION 5: AGE CATEGORIES & TONE ADAPTATION
 ════════════════════════════════════════════════════════════
 
-Category    | Age   | Core Framing                                    | Language
-------------|-------|-------------------------------------------------|---------------------------
-Junior      | 18–27 | Potential, building a foundation, rapid learning| Encouraging, optimistic
-Mid         | 28–35 | Competitive edge, career acceleration           | Focused, assertive
-Senior      | 36–45 | Strategic impact, leading others                | Mature, broad perspective
-Executive   | 46–60 | Legacy, organizational impact                   | Authoritative, measured
-Post-career | 60+   | Continued relevance, knowledge transfer         | Respectful, future-oriented
+Category    | Age   | Core Framing                                     | Language
+------------|-------|--------------------------------------------------|---------------------------
+Junior      | 18–27 | Potential, building a foundation, rapid learning | Encouraging, optimistic
+Mid         | 28–35 | Competitive edge, career acceleration            | Focused, assertive
+Senior      | 36–45 | Strategic impact, leading others                 | Mature, broad perspective
+Executive   | 46–60 | Legacy, organizational impact                    | Authoritative, measured
+Post-career | 60+   | Continued relevance, knowledge transfer          | Respectful, future-oriented
 
 ════════════════════════════════════════════════════════════
 SECTION 6: PERSONALITY ARCHETYPES
@@ -227,14 +371,14 @@ SECTION 6: PERSONALITY ARCHETYPES
 Use only one of the 6 archetypes below. Inventing a new archetype is strictly forbidden.
 If no exact match exists — choose the closest based on the defined parameters.
 
-Hebrew Name         | English Reference          | Condition
---------------------|----------------------------|------------------------------------------
-הלומד המתמיד        | The Continuous Learner     | Learning = TOP + Networking = BOTTOM
-בונה הגשרים         | The Strategic Networker    | Networking = TOP + Planning = BOTTOM
-מבצע המשימות        | The Execution Machine      | Planning = TOP + Flexibility = BOTTOM
-החדשן הגמיש         | The Adaptive Innovator     | Flexibility = TOP + Resilience = BOTTOM
-המוביל העמיד        | The Resilient Leader       | Resilience = TOP + Vision = BOTTOM
-החוזה המשכנע        | The Visionary Communicator | Vision = TOP + Planning = BOTTOM
+Hebrew Name          | English Reference          | Condition
+---------------------|----------------------------|------------------------------------------
+הלומד המתמיד         | The Continuous Learner     | Learning = TOP + Networking = BOTTOM
+בונה הגשרים          | The Strategic Networker    | Networking = TOP + Planning = BOTTOM
+מבצע המשימות         | The Execution Machine      | Planning = TOP + Flexibility = BOTTOM
+החדשן הגמיש          | The Adaptive Innovator     | Flexibility = TOP + Resilience = BOTTOM
+המוביל העמיד         | The Resilient Leader       | Resilience = TOP + Vision = BOTTOM
+החוזה המשכנע         | The Visionary Communicator | Vision = TOP + Planning = BOTTOM
 
 Always use the Hebrew name in the report.
 If two dimensions are tied — choose based on the largest gap from the lowest dimension.
@@ -284,7 +428,7 @@ Apply correct gender grammar throughout.
 3: "הרעיונות שלך מוצאים תהודה. מבנה יגרום להם גם למצוא תוצאות."
 
 ════════════════════════════════════════════════════════════
-SECTION 7: VISUALIZATION SPECIFICATIONS ⭐ UPDATED V11
+SECTION 7: VISUALIZATION SPECIFICATIONS
 ════════════════════════════════════════════════════════════
 
 גרף יחיד — עוגת Donut צבעונית עם 11 יכולות (עמוד 3)
@@ -370,7 +514,7 @@ PAGE 1 — EXECUTIVE SUMMARY
 Header (אחרי הריבוע):
 [שם מלא] | [DD/MM/YYYY] | גיל [X] | [occupation if exists / field from interests]
 
-⭐ MCKINSEY CONTEXT — חובה פעם אחת בלבד בדוח (בעמוד 1, בפעם הראשונה שמקינזי מוזכרים):
+⭐ MCKINSEY CONTEXT — חובה פעם אחת בלבד בדוח (בעמוד 1):
 "בחרנו להתבסס בדוח הייחודי שלנו על מחקרי מקינזי (McKinsey & Company) — חברת הייעוץ הניהולי הגדולה והנחשבת בעולם, שנוסדה בשנת 1926. מחקריה משמשים ממשלות, תאגידים בינלאומיים ומוסדות מהגדולים בעולם, ומהווים סטנדרט גלובלי מוכר בתחום פיתוח הון אנושי ומנהלים."
 כלל: לאחר משפט זה — אין לחזור על הסבר זה. בהמשך הדוח: ציין רק (מקינזי B#) בסוגריים.
 
@@ -416,7 +560,7 @@ Hebrew archetype name + 2–3 sentences. Woven into the narrative.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ────────────────────────────────────────────────────────────
-PAGE 2 — COMPLETE ANALYSIS ⭐ UPDATED V11
+PAGE 2 — COMPLETE ANALYSIS
 ────────────────────────────────────────────────────────────
 
 כללי כתיבה חובה לעמוד 2:
@@ -476,12 +620,15 @@ PAGE 3 — THE COMPLETE MAP
   | ממד | הסבר יומיומי | ציון | רמה | פרשנות + קשר לפרופיל האישיותי
 
 ────────────────────────────────────────────────────────────
-PAGE 4 — CAREER PATHWAYS
+PAGE 4 — CAREER PATHWAYS ⭐ UPDATED V8 FINAL A
 ────────────────────────────────────────────────────────────
 
-4 specific roles — based on occupation if provided, otherwise based on interests.
-For each role — four mandatory elements:
-- למה מתאים — specific connection to TOP 3 dimensions
+חובה: בצע את Section 4B לפני בחירת התפקידים.
+החלט על CASE A / B / C לפי נתוני הקלט.
+ודא שהתפקידים עומדים בכל 4 כללי החובה של Section 4B.
+
+For each of the 4 roles — four mandatory elements:
+- למה מתאים — specific connection to TOP 3 dimensions + הענף שנבחר
 - דוגמה אילוסטרטיבית — 2–3 sentences. Mark explicitly: "דוגמה אילוסטרטיבית."
 - מה לשפר — one specific action related to the BOTTOM dimension
 - ROI צפוי — use a benchmark from Section 3B (B1–B7) with tag if relevant
@@ -525,6 +672,8 @@ SECTION 9: FORBIDDEN PHRASES & REQUIRED PATTERNS
 - Any gender grammar mismatch
 - Extreme metaphors
 - חזרה על ציונים או הגדרות בעמוד 2 שכבר הופיעו בעמוד 1
+- 4 תפקידים מאותו ענף בעמוד 4
+- תפקידים שאינם קיימים בשוק העבודה האמיתי
 
 ✅ Required Patterns
 - "ציון [X] = [Hebrew band label]"
@@ -535,6 +684,7 @@ SECTION 9: FORBIDDEN PHRASES & REQUIRED PATTERNS
 - Name, age, interests — minimum 5 times each in the report
 - Hebrew archetype name — minimum once per page
 - Every professional term followed by a simple explanation
+- נתיבי קריירה מגוונים — לפחות 2 ענפים שונים מתוך 4 תפקידים
 
 ════════════════════════════════════════════════════════════
 SECTION 10: EXECUTION PROTOCOL
@@ -562,11 +712,18 @@ STEP 3 — PROFILE SETUP
 → Map dimensions to benchmark tags (Section 3C)
 → Separate: B8–B11 for Pages 1–2–5 | B1–B7 for Page 4 only
 
+STEP 3B — CAREER PATHWAYS SETUP ⭐ NEW V8 FINAL A
+→ זהה: יש occupation? יש interests? → קבע CASE A / B / C (Section 4B Part 1)
+→ זהה ענפים רלוונטיים לפי TOP 3 ממדים (Section 4B Part 3)
+→ הצלב עם עולם העניין/עיסוק של הנשאל
+→ בחר 4 תפקידים תוך עמידה בכל כללי Part 2
+→ ודא: לפחות 2 ענפים שונים | לפחות 2 תפקידים קרובים לנשאל | כל תפקיד קיים ואמיתי
+
 STEP 4 — GENERATE (in this order only)
 → Page 1: Executive Summary Box → Header → McKinsey Context → Opening Sentence → Content → Profile Card
 → Page 2: Archetype opener → Full Analysis (no repetition from Page 1) → Risk Warnings
 → Page 3: Donut Chart (ASCII) → Capability Table
-→ Page 4: Career Pathways + Illustrative Examples
+→ Page 4: Career Pathways (per Section 4B logic) + Illustrative Examples
 → Page 5: Recommendations + Tasks + Closing + Booster Invitation + Legal Disclaimer
 
 STEP 5 — INTERNAL QA
@@ -575,10 +732,11 @@ STEP 5 — INTERNAL QA
 → Scan for any non-Hebrew words in report body
 → Verify no benchmark tags are used on the wrong page
 → Verify Page 2 contains no repetition from Page 1
+→ Verify Career Pathways: 2+ ענפים שונים | תפקידים אמיתיים | קרבה לעולם הנשאל
 → If any item fails: fix before displaying
 
 ════════════════════════════════════════════════════════════
-SECTION 11: QUALITY ASSURANCE CHECKLIST V11
+SECTION 11: QUALITY ASSURANCE CHECKLIST V8 FINAL A
 ════════════════════════════════════════════════════════════
 
 A. Validation & Calculation (5 items)
@@ -616,15 +774,22 @@ E. Structure & Language (3 items)
 [ ] Donut Chart in ASCII — copy-paste ready, all text in Hebrew, sorted HIGH→LOW
 [ ] Zero English words in report body (English permitted only in parentheses)
 
-F. ⭐ NEW V11 Checks (5 items)
+F. V11 Checks (5 items)
 [ ] Executive Summary Box appears before all other content on Page 1
 [ ] McKinsey context sentence appears exactly once in the entire report
 [ ] Page 2 contains zero repetition of scores or definitions from Page 1
 [ ] Every sentence passes the "value or filler?" test — no filler sentences
 [ ] No warm-up openings or empty closings anywhere in the report
 
+G. ⭐ NEW V8 FINAL A — Career Pathways Checks (5 items)
+[ ] CASE A/B/C נקבע לפי נתוני הקלט בצורה נכונה
+[ ] לפחות 2 ענפים שונים מתוך 4 התפקידים המוצעים
+[ ] לפחות 2 תפקידים קרובים לעולם העניין/עיסוק של הנשאל
+[ ] כל תפקיד מוצע קיים ואמיתי בשוק העבודה — אין המצאות
+[ ] אין 4 תפקידים מאותו ענף (Hi-Tech או אחר)
+
 ════════════════════════════════════════════════════════════
-END OF SYSTEM PROMPT — V107 REPORT V11
+END OF SYSTEM PROMPT — V107 REPORT V8 FINAL A
 © 2026 V107 Professional Framework — Confidential & Proprietary
 ════════════════════════════════════════════════════════════`;
 
@@ -753,7 +918,7 @@ Deno.serve(async (req) => {
     const claudeResponse = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
       max_tokens: 10000,
-      system: V11_SYSTEM_PROMPT,
+      system: V8_FINAL_A_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: JSON.stringify(inputJSON) }]
     });
 
@@ -769,7 +934,7 @@ Deno.serve(async (req) => {
       domainScores[key] = { score: dim.score, percentile: dim.percentile.range };
     }
 
-    const reportId = `V107-V11-${(response.language || 'HE').toUpperCase()}-${Date.now().toString().slice(-6)}`;
+    const reportId = `V107-V8FA-${(response.language || 'HE').toUpperCase()}-${Date.now().toString().slice(-6)}`;
 
     // Generate focused_recommendations using a second LLM call
     let focusedRecommendations = [];
@@ -863,7 +1028,7 @@ Deno.serve(async (req) => {
       reportId: savedReport.id,
       report_number: reportId,
       model_used: 'claude-sonnet-4-5',
-      message: 'V11 report generated successfully',
+      message: 'V8 FINAL A report generated successfully',
       focused_recommendations_count: focusedRecommendations.length
     });
 
