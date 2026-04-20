@@ -80,7 +80,8 @@ export default function CareerPaths() {
         // Fetch latest report
         try {
           const allReports = await base44.entities.GeneratedReport.list('-created_date');
-          const myReport = allReports.find(r => r.user_email === currentUser.email && r.purchased === true);
+          const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
+          const myReport = allReports.find(r => r.user_email === currentUser.email && (r.purchased === true || hasPurchased));
           if (myReport) {
             setLatestReport(myReport);
             const paths = buildPathsFromReport(myReport);
