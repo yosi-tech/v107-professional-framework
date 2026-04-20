@@ -1008,7 +1008,7 @@ Deno.serve(async (req) => {
       user_name: response.personal_info.full_name,
       user_email: response.personal_info.email,
       report_id: reportId,
-      purchased: false,
+      purchased: true,
       report_markdown: fullReport,
       archetype: archetype,
       recommended_booster_track: bottom2[0]?.key,
