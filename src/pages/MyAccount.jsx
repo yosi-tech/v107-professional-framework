@@ -386,12 +386,7 @@ export default function MyAccount() {
                   <h2 className="text-xl font-bold text-slate-900 mb-6">נתיבי קריירה מומלצים</h2>
                   {(() => {
                     const pathTitles = [];
-                    if (latestReport?.archetype) pathTitles.push(latestReport.archetype);
-                    if (latestReport?.recommended_booster_track) {
-                      const trackMap = { resilience: 'חוסן', flexibility: 'גמישות', leadership: 'מנהיגות', communication: 'תקשורת', planning: 'תכנון', learning: 'למידה', vision: 'חזון', technology: 'טכנולוגיה', networking: 'נטוורקינג', balance: 'איזון', change: 'ניהול שינוי' };
-                      pathTitles.push(`מסלול ${trackMap[latestReport.recommended_booster_track] || latestReport.recommended_booster_track}`);
-                    }
-                    if (Array.isArray(latestReport?.focused_recommendations)) {
+                    if (Array.isArray(latestReport?.focused_recommendations) && latestReport.focused_recommendations.length > 0) {
                       latestReport.focused_recommendations.slice(0, 4).forEach(rec => {
                         const title = typeof rec === 'object' ? (rec.title || rec.role || '') : rec;
                         if (title) pathTitles.push(title);
@@ -424,7 +419,7 @@ export default function MyAccount() {
                     );
                   })()}
                   {(() => {
-                    const hasRealPaths = latestReport?.archetype || latestReport?.recommended_booster_track || (Array.isArray(latestReport?.focused_recommendations) && latestReport.focused_recommendations.length > 0);
+                    const hasRealPaths = Array.isArray(latestReport?.focused_recommendations) && latestReport.focused_recommendations.length > 0;
                     return hasRealPaths ? (
                       <Link to="/CareerPaths">
                         <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
