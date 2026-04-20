@@ -231,9 +231,9 @@ export default function Payment() {
 
     setIsLoadingHandshake(true);
     try {
-      // Create PaymentOrder with pending status
+      // Create PaymentOrder
       const orderData = {
-        status: 'pending',
+        status: price === 0 ? 'paid' : 'pending',
         amount: price,
         user_email: user.email,
         user_name: user.full_name || '',
@@ -248,17 +248,47 @@ export default function Payment() {
       setCurrentOrderId(createdOrder.id); 
       console.log('PaymentOrder created:', createdOrder.id);
 
-      // Mark coupon as used immediately to prevent reuse (only if single-use)
-      // Coupon is marked as used ONLY via tranzilaNotify webhook after payment confirmed.
-      // Do NOT mark it here — user may open Tranzila and cancel without paying.
-      
-          // if (appliedCoupon) {
-          //   const isSingleUse = appliedCoupon.is_single_use !== false; // default is true
-          //   if (isSingleUse) {
-          //     await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
-          //     console.log('Coupon marked as used:', appliedCoupon.code);
-          //   }
-          // }
+      // If price is 0 (full coupon discount), skip Tranzila and complete purchase directly
+      if (price === 0) {
+        // Update user purchase flags
+        const userUpdateData = {
+          purchase_date: new Date().toISOString(),
+          payment_amount: 0
+        };
+        if (product === 'full_report') {
+          userUpdateData.has_purchased_full_report = true;
+          userUpdateData.express_delivery = isExpress;
+        } else if (product === 'answers_download') {
+          userUpdateData.has_purchased_answers_download = true;
+        } else if (product === 'online_coaching_7days') {
+          userUpdateData.has_purchased_online_coaching = true;
+        }
+        await base44.auth.updateMe(userUpdateData);
+
+        // Mark coupon as used
+        if (appliedCoupon) {
+          const isSingleUse = appliedCoupon.is_single_use !== false;
+          if (isSingleUse) {
+            await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
+          }
+        }
+
+        // Mark generated report as purchased if applicable
+        if (responseId && product === 'full_report') {
+          try {
+            const reports = await base44.entities.GeneratedReport.filter({ questionnaire_response_id: responseId }, '-created_date', 1);
+            if (reports.length > 0) {
+              await base44.entities.GeneratedReport.update(reports[0].id, { purchased: true });
+            }
+          } catch (e) {
+            console.log('Could not mark report as purchased:', e.message);
+          }
+        }
+
+        setIsLoadingHandshake(false);
+        navigate(createPageUrl("ThankYou"));
+        return;
+      }
 
       const { data } = await tranzilaCreateHandshake({ sum: price });
       setHandshakeData(data);
