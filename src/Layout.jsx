@@ -526,7 +526,19 @@ function AppLayout({ children }) {
 
 
       <main className="flex-1 relative z-10 pt-[73px]">
-        {children}
+        <div className="mx-4 md:mx-8 my-4" style={{
+          border: '2px solid #FF8F00',
+          borderRadius: '12px',
+          padding: '3px',
+        }}>
+          <div style={{
+            border: '1px solid #1a202c',
+            borderRadius: '9px',
+            overflow: 'hidden',
+          }}>
+            {children}
+          </div>
+        </div>
       </main>
       
       <footer className="bg-slate-50 border-t border-slate-200 w-full py-12 pb-20 xl:pb-12">
