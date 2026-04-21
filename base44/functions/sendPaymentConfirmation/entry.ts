@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
           questionnaire_response_id: orderData.questionnaire_response_id
         }, '-created_date', 1);
         if (reports.length > 0) {
-          reportLink = `${appUrl}/ReportView?id=${reports[0].id}`;
+          reportLink = `${appUrl}/ReportView?reportId=${reports[0].id}`;
         }
       } catch (e) {
         console.log('Could not find report:', e.message);
