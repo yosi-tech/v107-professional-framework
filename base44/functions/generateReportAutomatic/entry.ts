@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import Anthropic from 'npm:@anthropic-ai/sdk@0.39.0';
 
 const V8_FINAL_A_SYSTEM_PROMPT = `V107 REPORT — SYSTEM PROMPT V8 FINAL A
