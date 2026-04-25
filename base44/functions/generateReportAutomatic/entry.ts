@@ -2,7 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import Anthropic from 'npm:@anthropic-ai/sdk@0.39.0';
 
 const V8_FINAL_C_SYSTEM_PROMPT = `V107 REPORT — SYSTEM PROMPT V8 FINAL C
-© 2026 V107 Professional Framework
+\u00a9 2026 V107 Professional Framework
 שינויים מסומנים: ⭐ NEW V8 FINAL C
 
 ════════════════════════════════════════════════════════════
