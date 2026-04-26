@@ -14,14 +14,14 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Calculate cutoff date (30 days ago)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const cutoffDate = thirtyDaysAgo.toISOString();
+    // Calculate cutoff date (90 days ago)
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    const cutoffDate = ninetyDaysAgo.toISOString();
 
     console.log(`Anonymizing questionnaire data older than: ${cutoffDate}`);
 
-    // Fetch all questionnaire responses older than 30 days
+    // Fetch all questionnaire responses older than 90 days
     const oldResponses = await base44.asServiceRole.entities.QuestionnaireResponse.list('-created_date', 1000);
     
     let anonymizedCount = 0;
@@ -30,10 +30,10 @@ Deno.serve(async (req) => {
 
     for (const response of oldResponses) {
       try {
-        // Check if the response is older than 30 days
+        // Check if the response is older than 90 days
         const createdDate = new Date(response.created_date);
         
-        if (createdDate >= thirtyDaysAgo) {
+        if (createdDate >= ninetyDaysAgo) {
           skippedCount++;
           continue;
         }
