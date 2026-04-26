@@ -1041,13 +1041,31 @@ Deno.serve(async (req) => {
     const genderRaw = response.personal_info?.gender;
     const genderFormatted = genderRaw === 'female' ? 'נקבה' : genderRaw === 'male' ? 'זכר' : 'אחר';
 
+    const fieldTranslations = {
+      entrepreneurship: 'יזמות',
+      technology: 'טכנולוגיה',
+      finance: 'פיננסים',
+      culture: 'תרבות',
+      marketing: 'שיווק',
+      sales: 'מכירות',
+      hr: 'משאבי אנוש',
+      education: 'חינוך',
+      management: 'ניהול',
+      other: 'אחר'
+    };
+
+    const rawOccupation = response.personal_info.occupation_field || '';
+    const translatedOccupation = fieldTranslations[rawOccupation] || rawOccupation;
+    const rawInterests = response.personal_info.interest_areas || [];
+    const translatedInterests = rawInterests.map(i => fieldTranslations[i] || i);
+
     const inputJSON = {
       name: response.personal_info.full_name,
       email: response.personal_info.email,
       gender: genderFormatted,
       age: effectiveAge,
-      occupation: response.personal_info.occupation_field || '',
-      interests: response.personal_info.interest_areas || [],
+      occupation: translatedOccupation,
+      interests: translatedInterests,
       answers: answersArray
     };
 
