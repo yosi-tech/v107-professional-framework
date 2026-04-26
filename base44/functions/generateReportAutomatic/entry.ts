@@ -1133,7 +1133,7 @@ Deno.serve(async (req) => {
     const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') });
 
     const claudeResponse = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
+      model: 'claude-opus-4-5-20251101',
       max_tokens: 10000,
       system: V8_FINAL_C_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: JSON.stringify(extendedJSON) }]
