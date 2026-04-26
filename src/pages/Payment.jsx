@@ -323,9 +323,7 @@ export default function Payment() {
     const handleMessage = async (event) => {
       if (event.data && event.data.iframe_message === 'success') {
         setIsProcessing(false);
-        setPaymentSuccess(true);
-        // Note: All processing happens via tranzilaNotify webhook
-        // Just show success message to user
+        navigate(createPageUrl("ThankYou"));
       } else if (event.data && event.data.iframe_message === 'error') {
         setIsProcessing(false);
         alert(language === 'he' ? 'התשלום נכשל. נסה שוב.' : 'Payment failed. Try again.');
@@ -345,24 +343,7 @@ export default function Payment() {
     );
   }
 
-  if (paymentSuccess) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <CheckCircle className="w-10 h-10 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{language === 'he' ? 'התשלום בוצע בהצלחה!' : 'Payment Successful!'}</h1>
-          <p className="text-lg text-gray-600 mb-4">
-            {language === 'he' ? 'תודה על הרכישה. הרכישה שלך עברה בהצלחה!' : 'Thank you for your purchase. Your purchase was successful!'}
-          </p>
-          <Button onClick={() => navigate(createPageUrl("ThankYou"))} className="mt-4">
-            {language === 'he' ? 'המשך' : 'Continue'}
-          </Button>
-        </div>
-      </div>
-    );
-  }
+
 
   const productDetails = {
       full_report: {
