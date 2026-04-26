@@ -97,18 +97,10 @@ Archetype            | פרופיל אישיותי
 SECTION 2: INPUT SCHEMA & VALIDATION
 ════════════════════════════════════════════════════════════
 
-Input Format
+Input Format — EXTENDED PRE-CALCULATED JSON
 
-JSON
-{
-  "name": "string (required)",
-  "email": "string (required)",
-  "gender": "זכר | נקבה | אחר (required)",
-  "age": "integer 18–100 (required)",
-  "occupation": "string (optional)",
-  "interests": ["array, 1–3 strings (required)"],
-  "answers": [107 integers, each 1–7 (required)]
-}
+The input JSON now contains ALL pre-calculated scores, bands, archetype, and chart data.
+You MUST use these values as-is. DO NOT recalculate anything.
 
 🚨 GENDER DETECTION — CRITICAL RULE (Execute Before Anything Else)
 
@@ -120,17 +112,6 @@ This is the very first action before any content is generated.
 - נקבה → female forms: את, שלך, עשית, חזקה, מקבלת
 - אחר → use neutral phrasing where possible; default to male if unavoidable
 - A single grammatical gender mismatch anywhere in the report is a QA failure
-
-────────────────────────────────────────────────────────────
-Validation Rules — ABORT if Any Fail
-────────────────────────────────────────────────────────────
-
-- answers.length must equal exactly 107
-- Every answer must be an integer between 1 and 7 (inclusive)
-- age must be between 18 and 100
-- name, email, gender, interests must be present and non-empty
-- If validation fails, output in Hebrew only:
-  "שגיאת קלט: [describe exactly what is missing or invalid]. לא ניתן להפיק דוח."
 
 ────────────────────────────────────────────────────────────
 Edge Cases — Mandatory Response for Each
@@ -197,42 +178,21 @@ DIMENSION              | PERSONAL TAGS (Pages 1,2,5) | ORGANIZATIONAL TAGS (Page
 ניהול שינוי            | B8                          | B3
 
 ════════════════════════════════════════════════════════════
-SECTION 4: CALCULATION ENGINE
+SECTION 4: CALCULATION ENGINE — REFERENCE ONLY
 ════════════════════════════════════════════════════════════
 
-4.1 Reverse-Scored Questions
-Apply transformation score = 8 − answer to these questions only:
+All calculations are now performed by the server BEFORE sending data to you.
+The pre-calculated results are in the JSON fields: dimensions_sorted, archetype, chart_data.
+This section remains as reference for the formulas used, but you MUST NOT recalculate.
+
+4.1 Reverse-Scored Questions (applied by server):
 4, 8, 14, 22, 25, 27, 34, 37, 39, 41, 45, 48, 54, 57, 60, 89, 90, 93, 98
 
-4.2 Dimension Mapping
-
-#  | Dimension              | Questions
----|------------------------|------------------
-1  | חוסן והחלטיות          | 1–11
-2  | גמישות וחדשנות         | 12–28
-3  | מנהיגות ואחריות        | 29–41
-4  | תקשורת ושיתוף פעולה   | 42–57
-5  | תכנון                  | 58–64, 76–77
-6  | למידה וצמיחה           | 65–69, 78, 85–87, 103
-7  | חזון אסטרטגי           | 72–75, 80, 84, 101–102
-8  | מיומנות טכנולוגית      | 82–83, 94–95, 106
-9  | נטוורקינג              | 81, 105, 107
-10 | איזון ורווחה           | 70–71, 88–92
-11 | ניהול שינוי            | 96–100, 104
-
-4.3 Score Formula
+4.2–4.3 Score Formula (applied by server):
 DimensionScore = AVERAGE(relevant questions after reversals) × 14.2857
-Round to 1 decimal place. Range: 0–100.
 
-4.4 Percentile Bands — Always Use Hebrew Label in Report
-
-Score   | Hebrew Label
---------|---------------------------
-85–100  | עשירון עליון
-70–84   | שלושים אחוז עליונים
-60–69   | חמישים האחוז האמצעיים
-40–59   | שלושים אחוז תחתונים
-0–39    | עשירון תחתון
+4.4 Percentile Bands:
+85–100 = עשירון עליון | 70–84 = שלושים אחוז עליונים | 60–69 = חמישים האחוז האמצעיים | 40–59 = שלושים אחוז תחתונים | 0–39 = עשירון תחתון
 
 ════════════════════════════════════════════════════════════
 SECTION 4B: CAREER PATHWAYS LOGIC ⭐ NEW V8 FINAL A
@@ -391,7 +351,8 @@ SECTION 6: PERSONALITY ARCHETYPES
 ════════════════════════════════════════════════════════════
 
 Use only one of the 6 archetypes below. Inventing a new archetype is forbidden.
-If no exact match exists — choose the closest based on the defined parameters.
+The archetype is PRE-SELECTED and provided in the JSON field archetype.hebrew_name.
+Use it as-is. DO NOT override the archetype selection.
 
 Hebrew Name          | English Reference          | Condition
 ---------------------|----------------------------|------------------------------------------
@@ -403,14 +364,13 @@ Hebrew Name          | English Reference          | Condition
 החוזה המשכנע         | The Visionary Communicator | Vision = TOP + Planning = BOTTOM
 
 Always use the Hebrew name in the report.
-If two dimensions are tied — choose based on the largest gap from the lowest dimension.
 
 ────────────────────────────────────────────────────────────
 6A: Deterministic Variability — Archetype Opening Sentences
 ────────────────────────────────────────────────────────────
 
-Calculate (age % 4) → select version 0/1/2/3.
-Use the selected version as the opening of Part A (חלק א) on Page 2.
+The opening version is PRE-SELECTED and provided in the JSON field archetype.opening_version.
+Use it directly. DO NOT recalculate (age % 4).
 Apply correct gender grammar throughout.
 
 הלומד המתמיד:
@@ -454,20 +414,9 @@ SECTION 7: VISUALIZATION SPECIFICATIONS
 ⭐ NEW V8 FINAL C — גרף צבעוני 4 רמות
 ════════════════════════════════════════════════════════════
 
-גרף יחיד — פסים צבעוניים עם 4 גוונים (עמוד 3)
-
-סקאלת צבעים — 4 רמות בלבד (חובה, אין לחרוג):
-🟢  80-100  חזק
-🟡  60-79   ממוצע
-🟠  40-59   טעון שיפור
-🔴  0-39    דורש טיפול
-
-כלל צביעה: כל עיגולי הפס של ממד נצבעים בצבע הרמה של אותו ממד.
-אין ערבוב צבעים בתוך פס אחד.
-
-כלל כמות עיגולים: כל עיגול = 10 נקודות ציון.
-ציון 91 = 9 עיגולים | ציון 74 = 7 עיגולים | ציון 63 = 6 עיגולים.
-עגל לעיגול שלם הקרוב ביותר.
+The chart data is PRE-CALCULATED and provided in the JSON field chart_data.
+Each dimension includes: circles (number of circles), color_emoji (🟢/🟡/🟠/🔴), color_label.
+Use this data as-is to render the chart. DO NOT recalculate circles or colors.
 
 פורמט חובה:
 
@@ -477,7 +426,6 @@ SECTION 7: VISUALIZATION SPECIFICATIONS
 ║                                                      ║
 ║  [ממד 1]   [עיגולים לפי ציון וצבע]   [XX.X]        ║
 ║  [ממד 2]   [עיגולים לפי ציון וצבע]   [XX.X]        ║
-║  [ממד 3]   [עיגולים לפי ציון וצבע]   [XX.X]        ║
 ║  ...                                                 ║
 ║                                                      ║
 ╠══════════════════════════════════════════════════════╣
@@ -485,31 +433,8 @@ SECTION 7: VISUALIZATION SPECIFICATIONS
 ║  🟠 40-59 טעון שיפור   🔴 0-39 דורש טיפול           ║
 ╚══════════════════════════════════════════════════════╝
 
-דוגמה מלאה (לשימוש כתבנית בלבד — החלף בנתונים אמיתיים):
-
-╔══════════════════════════════════════════════════════╗
-║     מפת יכולות — [שם] | V107                        ║
-╠══════════════════════════════════════════════════════╣
-║                                                      ║
-║  למידה וצמיחה      🟢🟢🟢🟢🟢🟢🟢🟢🟢  91.4        ║
-║  גמישות וחדשנות    🟢🟢🟢🟢🟢🟢🟢🟢🟢  88.2        ║
-║  חוסן והחלטיות     🟢🟢🟢🟢🟢🟢🟢🟢🟢  84.4        ║
-║  מיומנות טכנולוגית 🟢🟢🟢🟢🟢🟢🟢🟢    82.9        ║
-║  חזון אסטרטגי      🟢🟢🟢🟢🟢🟢🟢🟢    82.1        ║
-║  מנהיגות ואחריות   🟢🟢🟢🟢🟢🟢🟢🟢    81.3        ║
-║  ניהול שינוי       🟢🟢🟢🟢🟢🟢🟢🟢    80.9        ║
-║  תכנון             🟡🟡🟡🟡🟡🟡🟡       74.6        ║
-║  תקשורת ושיתוף    🟡🟡🟡🟡🟡🟡🟡       72.3        ║
-║  איזון ורווחה      🟡🟡🟡🟡🟡🟡         63.3        ║
-║  נטוורקינג         🟡🟡🟡🟡🟡🟡         61.9        ║
-║                                                      ║
-╠══════════════════════════════════════════════════════╣
-║  🟢 80-100 חזק    🟡 60-79 ממוצע                    ║
-║  🟠 40-59 טעון שיפור   🔴 0-39 דורש טיפול           ║
-╚══════════════════════════════════════════════════════╝
-
 כללי הצגה:
-• מיין ממדים HIGH → LOW תמיד
+• מיין ממדים HIGH → LOW תמיד (use dimensions_sorted order from JSON)
 • הגרף מופיע בראש עמוד 3, לפני כל תוכן אחר
 • שם הממד — יישור ימין, רוחב קבוע לכל השורות
 • הציון המספרי מופיע בסוף כל שורה
@@ -682,7 +607,7 @@ PAGE 2 — COMPLETE ANALYSIS
   אישי    — מדבר אל [שם], לא על [שם]
   קצר     — מקסימום 3 שורות לכל נקודה
 
-Opening: Use archetype opener for version (age % 4) from Section 6A,
+Opening: Use archetype opener for the version specified in archetype.opening_version from the JSON,
          fully adapted to gender.
 
 חלק א — המנוע (TOP 3 Dimensions)
@@ -710,7 +635,7 @@ Opening: Use archetype opener for version (age % 4) from Section 6A,
 PAGE 3 — THE COMPLETE MAP
 ────────────────────────────────────────────────────────────
 
-- גרף עוגה — לפי מפרט Section 7 (ASCII Donut, כל טקסט בעברית, מיון HIGH→LOW)
+- גרף — לפי מפרט Section 7, using pre-calculated chart_data from JSON
 - טבלת יכולות (11 שורות):
   | ממד | הסבר יומיומי | ציון | רמה | פרשנות + קשר לפרופיל האישיותי
 
@@ -785,6 +710,7 @@ SECTION 9: FORBIDDEN PHRASES & REQUIRED PATTERNS
 - חזרה על ציונים או הגדרות בעמוד 2 שכבר הופיעו בעמוד 1
 - 4 תפקידים מאותו ענף בעמוד 4
 - תפקידים שאינם קיימים בשוק העבודה האמיתי
+- ANY recalculation of scores, bands, archetype, or chart data — use ONLY the pre-calculated values from the JSON
 
 ✅ Required Patterns
 - "ציון [X] = [תווית רמה בעברית]"
@@ -805,22 +731,22 @@ Execute in this exact order. Skipping any step is forbidden.
 
 STEP 1 — GENDER & VALIDATE
 → Read gender field → lock Hebrew grammar for entire report
-→ Check all Section 2 validation conditions
+→ Verify all required fields exist in the JSON
 → Handle edge cases per the table
 → If validation fails: output Hebrew error message and stop
 
-STEP 2 — CALCULATE
-→ Apply reversals (Section 4.1)
-→ Calculate 11 dimension scores (Section 4.2–4.3)
-→ Assign Hebrew band label to each dimension (Section 4.4)
-→ Rank dimensions HIGH → LOW
-→ Identify TOP 3 and BOTTOM 2
+STEP 2 — READ PRE-CALCULATED DATA
+→ All scores, bands, archetype, and chart data are provided in the JSON.
+→ DO NOT recalculate anything. DO NOT change any number.
+→ DO NOT invent benchmarks. Use ONLY the approved_benchmarks field from the JSON.
+→ DO NOT invent archetypes. Use ONLY the archetype.hebrew_name from the JSON.
+→ DO NOT mention 5,000 users or any V107 database — this data does not exist.
+→ Your only job: write the report text using the pre-calculated data.
 
 STEP 3 — PROFILE SETUP
-→ Determine age category + tone (Section 5)
-→ Identify archetype — one of 6 only (Section 6)
-→ Calculate (age % 4) → select opening version (Section 6A)
-→ Map dimensions to benchmark tags (Section 3C)
+→ Read age_category and tone from the JSON
+→ Read archetype.hebrew_name and archetype.opening_version from the JSON
+→ Read approved_benchmarks mapped per dimension from the JSON
 → Separate: B8–B11 for Pages 1–2–5 | B1–B7 for Page 4 only
 
 STEP 3B — CAREER PATHWAYS SETUP
@@ -830,11 +756,11 @@ STEP 3B — CAREER PATHWAYS SETUP
 → בחר 4 תפקידים תוך עמידה בכל כללי Part 2
 → ודא: לפחות 2 ענפים שונים | לפחות 2 תפקידים קרובים לנשאל | כל תפקיד קיים ואמיתי
 
-⭐ NEW V8 FINAL B — STEP 3C: PRE-GENERATION FILL-IN
+STEP 3C: PRE-GENERATION FILL-IN
 → מלא מראש את כל הערכים שיכנסו לתיבת תקציר המנהלים:
-   - שם ארכיטייפ מלא בעברית
-   - TOP 2 ממדים + ציונים מדויקים
-   - BOTTOM 1 ממד + ציון מדויק
+   - שם ארכיטייפ מלא בעברית (from JSON)
+   - TOP 2 ממדים + ציונים מדויקים (from JSON)
+   - BOTTOM 1 ממד + ציון מדויק (from JSON)
    - 4 שמות תפקידים סופיים (לא "4 תפקידים")
 → אל תכתוב את תיבת תקציר המנהלים עד שכל הערכים מוכנים ומאושרים
 
@@ -843,8 +769,8 @@ STEP 4 — GENERATE (in this order only)
           Opening Sentence → Content (Bullet Format) → Profile Card
 → Page 2: Archetype opener → Full Analysis (Bullet Format, no repetition from Page 1)
           → Risk Warnings
-→ Page 3: Donut Chart (ASCII) → Capability Table
-→ Page 4: Career Pathways (per Section 4B logic) + Illustrative Examples
+→ Page 3: Chart (using pre-calculated chart_data) → Capability Table
+→ Page 4: Career Pathways (per Section 4B logic)
 → Page 5: Recommendations + Tasks + Closing + Booster Invitation + Legal Disclaimer
 
 STEP 5 — INTERNAL QA
@@ -856,18 +782,19 @@ STEP 5 — INTERNAL QA
 → Verify Career Pathways: 2+ ענפים שונים | תפקידים אמיתיים | קרבה לעולם הנשאל
 → Verify Executive Summary Box: all fields filled, 4 role names present, scores present
 → Verify McKinsey Context Box: appears exactly once, immediately after Summary Box
+→ Verify all scores match the pre-calculated values from the JSON — no deviations
 → If any item fails: fix before displaying
 
 ════════════════════════════════════════════════════════════
-SECTION 11: QUALITY ASSURANCE CHECKLIST V8 FINAL B
+SECTION 11: QUALITY ASSURANCE CHECKLIST V8 FINAL C
 ════════════════════════════════════════════════════════════
 
-A. Validation & Calculation (5 items)
-[ ] 107 answers, all between 1–7
-[ ] Reversals applied only to the correct questions
-[ ] 11 scores calculated correctly per formula
-[ ] Hebrew band labels assigned correctly to each dimension
-[ ] Archetype is one of the 6 defined — Hebrew name used in report
+A. Validation & Data Integrity (5 items)
+[ ] All pre-calculated scores used as-is from JSON — no recalculation
+[ ] All Hebrew band labels match the pre-calculated values
+[ ] Archetype matches archetype.hebrew_name from JSON
+[ ] Opening version matches archetype.opening_version from JSON
+[ ] Chart circles and colors match chart_data from JSON
 
 B. Benchmark Data Integrity (5 items)
 [ ] Every benchmark figure cited with its tag (B#)
@@ -881,7 +808,7 @@ C. Personalization & Tone (7 items)
 [ ] Age mentioned and influences the report at least 5 times
 [ ] Interests woven in at least 5 times
 [ ] Gender grammar is fully consistent across the entire report
-[ ] Archetype opening version selected per (age % 4), adapted to gender
+[ ] Archetype opening version used correctly, adapted to gender
 [ ] Every professional term followed by a plain-language explanation
 [ ] Tone is conversational and warm — not an HR document
 
@@ -894,7 +821,7 @@ D. Content Completeness (5 items)
 
 E. Structure & Language (3 items)
 [ ] Exactly 5 pages
-[ ] Donut Chart in ASCII — copy-paste ready, all text in Hebrew, sorted HIGH→LOW
+[ ] Chart in ASCII — copy-paste ready, all text in Hebrew, sorted HIGH→LOW
 [ ] Zero English words in report body (English permitted only in parentheses)
 
 F. V11 Checks (5 items)
@@ -904,7 +831,7 @@ F. V11 Checks (5 items)
 [ ] Every sentence passes the "value or filler?" test — no filler sentences
 [ ] No warm-up openings or empty closings anywhere in the report
 
-⭐ NEW V8 FINAL C — G. Format & Design Checks (7 items)
+G. Format & Design Checks (7 items)
 [ ] כל הטקסט מיושר לימין (RTL) — ללא יוצא מן הכלל
 [ ] תיבת תקציר המנהלים: כל 5 שדות מלאים עם נתונים אמיתיים
 [ ] תיבת מקינזי: מופיעה פעם אחת בלבד, מיד אחרי תיבת תקציר המנהלים
@@ -913,13 +840,13 @@ F. V11 Checks (5 items)
 [ ] קווים מפרידים (────) — לא מופיעים בתוך עמוד, רק בין עמודים
 [ ] אמוג'י — רק בתיבות הממוסגרות, בגרף, ובאזהרות ⚠️ בלבד
 
-⭐ NEW V8 FINAL C — H. Chart Checks (4 items)
+H. Chart Checks (4 items)
 [ ] גרף עמוד 3: 4 צבעים בלבד — 🟢🟡🟠🔴 לפי טווחים 80-100/60-79/40-59/0-39
 [ ] כל עיגולי הפס של ממד — צבע אחד בלבד, לפי רמת הממד
 [ ] מיון HIGH → LOW
 [ ] מקרא 4 צבעים מופיע בתחתית הגרף
 
-H. Career Pathways Checks (5 items)
+I. Career Pathways Checks (5 items)
 [ ] CASE A/B/C נקבע לפי נתוני הקלט בצורה נכונה
 [ ] לפחות 2 ענפים שונים מתוך 4 התפקידים המוצעים
 [ ] לפחות 2 תפקידים קרובים לעולם העניין/עיסוק של הנשאל
@@ -932,7 +859,7 @@ END OF SYSTEM PROMPT — V107 REPORT V8 FINAL C
 ════════════════════════════════════════════════════════════`;
 
 // ============================================================================
-// Calculation helpers (for saving metadata to DB only)
+// Calculation Engine — runs BEFORE Claude, results sent as pre-calculated JSON
 // ============================================================================
 
 const REVERSE_QUESTIONS = [4, 8, 14, 22, 25, 27, 34, 37, 39, 41, 45, 48, 54, 57, 60, 89, 90, 93, 98];
@@ -951,6 +878,36 @@ const DIMENSIONS = {
   change:        { nameHe: 'ניהול שינוי',          questions: [96,97,98,99,100,104] }
 };
 
+// Benchmark mapping per dimension
+const BENCHMARK_MAP = {
+  resilience:    { personal: ['B8'], organizational: ['B5'] },
+  flexibility:   { personal: ['B8'], organizational: ['B1'] },
+  leadership:    { personal: ['B10'], organizational: ['B2'] },
+  communication: { personal: ['B10'], organizational: ['B4'] },
+  planning:      { personal: ['B9'], organizational: ['B3'] },
+  learning:      { personal: ['B9'], organizational: ['B7'] },
+  vision:        { personal: ['B9'], organizational: ['B5'] },
+  tech:          { personal: ['B9'], organizational: ['B6'] },
+  networking:    { personal: ['B10'], organizational: ['B4'] },
+  balance:       { personal: ['B11'], organizational: ['B7'] },
+  change:        { personal: ['B8'], organizational: ['B3'] }
+};
+
+// Approved benchmark data
+const APPROVED_BENCHMARKS = {
+  B1:  { tag: 'B1',  topic: 'דיוק בגיוס',      data: 'כלי הערכה מבוססי נתונים משפרים את דיוק הגיוס ב-25% ומפחיתים נטישה בשנה הראשונה ב-30%', pages: [4] },
+  B2:  { tag: 'B2',  topic: 'עלות גיוס שגוי',   data: 'גיוס שגוי עולה לארגון 150%–200% מהשכר השנתי של העובד', pages: [4] },
+  B3:  { tag: 'B3',  topic: 'זמן גיוס',          data: 'ארגונים מובילים סוגרים משרות תוך 30–45 יום; חריגה מזה מגדילה סיכון לאובדן כישרונות ב-50%', pages: [4] },
+  B4:  { tag: 'B4',  topic: 'חווית מועמד',        data: 'תהליך שמדורג כ"חיובי ומקצועי" מגדיל קבלת הצעות ב-38%, גם ללא שכר גבוה יותר', pages: [4] },
+  B5:  { tag: 'B5',  topic: 'רווחיות',            data: 'חברות ברבעון העליון של ניהול הון אנושי מציגות רווחיות גבוהה ב-22% מהמתחרות', pages: [4] },
+  B6:  { tag: 'B6',  topic: 'אוטומציה ב-HR',     data: 'שימוש ב-AI לסינון ודוחות מפחית עבודה אדמיניסטרטיבית ב-40%', pages: [4] },
+  B7:  { tag: 'B7',  topic: 'סיבות לעזיבה',      data: '41% מהעובדים שעזבו ציינו היעדר מסלול פיתוח ברור או אי-התאמה תרבותית', pages: [4] },
+  B8:  { tag: 'B8',  topic: 'חוסן ומנהיגות',     data: 'מנהלים עם חוסן גבוה מדווחים על מעורבות צוות גבוהה ב-31% בממוצע מעמיתיהם', pages: [1,2,5] },
+  B9:  { tag: 'B9',  topic: 'למידה מתמדת',       data: 'עובדים שמשקיעים באופן פעיל בלמידה עצמית מגיעים לתפקידי ניהול בשליש מהזמן', pages: [1,2,5] },
+  B10: { tag: 'B10', topic: 'מנהיגות אפקטיבית',  data: 'מנהלים שמפתחים כישורי תקשורת ומשוב מדווחים על שיפור של 40% בשביעות רצון הצוות', pages: [1,2,5] },
+  B11: { tag: 'B11', topic: 'איזון ורווחה',       data: 'עובדים עם איזון עבודה-חיים גבוה מציגים פרודוקטיביות גבוהה ב-21% ושימור גבוה ב-27%', pages: [1,2,5] }
+};
+
 function calcScore(responses, questions) {
   let sum = 0, count = 0;
   for (const q of questions) {
@@ -963,39 +920,133 @@ function calcScore(responses, questions) {
   return Math.round((sum / count) * 14.2857 * 10) / 10;
 }
 
-function getPercentileContext(score) {
-  if (score >= 85) return { range: 'Top 10%', label: 'מצטיין' };
-  if (score >= 70) return { range: 'Top 30%', label: 'חזק' };
-  if (score >= 60) return { range: 'Moderate 50%', label: 'ממוצע' };
-  if (score >= 40) return { range: 'Bottom 30%', label: 'מוגבל' };
-  return { range: 'Bottom 10%', label: 'פער קריטי' };
+function getBandLabel(score) {
+  if (score >= 85) return 'עשירון עליון';
+  if (score >= 70) return 'שלושים אחוז עליונים';
+  if (score >= 60) return 'חמישים האחוז האמצעיים';
+  if (score >= 40) return 'שלושים אחוז תחתונים';
+  return 'עשירון תחתון';
 }
 
-function calcAllDimensions(responses) {
-  const result = {};
+function getChartColor(score) {
+  if (score >= 80) return { emoji: '🟢', label: 'חזק' };
+  if (score >= 60) return { emoji: '🟡', label: 'ממוצע' };
+  if (score >= 40) return { emoji: '🟠', label: 'טעון שיפור' };
+  return { emoji: '🔴', label: 'דורש טיפול' };
+}
+
+function getAgeCategory(age) {
+  if (age <= 27) return { category: 'Junior', tone: 'מעודד ואופטימי' };
+  if (age <= 35) return { category: 'Mid', tone: 'ממוקד ואסרטיבי' };
+  if (age <= 45) return { category: 'Senior', tone: 'בוגר עם פרספקטיבה רחבה' };
+  if (age <= 60) return { category: 'Executive', tone: 'סמכותי ומאוזן' };
+  return { category: 'Post-career', tone: 'מכבד וצופה קדימה' };
+}
+
+function identifyArchetypeAdvanced(sortedDims) {
+  const topKey = sortedDims[0].key;
+  const bottomKey = sortedDims[sortedDims.length - 1].key;
+
+  // Exact match archetypes
+  const archetypes = [
+    { top: 'learning',    bottom: 'networking', name: 'הלומד המתמיד',   english: 'The Continuous Learner' },
+    { top: 'networking',  bottom: 'planning',   name: 'בונה הגשרים',    english: 'The Strategic Networker' },
+    { top: 'planning',    bottom: 'flexibility', name: 'מבצע המשימות',  english: 'The Execution Machine' },
+    { top: 'flexibility', bottom: 'resilience', name: 'החדשן הגמיש',    english: 'The Adaptive Innovator' },
+    { top: 'resilience',  bottom: 'vision',     name: 'המוביל העמיד',   english: 'The Resilient Leader' },
+    { top: 'vision',      bottom: 'planning',   name: 'החוזה המשכנע',   english: 'The Visionary Communicator' }
+  ];
+
+  // Check exact match first
+  for (const a of archetypes) {
+    if (topKey === a.top && bottomKey === a.bottom) {
+      return { hebrew_name: a.name, english_name: a.english, match_type: 'exact' };
+    }
+  }
+
+  // Fallback: choose by largest gap between top and bottom
+  let bestMatch = null;
+  let bestGap = -1;
+  for (const a of archetypes) {
+    const topDim = sortedDims.find(d => d.key === a.top);
+    const bottomDim = sortedDims.find(d => d.key === a.bottom);
+    if (topDim && bottomDim) {
+      const gap = topDim.score - bottomDim.score;
+      if (gap > bestGap) {
+        bestGap = gap;
+        bestMatch = a;
+      }
+    }
+  }
+
+  if (bestMatch) {
+    return { hebrew_name: bestMatch.name, english_name: bestMatch.english, match_type: 'closest_gap' };
+  }
+
+  return { hebrew_name: 'הלומד המתמיד', english_name: 'The Continuous Learner', match_type: 'default' };
+}
+
+function buildExtendedJSON(personalInfo, effectiveAge, genderFormatted, translatedOccupation, translatedInterests, responses) {
+  // 1. Calculate all dimension scores
+  const dimensionsRaw = {};
   for (const [key, dim] of Object.entries(DIMENSIONS)) {
     const score = calcScore(responses, dim.questions);
-    result[key] = { score, percentile: getPercentileContext(score) };
+    const band = getBandLabel(score);
+    const color = getChartColor(score);
+    const circles = Math.round(score / 10);
+    dimensionsRaw[key] = {
+      key,
+      name_he: dim.nameHe,
+      score,
+      band,
+      chart: { circles, color_emoji: color.emoji, color_label: color.label },
+      benchmarks: BENCHMARK_MAP[key]
+    };
   }
-  return result;
-}
 
-function getTopBottom(dimensions) {
-  const sorted = Object.entries(dimensions).map(([k, v]) => ({ key: k, ...v })).sort((a, b) => b.score - a.score);
-  return { top3: sorted.slice(0, 3), bottom2: sorted.slice(-2) };
-}
+  // 2. Sort dimensions HIGH → LOW
+  const dimensionsSorted = Object.values(dimensionsRaw).sort((a, b) => b.score - a.score);
+  const top3 = dimensionsSorted.slice(0, 3);
+  const bottom2 = dimensionsSorted.slice(-2);
 
-function identifyArchetype(dimensions) {
-  const sorted = Object.entries(dimensions).map(([k, v]) => ({ key: k, ...v })).sort((a, b) => b.score - a.score);
-  const topKey = sorted[0].key;
-  const bottomKey = sorted[sorted.length - 1].key;
-  if (topKey === 'learning' && bottomKey === 'networking') return 'הלומד המתמיד';
-  if (topKey === 'networking' && bottomKey === 'planning') return 'בונה הגשרים';
-  if (topKey === 'planning' && bottomKey === 'flexibility') return 'מבצע המשימות';
-  if (topKey === 'flexibility' && bottomKey === 'resilience') return 'החדשן הגמיש';
-  if (topKey === 'resilience' && bottomKey === 'vision') return 'המוביל העמיד';
-  if (topKey === 'vision' && bottomKey === 'planning') return 'החוזה המשכנע';
-  return 'הלומד המתמיד';
+  // 3. Identify archetype
+  const archetype = identifyArchetypeAdvanced(dimensionsSorted);
+  archetype.opening_version = effectiveAge % 4;
+
+  // 4. Age category
+  const ageInfo = getAgeCategory(effectiveAge);
+
+  // 5. Build chart data
+  const chartData = dimensionsSorted.map(d => ({
+    name_he: d.name_he,
+    score: d.score,
+    circles: d.chart.circles,
+    color_emoji: d.chart.color_emoji,
+    color_label: d.chart.color_label
+  }));
+
+  // 6. Build the extended JSON
+  return {
+    name: personalInfo.full_name,
+    email: personalInfo.email,
+    gender: genderFormatted,
+    age: effectiveAge,
+    occupation: translatedOccupation,
+    interests: translatedInterests,
+    age_category: ageInfo,
+    archetype,
+    dimensions_sorted: dimensionsSorted.map(d => ({
+      key: d.key,
+      name_he: d.name_he,
+      score: d.score,
+      band: d.band,
+      benchmarks: d.benchmarks
+    })),
+    top3: top3.map(d => ({ key: d.key, name_he: d.name_he, score: d.score, band: d.band })),
+    bottom2: bottom2.map(d => ({ key: d.key, name_he: d.name_he, score: d.score, band: d.band })),
+    chart_data: chartData,
+    approved_benchmarks: APPROVED_BENCHMARKS
+  };
 }
 
 // ============================================================================
@@ -1022,20 +1073,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid questionnaire - must have 107 answers' }, { status: 400 });
     }
 
-    const answersArray = [];
     for (let i = 1; i <= 107; i++) {
       const val = answers[`q${i}`];
       if (!val || val < 1 || val > 7) {
         return Response.json({ error: `Invalid answer for question ${i}` }, { status: 400 });
       }
-      answersArray.push(val);
     }
 
     const age = response.personal_info?.age;
     if (age && (age < 18 || age > 100)) {
       return Response.json({ error: 'Invalid age - must be between 18 and 100' }, { status: 400 });
     }
-    // אם גיל חסר — נשתמש ב-35 כברירת מחדל (לא נחסום יצירת דוח)
     const effectiveAge = age || 35;
 
     const genderRaw = response.personal_info?.gender;
@@ -1059,40 +1107,40 @@ Deno.serve(async (req) => {
     const rawInterests = response.personal_info.interest_areas || [];
     const translatedInterests = rawInterests.map(i => fieldTranslations[i] || i);
 
-    const inputJSON = {
-      name: response.personal_info.full_name,
-      email: response.personal_info.email,
-      gender: genderFormatted,
-      age: effectiveAge,
-      occupation: translatedOccupation,
-      interests: translatedInterests,
-      answers: answersArray
-    };
+    // ===== CHANGE 1 + 2: Build extended pre-calculated JSON =====
+    const extendedJSON = buildExtendedJSON(
+      response.personal_info,
+      effectiveAge,
+      genderFormatted,
+      translatedOccupation,
+      translatedInterests,
+      answers
+    );
 
+    console.log('Extended JSON built. Archetype:', extendedJSON.archetype.hebrew_name,
+                '| Top3:', extendedJSON.top3.map(d => `${d.name_he}(${d.score})`).join(', '),
+                '| Bottom2:', extendedJSON.bottom2.map(d => `${d.name_he}(${d.score})`).join(', '));
+
+    // ===== CHANGE 3: Send extended JSON to Claude =====
     const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') });
 
     const claudeResponse = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
       max_tokens: 10000,
       system: V8_FINAL_C_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: JSON.stringify(inputJSON) }]
+      messages: [{ role: 'user', content: JSON.stringify(extendedJSON) }]
     });
 
     const fullReport = claudeResponse.content[0].text;
 
-    // Calculate metadata for DB
-    const dimensions = calcAllDimensions(answers);
-    const { top3, bottom2 } = getTopBottom(dimensions);
-    const archetype = identifyArchetype(dimensions);
-
+    // Build DB metadata from pre-calculated data
     const domainScores = {};
-    for (const [key, dim] of Object.entries(dimensions)) {
-      domainScores[key] = { score: dim.score, percentile: dim.percentile.range };
+    for (const d of extendedJSON.dimensions_sorted) {
+      domainScores[d.key] = { score: d.score, percentile: d.band };
     }
 
     const reportId = `V107-V8FC-${(response.language || 'HE').toUpperCase()}-${Date.now().toString().slice(-6)}`;
 
-    // Save report first, then generate career paths separately to avoid timeout
     const savedReport = await base44.asServiceRole.entities.GeneratedReport.create({
       questionnaire_response_id: responseId,
       user_name: response.personal_info.full_name,
@@ -1100,20 +1148,20 @@ Deno.serve(async (req) => {
       report_id: reportId,
       purchased: true,
       report_markdown: fullReport,
-      archetype: archetype,
-      recommended_booster_track: bottom2[0]?.key,
+      archetype: extendedJSON.archetype.hebrew_name,
+      recommended_booster_track: extendedJSON.bottom2[0]?.key,
       domain_scores: domainScores,
       executive_summary: {
-        top3: top3.map(d => ({ name: DIMENSIONS[d.key]?.nameHe, score: d.score })),
-        bottom2: bottom2.map(d => ({ name: DIMENSIONS[d.key]?.nameHe, score: d.score })),
-        archetype: archetype
+        top3: extendedJSON.top3.map(d => ({ name: d.name_he, score: d.score })),
+        bottom2: extendedJSON.bottom2.map(d => ({ name: d.name_he, score: d.score })),
+        archetype: extendedJSON.archetype.hebrew_name
       },
       focused_recommendations: [],
       status: 'completed',
       language: response.language || 'he'
     });
 
-    // Generate career paths synchronously before returning response
+    // Generate career paths
     let careerPathsResult = null;
     try {
       console.log('Generating career paths for report:', savedReport.id);
@@ -1129,7 +1177,7 @@ Deno.serve(async (req) => {
       report_number: reportId,
       model_used: 'claude-sonnet-4-5',
       career_paths_generated: careerPathsResult?.success || false,
-      message: 'V8 FINAL C report generated successfully.'
+      message: 'V8 FINAL C report generated with pre-calculated data.'
     });
 
   } catch (error) {
