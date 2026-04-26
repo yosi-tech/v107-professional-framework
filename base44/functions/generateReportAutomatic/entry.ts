@@ -1034,11 +1034,15 @@ function buildExtendedJSON(personalInfo, effectiveAge, genderFormatted, translat
   }));
 
   // 6. Build the extended JSON
+  const today = new Date();
+  const reportDate = `${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()}`;
+
   return {
     name: personalInfo.full_name,
     email: personalInfo.email,
     gender: genderFormatted,
     age: effectiveAge,
+    report_date: reportDate,
     occupation: translatedOccupation,
     interests: translatedInterests,
     age_category: ageInfo,
