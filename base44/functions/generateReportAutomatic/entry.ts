@@ -435,7 +435,27 @@ Deno.serve(async (req) => {
       messages: [{ role: 'user', content: JSON.stringify(extendedJSON) }]
     });
 
-    const fullReport = claudeResponse.content[0].text;
+    const rawReport = claudeResponse.content[0].text;
+
+    // Sanitize: remove any hallucinated user-count references
+    function sanitizeReport(reportText) {
+      const forbidden = [
+        /מתוך\s*[\d,]+\s*(של\s*)?V107/g,
+        /[\d,]+\s*משתמשי\s*V107/g,
+        /בסיס נתוני V107/g,
+        /\d+,\d+\s*משתמשים/g,
+        /5[,.]?200/g,
+        /אלפי\s*משתמשים/g,
+        /מאגר\s*(ה)?נתונים/g,
+      ];
+      let clean = reportText;
+      forbidden.forEach(pattern => {
+        clean = clean.replace(pattern, '');
+      });
+      return clean.replace(/\n{3,}/g, '\n\n');
+    }
+
+    const fullReport = sanitizeReport(rawReport);
 
     // Build DB metadata from pre-calculated data
     const domainScores = {};
