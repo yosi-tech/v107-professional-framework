@@ -1,7 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import Anthropic from 'npm:@anthropic-ai/sdk@0.39.0';
 
-const V9_WRITER_SYSTEM_PROMPT = `V107 REPORT — SYSTEM PROMPT V9 WRITER
+const V9_WRITER_SYSTEM_PROMPT = `🔴 HARD BLOCK: אם אתה כותב את המספר 5200 או הביטוי 'משתמשים' בהקשר של מאגר נתונים — עצור. מחק. המשך. אין מאגר. אין נתוני השוואה. רק הנתונים שב-JSON.
+
+V107 REPORT — SYSTEM PROMPT V9 WRITER
 © 2026 V107 Professional Framework
 
 ════════════════════════════════════════════════════════════

@@ -22,11 +22,24 @@ export default function FullReportSection({ markdownContent }) {
                 {children}
               </h2>
             ),
-            h3: ({ children }) => (
-              <h3 className="text-2xl font-bold mb-4 text-gray-900">
-                {children}
-              </h3>
-            ),
+            h3: ({ children }) => {
+              const text = String(children);
+              const isFramedBox = text.includes('📋') || text.includes('🗺️') || text.includes('📊');
+              if (isFramedBox) {
+                return (
+                  <div className="border-2 border-indigo-800 bg-indigo-50/50 rounded-xl p-5 my-6 shadow-md">
+                    <h3 className="text-2xl font-black text-indigo-900 m-0">
+                      {children}
+                    </h3>
+                  </div>
+                );
+              }
+              return (
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">
+                  {children}
+                </h3>
+              );
+            },
             p: ({ children }) => (
               <p className="text-gray-700 leading-relaxed mb-4 text-lg">
                 {children}
@@ -59,10 +72,11 @@ export default function FullReportSection({ markdownContent }) {
               </em>
             ),
             blockquote: ({ children }) => (
-              <blockquote className="border-r-4 border-indigo-400 bg-indigo-50 pr-6 py-4 my-4 rounded-lg">
+              <blockquote className="border-r-4 border-[#FF8F00] bg-amber-50 pr-6 pl-4 py-4 my-6 rounded-lg shadow-sm">
                 {children}
               </blockquote>
             ),
+            hr: () => null,
             table: ({ children }) => (
               <div className="overflow-x-auto my-6">
                 <table className="min-w-full border-2 border-gray-300">
