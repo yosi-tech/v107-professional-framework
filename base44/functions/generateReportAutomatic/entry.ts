@@ -444,9 +444,11 @@ Deno.serve(async (req) => {
         /[\d,]+\s*משתמשי\s*V107/g,
         /בסיס נתוני V107/g,
         /\d+,\d+\s*משתמשים/g,
-        /5[,.]?200/g,
+        /5[,.\s]?200/g,
         /אלפי\s*משתמשים/g,
         /מאגר\s*(ה)?נתונים/g,
+        /מתוך\s+\S+\s+V107/g,
+        /לקוח\s+V107/gi,
       ];
       let clean = reportText;
       forbidden.forEach(pattern => {
