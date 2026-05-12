@@ -635,10 +635,7 @@ function AppLayout({ children }) {
               V107™ Professional Framework | © 2026 V107 Global Strategist | Registered Intellectual Property
             </p>
             <p className="text-xs text-slate-400 mt-1">
-              {language === 'he' ? 'האתר נבנה על ידי ' : 'Website built by '}
-              <a href="https://portfolio-pi-six-ylo5chsg08.vercel.app/dashboard" target="_blank" rel="noopener noreferrer" className="text-[#FF8F00] hover:underline">
-                {language === 'he' ? 'גיא פרנסס' : 'Guy Frances'}
-              </a>
+              {language === 'he' ? 'האתר נבנה על ידי צוות פיתוח V107' : 'Website built by V107 development team'}
             </p>
           </div>
         </div>
