@@ -172,7 +172,7 @@ export default function Survey() {
       validUntil.setDate(validUntil.getDate() + 30);
       await base44.entities.Coupon.create({
         code: newCoupon,
-        discount_amount: 50,
+        discount_amount: 25,
         valid_until: validUntil.toISOString(),
         user_email: user.email,
         source: 'abandonment_survey'
@@ -289,7 +289,7 @@ export default function Survey() {
                 <p className="text-4xl font-black text-amber-700 tracking-widest">{couponCode}</p>
                 {isFeedback
                   ? <p className="text-green-700 font-semibold mt-3">✅ 100% הנחה — החבילה המלאה חינם!</p>
-                  : <p className="text-green-700 font-semibold mt-3">✅ 50 ₪ הנחה על הדו"ח המלא!</p>
+                  : <p className="text-green-700 font-semibold mt-3">✅ 25 ₪ הנחה על הדו"ח המלא!</p>
                 }
               </div>
               <p className="text-gray-500 text-sm mb-6">
@@ -321,7 +321,7 @@ export default function Survey() {
             </>
           ) : (
             <>
-              <h1 className="text-4xl font-bold mb-4 text-gray-900">סקר קצר - קבל 50 ₪ הנחה!</h1>
+              <h1 className="text-4xl font-bold mb-4 text-gray-900">סקר קצר - קבל 25 ₪ הנחה!</h1>
               <p className="text-lg text-gray-600">ענה על 4 שאלות קצרות וקבל קוד קופון לדו"ח המלא</p>
             </>
           )}

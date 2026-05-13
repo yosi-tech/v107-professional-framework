@@ -120,7 +120,7 @@ export default function Completion() {
         body: emailTemplate.html
       });
 
-      alert('תודה! שלחנו לך מייל עם קישור לסקר קצר. מלא אותו וקבל 50 ₪ הנחה!');
+      alert('תודה! שלחנו לך מייל עם קישור לסקר קצר. מלא אותו וקבל 25 ₪ הנחה!');
       navigate(createPageUrl("Home"));
 
     } catch (error) {
@@ -260,7 +260,7 @@ export default function Completion() {
                 <div className="mt-12 p-6 bg-white rounded-xl shadow-lg border-2 border-dashed border-gray-300">
                     <h3 className="text-xl font-semibold text-gray-800 mb-3">לא בטוח/ה עדיין?</h3>
                     <p className="text-gray-600 mb-6">
-                        אין בעיה! מלא סקר קצר (2 דק׳) וקבל קוד קופון ל-50 ₪ הנחה.
+                        אין בעיה! מלא סקר קצר (2 דק׳) וקבל קוד קופון ל-25 ₪ הנחה.
                     </p>
                     <Button
             variant="ghost"
