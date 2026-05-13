@@ -159,7 +159,7 @@ export default function Home() {
               <div className="flex flex-col gap-4">
                 <Link to={createPageUrl("Questionnaire")}>
                   <button className="bg-[#FF8F00] text-white text-xl font-bold px-12 py-5 rounded-2xl hover:shadow-lg hover:shadow-[#FF8F00]/20 active:scale-95 transition-all w-full md:w-max">
-                    התחילו מיפוי אישי
+                   לחץ כאן למילוי השאלון
                   </button>
                 </Link>
                 <p className="text-slate-400 text-sm flex items-center gap-2 justify-end">
