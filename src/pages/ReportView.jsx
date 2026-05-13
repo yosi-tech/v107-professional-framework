@@ -415,7 +415,7 @@ export default function ReportView() {
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900">{getText("reportTitle")}</h1>
                   <p className="text-gray-600 text-sm mt-1">
-                    גרסה B5 / v5.7-LTS · {getText("reportIdPrefix")} {report.report_id}
+                    גרסה V8 PRO · {getText("reportIdPrefix")} {report.report_id}
                   </p>
                 </div>
               </div>

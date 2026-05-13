@@ -1080,7 +1080,7 @@ export default function AdminReports() {
                 className="border-0 bg-transparent text-xs font-semibold text-blue-600 focus:outline-none cursor-pointer"
                 dir="rtl"
               >
-                <option value="claude">V7 PRO Claude 🤖</option><option value="v6_pro_ultimate">V6 PRO Ultimate ⚡</option><option value="original">Original (ישן)</option>
+                <option value="claude">V7 PRO Claude 🤖</option><option value="v6_pro_ultimate">V8 PRO Ultimate ⚡</option><option value="original">Original (ישן)</option>
               </select>
             </div>
             <Button

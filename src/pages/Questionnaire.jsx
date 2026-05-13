@@ -156,17 +156,17 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
         </CardTitle>
         <CardDescription className="text-lg text-text-secondary">
-          {language === 'he' ? 'גרסה V6 PRO' : 'Version V6 PRO'}
+          {language === 'he' ? 'גרסה V8 PRO' : 'Version V8 PRO'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-text-secondary space-y-4`}>
           <p className="font-semibold text-lg text-text-primary">
-            {language === 'he' ? 'ברוך הבא ל-V107 QUESTIONNAIRE V6 PRO' : 'Welcome to V107 QUESTIONNAIRE V6 PRO'}
+            {language === 'he' ? 'ברוך הבא ל-V107 QUESTIONNAIRE V8 PRO' : 'Welcome to V107 QUESTIONNAIRE V8 PRO'}
           </p>
           <ul className="space-y-2 list-disc pr-6">
             <li>{language === 'he' ? 'כלי אבחון מקצועי זה נועד למפות את היכולות, הדפוסים והנטיות האישיות והמקצועיות שלך בהתבסס על 11 ממדים פסיכומטריים ליבתיים.' : 'This professional diagnostic tool is designed to map your personal and professional abilities, patterns, and tendencies based on 11 core psychometric dimensions.'}</li>
-            <li>{language === 'he' ? 'V107 QUESTIONNAIRE V6 PRO ובעקבותיו V107 REPORT V6 PRO פותחו בתהליך מקצועי רב-שלבי ונמצאים בתהליך ולידציה מתמשך מול קבוצות מיקוד של מומחי קריירה, פסיכולוגיה תעסוקתית ואסטרטגים של התפתחות אישית.' : 'V107 QUESTIONNAIRE V6 PRO and the subsequent V107 REPORT V6 PRO were developed through a multi-stage professional process and are undergoing continuous validation with focus groups of career experts, occupational psychologists, and personal development strategists.'}</li>
+            <li>{language === 'he' ? 'V107 QUESTIONNAIRE V8 PRO ובעקבותיו V107 REPORT V8 PRO פותחו בתהליך מקצועי רב-שלבי ונמצאים בתהליך ולידציה מתמשך מול קבוצות מיקוד של מומחי קריירה, פסיכולוגיה תעסוקתית ואסטרטגים של התפתחות אישית.' : 'V107 QUESTIONNAIRE V6 PRO and the subsequent V107 REPORT V6 PRO were developed through a multi-stage professional process and are undergoing continuous validation with focus groups of career experts, occupational psychologists, and personal development strategists.'}</li>
             <li className="font-semibold">{language === 'he' ? 'ככל שתשובותיך יהיו כנות וספונטניות, כך איכות הדו"ח שתקבל תהיה גבוהה ומדויקת יותר.' : 'The more honest and spontaneous your answers, the higher and more accurate the quality of the report you will receive.'}</li>
           </ul>
         </div>
