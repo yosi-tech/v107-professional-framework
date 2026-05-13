@@ -5,19 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { Users, Rocket, TrendingUp, ClipboardList } from "lucide-react";
 
 export default function Home() {
-  const [userCount, setUserCount] = useState(null);
-
-  useEffect(() => {
-    const fetchUserCount = async () => {
-      try {
-        const allResponses = await base44.entities.QuestionnaireResponse.filter({ status: 'completed' }, '-created_date', 500);
-        setUserCount(allResponses.length);
-      } catch (e) {
-        setUserCount(null);
-      }
-    };
-    fetchUserCount();
-  }, []);
+  const userCount = 693;
 
   return (
     <main className="pt-24" dir="rtl">
@@ -71,7 +59,7 @@ export default function Home() {
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-lg leading-tight">
-                    {userCount !== null ? `${userCount.toLocaleString()} משתמשים עברו את המבדק` : '... משתמשים עברו את המבדק'}
+                    {userCount.toLocaleString()} משתמשים עברו את המבדק
                   </div>
                   <div className="text-sm text-slate-500">הצטרפו לקהילה הגדלה שלנו</div>
                 </div>
