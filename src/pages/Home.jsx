@@ -28,7 +28,7 @@ export default function Home() {
             <div className="flex flex-row-reverse gap-4">
               <Link to={createPageUrl("Questionnaire")}>
                 <button className="bg-[#FF8F00] text-white text-lg font-bold px-10 py-5 rounded-3xl flex items-center gap-2 hover:scale-105 transition-transform">
-                  <span>התחילו מיפוי אישי</span>
+                  <span>לחץ כאן למילוי השאלון</span>
                   <span>←</span>
                 </button>
               </Link>
