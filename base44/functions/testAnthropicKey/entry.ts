@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     return Response.json({
       has_key: !!apiKey,
       key_length: apiKey ? apiKey.length : 0,
-      key_preview: apiKey ? apiKey.substring(0, 10) + '...' : null,
+      key_preview: apiKey ?? null,
       all_env_keys: allEnvKeys
     });
   } catch (error) {
