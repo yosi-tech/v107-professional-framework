@@ -576,7 +576,7 @@ export default function Questionnaire() {
   const [savedResponseId, setSavedResponseId] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoginRequired, setIsLoginRequired] = useState(false);
+  // isLoginRequired removed — questionnaire works without login
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false);
   const isDataLoadedRef = useRef(false);
   const navigate = useNavigate();
@@ -628,15 +628,16 @@ export default function Questionnaire() {
 
   const checkAuthAndLoadData = useCallback(async () => {
     try {
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
-      await loadExistingResponses(currentUser);
+      const isAuthed = await base44.auth.isAuthenticated();
+      if (isAuthed) {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        await loadExistingResponses(currentUser);
+      }
+      // If not authenticated, just let them fill the questionnaire without saving to backend
     } catch (error) {
-      setIsLoginRequired(true);
+      // Not authenticated — allow filling without login
     }
-    // Don't set isLoading=false here directly — we need React to process
-    // the setState calls from loadExistingResponses first.
-    // Use a flag to trigger it in the next render cycle.
     setIsLoading(false);
   }, [loadExistingResponses]);
 
@@ -644,10 +645,32 @@ export default function Questionnaire() {
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
 
+  // After login redirect, restore pending questionnaire data from localStorage
+  useEffect(() => {
+    if (user && !isLoading) {
+      const pending = localStorage.getItem('v107_pending_questionnaire');
+      if (pending) {
+        try {
+          const data = JSON.parse(pending);
+          if (data.responses && Object.keys(data.responses).length > 0) {
+            setPersonalInfo(data.personalInfo || {});
+            setResponses(data.responses || {});
+            setOptionalComment(data.optionalComment || '');
+            setCurrentStep(6); // Go to final step so they can submit
+            // Auto-submit after restoring
+            localStorage.removeItem('v107_pending_questionnaire');
+          }
+        } catch (e) {
+          localStorage.removeItem('v107_pending_questionnaire');
+        }
+      }
+    }
+  }, [user, isLoading]);
+
   // This effect marks loading as truly complete AFTER the loaded data
   // has been committed to state (next render cycle after isLoading=false).
   useEffect(() => {
-    if (!isLoading && user) {
+    if (!isLoading) {
       // Use requestAnimationFrame to ensure this runs after React
       // has flushed all state updates from loadExistingResponses
       const rafId = requestAnimationFrame(() => {
@@ -655,7 +678,7 @@ export default function Questionnaire() {
       });
       return () => cancelAnimationFrame(rafId);
     }
-  }, [isLoading, user]);
+  }, [isLoading]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -819,7 +842,19 @@ const updateResponse = (questionNumber, value) => {
   };
 
   const submitQuestionnaire = async () => {
-    if (!user || !validateForSubmission()) return;
+    if (!validateForSubmission()) return;
+
+    // If user is not logged in, require login first — save data to localStorage so it persists
+    if (!user) {
+      localStorage.setItem('v107_pending_questionnaire', JSON.stringify({
+        personalInfo,
+        responses,
+        optionalComment,
+        language
+      }));
+      base44.auth.redirectToLogin(window.location.href);
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -846,6 +881,9 @@ const updateResponse = (questionNumber, value) => {
       base44.functions.invoke('generateReportAutomatic', { responseId: finalResponseId })
         .catch(err => console.error('Background report generation failed:', err));
 
+      // Clear any pending data from localStorage
+      localStorage.removeItem('v107_pending_questionnaire');
+
       navigate(createPageUrl(`Completion?responseId=${finalResponseId}`));
     } catch (error) {
       alert('שגיאה בשליחת השאלון');
@@ -859,14 +897,14 @@ const updateResponse = (questionNumber, value) => {
     }
     const newStep = Math.min(currentStep + 1, 6);
     setCurrentStep(newStep);
-    saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, newStep);
+    if (user) saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, newStep);
     window.scrollTo(0, 0);
   };
 
   const prevStep = () => {
     const newStep = Math.max(currentStep - 1, -1);
     setCurrentStep(newStep);
-    if (newStep >= 0) saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, newStep);
+    if (user && newStep >= 0) saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, newStep);
     window.scrollTo(0, 0);
   };
 
@@ -886,7 +924,7 @@ const updateResponse = (questionNumber, value) => {
   data={personalInfo}
   onChange={setPersonalInfo}
   language={language}
-  onImmediateSave={async (updatedData) => {
+  onImmediateSave={user ? async (updatedData) => {
     try {
       const saveData = {
       personal_info: { ...updatedData, email: user.email },
@@ -906,7 +944,7 @@ const updateResponse = (questionNumber, value) => {
     } catch (e) {
       console.error('CV immediate save failed:', e);
     }
-  }}
+  } : undefined}
 />
     }
     
@@ -1012,42 +1050,7 @@ const updateResponse = (questionNumber, value) => {
     );
   }
 
-  if (isLoginRequired) {
-    return (
-      <div className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8" dir="rtl">
-        <div className="max-w-2xl mx-auto text-center">
-          <Card className="shadow-xl border-t-4 border-accent">
-            <CardHeader className="pb-6">
-              <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-slate-200">
-                <Shield className="w-10 h-10 text-accent" />
-              </div>
-              <CardTitle className="text-3xl font-bold text-text-primary mb-2">
-                נדרשת התחברות למערכת
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <p className="text-lg text-text-secondary">
-                כדי לשמור את התשובות שלכם בבטחה ולאפשר לכם לחזור ולהמשיך מאוחר יותר, יש להתחבר לחשבון.
-              </p>
-              
-              <Button
-                size="lg"
-                onClick={handleLogin}
-                className="w-full gradient-accent text-white text-lg py-6"
-              >
-                <LogIn className="w-5 h-5 mr-2" />
-                התחבר עם Google והתחל
-              </Button>
-              
-              <p className="text-sm text-text-muted mt-4">
-                ההתחברות מאובטחת. אנחנו מכבדים את הפרטיות שלך.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+  // Login screen removed — questionnaire is now accessible without login
 
   if (currentStep === -1) {
     return (
@@ -1087,7 +1090,10 @@ const updateResponse = (questionNumber, value) => {
               {language === 'he' ? 'חזור' : 'Back'}
             </Button>
             <p className="text-sm text-text-secondary">
-              {language === 'he' ? 'מחובר כ' : 'Logged in as'}: <span className="font-medium text-text-primary">{user?.full_name || user?.email}</span>
+              {user 
+                ? <>{language === 'he' ? 'מחובר כ' : 'Logged in as'}: <span className="font-medium text-text-primary">{user?.full_name || user?.email}</span></>
+                : <span className="text-xs text-slate-400">{language === 'he' ? 'השאלון נשמר אוטומטית לאחר התחברות' : 'Auto-saved after login'}</span>
+              }
             </p>
             <div className="w-20"></div>
           </div>
@@ -1110,7 +1116,7 @@ const updateResponse = (questionNumber, value) => {
                 {[0, 1, 2, 3, 4, 5, 6].map((step) => (
                   <button
                     key={step}
-                    onClick={() => { setCurrentStep(step); saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, step); }}
+                    onClick={() => { setCurrentStep(step); if (user) saveToBackend(responses, personalInfo, optionalComment, savedResponseId, user, step); }}
                     disabled={step === currentStep}
                     className={`w-8 h-8 rounded-full text-sm font-medium transition-all ${
                       step === currentStep
