@@ -15,12 +15,13 @@ export default function DomainScoresSection({ domainScores, language }) {
     yellow_flag: data.yellow_flag
   }));
 
+  // 4 colors matching the original V107 document donut chart
   const getColor = (item) => {
-    if (item.red_flag) return '#ef4444';
-    if (item.yellow_flag) return '#f59e0b';
-    if (item.band === 'high') return '#22c55e';
-    if (item.band === 'mid') return '#3b82f6';
-    return '#64748b';
+    const score = item.score || 0;
+    if (score >= 81) return '#2d6a2e'; // dark green (81-100)
+    if (score >= 61) return '#8fae1b'; // yellow-green (61-80)
+    if (score >= 41) return '#e8a125'; // orange (41-60)
+    return '#c0392b'; // red (0-40)
   };
 
   const getFlagIcon = (item) => {
@@ -92,6 +93,26 @@ export default function DomainScoresSection({ domainScores, language }) {
                 />
               </PieChart>
             </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Legend - matching original V107 document */}
+        <div className="flex flex-wrap justify-center gap-4 mt-6 pt-4 border-t border-slate-100">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#2d6a2e' }} />
+            <span className="text-xs text-slate-600">{isHebrew ? 'גבוה 81-100 נקודות' : 'High 81-100 points'}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#8fae1b' }} />
+            <span className="text-xs text-slate-600">{isHebrew ? 'ממוצע 61-80 נקודות' : 'Average 61-80 points'}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#e8a125' }} />
+            <span className="text-xs text-slate-600">{isHebrew ? 'נמוך 41-60 נקודות' : 'Low 41-60 points'}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#c0392b' }} />
+            <span className="text-xs text-slate-600">{isHebrew ? 'חלש 0-40 נקודות' : 'Weak 0-40 points'}</span>
           </div>
         </div>
       </CardContent>
