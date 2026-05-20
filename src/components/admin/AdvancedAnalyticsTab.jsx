@@ -1,0 +1,63 @@
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BarChart3, GitCompare, TrendingUp } from "lucide-react";
+import ReportComparison from "@/components/analytics/ReportComparison";
+import TrendsChart from "@/components/analytics/TrendsChart";
+
+export default function AdvancedAnalyticsTab({ reports }) {
+  const [selectedReports, setSelectedReports] = useState([]);
+  const [viewMode, setViewMode] = useState('comparison');
+
+  const handleSelect = (reportId) => {
+    setSelectedReports(prev => {
+      if (prev.includes(reportId)) return prev.filter(id => id !== reportId);
+      if (prev.length >= 3) return [...prev.slice(1), reportId];
+      return [...prev, reportId];
+    });
+  };
+
+  return (
+    <div className="space-y-6" dir="rtl">
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="text-2xl flex items-center gap-3"><BarChart3 className="w-7 h-7 text-blue-600" />ניתוח מתקדם של דוחות</CardTitle>
+          <p className="text-gray-600 mt-2">השוואה בין דוחות, זיהוי מגמות, וניתוח דפוסים</p>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 mb-6">
+            <Button onClick={() => setViewMode('comparison')} variant={viewMode === 'comparison' ? 'default' : 'outline'} className="flex items-center gap-2"><GitCompare className="w-4 h-4" />השוואת דוחות</Button>
+            <Button onClick={() => setViewMode('trends')} variant={viewMode === 'trends' ? 'default' : 'outline'} className="flex items-center gap-2"><TrendingUp className="w-4 h-4" />מגמות לאורך זמן</Button>
+          </div>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-3">בחר דוחות לניתוח (עד 3)</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {reports.slice(0, 20).map(report => (
+                <Card key={report.id} className={`cursor-pointer transition-all ${selectedReports.includes(report.id) ? 'border-blue-600 border-2 bg-blue-50' : 'hover:border-gray-400'}`} onClick={() => handleSelect(report.id)}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold">{report.user_name}</p>
+                        <p className="text-sm text-gray-600">{report.report_id}</p>
+                        <p className="text-xs text-gray-500 mt-1">{new Date(report.created_date).toLocaleDateString('he-IL')}</p>
+                      </div>
+                      {selectedReports.includes(report.id) && <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">{selectedReports.indexOf(report.id) + 1}</div>}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      {selectedReports.length > 0 ? (
+        <div>
+          {viewMode === 'comparison' && <ReportComparison reportIds={selectedReports} reports={reports.filter(r => selectedReports.includes(r.id))} />}
+          {viewMode === 'trends' && <TrendsChart reportIds={selectedReports} reports={reports.filter(r => selectedReports.includes(r.id))} />}
+        </div>
+      ) : (
+        <Card><CardContent className="p-12 text-center"><BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" /><p className="text-gray-600 text-lg">בחר דוחות מהרשימה למעלה כדי להתחיל ניתוח</p></CardContent></Card>
+      )}
+    </div>
+  );
+}
