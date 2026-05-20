@@ -1,0 +1,128 @@
+{
+  "name": "GeneratedReport",
+  "type": "object",
+  "properties": {
+    "questionnaire_response_id": {
+      "type": "string",
+      "description": "ID \u05e9\u05dc \u05ea\u05e9\u05d5\u05d1\u05ea \u05d4\u05e9\u05d0\u05dc\u05d5\u05df"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05de\u05e9\u05ea\u05de\u05e9 \u05de\u05de\u05d9\u05dc\u05d5\u05d9 \u05d4\u05e9\u05d0\u05dc\u05d5\u05df"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05d4\u05de\u05e9\u05ea\u05de\u05e9"
+    },
+    "report_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d3\u05d5\"\u05d7 \u05d9\u05d9\u05d7\u05d5\u05d3\u05d9 (V107-HE-####)"
+    },
+    "purchased": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05d4\u05d0\u05dd \u05d4\u05d3\u05d5\u05d7 \u05e0\u05e8\u05db\u05e9 \u05e2\u05dc \u05d9\u05d3\u05d9 \u05d4\u05de\u05e9\u05ea\u05de\u05e9"
+    },
+    "report_markdown": {
+      "type": "string",
+      "description": "\u05d4\u05d3\u05d5\u05d7 \u05d4\u05de\u05dc\u05d0 \u05d1\u05e4\u05d5\u05e8\u05de\u05d8 Markdown (4 \u05e2\u05de\u05d5\u05d3\u05d9\u05dd)"
+    },
+    "archetype": {
+      "type": "string",
+      "description": "\u05d0\u05e8\u05db\u05d9\u05d8\u05d9\u05e4 \u05d9\u05d6\u05de\u05d9 - \u05db\u05d5\u05ea\u05e8\u05ea \u05de\u05e7\u05e6\u05d5\u05e2\u05d9\u05ea \u05e7\u05e6\u05e8\u05d4"
+    },
+    "recommended_booster_track": {
+      "type": "string",
+      "enum": [
+        "resilience",
+        "flexibility",
+        "leadership",
+        "communication",
+        "planning",
+        "learning",
+        "vision",
+        "technology",
+        "networking",
+        "balance",
+        "change"
+      ],
+      "description": "\u05de\u05e1\u05dc\u05d5\u05dc \u05d4\u05d1\u05d5\u05e1\u05d8\u05e8 \u05d4\u05de\u05d5\u05de\u05dc\u05e5 (\u05d0\u05d7\u05d3 \u05de-11 \u05d4\u05de\u05de\u05d3\u05d9\u05dd)"
+    },
+    "domain_scores": {
+      "type": "object",
+      "description": "\u05e6\u05d9\u05d5\u05e0\u05d9 11 \u05d4\u05de\u05de\u05d3\u05d9\u05dd"
+    },
+    "executive_summary": {
+      "type": "object",
+      "description": "\u05ea\u05e7\u05e6\u05d9\u05e8 \u05de\u05e0\u05d4\u05dc\u05d9\u05dd \u05e2\u05dd \u05d7\u05d5\u05d6\u05e7\u05d5\u05ea, \u05d0\u05d6\u05d5\u05e8\u05d9 \u05e9\u05d9\u05e4\u05d5\u05e8 \u05d5\u05de\u05e1\u05e7\u05e0\u05d4"
+    },
+    "domain_analysis": {
+      "type": "object",
+      "description": "\u05e0\u05d9\u05ea\u05d5\u05d7 \u05d8\u05e7\u05e1\u05d8\u05d5\u05d0\u05dc\u05d9 \u05dc\u05db\u05dc \u05d3\u05d5\u05de\u05d9\u05d9\u05df"
+    },
+    "traffic_lights_table": {
+      "type": "array",
+      "description": "\u05d8\u05d1\u05dc\u05ea \u05e8\u05de\u05d6\u05d5\u05e8\u05d9\u05dd \u05e2\u05dd \u05e4\u05e8\u05d9\u05d8\u05d9\u05dd \u05de\u05de\u05d5\u05e7\u05d3\u05d9\u05dd"
+    },
+    "kpis": {
+      "type": "array",
+      "description": "KPIs \u05de\u05d5\u05e6\u05e2\u05d9\u05dd"
+    },
+    "action_plan": {
+      "type": "object",
+      "description": "\u05ea\u05db\u05e0\u05d9\u05ea \u05e4\u05e2\u05d5\u05dc\u05d4 \u05de\u05e4\u05d5\u05e8\u05d8\u05ea"
+    },
+    "focused_recommendations": {
+      "type": "array",
+      "description": "\u05d4\u05de\u05dc\u05e6\u05d5\u05ea \u05de\u05de\u05d5\u05e7\u05d3\u05d5\u05ea"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "completed"
+      ],
+      "default": "completed"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "he",
+        "en"
+      ],
+      "default": "he"
+    }
+  },
+  "required": [
+    "questionnaire_response_id",
+    "user_name",
+    "user_email",
+    "report_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

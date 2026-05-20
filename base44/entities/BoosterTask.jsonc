@@ -1,0 +1,120 @@
+{
+  "name": "BoosterTask",
+  "type": "object",
+  "properties": {
+    "subscription_id": {
+      "type": "string",
+      "description": "ID \u05e9\u05dc \u05d4\u05de\u05e0\u05d5\u05d9"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "\u05db\u05ea\u05d5\u05d1\u05ea \u05d4\u05de\u05d9\u05d9\u05dc \u05e9\u05dc \u05d4\u05de\u05e9\u05ea\u05de\u05e9"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05de\u05e9\u05ea\u05de\u05e9"
+    },
+    "day": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 30,
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05d4\u05d9\u05d5\u05dd \u05d1\u05de\u05e1\u05dc\u05d5\u05dc (1-30)"
+    },
+    "track": {
+      "type": "string",
+      "enum": [
+        "resilience",
+        "flexibility",
+        "leadership",
+        "communication",
+        "planning",
+        "learning",
+        "vision",
+        "technology",
+        "networking",
+        "balance",
+        "change"
+      ],
+      "description": "\u05de\u05e1\u05dc\u05d5\u05dc \u05d4\u05d1\u05d5\u05e1\u05d8\u05e8 (\u05d0\u05d7\u05d3 \u05de-11 \u05d4\u05de\u05de\u05d3\u05d9\u05dd)"
+    },
+    "subject": {
+      "type": "string",
+      "description": "\u05e0\u05d5\u05e9\u05d0 \u05d4\u05de\u05d9\u05d9\u05dc"
+    },
+    "task_title": {
+      "type": "string",
+      "description": "\u05db\u05d5\u05ea\u05e8\u05ea \u05d4\u05de\u05e9\u05d9\u05de\u05d4"
+    },
+    "the_why": {
+      "type": "string",
+      "description": "\u05d4\u05d4\u05e1\u05d1\u05e8 - \u05dc\u05de\u05d4 \u05d4\u05de\u05e9\u05d9\u05de\u05d4 \u05e8\u05dc\u05d5\u05d5\u05e0\u05d8\u05d9\u05ea"
+    },
+    "the_task": {
+      "type": "string",
+      "description": "\u05d4\u05e4\u05e2\u05d5\u05dc\u05d4 \u05d4\u05e7\u05d5\u05e0\u05e7\u05e8\u05d8\u05d9\u05ea"
+    },
+    "closing_encouragement": {
+      "type": "string",
+      "description": "\u05de\u05e9\u05e4\u05d8 \u05e2\u05d9\u05d3\u05d5\u05d3 \u05de\u05e7\u05e6\u05d5\u05e2\u05d9 \u05dc\u05e1\u05d9\u05d5\u05dd"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "edited"
+      ],
+      "default": "pending",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05de\u05e9\u05d9\u05de\u05d4"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05e9\u05dc\u05d9\u05d7\u05ea \u05d4\u05de\u05d9\u05d9\u05dc"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "he",
+        "en"
+      ],
+      "default": "he"
+    }
+  },
+  "required": [
+    "subscription_id",
+    "user_email",
+    "day",
+    "track",
+    "subject",
+    "task_title",
+    "the_why",
+    "the_task"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
