@@ -645,7 +645,7 @@ export default function Questionnaire() {
     checkAuthAndLoadData();
   }, [checkAuthAndLoadData]);
 
-  // After login redirect, restore pending questionnaire data from localStorage
+  // After login redirect, restore pending questionnaire data from localStorage and auto-submit
   useEffect(() => {
     if (user && !isLoading) {
       const pending = localStorage.getItem('v107_pending_questionnaire');
@@ -653,12 +653,46 @@ export default function Questionnaire() {
         try {
           const data = JSON.parse(pending);
           if (data.responses && Object.keys(data.responses).length > 0) {
-            setPersonalInfo(data.personalInfo || {});
-            setResponses(data.responses || {});
-            setOptionalComment(data.optionalComment || '');
-            setCurrentStep(6); // Go to final step so they can submit
-            // Auto-submit after restoring
             localStorage.removeItem('v107_pending_questionnaire');
+            // Auto-submit directly instead of waiting for user to click again
+            (async () => {
+              setIsSubmitting(true);
+              try {
+                const finalData = {
+                  personal_info: { ...data.personalInfo, email: user.email },
+                  responses: data.responses,
+                  optional_comment: data.optionalComment || '',
+                  data_usage_consent: data.personalInfo?.data_usage_consent || false,
+                  language: data.language || language,
+                  version: 'V8_B2B',
+                  status: 'completed',
+                  current_step: 0
+                };
+
+                let finalResponseId = savedResponseId;
+                if (savedResponseId) {
+                  await QuestionnaireResponse.update(savedResponseId, finalData);
+                } else {
+                  const newResponse = await QuestionnaireResponse.create(finalData);
+                  finalResponseId = newResponse.id;
+                }
+
+                base44.functions.invoke('generateReportAutomatic', { responseId: finalResponseId })
+                  .catch(err => console.error('Background report generation failed:', err));
+
+                navigate(createPageUrl(`Completion?responseId=${finalResponseId}`));
+              } catch (error) {
+                console.error('Auto-submit failed:', error);
+                // Fallback: restore to state so user can manually submit
+                setPersonalInfo(data.personalInfo || {});
+                setResponses(data.responses || {});
+                setOptionalComment(data.optionalComment || '');
+                setCurrentStep(6);
+                alert(language === 'he' ? 'שגיאה בשליחת השאלון, אנא נסה שוב' : 'Error submitting questionnaire, please try again');
+              } finally {
+                setIsSubmitting(false);
+              }
+            })();
           }
         } catch (e) {
           localStorage.removeItem('v107_pending_questionnaire');
