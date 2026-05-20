@@ -653,8 +653,7 @@ export default function Questionnaire() {
         try {
           const data = JSON.parse(pending);
           if (data.responses && Object.keys(data.responses).length > 0) {
-            localStorage.removeItem('v107_pending_questionnaire');
-            // Auto-submit directly instead of waiting for user to click again
+            // Do NOT remove localStorage yet — only after successful submit
             (async () => {
               setIsSubmitting(true);
               try {
@@ -677,18 +676,22 @@ export default function Questionnaire() {
                   finalResponseId = newResponse.id;
                 }
 
+                // Only remove localStorage AFTER successful save
+                localStorage.removeItem('v107_pending_questionnaire');
+
                 base44.functions.invoke('generateReportAutomatic', { responseId: finalResponseId })
                   .catch(err => console.error('Background report generation failed:', err));
 
                 navigate(createPageUrl(`Completion?responseId=${finalResponseId}`));
               } catch (error) {
                 console.error('Auto-submit failed:', error);
-                // Fallback: restore to state so user can manually submit
+                // Keep localStorage intact so data survives refresh
+                // Also restore to state so user can manually submit
                 setPersonalInfo(data.personalInfo || {});
                 setResponses(data.responses || {});
                 setOptionalComment(data.optionalComment || '');
                 setCurrentStep(6);
-                alert(language === 'he' ? 'שגיאה בשליחת השאלון, אנא נסה שוב' : 'Error submitting questionnaire, please try again');
+                alert(language === 'he' ? 'שגיאה בשליחת השאלון, אנא לחצ/י על שלח שאלון שוב' : 'Error submitting, please click Submit again');
               } finally {
                 setIsSubmitting(false);
               }
