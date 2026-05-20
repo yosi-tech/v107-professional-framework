@@ -545,12 +545,13 @@ export default function ReportView() {
               </div>
             )}
 
-            {/* Page 3: Markdown Content Only */}
+            {/* Page 3: Markdown Content + Domain Scores Chart */}
             {(!isPrinting && currentPage === 3) && (
               <div className="space-y-8">
                 {pageContents[2] && (
                   <FullReportSection markdownContent={pageContents[2]} />
                 )}
+                <DomainScoresSection domainScores={report.domain_scores} language={currentLanguage} />
               </div>
             )}
 
@@ -618,6 +619,7 @@ export default function ReportView() {
                 {/* Page 3 */}
                 <div className="print-page print-break">
                   {pageContents[2] && <FullReportSection markdownContent={pageContents[2]} />}
+                  <DomainScoresSection domainScores={report.domain_scores} language={currentLanguage} />
                 </div>
 
                 {/* Page 4 */}
