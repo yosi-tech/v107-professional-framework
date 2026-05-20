@@ -76,14 +76,10 @@ export default function PaymentsTab({ paymentOrders, responses }) {
                     <div className="text-sm text-gray-600">299 ₪ למוצר</div>
                   </td>
                   <td className="text-center py-4 px-4">
-                    <Badge className="bg-blue-100 text-blue-800">
-                      {paidOrders.filter(o => o.product_type === 'full_report' && !o.is_express).length}
-                    </Badge>
+                    <Badge className="bg-blue-100 text-blue-800">{paidOrders.filter(o => o.product_type === 'full_report' && !o.is_express).length}</Badge>
                   </td>
                   <td className="text-left py-4 px-4">
-                    <div className="text-xl font-bold text-blue-600">
-                      ₪ {paidOrders.filter(o => o.product_type === 'full_report' && !o.is_express).reduce((sum, o) => sum + o.amount, 0)}
-                    </div>
+                    <div className="text-xl font-bold text-blue-600">₪ {paidOrders.filter(o => o.product_type === 'full_report' && !o.is_express).reduce((sum, o) => sum + o.amount, 0)}</div>
                   </td>
                 </tr>
                 <tr className="border-b hover:bg-purple-50">
@@ -92,14 +88,10 @@ export default function PaymentsTab({ paymentOrders, responses }) {
                     <div className="text-sm text-gray-600">378 ₪ למוצר</div>
                   </td>
                   <td className="text-center py-4 px-4">
-                    <Badge className="bg-purple-100 text-purple-800">
-                      {paidOrders.filter(o => o.product_type === 'full_report' && o.is_express).length}
-                    </Badge>
+                    <Badge className="bg-purple-100 text-purple-800">{paidOrders.filter(o => o.product_type === 'full_report' && o.is_express).length}</Badge>
                   </td>
                   <td className="text-left py-4 px-4">
-                    <div className="text-xl font-bold text-purple-600">
-                      ₪ {paidOrders.filter(o => o.product_type === 'full_report' && o.is_express).reduce((sum, o) => sum + o.amount, 0)}
-                    </div>
+                    <div className="text-xl font-bold text-purple-600">₪ {paidOrders.filter(o => o.product_type === 'full_report' && o.is_express).reduce((sum, o) => sum + o.amount, 0)}</div>
                   </td>
                 </tr>
                 <tr className="border-b hover:bg-green-50">
@@ -108,14 +100,10 @@ export default function PaymentsTab({ paymentOrders, responses }) {
                     <div className="text-sm text-gray-600">59 ₪ למוצר</div>
                   </td>
                   <td className="text-center py-4 px-4">
-                    <Badge className="bg-green-100 text-green-800">
-                      {paidOrders.filter(o => o.product_type === 'answers_download').length}
-                    </Badge>
+                    <Badge className="bg-green-100 text-green-800">{paidOrders.filter(o => o.product_type === 'answers_download').length}</Badge>
                   </td>
                   <td className="text-left py-4 px-4">
-                    <div className="text-xl font-bold text-green-600">
-                      ₪ {paidOrders.filter(o => o.product_type === 'answers_download').reduce((sum, o) => sum + o.amount, 0)}
-                    </div>
+                    <div className="text-xl font-bold text-green-600">₪ {paidOrders.filter(o => o.product_type === 'answers_download').reduce((sum, o) => sum + o.amount, 0)}</div>
                   </td>
                 </tr>
                 <tr className="bg-gradient-to-l from-green-100 to-blue-100 border-t-2 border-green-500">
@@ -126,9 +114,7 @@ export default function PaymentsTab({ paymentOrders, responses }) {
                     <Badge className="bg-gray-800 text-white">{paidOrders.length}</Badge>
                   </td>
                   <td className="text-left py-4 px-4">
-                    <div className="text-3xl font-bold text-green-700">
-                      ₪ {paidOrders.reduce((sum, o) => sum + o.amount, 0)}
-                    </div>
+                    <div className="text-3xl font-bold text-green-700">₪ {paidOrders.reduce((sum, o) => sum + o.amount, 0)}</div>
                   </td>
                 </tr>
               </tbody>
@@ -161,11 +147,7 @@ export default function PaymentsTab({ paymentOrders, responses }) {
                       <div className="flex-1 text-right">
                         <div className="flex items-center gap-2 mb-2 flex-row-reverse">
                           <h4 className="font-semibold">{order.user_name}</h4>
-                          <Badge className={
-                            order.status === 'paid' ? 'bg-green-600' :
-                            order.status === 'failed' ? 'bg-red-600' :
-                            'bg-yellow-600'
-                          }>
+                          <Badge className={order.status === 'paid' ? 'bg-green-600' : order.status === 'failed' ? 'bg-red-600' : 'bg-yellow-600'}>
                             {order.status === 'paid' && 'שולם'}
                             {order.status === 'pending' && 'ממתין'}
                             {order.status === 'failed' && 'נכשל'}
