@@ -11,6 +11,7 @@ import {
   Calendar,
   Edit2,
   Download,
+  Eye,
   Loader2,
   AlertCircle,
   ArrowRight,
@@ -231,6 +232,10 @@ export default function ReportView() {
       </div>
     );
   }
+
+  const hasPdfUrl = !!report.pdf_url;
+  const hasMarkdown = !!report.report_markdown;
+  const showMarkdownViewer = hasMarkdown;
 
   // Split markdown into 5 pages
   let pageContents = ['', '', '', '', ''];
@@ -477,7 +482,45 @@ export default function ReportView() {
           </CardContent>
         </Card>
 
-        {/* Main Report with Page Navigation */}
+        {/* PDF View - for reports with pdf_url */}
+        {hasPdfUrl && (
+          <Card className="mb-8 border-2 border-blue-300">
+            <CardContent className="p-8 text-center space-y-4">
+              <FileText className="w-16 h-16 text-blue-600 mx-auto" />
+              <h3 className="text-2xl font-bold text-gray-900">
+                {currentLanguage === 'he' ? 'הדו"ח שלך מוכן לצפייה' : 'Your report is ready to view'}
+              </h3>
+              <p className="text-gray-600">
+                {currentLanguage === 'he' ? 'לחץ על הכפתור למטה לצפייה בדו"ח המלא בפורמט PDF' : 'Click the button below to view the full report in PDF format'}
+              </p>
+              <div className="flex justify-center gap-4 flex-wrap">
+                <Button
+                  onClick={() => window.open(report.pdf_url, '_blank')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-6"
+                >
+                  <Eye className="w-5 h-5 ml-2" />
+                  {currentLanguage === 'he' ? 'צפה בדו"ח PDF' : 'View PDF Report'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const a = document.createElement('a');
+                    a.href = report.pdf_url;
+                    a.download = `V107-Report-${report.report_id || 'report'}.pdf`;
+                    a.click();
+                  }}
+                  className="text-lg px-8 py-6"
+                >
+                  <Download className="w-5 h-5 ml-2" />
+                  {currentLanguage === 'he' ? 'הורד PDF' : 'Download PDF'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Main Report with Page Navigation - only for markdown-based reports */}
+        {showMarkdownViewer && (
         <Card className="mb-8 border-none shadow-2xl bg-gradient-to-br from-indigo-50 to-purple-50">
           <CardHeader className="bg-white border-b no-print">
             <div className="flex items-center justify-center gap-2 flex-wrap" dir={report.language === 'en' ? 'ltr' : 'rtl'}>
@@ -679,9 +722,10 @@ export default function ReportView() {
             </div>
           </CardContent>
         </Card>
+        )}
 
-        {/* Legal Disclaimers */}
-        {!report.report_markdown && (
+        {/* Legal Disclaimers - only when no markdown AND no PDF */}
+        {!hasMarkdown && !hasPdfUrl && (
           <Card className="mb-8 bg-yellow-50 border-2 border-yellow-300">
             <CardContent className="p-8 text-center">
               <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
@@ -700,7 +744,7 @@ export default function ReportView() {
         )}
 
         {/* Survey Invite Card */}
-        {report.report_markdown && (
+        {(hasMarkdown || hasPdfUrl) && (
           <div className="mt-8 no-print">
             <Card className="border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50 shadow-lg">
               <CardContent className="p-8 text-center" dir="rtl">
@@ -727,7 +771,7 @@ export default function ReportView() {
           </div>
         )}
 
-        {report.report_markdown && (
+        {(hasMarkdown || hasPdfUrl) && (
           <div className="mt-6 space-y-6">
             <Card className="border-2 border-slate-300 bg-slate-50">
                 <CardHeader>
