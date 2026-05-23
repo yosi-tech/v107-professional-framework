@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import Anthropic from 'npm:@anthropic-ai/sdk@0.39.0';
+import { jsPDF } from 'npm:jspdf@2.5.2';
 
 const V8_FINAL_D_SYSTEM_PROMPT = `V107 REPORT — SYSTEM PROMPT V8E
 © 2026 V107 Professional Framework — Confidential & Proprietary
@@ -966,6 +967,71 @@ Deno.serve(async (req) => {
 
     const fullReport = sanitizeReport(rawReport);
 
+    // ===== PDF Generation from Markdown =====
+    let pdfUrl = null;
+    try {
+      console.log('Generating PDF from report...');
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      
+      // Strip markdown to plain text lines
+      const lines = fullReport
+        .replace(/#{1,6}\s*/g, '')
+        .replace(/\*\*/g, '')
+        .replace(/\*/g, '')
+        .replace(/[╔╗╚╝╠╣║━═]/g, '')
+        .replace(/```[\s\S]*?```/g, '')
+        .replace(/\|[^\n]+\|/g, (match) => match.replace(/\|/g, '  ').replace(/-+/g, ''))
+        .split('\n')
+        .filter(line => line.trim().length > 0);
+      
+      const pageWidth = 210;
+      const margin = 15;
+      const usableWidth = pageWidth - 2 * margin;
+      let y = 20;
+      const lineHeight = 6;
+      
+      // Add header
+      doc.setFontSize(16);
+      doc.text('V107 Professional Report', pageWidth / 2, y, { align: 'center' });
+      y += 12;
+      doc.setFontSize(9);
+      doc.text(`${response.personal_info.full_name} | ${new Date().toLocaleDateString('he-IL')}`, pageWidth / 2, y, { align: 'center' });
+      y += 10;
+      
+      doc.setFontSize(10);
+      
+      for (const line of lines) {
+        // Wrap long lines
+        const wrapped = doc.splitTextToSize(line.trim(), usableWidth);
+        for (const wl of wrapped) {
+          if (y > 280) {
+            doc.addPage();
+            y = 15;
+          }
+          doc.text(wl, margin, y);
+          y += lineHeight;
+        }
+      }
+      
+      // Footer on each page
+      const totalPages = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(7);
+        doc.text(`© 2026 V107 Professional Framework | Page ${i}/${totalPages}`, pageWidth / 2, 292, { align: 'center' });
+      }
+      
+      const pdfBytes = doc.output('arraybuffer');
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const pdfFile = new File([pdfBlob], `V107-Report-${response.personal_info.full_name.replace(/\s+/g, '-')}.pdf`, { type: 'application/pdf' });
+      
+      const uploadResult = await base44.asServiceRole.integrations.Core.UploadFile({ file: pdfFile });
+      pdfUrl = uploadResult.file_url;
+      console.log('PDF uploaded successfully:', pdfUrl);
+    } catch (pdfErr) {
+      console.error('PDF generation failed (non-blocking):', pdfErr.message);
+    }
+
     // Build DB metadata from pre-calculated data
     const domainScores = {};
     for (const d of extendedJSON.dimensions_sorted) {
@@ -981,6 +1047,7 @@ Deno.serve(async (req) => {
       report_id: reportId,
       purchased: true,
       report_markdown: fullReport,
+      pdf_url: pdfUrl,
       archetype: extendedJSON.archetype.hebrew_name,
       recommended_booster_track: extendedJSON.bottom2[0]?.key,
       domain_scores: domainScores,
@@ -1007,6 +1074,7 @@ Deno.serve(async (req) => {
     return Response.json({
       success: true,
       reportId: savedReport.id,
+      pdf_url: pdfUrl,
       report_number: reportId,
       model_used: 'claude-opus-4-5-20251101',
       career_paths_generated: careerPathsResult?.success || false,
