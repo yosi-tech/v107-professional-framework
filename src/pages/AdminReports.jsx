@@ -513,18 +513,22 @@ export default function AdminReports() {
                             <DropdownMenuTrigger asChild>
                               <Button variant="outline" size="sm" disabled={isDeleting || isGenerating} className="flex-1 sm:flex-none text-xs sm:text-sm">פעולות ▼</Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48" dir="rtl">
+                            <DropdownMenuContent align="end" className="w-52" dir="rtl">
                               <DropdownMenuItem onClick={() => setViewingResponse(response)} className="flex flex-row-reverse justify-between"><FileSearch className="w-4 h-4" /><span>צפה בשאלון</span></DropdownMenuItem>
-                              {existingReport ? (
+                              {existingReport && (
                                 <>
                                   <DropdownMenuItem asChild><Link to={createPageUrl(`ReportView?reportId=${existingReport.id}`)} className="flex flex-row-reverse justify-between"><Eye className="w-4 h-4" /><span>צפייה בדו"ח</span></Link></DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => { navigator.clipboard.writeText(`${window.location.origin}${createPageUrl(`ReportView?reportId=${existingReport.id}`)}`); alert('הלינק לדוח הועתק ללוח'); }} className="flex flex-row-reverse justify-between"><Link2 className="w-4 h-4" /><span>לינק לדוח</span></DropdownMenuItem>
+                                  {existingReport.pdf_url && (
+                                    <DropdownMenuItem onClick={() => window.open(existingReport.pdf_url, '_blank')} className="flex flex-row-reverse justify-between"><Download className="w-4 h-4" /><span>הורד PDF</span></DropdownMenuItem>
+                                  )}
                                   <DropdownMenuItem onClick={() => navigate(createPageUrl("QuestionnaireExport") + `?responseId=${response.id}`)} className="flex flex-row-reverse justify-between"><FileText className="w-4 h-4" /><span>שאלון מלא</span></DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => generateReport(response, true)} disabled={isGenerating} className="flex flex-row-reverse justify-between"><RefreshCw className="w-4 h-4" /><span>צור דו"ח מחדש</span></DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => setLanguageDialog({ open: true, report: existingReport, response })} disabled={sendingReportId === existingReport.id} className="flex flex-row-reverse justify-between"><Send className="w-4 h-4" /><span>שלח דו"ח ללקוח</span></DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => sendReportDirectly(existingReport, response)} disabled={sendingReportId === existingReport.id} className="flex flex-row-reverse justify-between text-blue-700 font-semibold"><Mail className="w-4 h-4" /><span>שלח דו"ח ישירות למייל</span></DropdownMenuItem>
                                 </>
-                              ) : (
+                              )}
+                              {!existingReport && (
                                 <DropdownMenuItem onClick={() => generateReport(response, false)} disabled={isGenerating} className="flex flex-row-reverse justify-between"><FileText className="w-4 h-4" /><span>{isGenerating ? 'יוצר דו"ח...' : 'צור דו"ח'}</span></DropdownMenuItem>
                               )}
                               <DropdownMenuItem onClick={() => setTemplateSelectionDialog({ open: true, response })} disabled={isGenerating || isDeleting} className="flex flex-row-reverse justify-between"><Mail className="w-4 h-4" /><span>שלח מייל מתבנית</span></DropdownMenuItem>
