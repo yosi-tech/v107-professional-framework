@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
     const appUrl = Deno.env.get('BASE44_APP_URL') || 'https://app.base44.com';
 
     const productNames = {
-      full_report: language === 'he' ? 'דוח ונטורה-107 המלא' : 'Full Ventura-107 Report',
+      full_report: language === 'he' ? 'דוח V107 המלא' : 'Full V107 Report',
       answers_download: language === 'he' ? 'הורדת תשובות השאלון' : 'Questionnaire Answers Download',
       online_coaching_7days: language === 'he' ? 'ליווי מקוון – 7 ימים' : 'Online Coaching – 7 Days'
     };

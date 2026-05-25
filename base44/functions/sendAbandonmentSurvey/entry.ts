@@ -5,7 +5,7 @@ function getAbandonmentEmailTemplate(userName, surveyUrl, language = 'he') {
   
   const content = {
     he: {
-      subject: 'תודה שמילאת את השאלון — AVENTURA 107',
+      subject: 'תודה שמילאת את השאלון — V107',
       greeting: 'שלום ' + userName + ',',
       paragraph1: 'קיבלנו את השאלון שמילאת. ראינו שבחרת שלא להמשיך לרכישה כרגע - וזה בסדר גמור!',
       paragraph2: 'נשמח לשמוע ממך מדוע החלטת שלא לרכוש, כדי שנוכל לשפר את השירות.',
@@ -21,11 +21,11 @@ function getAbandonmentEmailTemplate(userName, surveyUrl, language = 'he') {
       questions: 'שאלות:',
       supportEmail: 'support@v107.co.il',
       regards: 'בברכה,',
-      team: 'צוות AVENTURA 107',
+      team: 'צוות V107',
       footer: '© כל הזכויות שמורות לעלית – יזום עסקים'
     },
     en: {
-      subject: 'Thank you for completing the questionnaire — AVENTURA 107',
+      subject: 'Thank you for completing the questionnaire — V107',
       greeting: 'Dear ' + userName + ',',
       paragraph1: 'We received your completed questionnaire. We noticed you chose not to proceed with the purchase right now - and that\'s perfectly fine!',
       paragraph2: 'We\'d love to hear why you decided not to purchase, so we can improve our service.',
@@ -41,7 +41,7 @@ function getAbandonmentEmailTemplate(userName, surveyUrl, language = 'he') {
       questions: 'Questions:',
       supportEmail: 'support@v107.co.il',
       regards: 'Best regards,',
-      team: 'AVENTURA 107 Team',
+      team: 'V107 Team',
       footer: '© All rights reserved to Elit – Business Initiatives'
     }
   };
@@ -78,7 +78,7 @@ function getAbandonmentEmailTemplate(userName, surveyUrl, language = 'he') {
       <body>
         <div class="container">
           <div class="header">
-            <h1>AVENTURA 107</h1>
+            <h1>V107</h1>
             <p>${isHebrew ? 'שאלון אפיון יזמי' : 'Entrepreneurial Assessment'}</p>
           </div>
           <div class="content">
