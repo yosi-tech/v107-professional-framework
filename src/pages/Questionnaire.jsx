@@ -475,7 +475,7 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
       <Input
         id="cv_upload"
         type="file"
-        accept=".pdf,.doc,.docx"
+        accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         style={{ userSelect: 'auto', WebkitUserSelect: 'auto', pointerEvents: 'auto' }}
       onChange={async (e) => {
         const file = e.target.files?.[0];
@@ -1107,6 +1107,13 @@ const updateResponse = (questionNumber, value) => {
           -webkit-user-select: none !important;
           -moz-user-select: none !important;
           -ms-user-select: none !important;
+        }
+        .questionnaire-container input[type="file"],
+        .questionnaire-container input[type="file"]::-webkit-file-upload-button {
+          user-select: auto !important;
+          -webkit-user-select: auto !important;
+          pointer-events: auto !important;
+          -webkit-appearance: none !important;
         }
         @media print {
           .questionnaire-container {
