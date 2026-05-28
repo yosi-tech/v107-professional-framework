@@ -619,6 +619,7 @@ Semantic Watermark: גרסה ${watermarkLetter}
       model: 'claude-sonnet-4-5',
       max_tokens: 16000,
       system: SYSTEM_PROMPT,
+      temperature:0,
       messages: [
         { role: 'user', content: userPrompt }
       ]
