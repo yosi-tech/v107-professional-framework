@@ -133,8 +133,8 @@ export default function MyAccount() {
               <UserIcon className="w-5 h-5" />
             </div>
             <div className="overflow-hidden">
-              <h3 className="font-bold text-slate-900 text-sm leading-tight truncate">{user?.full_name || 'שלום'}</h3>
-              <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+              <h3 className="font-bold text-foreground text-sm leading-tight truncate">{user?.full_name || 'שלום'}</h3>
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
             </div>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function MyAccount() {
               <Link
                 key={key}
                 to={createPageUrl(href)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full text-right text-slate-500 hover:bg-slate-100"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full text-right text-muted-foreground hover:bg-secondary"
               >
                 <Icon className="w-5 h-5 flex-shrink-0" />
                 <span>{label}</span>
@@ -190,7 +190,7 @@ export default function MyAccount() {
         <div className="flex items-center justify-evenly py-1.5">
           {NAV_ITEMS.map(({ key, label, icon: Icon, href }) => (
             href ? (
-              <Link key={key} to={createPageUrl(href)} className="flex flex-col items-center gap-0.5 min-w-0 px-1 py-1 rounded-lg transition-colors text-slate-400">
+              <Link key={key} to={createPageUrl(href)} className="flex flex-col items-center gap-0.5 min-w-0 px-1 py-1 rounded-lg transition-colors text-muted-foreground">
                 <Icon className="w-5 h-5 flex-shrink-0" />
                 <span className="text-[10px] font-medium truncate max-w-[56px] text-center">{label}</span>
               </Link>
@@ -222,17 +222,17 @@ export default function MyAccount() {
                 <span className="text-sm font-bold tracking-widest uppercase">המיפוי הושלם</span>
               </div>
             )}
-            <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-3 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-3 leading-tight">
               האזור האישי שלי
             </h1>
-            <p className="text-lg text-slate-500 font-light">
+            <p className="text-lg text-muted-foreground font-light">
               שלום, {user?.full_name || user?.email}
             </p>
           </div>
           <div className="flex gap-3">
             {latestCompleted && (
               <Link to={createPageUrl(`Completion?responseId=${latestCompleted.id}`)}>
-                <button className="flex items-center gap-2 bg-white text-slate-800 px-5 py-3 rounded-xl shadow-sm hover:shadow-md transition-all font-semibold text-sm border border-slate-200">
+                <button className="flex items-center gap-2 bg-white text-foreground px-5 py-3 rounded-xl shadow-sm hover:shadow-md transition-all font-semibold text-sm border border-border">
                   <Upload className="w-4 h-4" />
                   אפשרויות רכישה
                 </button>
@@ -254,9 +254,9 @@ export default function MyAccount() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
 
               {/* Strengths Map Card */}
-              <section className="md:col-span-8 bg-white rounded-3xl p-8 shadow-[0_20px_40px_rgba(15,23,42,0.06)] overflow-hidden relative border border-slate-100">
+              <section className="md:col-span-8 bg-white rounded-3xl p-8 shadow-sm overflow-hidden relative border border-border/50">
                 <div className="flex justify-between items-center mb-8">
-                  <h2 className="text-2xl font-bold text-slate-900">מפת עוצמות</h2>
+                  <h2 className="text-2xl font-bold text-foreground">מפת עוצמות</h2>
                   <div className="flex gap-2">
                     <span className="bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full font-bold">דאטה מעודכן</span>
                   </div>
@@ -524,29 +524,29 @@ export default function MyAccount() {
 
             {/* Personal Insights */}
             <section className="mt-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-8">תובנות אישיות</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-8">תובנות אישיות</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
                   { icon: TrendingUp, color: 'bg-blue-50 text-blue-600', title: 'מגמת צמיחה', desc: 'היכולת שלך ללמוד ולצמוח מבוססת על נתוני השאלון שלך. מומלץ להתמקד בתחומים שזוהו כחוזקות.' },
                   { icon: UserIcon, color: 'bg-purple-50 text-purple-600', title: 'נטוורקינג פעיל', desc: 'כישורים בין-אישיים חזקים הם נכס מקצועי. כלי הבוסטר יכול לעזור לך למנף זאת לקידום.' },
                   { icon: Zap, color: 'bg-primary/5 text-primary', title: 'איזון חיים-עבודה', desc: 'חיזוק האיזון בין עבודה לחיים אישיים תורם לביצועים ארוכי טווח ולמניעת שחיקה.' },
                 ].map(({ icon: Icon, color, title, desc }) => (
-                  <div key={title} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                  <div key={title} className="bg-white p-8 rounded-3xl shadow-sm border border-border/50">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${color}`}>
                       <Icon className="w-6 h-6" />
                     </div>
-                    <h3 className="text-lg font-bold mb-2 text-slate-900">{title}</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
+                    <h3 className="text-lg font-bold mb-2 text-foreground">{title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
                   </div>
                 ))}
               </div>
             </section>
 
             {/* Promotional Banner */}
-            <section className="mt-12 bg-slate-900 rounded-3xl p-10 text-white flex flex-col md:flex-row items-center gap-10 overflow-hidden relative">
+            <section className="mt-12 bg-foreground rounded-3xl p-10 text-white flex flex-col md:flex-row items-center gap-10 overflow-hidden relative">
               <div className="flex-1 relative z-10">
                 <h2 className="text-2xl font-black mb-3">משהו אצלך זז? העבר לחבר וקבל שדרוג מיידי!</h2>
-                <p className="text-slate-300 text-base mb-6 leading-relaxed">הרגשת שינוי קטן? הבנת כיוון חדש? עכשיו זה הזמן לקחת את זה צעד קדימה ולעזור גם לחבר להתקדם.</p>
+                <p className="text-white/60 text-base mb-6 leading-relaxed">הרגשת שינוי קטן? הבנת כיוון חדש? עכשיו זה הזמן לקחת את זה צעד קדימה ולעזור גם לחבר להתקדם.</p>
                 <div className="flex gap-4 flex-wrap">
                   <Link to={createPageUrl('Questionnaire')}>
                     <button className="text-white bg-primary px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform text-sm shadow-lg shadow-primary/20">שדרג עכשיו</button>
@@ -557,7 +557,7 @@ export default function MyAccount() {
                 </div>
               </div>
               <div className="flex-shrink-0 w-full md:w-56">
-                <div className="aspect-video rounded-2xl bg-slate-800 flex items-center justify-center shadow-xl">
+                <div className="aspect-video rounded-2xl bg-white/10 flex items-center justify-center shadow-xl">
                   <Zap className="w-12 h-12 text-primary" />
                 </div>
               </div>

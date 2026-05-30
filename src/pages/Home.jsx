@@ -72,9 +72,9 @@ export default function Home() {
     <main className="font-heebo" dir="rtl">
 
       {/* ===== HERO ===== */}
-      <section className="relative px-6 lg:px-10 pt-20 pb-28 lg:pt-32 lg:pb-40 overflow-hidden">
+      <section className="relative px-6 lg:px-10 pt-24 pb-32 lg:pt-36 lg:pb-44 overflow-hidden">
         {/* Subtle background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-bl from-primary/3 via-transparent to-blue-50/50 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-bl from-secondary via-transparent to-background pointer-events-none" />
 
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-20 items-center relative z-10">
           {/* Text side */}
@@ -95,7 +95,7 @@ export default function Home() {
 
             <div className="flex flex-row-reverse gap-4 mb-10">
               <Link to={createPageUrl("Questionnaire")}>
-                <button className="bg-primary text-white text-base font-semibold px-8 py-4 rounded-2xl flex items-center gap-2 hover:opacity-90 hover:shadow-xl hover:shadow-primary/20 transition-all">
+                <button className="bg-accent text-white text-base font-semibold px-8 py-4 rounded-2xl flex items-center gap-2 hover:opacity-90 hover:shadow-xl hover:shadow-accent/25 transition-all">
                   <span>התחל מיפוי אישי</span>
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -155,7 +155,7 @@ export default function Home() {
       </section>
 
       {/* ===== WHAT YOU GET ===== */}
-      <section className="py-28 bg-background">
+      <section className="py-28 bg-secondary/30">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-16">
             <span className="text-primary font-semibold text-sm tracking-wide mb-3 block">מה תקבלו</span>
@@ -195,7 +195,7 @@ export default function Home() {
             </div>
 
             {/* Card 3 — Featured */}
-            <div className="bg-gradient-to-br from-primary to-indigo-700 p-8 lg:p-10 rounded-3xl text-white flex flex-col justify-between hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 text-right h-full">
+            <div className="bg-gradient-to-br from-accent to-primary p-8 lg:p-10 rounded-3xl text-white flex flex-col justify-between hover:shadow-xl hover:shadow-accent/20 transition-all duration-300 text-right h-full">
               <div className="w-14 h-14 bg-white/15 text-white rounded-2xl flex items-center justify-center mb-7">
                 <Brain className="w-7 h-7" />
               </div>
@@ -212,8 +212,8 @@ export default function Home() {
       </section>
 
       {/* ===== PRICING CTA ===== */}
-      <section className="py-28 px-8 bg-white">
-        <div className="max-w-4xl mx-auto bg-gradient-to-br from-slate-50 to-primary/3 p-8 lg:p-14 rounded-3xl border border-border/50 text-right relative overflow-hidden">
+      <section className="py-28 px-8 bg-background">
+        <div className="max-w-4xl mx-auto bg-gradient-to-br from-secondary to-secondary/50 p-8 lg:p-14 rounded-3xl border border-border/50 text-right relative overflow-hidden">
           <div className="relative z-10 flex flex-col gap-12 items-center md:flex-row">
             <div className="flex-1">
               <span className="text-primary font-bold text-sm mb-4 block">חבילה מלאה</span>
@@ -240,7 +240,7 @@ export default function Home() {
               </ul>
               <div className="flex flex-col gap-4">
                 <Link to={createPageUrl("Questionnaire")}>
-                  <button className="bg-primary text-white text-lg font-semibold px-10 py-4 rounded-2xl hover:opacity-90 hover:shadow-xl hover:shadow-primary/20 transition-all w-full md:w-max">
+                  <button className="bg-accent text-white text-lg font-semibold px-10 py-4 rounded-2xl hover:opacity-90 hover:shadow-xl hover:shadow-accent/25 transition-all w-full md:w-max">
                     התחל מיפוי אישי
                   </button>
                 </Link>
@@ -265,7 +265,7 @@ export default function Home() {
       <FAQSection />
 
       {/* ===== COMMUNITY ===== */}
-      <section className="py-24 bg-primary">
+      <section className="py-24 bg-gradient-to-br from-primary to-accent">
         <div className="max-w-7xl mx-auto px-8">
           <div className="bg-slate-950 text-white p-10 lg:p-14 rounded-3xl relative overflow-hidden">
             <div className="relative z-10 flex flex-col h-full justify-between">

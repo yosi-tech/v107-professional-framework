@@ -182,17 +182,17 @@ const QuestionnaireIntro = ({ onStart, language }) => {
         
         <div className="bg-primary/5 p-5 rounded-2xl border border-primary/10">
           <h3 className="font-semibold text-lg mb-2">{language === 'he' ? 'סודיות, פרטיות ומחיקת נתונים' : 'Confidentiality, Privacy, and Data Deletion'}</h3>
-          <p className="text-sm text-gray-700">{language === 'he' ? 'אנו מתחייבים לסודיות מלאה:' : 'We commit to full confidentiality:'}</p>
-          <ol className="list-decimal pr-6 text-sm text-gray-700 space-y-1 mt-2">
+          <p className="text-sm text-foreground/70">{language === 'he' ? 'אנו מתחייבים לסודיות מלאה:' : 'We commit to full confidentiality:'}</p>
+          <ol className="list-decimal pr-6 text-sm text-foreground/70 space-y-1 mt-2">
             <li>{language === 'he' ? 'פרטי הזיהוי (שם, מייל, גיל) נמחקים מהמערכת 30 יום לאחר הפקת הדו"ח האישי.' : 'Identification details (name, email, age) are deleted from the system 30 days after the personal report is generated.'}</li>
             <li>{language === 'he' ? 'תשובות השאלון עצמן נשמרות באופן אנונימי לחלוטין לצורך מחקר מתמשך ושיפור דיוק המערכת.' : 'The questionnaire answers themselves are kept completely anonymous for continuous research and system accuracy improvement.'}</li>
             <li>{language === 'he' ? 'הנתונים לא מועברים לשום גורם שלישי.' : 'Data is not transferred to any third party.'}</li>
           </ol>
-          <p className="text-sm text-gray-700 mt-3">
+          <p className="text-sm text-foreground/70 mt-3">
             {language === 'he' 
               ? 'למידע נוסף, עיין ב' 
               : 'For more information, see our '}
-            <Link to={createPageUrl("TermsOfService")} className="text-blue-600 hover:underline font-medium">
+            <Link to={createPageUrl("TermsOfService")} className="text-primary hover:underline font-medium">
               {language === 'he' ? 'תנאי השימוש' : 'Terms of Use'}
             </Link>
             {language === 'he' ? ' ובמדיניות הפרטיות שלנו.' : ' and Privacy Policy.'}
@@ -507,10 +507,10 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
               id="data_consent"
               checked={data.data_usage_consent || false}
               onChange={(e) => handleConsentChange(e.target.checked)}
-              className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="mt-1 w-4 h-4 text-primary border-border rounded focus:ring-primary"
               required
             />
-            <label htmlFor="data_consent" className="text-sm text-gray-700">
+            <label htmlFor="data_consent" className="text-sm text-foreground/70">
               {language === 'he' 
                 ? 'אני מאשר/ת שימוש בנתונים שאספק לצורך אבחון והפקת דוח מקצועי. הנתונים ישמרו בהתאם למדיניות הפרטיות ולתנאי השימוש של V107.' 
                 : 'I consent to the use of the data I provide for diagnostic purposes and professional report generation. Data will be stored in accordance with V107\'s Privacy Policy and Terms of Use.'}
@@ -530,8 +530,8 @@ const QuestionCard = ({ questionNumber, questionText, value, onChange, language 
         {questionNumber}. {questionText}
       </h3>
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-gray-500">{language === 'he' ? '7 (מתאר אותי בצורה מושלמת)' : '7 (Perfectly)'}</span>
-        <span className="text-sm text-gray-500">{language === 'he' ? '1 (לא מתאר אותי כלל)' : '1 (Not at all)'}</span>
+        <span className="text-sm text-muted-foreground">{language === 'he' ? '7 (מתאר אותי בצורה מושלמת)' : '7 (Perfectly)'}</span>
+        <span className="text-sm text-muted-foreground">{language === 'he' ? '1 (לא מתאר אותי כלל)' : '1 (Not at all)'}</span>
       </div>
       <RadioGroup
         value={value ? value.toString() : ''}
@@ -1222,7 +1222,7 @@ const updateResponse = (questionNumber, value) => {
           </Button>
 
           {currentStep < 6 ? (
-            <Button onClick={nextStep} size="lg" className="bg-slate-600 hover:bg-slate-700 text-white">
+            <Button onClick={nextStep} size="lg" className="bg-accent hover:bg-accent/90 text-white shadow-lg shadow-accent/20">
               הבא
               {language === 'he' ? <ArrowLeft className="w-5 h-5 mr-2" /> : <ArrowRight className="w-5 h-5 ml-2" />}
             </Button>

@@ -183,7 +183,7 @@ function AppLayout({ children }) {
           {/* Action buttons */}
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
             <Link to={createPageUrl("Questionnaire")}>
-              <button className="bg-primary text-primary-foreground py-2.5 px-6 rounded-xl text-sm font-semibold transition-all hover:opacity-90 hover:shadow-lg hover:shadow-primary/20">
+              <button className="bg-accent text-accent-foreground py-2.5 px-6 rounded-xl text-sm font-semibold transition-all hover:opacity-90 hover:shadow-lg hover:shadow-accent/25">
                 {hasAbandonedQuestionnaire
                   ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
                   : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Assessment')
@@ -211,7 +211,7 @@ function AppLayout({ children }) {
           {/* Mobile CTA */}
           <div className="lg:hidden flex items-center gap-2 mr-auto">
             <Link to={createPageUrl("Questionnaire")}>
-              <button className="bg-primary text-primary-foreground text-xs px-4 py-2 rounded-lg font-semibold">
+              <button className="bg-accent text-accent-foreground text-xs px-4 py-2 rounded-lg font-semibold">
                 {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך' : 'Continue') : (language === 'he' ? 'התחל' : 'Start')}
               </button>
             </Link>
@@ -235,7 +235,7 @@ function AppLayout({ children }) {
             )}
             <div className="flex flex-col gap-2 pt-3 mt-2 border-t border-border">
               <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl text-sm font-semibold">
+                <button className="w-full bg-accent text-accent-foreground py-2.5 rounded-xl text-sm font-semibold">
                   {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך שאלון' : 'Continue') : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Assessment')}
                 </button>
               </Link>
@@ -262,7 +262,7 @@ function AppLayout({ children }) {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-950 text-white/70 w-full py-16 pb-24 xl:pb-16">
+      <footer className="bg-foreground text-white/70 w-full py-16 pb-24 xl:pb-16">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
@@ -310,7 +310,7 @@ function AppLayout({ children }) {
                     required
                     className="flex-1 bg-white/10 border border-white/10 text-white placeholder:text-white/30 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
-                  <button type="submit" className="bg-primary text-white px-5 py-2 rounded-lg font-semibold text-sm whitespace-nowrap hover:opacity-90 transition-all">
+                  <button type="submit" className="bg-accent text-white px-5 py-2 rounded-lg font-semibold text-sm whitespace-nowrap hover:opacity-90 transition-all">
                     {t('layout.footer_newsletter_button')}
                   </button>
                 </form>
