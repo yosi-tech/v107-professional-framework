@@ -25,7 +25,7 @@ export default function Home() {
               תעצבו את <br /> <span className="text-[#FF8F00] italic">העתיד</span> שלכם
             </h1>
             <p className="text-xl text-slate-500 max-w-lg ml-auto leading-relaxed mb-10">
-              הצטרפו לדור החדש של המקצוענים – הפלטפורמה החכמה שמבינה את הכיוון הקריירה שלכם במבדק אחד בלבד
+              הצטרפו לדור החדש של המקצוענים – הפלטפורמה החכמה שמבינה את כיוון הקריירה שלכם במבדק אחד בלבד
             </p>
             <div className="flex flex-row-reverse gap-4">
               <Link to={createPageUrl("Questionnaire")}>
