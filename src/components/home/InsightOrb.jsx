@@ -77,7 +77,7 @@ export default function InsightOrb({ className = "" }) {
       vy: (Math.random() - 0.5) * 0.001,
       r: Math.random() * 2 + 1,
       color: [COLORS.primary, COLORS.secondary, COLORS.accent, COLORS.primaryDark][Math.floor(Math.random() * 4)],
-      alpha: Math.random() * 0.4 + 0.2,
+      alpha: Math.random() * 0.5 + 0.4,
       phase: Math.random() * Math.PI * 2,
     }));
 
@@ -110,11 +110,11 @@ export default function InsightOrb({ className = "" }) {
       // Scroll-based glow
       const scrollGlow = Math.min(scrollRef.current / 600, 1) * 0.15;
 
-      // Outer glow
-      const glowAlpha = 0.08 + Math.sin(time * 0.5) * 0.03 + scrollGlow;
-      const outerGlow = ctx.createRadialGradient(orbCx, orbCy, orbRadius * 0.6, orbCx, orbCy, orbRadius * 1.6);
+      // Outer glow — stronger for visibility
+      const glowAlpha = 0.25 + Math.sin(time * 0.5) * 0.08 + scrollGlow;
+      const outerGlow = ctx.createRadialGradient(orbCx, orbCy, orbRadius * 0.4, orbCx, orbCy, orbRadius * 1.8);
       outerGlow.addColorStop(0, `rgba(${COLORS.accent.join(",")}, ${glowAlpha})`);
-      outerGlow.addColorStop(0.5, `rgba(${COLORS.primary.join(",")}, ${glowAlpha * 0.4})`);
+      outerGlow.addColorStop(0.4, `rgba(${COLORS.primary.join(",")}, ${glowAlpha * 0.5})`);
       outerGlow.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = outerGlow;
       ctx.fillRect(0, 0, w, h);
@@ -130,9 +130,9 @@ export default function InsightOrb({ className = "" }) {
         orbCx - orbRadius * 0.3, orbCy - orbRadius * 0.3, 0,
         orbCx, orbCy, orbRadius
       );
-      sphereBg.addColorStop(0, `rgba(${COLORS.light.join(",")}, 0.15)`);
-      sphereBg.addColorStop(0.5, `rgba(${COLORS.primary.join(",")}, 0.04)`);
-      sphereBg.addColorStop(1, `rgba(${COLORS.primaryDark.join(",")}, 0.08)`);
+      sphereBg.addColorStop(0, `rgba(${COLORS.light.join(",")}, 0.35)`);
+      sphereBg.addColorStop(0.5, `rgba(${COLORS.primary.join(",")}, 0.12)`);
+      sphereBg.addColorStop(1, `rgba(${COLORS.primaryDark.join(",")}, 0.18)`);
       ctx.fillStyle = sphereBg;
       ctx.fill();
 
@@ -160,7 +160,7 @@ export default function InsightOrb({ className = "" }) {
       });
 
       // Neural connections
-      const connectionAlpha = prefersReducedMotion ? 0.06 : 0.04 + Math.sin(time) * 0.02;
+      const connectionAlpha = prefersReducedMotion ? 0.12 : 0.10 + Math.sin(time) * 0.05;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const pi = particles[i];
@@ -196,8 +196,8 @@ export default function InsightOrb({ className = "" }) {
         orbCx - orbRadius * 0.25, orbCy - orbRadius * 0.3, 0,
         orbCx - orbRadius * 0.1, orbCy - orbRadius * 0.1, orbRadius * 0.7
       );
-      highlight.addColorStop(0, "rgba(255,255,255,0.18)");
-      highlight.addColorStop(0.4, "rgba(255,255,255,0.04)");
+      highlight.addColorStop(0, "rgba(255,255,255,0.35)");
+      highlight.addColorStop(0.4, "rgba(255,255,255,0.10)");
       highlight.addColorStop(1, "rgba(255,255,255,0)");
       ctx.beginPath();
       ctx.arc(orbCx, orbCy, orbRadius, 0, Math.PI * 2);
@@ -205,7 +205,7 @@ export default function InsightOrb({ className = "" }) {
       ctx.fill();
 
       // Sphere border
-      const breathe = prefersReducedMotion ? 0.1 : 0.06 + Math.sin(time * 0.8) * 0.04;
+      const breathe = prefersReducedMotion ? 0.2 : 0.15 + Math.sin(time * 0.8) * 0.08;
       ctx.beginPath();
       ctx.arc(orbCx, orbCy, orbRadius, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(${COLORS.primary.join(",")}, ${breathe})`;

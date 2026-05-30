@@ -75,7 +75,7 @@ export default function Home() {
 
           {/* Dashboard preview side with Insight Orb */}
           <div className="relative hidden lg:block">
-            <div className="absolute -inset-20 z-0">
+            <div className="absolute -inset-32 z-0 opacity-80">
               <InsightOrb className="w-full h-full" />
             </div>
             <div className="relative z-10">
