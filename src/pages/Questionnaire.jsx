@@ -147,21 +147,21 @@ const sectionTitlesEn = sectionTitlesHe; // For now, we'll keep the same for bot
 
 const QuestionnaireIntro = ({ onStart, language }) => {
   return (
-    <Card className="shadow-xl border-t-4 border-accent" dir={language === 'he' ? 'rtl' : 'ltr'}>
-      <CardHeader className="pb-6">
-        <div className="bg-slate-600 mb-6 mx-auto w-20 h-20 rounded-full flex items-center justify-center border-4 border-slate-200">
-          <FileText className="w-10 h-10 text-accent" />
+    <Card className="shadow-xl border-t-4 border-primary rounded-3xl" dir={language === 'he' ? 'rtl' : 'ltr'}>
+      <CardHeader className="pb-6 pt-10">
+        <div className="bg-primary mb-6 mx-auto w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+          <FileText className="w-10 h-10 text-white" />
         </div>
-        <CardTitle className="text-3xl font-bold text-text-primary mb-2">
+        <CardTitle className="text-3xl font-bold text-foreground mb-2">
           {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
         </CardTitle>
-        <CardDescription className="text-lg text-text-secondary">
+        <CardDescription className="text-lg text-muted-foreground">
           {language === 'he' ? 'גרסה V8 PRO' : 'Version V8 PRO'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-text-secondary space-y-4`}>
-          <p className="font-semibold text-lg text-text-primary">
+        <div className={`${language === 'he' ? 'text-right' : 'text-left'} text-muted-foreground space-y-4`}>
+          <p className="font-semibold text-lg text-foreground">
             {language === 'he' ? 'ברוך הבא ל-V107 QUESTIONNAIRE V8 PRO' : 'Welcome to V107 QUESTIONNAIRE V8 PRO'}
           </p>
           <ul className="space-y-2 list-disc pr-6">
@@ -171,7 +171,7 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           </ul>
         </div>
 
-        <div className="bg-amber-50 p-4 rounded-lg border-2 border-amber-300 mt-6">
+        <div className="bg-amber-50 p-5 rounded-2xl border border-amber-200 mt-6">
           <h3 className="font-semibold text-lg mb-2 text-amber-900">⚠️ {language === 'he' ? 'הבהרה משפטית' : 'Legal Disclaimer'}</h3>
           <p className="text-sm text-amber-800">
             {language === 'he' 
@@ -180,7 +180,7 @@ const QuestionnaireIntro = ({ onStart, language }) => {
           </p>
         </div>
         
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <div className="bg-primary/5 p-5 rounded-2xl border border-primary/10">
           <h3 className="font-semibold text-lg mb-2">{language === 'he' ? 'סודיות, פרטיות ומחיקת נתונים' : 'Confidentiality, Privacy, and Data Deletion'}</h3>
           <p className="text-sm text-gray-700">{language === 'he' ? 'אנו מתחייבים לסודיות מלאה:' : 'We commit to full confidentiality:'}</p>
           <ol className="list-decimal pr-6 text-sm text-gray-700 space-y-1 mt-2">
@@ -202,7 +202,7 @@ const QuestionnaireIntro = ({ onStart, language }) => {
         <Button
           size="lg"
           onClick={onStart}
-          className="w-full gradient-accent text-white text-lg py-6">
+          className="w-full bg-primary hover:bg-primary/90 text-white text-lg py-6 rounded-2xl shadow-lg shadow-primary/20">
           <PlayCircle className={`w-5 h-5 ${language === 'he' ? 'mr-2' : 'ml-2'}`} />
           {language === 'he' ? 'התחל שאלון' : 'Start Questionnaire'}
         </Button>
@@ -252,10 +252,10 @@ const PersonalInfoForm = ({ data, onChange, language, onImmediateSave }) => {
   };
 
   return (
-    <Card className="shadow-lg" dir={language === 'he' ? 'rtl' : 'ltr'}>
+    <Card className="shadow-lg rounded-2xl border-border/50" dir={language === 'he' ? 'rtl' : 'ltr'}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <UserIcon className="w-5 h-5 text-accent" />
+          <UserIcon className="w-5 h-5 text-primary" />
           {language === 'he' ? 'פרטי ממלא/ת השאלון' : 'Respondent Information'}
         </CardTitle>
         <CardDescription>
@@ -997,7 +997,7 @@ const updateResponse = (questionNumber, value) => {
       return (
         <div className="space-y-6">
           {currentStep === 1 && (
-            <Card className="bg-blue-50 border-blue-200">
+            <Card className="bg-primary/5 border-primary/10 rounded-2xl">
               <CardContent className="p-6">
                 <h3 className="font-bold text-lg mb-3">📝 {language === 'he' ? 'הנחיות למילוי השאלון' : 'Questionnaire Instructions'}</h3>
                 <p className="mb-3 font-medium">
@@ -1014,7 +1014,7 @@ const updateResponse = (questionNumber, value) => {
                   <li>6 – {language === 'he' ? 'מתאר אותי מאוד' : 'Describes me very much'}</li>
                   <li>7 – {language === 'he' ? 'מתאר אותי בצורה מושלמת' : 'Describes me perfectly'}</li>
                 </ul>
-                <p className="mt-4 text-sm font-semibold text-blue-800">
+                <p className="mt-4 text-sm font-semibold text-primary">
                   💡 {language === 'he' 
                     ? 'טיפ: אין תשובות נכונות או שגויות - השב/י בספונטניות לפי האינטואיציה הראשונה שלך.'
                     : 'Tip: There are no right or wrong answers - respond spontaneously according to your first intuition.'}
@@ -1023,8 +1023,8 @@ const updateResponse = (questionNumber, value) => {
             </Card>
           )}
           
-          <Card className="shadow-lg" dir={language === 'he' ? 'rtl' : 'ltr'}>
-            <CardHeader className="bg-blue-50">
+          <Card className="shadow-lg rounded-2xl border-border/50" dir={language === 'he' ? 'rtl' : 'ltr'}>
+            <CardHeader className="bg-primary/5 rounded-t-2xl">
               <CardTitle className="text-xl">{sectionInfo.title}</CardTitle>
               <CardDescription>
                 {language === 'he' ? 'שאלות' : 'Questions'} {sectionInfo.start} - {sectionInfo.end} {language === 'he' ? 'מתוך' : 'of'} 107
@@ -1078,10 +1078,10 @@ const updateResponse = (questionNumber, value) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-20 px-4 sm:px-6 lg:px-8 flex justify-center items-center" dir="rtl">
+      <div className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8 flex justify-center items-center" dir="rtl">
         <div className="text-center">
-          <Loader2 className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" />
-          <p className="text-lg text-gray-600">טוען שאלון...</p>
+          <Loader2 className="animate-spin h-12 w-12 text-primary mx-auto mb-4" />
+          <p className="text-lg text-muted-foreground">טוען שאלון...</p>
         </div>
       </div>
     );
@@ -1091,7 +1091,7 @@ const updateResponse = (questionNumber, value) => {
 
   if (currentStep === -1) {
     return (
-      <div className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 py-20 px-4 sm:px-6 lg:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
         <div className="max-w-3xl mx-auto">
           <QuestionnaireIntro onStart={() => setCurrentStep(0)} language={language} />
         </div>
@@ -1100,7 +1100,7 @@ const updateResponse = (questionNumber, value) => {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-slate-100 select-none" dir={language === 'he' ? 'rtl' : 'ltr'} style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background to-secondary/30 select-none font-heebo" dir={language === 'he' ? 'rtl' : 'ltr'} style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
       <style>{`
         .questionnaire-container, .questionnaire-container * {
           user-select: none !important;
@@ -1164,8 +1164,8 @@ const updateResponse = (questionNumber, value) => {
                     disabled={step === currentStep}
                     className={`w-8 h-8 rounded-full text-sm font-medium transition-all ${
                       step === currentStep
-                        ? 'bg-slate-600 text-white'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? 'bg-primary text-white'
+                        : 'bg-secondary text-muted-foreground hover:bg-primary/10'
                     } ${step === currentStep ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                   >
                     {step === 0 ? 'פ' : step}
@@ -1177,36 +1177,36 @@ const updateResponse = (questionNumber, value) => {
                 onClick={nextStep}
                 disabled={currentStep >= 6}
                 size="sm"
-                className="bg-slate-600 hover:bg-slate-700 text-white"
+                className="bg-primary hover:bg-primary/90 text-white"
               >
                 הבא
                 {language === 'he' ? <ArrowLeft className="w-4 h-4 mr-1" /> : <ArrowRight className="w-4 h-4 ml-1" />}
               </Button>
             </div>
           )}
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-text-primary">
+          <h1 className="text-3xl md:text-4xl font-extrabold mb-2 text-foreground">
             {language === 'he' ? 'שאלון V107 Professional Framework' : 'V107 Professional Framework Questionnaire'}
           </h1>
           
           {currentStep === 0 ? (
-            <p className="text-text-secondary mb-6">פרטים אישיים</p>
+            <p className="text-muted-foreground mb-6">פרטים אישיים</p>
           ) : currentStep >= 1 && currentStep <= 5 ? (
-            <p className="text-text-secondary mb-6">{getCurrentSectionInfo()?.title}</p>
+            <p className="text-muted-foreground mb-6">{getCurrentSectionInfo()?.title}</p>
           ) : currentStep === 6 ? (
-            <p className="text-text-secondary mb-6">הערה אופציונלית</p>
+            <p className="text-muted-foreground mb-6">הערה אופציונלית</p>
           ) : null}
           
           <div className="mb-6">
-            <div className="flex justify-between text-sm text-text-secondary mb-2">
+            <div className="flex justify-between text-sm text-muted-foreground mb-2">
               <span>התקדמות</span>
               <span>{Math.round(getProgress())}%</span>
             </div>
-            <Progress value={getProgress()} className="h-3 [&>div]:bg-accent" />
-            <p className="text-xs text-text-muted mt-2">השאלון נשמר אוטומטית</p>
+            <Progress value={getProgress()} className="h-3 rounded-full [&>div]:bg-primary [&>div]:rounded-full" />
+            <p className="text-xs text-muted-foreground mt-2">השאלון נשמר אוטומטית</p>
           </div>
         </div>
 
-        <div className="bg-surface rounded-2xl shadow-lg p-6 sm:p-8 mb-8">
+        <div className="bg-white rounded-3xl shadow-lg shadow-primary/5 border border-border/50 p-6 sm:p-8 mb-8">
           {renderCurrentSection()}
         </div>
 
@@ -1231,7 +1231,7 @@ const updateResponse = (questionNumber, value) => {
               onClick={submitQuestionnaire}
               disabled={isSubmitting}
               size="lg"
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
             >
               {isSubmitting ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : <CheckCircle className="w-5 h-5 mr-2" />}
               {isSubmitting ? 'שולח...' : 'שלח שאלון'}
@@ -1240,9 +1240,9 @@ const updateResponse = (questionNumber, value) => {
         </div>
         
         {currentStep === 6 && (
-          <div className="mt-8 bg-blue-50 p-6 rounded-lg border border-blue-200 text-center">
+          <div className="mt-8 bg-primary/5 p-8 rounded-3xl border border-primary/10 text-center">
             <h3 className="font-semibold text-lg mb-3">🩵 סיום השאלון: הדרך למפת היכולות האישית שלך</h3>
-            <div className="text-sm text-gray-700 space-y-2 text-right">
+            <div className="text-sm text-foreground/70 space-y-2 text-right">
               <p><strong>בדו"ח תקבל:</strong></p>
               <ul className="list-disc pr-6 space-y-1">
                 <li>ניתוח ממוקד של 11 הממדים המרכזיים של הפרופיל המקצועי שלך.</li>

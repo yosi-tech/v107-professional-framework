@@ -1,9 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { FileText, Shield, User as UserIcon, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Shield, Menu, X } from "lucide-react";
 
 import { LanguageProvider } from "@/components/i18n/LanguageContext";
 import { useTranslation } from "@/components/i18n/useTranslation";
@@ -20,13 +18,18 @@ function AppLayout({ children }) {
   const [hasUnpaidReport, setHasUnpaidReport] = useState(false);
   const [unpaidReportId, setUnpaidReportId] = useState(null);
   const [hasAbandonedQuestionnaire, setHasAbandonedQuestionnaire] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Track scroll for header effect
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Initialize GTM
   useEffect(() => {
-    // Initialize dataLayer
     window.dataLayer = window.dataLayer || [];
-    
-    // Add GTM script to head
     const gtmScript = document.createElement('script');
     gtmScript.innerHTML = `
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -36,8 +39,6 @@ function AppLayout({ children }) {
       })(window,document,'script','dataLayer','GTM-N68LLCXP');
     `;
     document.head.insertBefore(gtmScript, document.head.firstChild);
-
-    // Add noscript iframe to body
     const noscript = document.createElement('noscript');
     const iframe = document.createElement('iframe');
     iframe.src = 'https://www.googletagmanager.com/ns.html?id=GTM-N68LLCXP';
@@ -49,7 +50,7 @@ function AppLayout({ children }) {
     document.body.insertBefore(noscript, document.body.firstChild);
   }, []);
 
-  // Initialize Accessibility Widget (EqualWeb/Nagich)
+  // Initialize Accessibility Widget
   useEffect(() => {
     window.interdeal = {
       get sitekey() { return "f2598de0436f0d3058ec35949030669f" },
@@ -66,19 +67,10 @@ function AppLayout({ children }) {
         "vPosition": ["80%", "80%"],
         "margin": ["0", "0"],
         "scale": ["0.5", "0.5"],
-        "color": {
-          "main": "#243669",
-          "second": "#ffffff"
-        },
-        "icon": {
-          "outline": true,
-          "outlineColor": "#beac7b",
-          "type": 11,
-          "shape": "circle"
-        }
+        "color": { "main": "#4F46E5", "second": "#ffffff" },
+        "icon": { "outline": true, "outlineColor": "#818CF8", "type": 11, "shape": "circle" }
       }
     };
-
     const coreCall = document.createElement('script');
     coreCall.src = window.interdeal.domains.js + 'core/5.2.0/accessibility.js';
     coreCall.defer = true;
@@ -88,43 +80,25 @@ function AppLayout({ children }) {
     document.body.appendChild(coreCall);
   }, []);
 
-
-
   useEffect(() => {
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        
-        // בדוק אם יש שאלון שהושלם
         try {
           const responses = await base44.entities.QuestionnaireResponse.filter(
-            { created_by: currentUser.email, status: 'completed' },
-            '-updated_date',
-            1
+            { created_by: currentUser.email, status: 'completed' }, '-updated_date', 1
           );
-          
           if (responses.length > 0) {
-            // בדוק אם יש תשלום מוצלח עבור השאלון הזה
             try {
               const paidOrders = await base44.entities.PaymentOrder.filter(
-                { 
-                  user_email: currentUser.email,
-                  questionnaire_response_id: responses[0].id,
-                  status: 'paid'
-                },
-                '-created_date',
-                1
+                { user_email: currentUser.email, questionnaire_response_id: responses[0].id, status: 'paid' }, '-created_date', 1
               );
-              
-              const hasPaidForThisQuestionnaire = paidOrders.length > 0;
-              
-              if (!hasPaidForThisQuestionnaire) {
+              if (paidOrders.length === 0) {
                 setHasUnpaidReport(true);
                 setUnpaidReportId(responses[0].id);
               }
             } catch (e) {
-              // אם אין PaymentOrder, בדוק את הדגלים ביוזר
               const hasPurchased = currentUser.has_purchased_full_report || currentUser.has_purchased_answers_download;
               if (!hasPurchased) {
                 setHasUnpaidReport(true);
@@ -132,25 +106,16 @@ function AppLayout({ children }) {
               }
             }
           }
-        } catch (e) {
-          // No completed questionnaires found
-        }
-
-        // בדוק אם יש שאלון נזנח או בתהליך
+        } catch (e) {}
         try {
           const responses = await base44.entities.QuestionnaireResponse.filter(
-            { created_by: currentUser.email },
-            '-updated_date',
-            1
+            { created_by: currentUser.email }, '-updated_date', 1
           );
           if (responses.length > 0 && (responses[0].status === 'in_progress' || responses[0].status === 'abandoned')) {
             setHasAbandonedQuestionnaire(true);
           }
-        } catch (e) {
-          // No in-progress questionnaires found
-        }
+        } catch (e) {}
       } catch (error) {
-        // User not logged in or other error
         setUser(null);
       } finally {
         setIsLoadingUser(false);
@@ -159,362 +124,130 @@ function AppLayout({ children }) {
     loadUser();
   }, []);
 
-
-
-  const toggleLanguage = () => {
-    setLanguage(language === 'he' ? 'en' : 'he');
-  };
-
   const isAdmin = user && user.role === 'admin';
 
+  const navLinks = [
+    { to: createPageUrl("Home"), label: t('layout.nav_home'), active: location.pathname === createPageUrl("Home") },
+    { to: createPageUrl("Articles"), label: t('layout.nav_articles'), active: location.pathname.startsWith(createPageUrl("Articles")) || location.pathname.startsWith(createPageUrl("ArticleDetails")) },
+    { to: createPageUrl("About"), label: language === 'he' ? 'איך זה עובד?' : 'How it works?', active: location.pathname === createPageUrl("About") },
+  ];
+
+  if (!isLoadingUser && user) {
+    navLinks.push({ to: createPageUrl("MyAccount"), label: language === 'he' ? 'האזור שלי' : 'My Account', active: location.pathname === createPageUrl("MyAccount") });
+  }
+
   return (
-    <div className="min-h-screen bg-slate-100" dir={language === 'he' ? 'rtl' : 'ltr'}>
-
-      <style>{`
-        :root {
-          --color-primary: #1a202c; /* Dark Charcoal */
-          --color-primary-dark: #000000; /* Black */
-          --color-secondary: #718096; /* Slate Gray */
-          --color-accent: #d69e2e; /* Rich Gold */
-          --color-accent-light: #f6e05e; /* Light Gold */
-          --color-text-primary: #1a202c; /* Dark Charcoal */
-          --color-text-secondary: #4a5568; /* Gray */
-          --color-text-muted: #a0aec0; /* Light Gray */
-          --color-background: #f7fafc; /* Very Light Gray */
-          --color-surface: #ffffff; /* White */
-          --color-border: #e2e8f0; /* Light Gray Border */
-          --color-success: #38a169;
-          --color-warning: #dd6b20;
-          --color-error: #e53e3e;
-        }
-        
-        * {
-          font-family: 'Assistant', 'Noto Sans Hebrew', 'Rubik', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
-        }
-        
-        body {
-          background-color: var(--color-background);
-          color: var(--color-text-primary);
-        }
-
-        .gradient-primary {
-          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-        }
-        
-        .gradient-accent {
-          background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 100%);
-        }
-        
-        .gradient-hero {
-          background: linear-gradient(135deg, #2d3748 0%, #1a202c 50%, #000000 100%);
-          background-size: 200% 200%;
-          animation: gradientFlow 10s ease infinite;
-        }
-
-        .animated-gradient-text {
-          background: linear-gradient(45deg, #1a202c, #4a5568, #d69e2e, #1a202c);
-          background-size: 400% 400%;
-          background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: gradientText 5s ease infinite;
-        }
-
-        .glass-dark {
-          background: rgba(26, 32, 44, 0.8);
-          backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .hover-lift:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-        
-        .interactive-card {
-          background-color: var(--color-surface);
-          border: 1px solid var(--color-border);
-          transition: all 0.3s ease;
-        }
-        
-        .interactive-card:hover {
-          border-color: var(--color-accent);
-          transform: translateY(-5px);
-          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-        }
-
-        .morph-button {
-          position: relative;
-          overflow: hidden;
-          transition: all 0.3s ease;
-        }
-
-        .morph-button::before {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 0;
-          height: 0;
-          transition: all 0.4s ease;
-          transform: translate(-50%, -50%);
-          border-radius: 50%;
-        }
-
-        .morph-button:hover::before {
-          width: 300px;
-          height: 300px;
-          background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-        }
-
-        /* Enhanced Animations */
-        html { scroll-behavior: smooth; }
-        
-        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        @keyframes gradientFlow { 0%, 100% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } }
-        @keyframes gradientText { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-        
-        .float-animation { animation: float 6s ease-in-out infinite; }
-        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); }
-        .stagger-animation { opacity: 0; transform: translateY(20px); animation: staggerIn 0.5s ease-out forwards; }
-        @keyframes staggerIn { to { opacity: 1; transform: translateY(0); } }
-        
-        .pulse-glow:hover::before { 
-          content: ''; 
-          position: absolute; 
-          top: 0; 
-          left: -100%; 
-          width: 100%; 
-          height: 100%; 
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); 
-          animation: pulseAnim 1s; 
-        }
-        @keyframes pulseAnim { 0% { left: -100%; } 100% { left: 100%; } }
-        
-        .section-enter {
-          opacity: 0;
-          transform: translateY(40px);
-          transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        
-        .section-enter.in-view {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .neon-glow {
-          text-shadow: 0 0 8px rgba(214, 158, 46, 0.6);
-        }
-        
-        /* Custom Carousel Styles */
-        .testimonial-carousel {
-          overflow: hidden;
-          position: relative;
-        }
-        
-        .testimonial-track {
-          display: flex;
-          transition: transform 0.5s ease-in-out;
-        }
-        
-        .testimonial-slide {
-          min-width: 100%;
-          flex-shrink: 0;
-        }
-        
-        @media (min-width: 768px) {
-          .testimonial-slide {
-            min-width: 50%;
-          }
-        }
-        
-        @media (min-width: 1024px) {
-          .testimonial-slide {
-            min-width: 33.333333%;
-          }
-        }
-        
-        .carousel-nav {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          background: rgba(26, 32, 44, 0.8);
-          color: white;
-          border: none;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          cursor: pointer;
-          z-index: 10;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s ease;
-        }
-        
-        .carousel-nav:hover {
-          background: rgba(214, 158, 46, 0.9);
-          transform: translateY(-50%) scale(1.1);
-        }
-        
-        .carousel-nav.prev {
-          right: 10px;
-        }
-        
-        .carousel-nav.next {
-          left: 10px;
-        }
-        
-        .carousel-dots {
-          display: flex;
-          justify-content: center;
-          gap: 8px;
-          margin-top: 20px;
-        }
-        
-        .carousel-dot {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: #e2e8f0;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        
-        .carousel-dot.active {
-          background: #d69e2e;
-          transform: scale(1.2);
-        }
-      `}</style>
-      
-      <header className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl transition-all duration-300">
-        <div className="flex items-center w-full px-8 py-4 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-background font-heebo" dir={language === 'he' ? 'rtl' : 'ltr'}>
+      {/* Header */}
+      <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-xl shadow-sm' : 'bg-white/60 backdrop-blur-md'}`}>
+        <div className="flex items-center w-full px-6 lg:px-10 py-3.5 max-w-7xl mx-auto">
           {/* Mobile Hamburger */}
           <div className="lg:hidden flex items-center gap-2 order-first">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+              className="p-2 rounded-xl hover:bg-secondary transition-colors"
             >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6 text-slate-700" />
-              ) : (
-                <Menu className="w-6 h-6 text-slate-700" />
-              )}
+              {isMobileMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
             </button>
-            {!isLoadingUser && user && hasAbandonedQuestionnaire && (
-              <Link to={createPageUrl("Questionnaire")}>
-                <button className="bg-[#FF8F00] text-white text-xs px-3 py-1.5 rounded-full font-bold">
-                  {language === 'he' ? 'המשך' : 'Continue'}
-                </button>
-              </Link>
-            )}
           </div>
 
-          {/* Logo - right side */}
+          {/* Logo */}
           <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity flex-shrink-0">
-            <span className="text-2xl font-black tracking-tighter text-slate-900 flex items-center">
-              107<span className="text-[#FF8F00]">V</span>
+            <span className="text-2xl font-black tracking-tighter text-foreground flex items-center">
+              107<span className="text-primary">V</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation - centered */}
-          <nav className="hidden lg:flex items-center justify-center flex-1 gap-8">
-            <Link
-              to={createPageUrl("Home")}
-              className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("Home") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
-            >
-              {t('layout.nav_home')}
-            </Link>
-            <Link
-              to={createPageUrl("Articles")}
-              className={`font-bold tracking-tight transition-colors ${location.pathname.startsWith(createPageUrl("Articles")) || location.pathname.startsWith(createPageUrl("ArticleDetails")) ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
-            >
-              {t('layout.nav_articles')}
-            </Link>
-            <Link
-              to={createPageUrl("About")}
-              className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("About") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
-            >
-              {language === 'he' ? 'איך זה עובד?' : 'How it works?'}
-            </Link>
-
-            {!isLoadingUser && user && (
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center justify-center flex-1 gap-1">
+            {navLinks.map(link => (
               <Link
-                to={createPageUrl("MyAccount")}
-                className={`font-bold tracking-tight transition-colors ${location.pathname === createPageUrl("MyAccount") ? 'text-[#FF8F00] border-b-2 border-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+                key={link.to}
+                to={link.to}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${link.active ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
               >
-                {language === 'he' ? 'האזור שלי' : 'My Account'}
+                {link.label}
               </Link>
-            )}
-
+            ))}
             {!isLoadingUser && isAdmin && (
               <Link
                 to={createPageUrl("AdminReports")}
-                className={`font-bold tracking-tight flex items-center gap-2 transition-colors ${location.pathname === createPageUrl("AdminReports") ? 'text-[#FF8F00]' : 'text-slate-600 hover:text-[#FF8F00]'}`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors ${location.pathname === createPageUrl("AdminReports") ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
               >
-                <Shield className="w-4 h-4" />
+                <Shield className="w-3.5 h-3.5" />
                 {language === 'he' ? 'אדמין' : 'Admin'}
               </Link>
             )}
           </nav>
 
-          {/* Action buttons - left side */}
-          <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
+          {/* Action buttons */}
+          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
             <Link to={createPageUrl("Questionnaire")}>
-              <button className="bg-[#FF8F00] text-white py-2.5 px-6 rounded-full font-bold transition-all hover:scale-105">
+              <button className="bg-primary text-primary-foreground py-2.5 px-6 rounded-xl text-sm font-semibold transition-all hover:opacity-90 hover:shadow-lg hover:shadow-primary/20">
                 {hasAbandonedQuestionnaire
                   ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
-                  : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Personal Mapping')
+                  : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Assessment')
                 }
               </button>
             </Link>
-
             {!isLoadingUser && !user && (
               <button
                 onClick={() => base44.auth.redirectToLogin(window.location.href)}
-                className="text-slate-600 font-semibold hover:text-[#FF8F00] transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
               >
                 {language === 'he' ? 'התחבר' : 'Login'}
               </button>
             )}
-
             {!isLoadingUser && user && (
               <button
                 onClick={() => base44.auth.logout(createPageUrl('Home'))}
-                className="text-slate-600 font-semibold hover:text-[#FF8F00] transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
               >
                 {language === 'he' ? 'התנתק' : 'Logout'}
               </button>
             )}
           </div>
+
+          {/* Mobile CTA */}
+          <div className="lg:hidden flex items-center gap-2 mr-auto">
+            <Link to={createPageUrl("Questionnaire")}>
+              <button className="bg-primary text-primary-foreground text-xs px-4 py-2 rounded-lg font-semibold">
+                {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך' : 'Continue') : (language === 'he' ? 'התחל' : 'Start')}
+              </button>
+            </Link>
+          </div>
         </div>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-3">
-            <Link to={createPageUrl("Home")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2">{t('layout.nav_home')}</Link>
-            <Link to={createPageUrl("Articles")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2">{t('layout.nav_articles')}</Link>
-            <Link to={createPageUrl("About")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2">{language === 'he' ? 'איך זה עובד?' : 'How it works?'}</Link>
-            {!isLoadingUser && user && (
-              <Link to={createPageUrl("MyAccount")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2">{language === 'he' ? 'האזור שלי' : 'My Account'}</Link>
-            )}
+          <div className="lg:hidden bg-white border-t border-border px-6 py-4 flex flex-col gap-1">
+            {navLinks.map(link => (
+              <Link key={link.to} to={link.to} onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-medium py-2.5 px-3 rounded-lg text-sm ${link.active ? 'text-primary bg-primary/5' : 'text-foreground'}`}>
+                {link.label}
+              </Link>
+            ))}
             {!isLoadingUser && isAdmin && (
-              <Link to={createPageUrl("AdminReports")} onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 py-2 flex items-center gap-1"><Shield className="w-4 h-4" />{language === 'he' ? 'אדמין' : 'Admin'}</Link>
+              <Link to={createPageUrl("AdminReports")} onClick={() => setIsMobileMenuOpen(false)}
+                className="font-medium text-foreground py-2.5 px-3 rounded-lg text-sm flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5" />{language === 'he' ? 'אדמין' : 'Admin'}
+              </Link>
             )}
-            <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+            <div className="flex flex-col gap-2 pt-3 mt-2 border-t border-border">
               <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="w-full bg-[#FF8F00] text-white py-2.5 rounded-full font-bold">
-                  {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך שאלון' : 'Continue') : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Personal Mapping')}
+                <button className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl text-sm font-semibold">
+                  {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך שאלון' : 'Continue') : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Assessment')}
                 </button>
               </Link>
               {!isLoadingUser && !user && (
-                <button onClick={() => { base44.auth.redirectToLogin(window.location.href); setIsMobileMenuOpen(false); }} className="w-full text-slate-600 font-semibold border border-slate-200 py-2 rounded-full">
+                <button onClick={() => { base44.auth.redirectToLogin(window.location.href); setIsMobileMenuOpen(false); }}
+                  className="w-full text-sm font-medium text-muted-foreground border border-border py-2 rounded-xl">
                   {language === 'he' ? 'התחבר' : 'Login'}
                 </button>
               )}
               {!isLoadingUser && user && (
-                <button onClick={() => { base44.auth.logout(createPageUrl('Home')); setIsMobileMenuOpen(false); }} className="w-full text-slate-600 font-semibold border border-slate-200 py-2 rounded-full">
+                <button onClick={() => { base44.auth.logout(createPageUrl('Home')); setIsMobileMenuOpen(false); }}
+                  className="w-full text-sm font-medium text-muted-foreground border border-border py-2 rounded-xl">
                   {language === 'he' ? 'התנתק' : 'Logout'}
                 </button>
               )}
@@ -523,83 +256,47 @@ function AppLayout({ children }) {
         )}
       </header>
 
-
-
-      <main className="flex-1 relative z-10 pt-[73px]">
-        <div className="mx-4 md:mx-8 my-4" style={{
-          border: '2px solid #FF8F00',
-          borderRadius: '12px',
-          padding: '3px',
-        }}>
-          <div style={{
-            border: '1px solid #1a202c',
-            borderRadius: '9px',
-            overflow: 'hidden',
-          }}>
-            {children}
-          </div>
-        </div>
+      {/* Main Content */}
+      <main className="flex-1 relative pt-[60px]">
+        {children}
       </main>
-      
-      <footer className="bg-slate-50 border-t border-slate-200 w-full py-12 pb-20 xl:pb-12">
-        <div className="max-w-7xl mx-auto px-12">
-          {/* Main footer row */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
-            {/* Logo */}
+
+      {/* Footer */}
+      <footer className="bg-slate-950 text-white/70 w-full py-16 pb-24 xl:pb-16">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-              <span className="text-xl font-bold tracking-tighter text-slate-900 flex items-center">
-                107<span className="text-[#FF8F00]">V</span>
+              <span className="text-xl font-black tracking-tighter text-white flex items-center">
+                107<span className="text-primary">V</span>
               </span>
             </Link>
-
-            {/* Nav Links */}
             <nav className="flex flex-wrap gap-6 justify-center">
-              <Link to={createPageUrl("Home")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
-                {t('layout.nav_home')}
-              </Link>
-              <Link to={createPageUrl("About")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
-                {t('layout.nav_about')}
-              </Link>
-              <Link to={createPageUrl("Articles")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
-                {t('layout.nav_articles')}
-              </Link>
-              <Link to={createPageUrl("TermsOfService")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
-                {t('layout.footer_terms')}
-              </Link>
-              <Link to={createPageUrl("PrivacyPolicy")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
-                {language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy'}
-              </Link>
-              <Link to={createPageUrl("AccessibilityStatement")} className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
-                {language === 'he' ? 'נגישות' : 'Accessibility'}
-              </Link>
-              <Link to="/Contact" className="text-slate-500 text-sm transition-colors hover:text-[#FF8F00]">
-                {language === 'he' ? 'צור קשר' : 'Contact Us'}
-              </Link>
+              <Link to={createPageUrl("Home")} className="text-sm transition-colors hover:text-white">{t('layout.nav_home')}</Link>
+              <Link to={createPageUrl("About")} className="text-sm transition-colors hover:text-white">{t('layout.nav_about')}</Link>
+              <Link to={createPageUrl("Articles")} className="text-sm transition-colors hover:text-white">{t('layout.nav_articles')}</Link>
+              <Link to={createPageUrl("TermsOfService")} className="text-sm transition-colors hover:text-white">{t('layout.footer_terms')}</Link>
+              <Link to={createPageUrl("PrivacyPolicy")} className="text-sm transition-colors hover:text-white">{language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy'}</Link>
+              <Link to={createPageUrl("AccessibilityStatement")} className="text-sm transition-colors hover:text-white">{language === 'he' ? 'נגישות' : 'Accessibility'}</Link>
+              <Link to="/Contact" className="text-sm transition-colors hover:text-white">{language === 'he' ? 'צור קשר' : 'Contact Us'}</Link>
             </nav>
-
-
-            {/* Copyright */}
-            <div className="text-slate-500 text-sm">
+            <div className="text-sm">
               © 2026 v107. {language === 'he' ? 'כל הזכויות שמורות.' : 'All rights reserved.'}
             </div>
           </div>
 
-          {/* Newsletter + Contact */}
-          <div className="border-t border-slate-200 pt-8">
+          <div className="border-t border-white/10 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
               <div className="flex-1 max-w-sm">
-                <h4 className="text-slate-700 font-semibold mb-3 text-sm">{t('layout.footer_newsletter')}</h4>
-                <p className="text-slate-500 text-xs mb-3">{t('layout.footer_newsletter_desc')}</p>
+                <h4 className="text-white font-semibold mb-3 text-sm">{t('layout.footer_newsletter')}</h4>
+                <p className="text-xs mb-3 text-white/50">{t('layout.footer_newsletter_desc')}</p>
                 <form onSubmit={async (e) => {
                   e.preventDefault();
                   const email = e.target.email.value;
                   if (!email) return;
                   try {
                     await base44.entities.ContactInquiry.create({
-                      name: 'Newsletter Subscriber',
-                      email: email,
-                      message: 'Newsletter subscription request',
-                      source: 'newsletter_footer'
+                      name: 'Newsletter Subscriber', email: email,
+                      message: 'Newsletter subscription request', source: 'newsletter_footer'
                     });
                     alert(t('layout.footer_newsletter_success'));
                     e.target.reset();
@@ -607,41 +304,38 @@ function AppLayout({ children }) {
                     console.error('Newsletter subscription error:', error);
                   }
                 }} className="flex gap-2">
-                  <Input
-                    type="email"
-                    name="email"
+                  <input
+                    type="email" name="email"
                     placeholder={t('layout.footer_newsletter_placeholder')}
                     required
-                    className="bg-white border-slate-300 text-slate-700 placeholder:text-slate-400 text-sm"
+                    className="flex-1 bg-white/10 border border-white/10 text-white placeholder:text-white/30 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
-                  <button type="submit" className="bg-[#FF8F00] text-white px-4 py-2 rounded-full font-bold text-sm whitespace-nowrap hover:scale-105 transition-all">
+                  <button type="submit" className="bg-primary text-white px-5 py-2 rounded-lg font-semibold text-sm whitespace-nowrap hover:opacity-90 transition-all">
                     {t('layout.footer_newsletter_button')}
                   </button>
                 </form>
               </div>
-
-              <div className="text-slate-500 text-sm space-y-1 text-start md:text-end">
-                <p>{language === 'he' ? 'צריך עזרה?' : 'Need help?'}</p>
-                <Link to="/Contact" className="text-[#FF8F00] hover:underline font-medium">
+              <div className="text-sm space-y-1 text-start md:text-end">
+                <p className="text-white/50">{language === 'he' ? 'צריך עזרה?' : 'Need help?'}</p>
+                <Link to="/Contact" className="text-primary hover:underline font-medium">
                   {language === 'he' ? 'צרו קשר כאן' : 'Contact us here'}
                 </Link>
               </div>
             </div>
           </div>
 
-          {/* Bottom note */}
-          <div className="mt-6 text-center">
-            <p className="text-xs text-slate-400 select-none">
+          <div className="mt-8 text-center">
+            <p className="text-xs text-white/30 select-none">
               V107™ Professional Framework | © 2026 V107 Global Strategist | Registered Intellectual Property
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-white/30 mt-1">
               {language === 'he' ? 'האתר נבנה על ידי צוות פיתוח V107' : 'Website built by V107 development team'}
             </p>
           </div>
         </div>
       </footer>
-      </div>);
-
+    </div>
+  );
 }
 
 export default function Layout({ children }) {
