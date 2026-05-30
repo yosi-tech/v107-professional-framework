@@ -143,8 +143,10 @@
 
 @layer utilities {
   .saas-container {
-    @apply w-full mx-auto px-6 sm:px-8 lg:px-12;
+    @apply w-full mx-auto;
     max-width: 1180px;
+    padding-left: 32px;
+    padding-right: 32px;
   }
 
   @media (min-width: 1280px) {
