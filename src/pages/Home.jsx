@@ -4,6 +4,7 @@ import { createPageUrl } from "@/utils";
 import { Sparkles, ArrowLeft, Shield, Clock, Lock } from "lucide-react";
 
 import HeroDashboard from "@/components/home/HeroDashboard";
+import InsightOrb from "@/components/home/InsightOrb";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
 import ValueCardsSection from "@/components/home/ValueCardsSection";
 import PricingCTA from "@/components/home/PricingCTA";
@@ -69,9 +70,14 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Dashboard preview side */}
+          {/* Dashboard preview side with Insight Orb */}
           <div className="relative hidden lg:block">
-            <HeroDashboard />
+            <div className="absolute -inset-16 z-0">
+              <InsightOrb className="w-full h-full" />
+            </div>
+            <div className="relative z-10">
+              <HeroDashboard />
+            </div>
           </div>
         </div>
       </section>
