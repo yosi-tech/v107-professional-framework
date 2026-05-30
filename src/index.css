@@ -53,6 +53,8 @@
       linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 45%, #F8FAFC 100%);
     color: var(--text);
     font-family: var(--font-heebo);
+    border-left: 32px solid #F8FAFC;
+    border-right: 32px solid #F8FAFC;
   }
 
   * {
