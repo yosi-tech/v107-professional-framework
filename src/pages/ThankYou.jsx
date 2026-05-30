@@ -68,7 +68,7 @@ export default function ThankYou() {
   if (isLoading) {
     return (
       <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
-        <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
+        <Loader2 className="w-12 h-12 animate-spin text-primary" />
       </div>
     );
   }
@@ -81,17 +81,17 @@ export default function ThankYou() {
     <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
       <div className="max-w-4xl mx-auto text-center">
         <CheckoutProgressBar currentStep="done" />
-        <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8">
-          <CheckCircle className="w-12 h-12 text-green-600" />
+        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8">
+          <CheckCircle className="w-12 h-12 text-primary" />
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-6 text-foreground">
           {language === 'he' ? 'תודה רבה!' : 'Thank You!'}
         </h1>
 
         {purchasedFullReport && (
           <>
-            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
               {language === 'he'
                 ? `התשלום עבור דו"ח Aventura-107 התקבל. נתחיל בעיבוד ונשלח את הדו"ח עד ${hasExpressDelivery ? '3' : '7'} ימי עבודה${hasExpressDelivery ? ' (אספקה מואצת)' : ''}.`
                 : `Payment for the Aventura-107 report has been received. We'll begin processing and send the report within ${hasExpressDelivery ? '3' : '7'} business days${hasExpressDelivery ? ' (express delivery)' : ''}.`
@@ -99,9 +99,9 @@ export default function ThankYou() {
             </p>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="border-none shadow-lg">
+              <Card className="border-border/50 shadow-sm rounded-3xl">
                 <CardContent className="p-8 text-center">
-                  <FileText className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+                  <FileText className="w-12 h-12 text-primary mx-auto mb-4" />
                   <h3 className="text-xl font-bold mb-3">
                     {language === 'he' ? 'ניתוח מקצועי' : 'Professional Analysis'}
                   </h3>
@@ -112,12 +112,12 @@ export default function ThankYou() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-none shadow-lg">
+              <Card className="border-border/50 shadow-sm rounded-3xl">
                 <CardContent className="p-8 text-center">
                   {hasExpressDelivery ? (
-                    <Zap className="w-12 h-12 text-orange-600 mx-auto mb-4" />
+                    <Zap className="w-12 h-12 text-primary mx-auto mb-4" />
                   ) : (
-                    <Calendar className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+                    <Calendar className="w-12 h-12 text-primary/70 mx-auto mb-4" />
                   )}
                   <h3 className="text-xl font-bold mb-3">
                     {hasExpressDelivery 
@@ -133,9 +133,9 @@ export default function ThankYou() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-none shadow-lg">
+              <Card className="border-border/50 shadow-sm rounded-3xl">
                 <CardContent className="p-8 text-center">
-                  <Mail className="w-12 h-12 text-green-600 mx-auto mb-4" />
+                  <Mail className="w-12 h-12 text-primary mx-auto mb-4" />
                   <h3 className="text-xl font-bold mb-3">
                     {language === 'he' ? 'קבלת הדו"ח' : 'Report Delivery'}
                   </h3>
@@ -150,14 +150,14 @@ export default function ThankYou() {
             </div>
 
             {/* כפתור לבקשת שיחת ייעוץ */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 mb-12 max-w-2xl mx-auto border border-blue-200">
+            <div className="bg-primary/5 rounded-3xl p-8 mb-12 max-w-2xl mx-auto border border-primary/10">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <Phone className="w-8 h-8 text-blue-600" />
-                <h2 className="text-2xl font-bold text-gray-900">
+                <Phone className="w-8 h-8 text-primary" />
+                <h2 className="text-2xl font-bold text-foreground">
                   {language === 'he' ? 'רוצה שיחת ייעוץ אישית?' : 'Want a Personal Consultation?'}
                 </h2>
               </div>
-              <p className="text-gray-700 mb-6">
+              <p className="text-foreground/70 mb-6">
                 {language === 'he'
                   ? 'קבע/י שיחת ייעוץ ללא עלות (20-25 דקות) כדי להפוך את תובנות הדו"ח שלך לתוכנית פעולה ברורה.'
                   : 'Schedule a free consultation call (20-25 minutes) to turn your report insights into a clear action plan.'
@@ -167,7 +167,7 @@ export default function ThankYou() {
                 size="lg" 
                 onClick={handleRequestConsultation}
                 disabled={isRequestingConsultation}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
               >
                 {isRequestingConsultation ? (
                   <>
@@ -186,11 +186,11 @@ export default function ThankYou() {
         )}
 
         {purchasedAnswersDownload && !purchasedFullReport && (
-             <div className="bg-white rounded-2xl shadow-xl p-8 mb-12 max-w-2xl mx-auto">
+             <div className="bg-white rounded-3xl shadow-sm border border-border/50 p-8 mb-12 max-w-2xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4">
                   {language === 'he' ? 'התשובות שלך מוכנות להורדה' : 'Your Answers Are Ready for Download'}
                 </h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-muted-foreground mb-6">
                   {language === 'he'
                     ? 'לחץ על הכפתור כדי להוריד קובץ PDF עם כל השאלות והתשובות שמילאת.'
                     : 'Click the button to download a PDF with all the questions and answers you filled out.'
@@ -201,8 +201,8 @@ export default function ThankYou() {
                     {language === 'he' ? 'הורד את התשובות שלי (PDF)' : 'Download My Answers (PDF)'}
                 </Button>
                 
-                <div className="border-t border-gray-200 pt-6">
-                  <p className="text-sm text-gray-600 mb-4">
+                <div className="border-t border-border pt-6">
+                  <p className="text-sm text-muted-foreground mb-4">
                     {language === 'he'
                       ? 'רוצה דו"ח מלא בהמשך? נעניק קיזוז מלא של 59 ₪ במחיר הדו"ח.'
                       : 'Want a full report later? We\'ll give you a full $15 credit on the report price.'

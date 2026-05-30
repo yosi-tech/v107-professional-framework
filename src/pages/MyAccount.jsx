@@ -116,20 +116,20 @@ export default function MyAccount() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center" dir="rtl">
-        <Loader2 className="animate-spin h-12 w-12 text-[#FF8F00]" />
+        <Loader2 className="animate-spin h-12 w-12 text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 xl:flex" dir="rtl">
+    <div className="min-h-screen bg-background xl:flex" dir="rtl">
 
       {/* Desktop Sidebar */}
-      <aside className="bg-white w-64 hidden xl:flex flex-col flex-shrink-0 sticky top-[73px] self-start h-[calc(100vh-73px)] pt-6 pb-6 border-l border-slate-100 shadow-sm overflow-y-auto">
+      <aside className="bg-white w-64 hidden xl:flex flex-col flex-shrink-0 sticky top-[73px] self-start h-[calc(100vh-73px)] pt-6 pb-6 border-l border-border/50 shadow-sm overflow-y-auto">
         {/* User Info */}
         <div className="px-5 mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-[#FF8F00] flex items-center justify-center text-white flex-shrink-0 shadow-md">
+            <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-primary/20">
               <UserIcon className="w-5 h-5" />
             </div>
             <div className="overflow-hidden">
@@ -157,8 +157,8 @@ export default function MyAccount() {
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full text-right ${
                 activeTab === key
-                  ? 'text-[#FF8F00] bg-orange-50 font-bold border-r-4 border-[#FF8F00]'
-                  : 'text-slate-500 hover:bg-slate-100'
+                  ? 'text-primary bg-primary/5 font-bold border-r-4 border-primary'
+                  : 'text-muted-foreground hover:bg-secondary'
               }`}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
@@ -171,13 +171,13 @@ export default function MyAccount() {
         {/* Bottom Actions */}
         <div className="px-4 space-y-2 mt-4">
           <Link to={createPageUrl('Questionnaire')} className="block">
-            <button className="w-full text-white py-3 rounded-xl font-bold shadow-md hover:scale-105 transition-transform text-sm" style={{ backgroundColor: '#FF8F00' }}>
+            <button className="w-full text-white py-3 rounded-xl font-bold shadow-md shadow-primary/20 hover:scale-105 transition-transform text-sm bg-primary">
               התחל מיפוי חדש
             </button>
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors text-sm"
           >
             <LogOut className="w-4 h-4" />
             התנתק
@@ -186,7 +186,7 @@ export default function MyAccount() {
       </aside>
 
       {/* Mobile Bottom Nav */}
-      <nav className="xl:hidden fixed bottom-0 right-0 left-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+      <nav className="xl:hidden fixed bottom-0 right-0 left-0 z-50 bg-white border-t border-border shadow-lg">
         <div className="flex items-center justify-evenly py-1.5">
           {NAV_ITEMS.map(({ key, label, icon: Icon, href }) => (
             href ? (
@@ -199,7 +199,7 @@ export default function MyAccount() {
               key={key}
               onClick={() => setActiveTab(key)}
               className={`flex flex-col items-center gap-0.5 min-w-0 px-1 py-1 rounded-lg transition-colors ${
-                activeTab === key ? 'text-[#FF8F00]' : 'text-slate-400'
+                activeTab === key ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
@@ -217,7 +217,7 @@ export default function MyAccount() {
         <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             {latestCompleted && (
-              <div className="flex items-center gap-2 text-[#FF8F00] mb-2">
+              <div className="flex items-center gap-2 text-primary mb-2">
                 <CheckCircle className="w-4 h-4" />
                 <span className="text-sm font-bold tracking-widest uppercase">המיפוי הושלם</span>
               </div>
@@ -239,7 +239,7 @@ export default function MyAccount() {
               </Link>
             )}
             {boosterSubscription && (
-              <button className="flex items-center gap-2 text-white px-6 py-3 rounded-xl shadow-xl hover:scale-105 transition-all font-bold text-sm" style={{ backgroundColor: '#FF8F00' }}>
+              <button className="flex items-center gap-2 text-white bg-primary px-6 py-3 rounded-xl shadow-xl shadow-primary/20 hover:scale-105 transition-all font-bold text-sm">
                 <Zap className="w-4 h-4" />
                 Booster פעיל
               </button>
@@ -371,18 +371,18 @@ export default function MyAccount() {
                       <div className="text-center py-8 text-slate-400">
                         <p className="text-sm">השלם שאלון ורכוש דוח כדי לראות את מפת העוצמות</p>
                         <Link to={createPageUrl('Questionnaire')}>
-                          <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
-                        </Link>
-                      </div>
-                      )}
-                      </div>
-                </div>
-              </section>
+                          <button className="text-white bg-primary px-6 py-2 rounded-xl text-sm font-bold">התחל עכשיו</button>
+                          </Link>
+                          </div>
+                          )}
+                          </div>
+                          </div>
+                          </section>
 
-              {/* Right Column */}
-              <aside className="md:col-span-4 space-y-6">
-                {/* Career Paths */}
-                <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                          {/* Right Column */}
+                          <aside className="md:col-span-4 space-y-6">
+                          {/* Career Paths */}
+                          <div className="bg-white rounded-3xl p-8 shadow-sm border border-border/50">
                   <h2 className="text-xl font-bold text-slate-900 mb-6">נתיבי קריירה מומלצים</h2>
                   {(() => {
                     const recs = [];
@@ -404,7 +404,7 @@ export default function MyAccount() {
                           <Compass className="w-10 h-10 mx-auto mb-3 text-slate-300" />
                           <p className="text-sm">נתיבי הקריירה שלך יופיעו כאן לאחר הפקת הדוח</p>
                           <Link to={createPageUrl('Questionnaire')}>
-                            <button className="mt-4 text-white px-6 py-2 rounded-xl text-sm font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל עכשיו</button>
+                            <button className="mt-4 text-white bg-primary px-6 py-2 rounded-xl text-sm font-bold">התחל עכשיו</button>
                           </Link>
                         </div>
                       );
@@ -420,14 +420,14 @@ export default function MyAccount() {
                                 <h3 className="font-bold text-slate-900 text-sm">{rec.title}</h3>
                                 <div className="flex items-center gap-3 mt-1">
                                   {rec.salary_range && <span className="text-xs text-slate-500">{rec.salary_range}</span>}
-                                  {rec.match_percentage && <span className="text-xs text-[#FF8F00] font-bold">{rec.match_percentage}% התאמה</span>}
+                                  {rec.match_percentage && <span className="text-xs text-primary font-bold">{rec.match_percentage}% התאמה</span>}
                                 </div>
                               </div>
                             </Link>
                           ))}
                         </div>
                         <Link to="/CareerPaths">
-                          <button className="w-full mt-6 text-[#FF8F00] font-bold flex items-center justify-center gap-2 hover:underline text-sm">
+                          <button className="w-full mt-6 text-primary font-bold flex items-center justify-center gap-2 hover:underline text-sm">
                             לצפייה בנתיבי קריירה ←
                           </button>
                         </Link>
@@ -437,8 +437,8 @@ export default function MyAccount() {
                 </div>
 
                 {/* Recent Activities - unified feed */}
-                <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-                  <h2 className="text-xl font-bold text-slate-900 mb-6">פעילויות אחרונות</h2>
+                <div className="bg-white rounded-3xl p-8 shadow-sm border border-border/50">
+                  <h2 className="text-xl font-bold text-foreground mb-6">פעילויות אחרונות</h2>
                   <div className="space-y-3">
                     {(() => {
                       const activities = [
@@ -492,7 +492,7 @@ export default function MyAccount() {
                           </div>
                           {a.link && a.actionLabel && (
                             <Link to={a.link}>
-                              <button className="mt-2 w-full text-center text-xs font-bold text-[#FF8F00] hover:underline">{a.actionLabel} ←</button>
+                              <button className="mt-2 w-full text-center text-xs font-bold text-primary hover:underline">{a.actionLabel} ←</button>
                             </Link>
                           )}
                         </div>
@@ -503,9 +503,9 @@ export default function MyAccount() {
 
                 {/* Booster if active */}
                 {boosterSubscription && (
-                  <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                  <div className="bg-white rounded-3xl p-8 shadow-sm border border-border/50">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#FF8F00' }}>
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary">
                         <Rocket className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -514,7 +514,7 @@ export default function MyAccount() {
                       </div>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2 mb-2">
-                      <div className="h-2 rounded-full" style={{ width: `${(boosterSubscription.current_day / 30) * 100}%`, backgroundColor: '#FF8F00' }} />
+                      <div className="h-2 rounded-full bg-primary" style={{ width: `${(boosterSubscription.current_day / 30) * 100}%` }} />
                     </div>
                     <p className="text-xs text-slate-400">יום {boosterSubscription.current_day} מתוך 30</p>
                   </div>
@@ -529,7 +529,7 @@ export default function MyAccount() {
                 {[
                   { icon: TrendingUp, color: 'bg-blue-50 text-blue-600', title: 'מגמת צמיחה', desc: 'היכולת שלך ללמוד ולצמוח מבוססת על נתוני השאלון שלך. מומלץ להתמקד בתחומים שזוהו כחוזקות.' },
                   { icon: UserIcon, color: 'bg-purple-50 text-purple-600', title: 'נטוורקינג פעיל', desc: 'כישורים בין-אישיים חזקים הם נכס מקצועי. כלי הבוסטר יכול לעזור לך למנף זאת לקידום.' },
-                  { icon: Zap, color: 'bg-orange-50 text-[#FF8F00]', title: 'איזון חיים-עבודה', desc: 'חיזוק האיזון בין עבודה לחיים אישיים תורם לביצועים ארוכי טווח ולמניעת שחיקה.' },
+                  { icon: Zap, color: 'bg-primary/5 text-primary', title: 'איזון חיים-עבודה', desc: 'חיזוק האיזון בין עבודה לחיים אישיים תורם לביצועים ארוכי טווח ולמניעת שחיקה.' },
                 ].map(({ icon: Icon, color, title, desc }) => (
                   <div key={title} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${color}`}>
@@ -549,7 +549,7 @@ export default function MyAccount() {
                 <p className="text-slate-300 text-base mb-6 leading-relaxed">הרגשת שינוי קטן? הבנת כיוון חדש? עכשיו זה הזמן לקחת את זה צעד קדימה ולעזור גם לחבר להתקדם.</p>
                 <div className="flex gap-4 flex-wrap">
                   <Link to={createPageUrl('Questionnaire')}>
-                    <button className="text-white px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform text-sm" style={{ backgroundColor: '#FF8F00' }}>שדרג עכשיו</button>
+                    <button className="text-white bg-primary px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform text-sm shadow-lg shadow-primary/20">שדרג עכשיו</button>
                   </Link>
                   <Link to={createPageUrl('About')}>
                     <button className="border border-white/20 px-8 py-3 rounded-xl font-bold hover:bg-white/10 transition-colors text-sm">למד עוד</button>
@@ -558,7 +558,7 @@ export default function MyAccount() {
               </div>
               <div className="flex-shrink-0 w-full md:w-56">
                 <div className="aspect-video rounded-2xl bg-slate-800 flex items-center justify-center shadow-xl">
-                  <Zap className="w-12 h-12 text-[#FF8F00]" />
+                  <Zap className="w-12 h-12 text-primary" />
                 </div>
               </div>
             </section>
@@ -574,7 +574,7 @@ export default function MyAccount() {
                 <FileText className="w-16 h-16 text-slate-200 mx-auto mb-4" />
                 <p className="text-slate-500 mb-6">לא מצאנו שאלונים</p>
                 <Link to={createPageUrl('Questionnaire')}>
-                  <button className="text-white px-8 py-3 rounded-xl font-bold" style={{ backgroundColor: '#FF8F00' }}>התחל שאלון</button>
+                  <button className="text-white bg-primary px-8 py-3 rounded-xl font-bold">התחל שאלון</button>
                 </Link>
               </div>
             ) : (
@@ -602,7 +602,7 @@ export default function MyAccount() {
                     )}
                     {response.status === 'completed' && (
                       <Link to={createPageUrl(`Completion?responseId=${response.id}`)}>
-                        <button className="w-full py-2 rounded-xl text-sm font-bold text-white transition-colors" style={{ backgroundColor: '#FF8F00' }}>צפה באפשרויות רכישה</button>
+                        <button className="w-full py-2 rounded-xl text-sm font-bold text-white bg-primary transition-colors">צפה באפשרויות רכישה</button>
                       </Link>
                     )}
                   </div>
@@ -637,7 +637,7 @@ export default function MyAccount() {
                       </div>
                       {!hasPurchased ? (
                         <Link to={createPageUrl(`Completion?responseId=${report.questionnaire_response_id}`)}>
-                          <button className="w-full py-2 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: '#FF8F00' }}>רכוש דוח</button>
+                          <button className="w-full py-2 rounded-xl text-sm font-bold text-white bg-primary">רכוש דוח</button>
                         </Link>
                       ) : (
                         <Link to={createPageUrl(`ReportView?reportid=${report.id}`)}>

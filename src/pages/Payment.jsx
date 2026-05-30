@@ -25,7 +25,7 @@ const ReportInfoModal = ({ isOpen, onClose }) => {
           <DialogTitle className="text-2xl font-bold mb-2">
             {language === 'he' ? 'אודות הדו"ח המלא' : 'About the Full Report'}
           </DialogTitle>
-          <DialogDescription className="text-gray-700 text-base leading-relaxed">
+          <DialogDescription className="text-foreground/70 text-base leading-relaxed">
             {language === 'he' ? (
               <>
                 <p className="mb-4">תהליך יצירת הדו"ח המלא כולל מספר שלבים מקצועיים ומעמיקים.</p>
@@ -338,9 +338,9 @@ export default function Payment() {
 
   if (!product) {
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-2xl font-bold">{language === 'he' ? 'לא נבחר מוצר.' : 'No product selected.'}</h1>
-            <Link to={createPageUrl("Home")} className="text-blue-600">{language === 'he' ? 'חזור לדף הבית' : 'Back to Home'}</Link>
+        <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-2xl font-bold text-foreground">{language === 'he' ? 'לא נבחר מוצר.' : 'No product selected.'}</h1>
+            <Link to={createPageUrl("Home")} className="text-primary">{language === 'he' ? 'חזור לדף הבית' : 'Back to Home'}</Link>
         </div>
     );
   }
@@ -362,16 +362,16 @@ export default function Payment() {
   const CurrentProductIcon = productDetails[product]?.icon || Star;
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-12 pb-20 px-4 md:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-background pt-12 pb-20 px-4 md:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
       <div className="max-w-5xl mx-auto">
         <CheckoutProgressBar currentStep="payment" />
 
         {/* Page Header */}
         <div className="mb-12">
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter mb-2">
+          <h1 className="text-4xl font-black text-foreground tracking-tighter mb-2">
             {language === 'he' ? 'עמוד סליקה מאובטח' : 'Secure Checkout'}
           </h1>
-          <p className="text-slate-500 max-w-md">
+          <p className="text-muted-foreground max-w-md">
             {language === 'he'
               ? 'השלם את רכישת החבילה שלך ל-v107 AI והתחל לעצב את העתיד המקצועי שלך עוד היום.'
               : 'Complete your v107 AI package purchase and start shaping your professional future today.'}
@@ -394,7 +394,7 @@ export default function Payment() {
           
           {/* LEFT: Payment section (7 cols) */}
           <div className="lg:col-span-7 space-y-10">
-            <section className="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+            <section className="bg-white p-8 rounded-3xl shadow-sm border border-border/50">
               {/* Section title */}
               <div className="mb-8">
                 <h2 className="text-xl font-bold flex items-center gap-2">
@@ -416,7 +416,7 @@ export default function Payment() {
                     <button
                       type="button"
                       onClick={() => setIsReportInfoOpen(true)}
-                      className="text-blue-600 hover:text-blue-800 underline text-sm"
+                      className="text-primary hover:text-primary/80 underline text-sm"
                     >
                       {language === 'he' ? '📋 רוצה לדעת יותר על התהליך המקצועי?' : '📋 Want to know more about the professional process?'}
                     </button>
@@ -481,9 +481,9 @@ export default function Payment() {
                     <div className="grid gap-1.5 leading-none">
                       <label htmlFor="terms" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         {language === 'he' ? (
-                          <>קראתי ואני מאשר/ת את <Link to={createPageUrl("TermsOfService")} target="_blank" className="underline text-blue-600 hover:text-blue-800">תנאי השימוש</Link></>
+                          <>קראתי ואני מאשר/ת את <Link to={createPageUrl("TermsOfService")} target="_blank" className="underline text-primary hover:text-primary/80">תנאי השימוש</Link></>
                         ) : (
-                          <>I have read and agree to the <Link to={createPageUrl("TermsOfService")} target="_blank" className="underline text-blue-600 hover:text-blue-800">Terms of Service</Link></>
+                          <>I have read and agree to the <Link to={createPageUrl("TermsOfService")} target="_blank" className="underline text-primary hover:text-primary/80">Terms of Service</Link></>
                         )}
                       </label>
                     </div>
@@ -521,7 +521,7 @@ export default function Payment() {
                       borderRadius: '8px'
                     }}
                   />
-                  <p className="text-sm text-slate-500 text-center">
+                  <p className="text-sm text-muted-foreground text-center">
                     {language === 'he' ? 'ממתין לתשלום...' : 'Waiting for payment...'}
                   </p>
                 </div>

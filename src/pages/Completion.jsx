@@ -23,30 +23,30 @@ function ReportInfoModal({ isOpen, onClose }) {
             <DialogContent className="sm:max-w-[625px] rtl text-right">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-right tracking-tight">התהליך המקצועי מאחורי הדו"ח</DialogTitle>
-                    <DialogDescription className="text-gray-600 mt-2 text-sm text-right">השאלון שסיימתם למלא הוא רק הצעד הראשון. דו"ח V107 המלא עובר תהליך ניתוח מעמיק ורב-שלבי על מנת להבטיח שתקבלו את התובנות המדויקות והמעשיות ביותר.
+                    <DialogDescription className="text-muted-foreground mt-2 text-sm text-right">השאלון שסיימתם למלא הוא רק הצעד הראשון. דו"ח V107 המלא עובר תהליך ניתוח מעמיק ורב-שלבי על מנת להבטיח שתקבלו את התובנות המדויקות והמעשיות ביותר.
 
           </DialogDescription>
                 </DialogHeader>
                 <div className="py-4 space-y-4">
                     <div>
                         <h3 className="font-semibold text-lg mb-1">👨‍💻 ניתוח מומחים אנושי</h3>
-                        <p className="text-gray-700">הדו"ח אינו מופק על ידי בינה מלאכותית, אלא על ידי צוות מומחי יזמות בעלי עשרות שנות ניסיון בהובלת חברות והקמת מיזמים טכנולוגיים ועסקיים בארץ ובעולם.</p>
+                        <p className="text-foreground/70">הדו"ח אינו מופק על ידי בינה מלאכותית, אלא על ידי צוות מומחי יזמות בעלי עשרות שנות ניסיון בהובלת חברות והקמת מיזמים טכנולוגיים ועסקיים בארץ ובעולם.</p>
                     </div>
                     <div>
                         <h3 className="font-semibold text-lg mb-1">🔍 תובנות אישיות ומותאמות</h3>
-                        <p className="text-gray-700">כל תשובה שלכם נבחנת בקפידה ומשולבת עם ידע אקדמי ומעשי, כדי לספק לכם המלצות ואסטרטגיות המותאמות באופן ספציפי לפרופיל היזמי הייחודי שלכם ולפוטנציאל המיזם שלכם.</p>
+                        <p className="text-foreground/70">כל תשובה שלכם נבחנת בקפידה ומשולבת עם ידע אקדמי ומעשי, כדי לספק לכם המלצות ואסטרטגיות המותאמות באופן ספציפי לפרופיל היזמי הייחודי שלכם ולפוטנציאל המיזם שלכם.</p>
                     </div>
                     <div>
                         <h3 className="font-semibold text-lg mb-1">🗺️ תוכנית פעולה מעשית</h3>
-                        <p className="text-gray-700">הדו"ח מספק לא רק ניתוח, אלא גם מפת דרכים ברורה וקונקרטית לצעדים הבאים שעליכם לנקוט כדי לקדם את הרעיון היזמי שלכם לכדי מציאות.</p>
+                        <p className="text-foreground/70">הדו"ח מספק לא רק ניתוח, אלא גם מפת דרכים ברורה וקונקרטית לצעדים הבאים שעליכם לנקוט כדי לקדם את הרעיון היזמי שלכם לכדי מציאות.</p>
                     </div>
                     <div>
                         <h3 className="font-semibold text-lg mb-1">📊 גרפים, השוואות וניתוח שוק</h3>
-                        <p className="text-gray-700">הדו"ח כולל גרפים ויזואליים, השוואות למגמות שוק וליזמים אחרים, וניתוח מעמיק של החוזקות והחולשות שלכם אל מול הסביבה העסקית הרחבה.</p>
+                        <p className="text-foreground/70">הדו"ח כולל גרפים ויזואליים, השוואות למגמות שוק וליזמים אחרים, וניתוח מעמיק של החוזקות והחולשות שלכם אל מול הסביבה העסקית הרחבה.</p>
                     </div>
                     <div>
                         <h3 className="font-semibold text-lg mb-1">✅ בקרת איכות קפדנית</h3>
-                        <p className="text-gray-700">כל דו"ח עובר תהליך בקרת איכות על ידי מומחה נוסף, כדי לוודא דיוק, עקביות וכיסוי מקיף של כל ההיבטים הרלוונטיים.</p>
+                        <p className="text-foreground/70">כל דו"ח עובר תהליך בקרת איכות על ידי מומחה נוסף, כדי לוודא דיוק, עקביות וכיסוי מקיף של כל ההיבטים הרלוונטיים.</p>
                     </div>
                 </div>
                 <div className="flex justify-end pt-4">
@@ -181,21 +181,21 @@ export default function Completion() {
 
   if (isLoadingProducts) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
                 {/* Sticky Purchase Button for Mobile */}
-                <div className="fixed top-0 left-0 right-0 sm:hidden z-40 bg-gradient-to-b from-white/95 to-white/80 backdrop-blur-sm p-3 border-b border-blue-200 flex justify-between items-center">
-                  <h2 className="text-lg font-bold text-gray-900">לרכישת הדוח</h2>
+                <div className="fixed top-0 left-0 right-0 sm:hidden z-40 bg-white/90 backdrop-blur-xl p-3 border-b border-border/50 flex justify-between items-center">
+                  <h2 className="text-lg font-bold text-foreground">לרכישת הדוח</h2>
                   <button
                     onClick={() => productCards[1] && navigate(productCards[1].url)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg transition-colors text-sm"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-4 py-2 rounded-xl transition-colors text-sm"
                   >
                     קנה עכשיו
                   </button>
@@ -203,16 +203,16 @@ export default function Completion() {
                 
                 <div className="pt-16 sm:pt-0 text-center">
                     <CheckoutProgressBar currentStep="choose" />
-                    <Award className="w-16 h-16 mx-auto text-yellow-500 mb-4" />
-                    <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">כל הכבוד! סיימת את השאלון.</h1>
-                    <p className="text-base sm:text-lg text-gray-600 mb-6">
+                    <Award className="w-16 h-16 mx-auto text-primary mb-4" />
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-4">כל הכבוד! סיימת את השאלון.</h1>
+                    <p className="text-base sm:text-lg text-muted-foreground mb-6">
                         עשית צעד משמעותי במסע היזמי שלך. כעת, בחר את הדרך המתאימה לך להמשיך:
                     </p>
                 
                 <div className="mb-8">
                     <button
             onClick={() => setIsReportInfoOpen(true)}
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 underline font-medium">
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 underline font-medium">
 
                       <Info className="w-4 h-4" />
                       רוצה לדעת יותר על התהליך המקצועי מאחורי הדו"ח?
@@ -223,30 +223,30 @@ export default function Completion() {
                     {productCards.map((product) =>
           <Card
             key={product.title}
-            className={`flex flex-col text-center transition-all duration-300 hover:shadow-2xl w-full sm:max-w-sm ${
-            product.recommended ? 'border-2 border-blue-600 shadow-xl sm:scale-105' : 'shadow-lg'}`
+            className={`flex flex-col text-center transition-all duration-300 hover:shadow-2xl w-full sm:max-w-sm rounded-3xl ${
+            product.recommended ? 'border-2 border-primary shadow-xl sm:scale-105' : 'shadow-lg border-border/50'}`
             }>
 
                             {product.recommended &&
-            <div className="bg-blue-600 text-white text-sm font-bold py-1">הכי מומלץ</div>
+            <div className="bg-primary text-primary-foreground text-sm font-bold py-1.5 rounded-t-3xl">הכי מומלץ</div>
             }
                             <CardHeader className="pt-6 sm:pt-8">
-                                <product.icon className={`w-12 h-12 mx-auto ${product.recommended ? 'text-blue-600' : 'text-gray-500'}`} />
+                                <product.icon className={`w-12 h-12 mx-auto ${product.recommended ? 'text-primary' : 'text-muted-foreground'}`} />
                                 <CardTitle className="text-3xl font-bold mt-4">
                                     {product.title}
                                     {product.recommended && discountParam &&
-                <span className="block text-base font-normal text-green-600 mt-1"> (10% הנחה!)</span>
+                <span className="block text-base font-normal text-emerald-600 mt-1"> (10% הנחה!)</span>
                 }
                                 </CardTitle>
-                                <p className="text-5xl font-extrabold text-gray-900 my-4">{product.price}</p>
+                                <p className="text-5xl font-extrabold text-foreground my-4">{product.price}</p>
                             </CardHeader>
                             <CardContent className="flex-grow flex flex-col justify-between p-6">
-                                <p className="text-gray-600 mb-6">{product.description}</p>
+                                <p className="text-muted-foreground mb-6">{product.description}</p>
                                 <Link to={product.url}>
                                     <Button
                   size="lg"
-                  className={`w-full text-lg py-6 ${
-                  product.recommended ? 'bg-gradient-to-l from-blue-600 to-purple-600' : ''}`
+                  className={`w-full text-lg py-6 rounded-xl ${
+                  product.recommended ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20' : ''}`
                   }
                   variant={product.recommended ? 'default' : 'outline'}>
 
@@ -262,9 +262,9 @@ export default function Completion() {
 
                 <FAQSection />
 
-                <div className="mt-12 p-6 bg-white rounded-xl shadow-lg border-2 border-dashed border-gray-300">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-3">לא בטוח/ה עדיין?</h3>
-                    <p className="text-gray-600 mb-6">
+                <div className="mt-12 p-8 bg-white rounded-3xl shadow-sm border border-border/50">
+                    <h3 className="text-xl font-semibold text-foreground mb-3">לא בטוח/ה עדיין?</h3>
+                    <p className="text-muted-foreground mb-6">
                         אין בעיה! מלא סקר קצר (2 דק׳) וקבל קוד קופון ל-25 ₪ הנחה.
                     </p>
                     <Button
@@ -272,7 +272,7 @@ export default function Completion() {
             size="lg"
             onClick={handleNoPurchase}
             disabled={isSendingEmail}
-            className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 mx-auto">
+            className="text-foreground/70 hover:text-foreground hover:bg-secondary transition-colors flex items-center justify-center gap-2 mx-auto">
 
                         {isSendingEmail ?
             <>
@@ -288,16 +288,16 @@ export default function Completion() {
                     </Button>
                 </div>
 
-                <div className="mt-16 text-sm text-gray-500">
-                    <h3 className="font-semibold text-lg mb-2 text-gray-700">תנאי שימוש ומדיניות פרטיות</h3>
+                <div className="mt-16 text-sm text-muted-foreground">
+                    <h3 className="font-semibold text-lg mb-2 text-foreground/70">תנאי שימוש ומדיניות פרטיות</h3>
                     <p className="mb-4">
                         ברכישת אחד מהמוצרים, אתם מסכימים ל
-                        <Link to={createPageUrl("TermsOfService")} className="text-blue-600 hover:underline mx-1">תנאי השימוש</Link>
+                        <Link to={createPageUrl("TermsOfService")} className="text-primary hover:underline mx-1">תנאי השימוש</Link>
                         ול
-                        <Link to={createPageUrl("PrivacyPolicy")} className="text-blue-600 hover:underline mx-1">מדיניות הפרטיות</Link> שלנו.
+                        <Link to={createPageUrl("PrivacyPolicy")} className="text-primary hover:underline mx-1">מדיניות הפרטיות</Link> שלנו.
                     </p>
-                    <p className="mb-2 text-gray-700 font-medium">פירוט תמחור:</p>
-                    <ul className="list-disc list-inside mx-auto max-w-sm text-gray-600">
+                    <p className="mb-2 text-foreground/70 font-medium">פירוט תמחור:</p>
+                    <ul className="list-disc list-inside mx-auto max-w-sm text-muted-foreground">
                         {productCards.map((product) =>
             <li key={product.title} className="mb-1 text-right">
                                 {product.title}: <strong>{product.price}</strong>
@@ -307,7 +307,7 @@ export default function Completion() {
                             </li>
             )}
                     </ul>
-                    <p className="mt-4 text-gray-700">
+                    <p className="mt-4 text-foreground/70">
                         כל המחירים כוללים מע"מ כחוק.
                     </p>
                 </div>

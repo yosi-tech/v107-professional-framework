@@ -3,9 +3,9 @@ import React from "react";
 export default function MemberCard({ userName, planName }) {
   return (
     <div className="mb-10">
-      <div className="relative w-full max-w-md h-56 mx-auto bg-[#F3F4F6] rounded-2xl p-8 shadow-sm flex flex-col justify-between overflow-hidden">
+      <div className="relative w-full max-w-md h-56 mx-auto bg-secondary rounded-3xl p-8 shadow-sm flex flex-col justify-between overflow-hidden">
         {/* Decorative blur */}
-        <div className="absolute -right-12 -top-12 w-48 h-48 bg-[#FF8F00]/5 rounded-full blur-3xl" />
+        <div className="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
 
         {/* Top row */}
         <div className="flex justify-between items-start relative z-10">
@@ -32,7 +32,7 @@ export default function MemberCard({ userName, planName }) {
         </div>
 
         {/* Orange accent line */}
-        <div className="absolute bottom-0 right-0 w-32 h-1 bg-[#FF8F00]" />
+        <div className="absolute bottom-0 right-0 w-32 h-1 bg-primary" />
       </div>
     </div>
   );

@@ -17,43 +17,43 @@ export default function OrderSummary({
   return (
     <div className="sticky top-32 space-y-6">
       {/* Order Summary Card */}
-      <section className="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+      <section className="bg-white p-8 rounded-3xl shadow-sm border border-border/50">
         <h3 className="text-lg font-bold mb-6">
           {language === 'he' ? 'סיכום הזמנה' : 'Order Summary'}
         </h3>
         <div className="space-y-4">
           {/* Product */}
-          <div className="flex justify-between items-center py-3 border-b border-slate-100">
-            <span className="text-slate-500">{productTitle}</span>
+          <div className="flex justify-between items-center py-3 border-b border-border/50">
+            <span className="text-muted-foreground">{productTitle}</span>
             <span className="font-bold">{originalPrice}₪</span>
           </div>
 
           {/* Express */}
           {isExpress && (
-            <div className="flex justify-between items-center py-3 border-b border-slate-100">
-              <span className="text-slate-500 flex items-center gap-1.5">
-                <Zap className="w-4 h-4 text-orange-500" />
+            <div className="flex justify-between items-center py-3 border-b border-border/50">
+              <span className="text-muted-foreground flex items-center gap-1.5">
+                <Zap className="w-4 h-4 text-primary" />
                 {language === 'he' ? 'אספקה מואצת' : 'Express Delivery'}
               </span>
-              <span className="text-[#FF8F00] font-medium">
+              <span className="text-primary font-medium">
                 {language === 'he' ? 'כלול' : 'Included'}
               </span>
             </div>
           )}
 
           {/* Booster */}
-          <div className="flex justify-between items-center py-3 border-b border-slate-100">
-            <span className="text-slate-500">
+          <div className="flex justify-between items-center py-3 border-b border-border/50">
+            <span className="text-muted-foreground">
               {language === 'he' ? 'גישה ל-Booster' : 'Booster Access'}
             </span>
-            <span className="text-[#FF8F00] font-medium">
+            <span className="text-primary font-medium">
               {language === 'he' ? 'כלול' : 'Included'}
             </span>
           </div>
 
           {/* Coupon discount */}
           {appliedCoupon && (
-            <div className="flex justify-between items-center py-3 border-b border-slate-100">
+            <div className="flex justify-between items-center py-3 border-b border-border/50">
               <span className="text-green-600 flex items-center gap-1.5">
                 <Tag className="w-4 h-4" />
                 {language === 'he' ? 'הנחת קופון' : 'Coupon Discount'}
@@ -63,8 +63,8 @@ export default function OrderSummary({
           )}
 
           {/* VAT */}
-          <div className="flex justify-between items-center py-3 border-b border-slate-100">
-            <span className="text-slate-500">
+          <div className="flex justify-between items-center py-3 border-b border-border/50">
+            <span className="text-muted-foreground">
               {language === 'he' ? 'מע״מ (18%)' : 'VAT (18%)'}
             </span>
             <span className="font-bold">{vatAmount.toFixed(2)}₪</span>
@@ -75,12 +75,12 @@ export default function OrderSummary({
             <span className="text-xl font-black">
               {language === 'he' ? 'סה״כ לתשלום' : 'Total'}
             </span>
-            <span className="text-2xl font-black text-[#FF8F00]">{price}₪</span>
+            <span className="text-2xl font-black text-primary">{price}₪</span>
           </div>
 
           {/* Delivery */}
           {deliveryText && (
-            <div className="text-sm text-slate-500 pt-2 flex items-center gap-2">
+            <div className="text-sm text-muted-foreground pt-2 flex items-center gap-2">
               <Clock className="w-4 h-4" />
               {deliveryText}
             </div>
@@ -89,14 +89,14 @@ export default function OrderSummary({
       </section>
 
       {/* Security Badge */}
-      <section className="bg-[#FF8F00]/5 p-6 rounded-xl border border-[#FF8F00]/10">
+      <section className="bg-primary/5 p-6 rounded-3xl border border-primary/10">
         <div className="flex gap-4">
-          <ShieldCheck className="w-8 h-8 text-[#FF8F00] flex-shrink-0" />
+          <ShieldCheck className="w-8 h-8 text-primary flex-shrink-0" />
           <div>
-            <h4 className="font-bold text-[#FF8F00] mb-1">
+            <h4 className="font-bold text-primary mb-1">
               {language === 'he' ? 'רכישה בטוחה ב-100%' : '100% Secure Purchase'}
             </h4>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               {language === 'he'
                 ? 'הפרטים שלך מוצפנים בפרוטוקול SSL המתקדם ביותר. אנחנו לא שומרים את פרטי הכרטיס במערכת שלנו.'
                 : 'Your details are encrypted with the most advanced SSL protocol. We do not store your card details in our system.'}
