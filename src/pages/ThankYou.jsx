@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getConsultationRequestEmailTemplate } from "@/components/email/ConsultationRequestTemplate";
 import { useTranslation } from "@/components/i18n/useTranslation";
+import CheckoutProgressBar from "@/components/checkout/CheckoutProgressBar";
 
 export default function ThankYou() {
   const { t, language } = useTranslation();
@@ -79,6 +80,7 @@ export default function ThankYou() {
   return (
     <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
       <div className="max-w-4xl mx-auto text-center">
+        <CheckoutProgressBar currentStep="done" />
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8">
           <CheckCircle className="w-12 h-12 text-green-600" />
         </div>

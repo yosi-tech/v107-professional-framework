@@ -14,6 +14,7 @@ import { useTranslation } from "@/components/i18n/useTranslation";
 import MemberCard from "@/components/payment/MemberCard";
 import OrderSummary from "@/components/payment/OrderSummary";
 import TrustBadges from "@/components/home/TrustBadges";
+import CheckoutProgressBar from "@/components/checkout/CheckoutProgressBar";
 
 const ReportInfoModal = ({ isOpen, onClose }) => {
   const { language } = useTranslation();
@@ -363,6 +364,8 @@ export default function Payment() {
   return (
     <div className="min-h-screen bg-slate-50 pt-12 pb-20 px-4 md:px-8" dir={language === 'he' ? 'rtl' : 'ltr'}>
       <div className="max-w-5xl mx-auto">
+        <CheckoutProgressBar currentStep="payment" />
+
         {/* Page Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-black text-slate-900 tracking-tighter mb-2">

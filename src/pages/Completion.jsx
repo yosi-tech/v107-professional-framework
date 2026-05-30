@@ -15,6 +15,7 @@ import {
 
 import { getAbandonmentEmailTemplate } from '@/components/email/AbandonmentEmailTemplate';
 import FAQSection from '@/components/home/FAQSection';
+import CheckoutProgressBar from '@/components/checkout/CheckoutProgressBar';
 
 function ReportInfoModal({ isOpen, onClose }) {
   return (
@@ -201,6 +202,7 @@ export default function Completion() {
                 </div>
                 
                 <div className="pt-16 sm:pt-0 text-center">
+                    <CheckoutProgressBar currentStep="choose" />
                     <Award className="w-16 h-16 mx-auto text-yellow-500 mb-4" />
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">כל הכבוד! סיימת את השאלון.</h1>
                     <p className="text-base sm:text-lg text-gray-600 mb-6">
