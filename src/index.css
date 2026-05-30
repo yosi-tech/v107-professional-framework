@@ -93,7 +93,7 @@
   }
 
   .hero h1 {
-    @apply text-5xl lg:text-7xl leading-[1.05] font-900 tracking-tight;
+    @apply text-5xl lg:text-7xl leading-[1.05] font-black tracking-tight;
   }
 
   .hero h1 span {
