@@ -44,13 +44,13 @@ export default function Home() {
 
             <div className="flex flex-row-reverse gap-4 mb-12">
               <Link to={createPageUrl("Questionnaire")}>
-                <button className="bg-accent text-white text-base font-bold px-9 py-4 rounded-2xl flex items-center gap-2 hover:shadow-xl hover:shadow-accent/20 hover:scale-[1.01] transition-all duration-300">
+                <button className="bg-gradient-to-r from-accent to-primary text-white text-base font-bold px-10 py-4 rounded-full flex items-center gap-2 hover:shadow-xl hover:shadow-accent/25 hover:scale-[1.01] transition-all duration-300 shadow-lg shadow-accent/20">
                   <span>התחל מיפוי אישי</span>
                   <ArrowLeft className="w-4 h-4" />
                 </button>
               </Link>
               <Link to={createPageUrl("About")}>
-                <button className="bg-white text-foreground px-8 py-4 rounded-2xl font-semibold border border-border/60 hover:border-primary/20 hover:shadow-md transition-all duration-300 shadow-sm">
+                <button className="bg-white text-foreground px-8 py-4 rounded-full font-semibold border border-border/60 hover:border-primary/20 hover:shadow-md transition-all duration-300 shadow-sm">
                   איך זה עובד?
                 </button>
               </Link>
@@ -86,7 +86,7 @@ export default function Home() {
       </section>
 
       {/* ===== SOCIAL PROOF BAR ===== */}
-      <section className="py-6 bg-white/60 backdrop-blur-sm border-y border-border/20">
+      <section className="py-6 bg-white border-y border-border/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-8 flex flex-wrap items-center justify-center gap-12 lg:gap-16 text-center">
           {[
             { value: `${userCount.toLocaleString()}+`, label: "משתמשים עברו את המבדק" },

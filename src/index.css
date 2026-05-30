@@ -65,13 +65,9 @@
     letter-spacing: -0.02em;
   }
 
-  button:not([class*="outline"]):not([class*="ghost"]):not([class*="secondary"]) {
-    @apply bg-gradient-to-r from-[#7C3AED] to-[#4338CA] text-white rounded-full border-none shadow-[0_14px_30px_rgba(124,58,237,0.28)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_18px_40px_rgba(124,58,237,0.36)];
-  }
-
-  button[class*="secondary"],
-  button[class*="outline"] {
-    @apply bg-white text-[#111827] border border-[#E5E7EB] shadow-[0_10px_25px_rgba(17,24,39,0.06)] transition-all duration-300 hover:shadow-[0_14px_35px_rgba(17,24,39,0.10)];
+  button {
+    transition-property: all;
+    transition-duration: 300ms;
   }
 }
 
@@ -168,17 +164,7 @@
   }
 }
 
-footer {
-  background: #F8FAFC !important;
-  color: #111827 !important;
-  border-top: 1px solid #E5E7EB;
-}
-
-footer a,
-footer p,
-footer span {
-  color: #4B5563 !important;
-}
+/* Footer styling handled in layout component */
 
 @media (max-width: 900px) {
   .hero {

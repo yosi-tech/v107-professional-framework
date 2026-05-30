@@ -49,7 +49,7 @@ export default function PricingCTA() {
               </ul>
 
               <Link to={createPageUrl("Questionnaire")}>
-                <button className="bg-accent text-white text-lg font-bold px-10 py-4.5 rounded-2xl hover:shadow-xl hover:shadow-accent/20 hover:scale-[1.01] transition-all duration-300 w-full md:w-max flex items-center justify-center gap-2">
+                <button className="bg-gradient-to-r from-accent to-primary text-white text-lg font-bold px-10 py-4 rounded-full hover:shadow-xl hover:shadow-accent/25 hover:scale-[1.01] transition-all duration-300 w-full md:w-max flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
                   <span>התחל מיפוי אישי</span>
                   <ArrowLeft className="w-5 h-5" />
                 </button>

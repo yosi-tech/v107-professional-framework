@@ -183,7 +183,7 @@ function AppLayout({ children }) {
           {/* Action buttons */}
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
             <Link to={createPageUrl("Questionnaire")}>
-              <button className="bg-accent text-accent-foreground py-2.5 px-6 rounded-xl text-sm font-semibold transition-all hover:opacity-90 hover:shadow-lg hover:shadow-accent/25">
+              <button className="bg-gradient-to-r from-accent to-primary text-white py-2.5 px-6 rounded-full text-sm font-semibold transition-all hover:opacity-90 hover:shadow-lg hover:shadow-accent/25">
                 {hasAbandonedQuestionnaire
                   ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
                   : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Assessment')
@@ -211,7 +211,7 @@ function AppLayout({ children }) {
           {/* Mobile CTA */}
           <div className="lg:hidden flex items-center gap-2 mr-auto">
             <Link to={createPageUrl("Questionnaire")}>
-              <button className="bg-accent text-accent-foreground text-xs px-4 py-2 rounded-lg font-semibold">
+              <button className="bg-gradient-to-r from-accent to-primary text-white text-xs px-4 py-2 rounded-full font-semibold">
                 {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך' : 'Continue') : (language === 'he' ? 'התחל' : 'Start')}
               </button>
             </Link>
@@ -235,7 +235,7 @@ function AppLayout({ children }) {
             )}
             <div className="flex flex-col gap-2 pt-3 mt-2 border-t border-border">
               <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="w-full bg-accent text-accent-foreground py-2.5 rounded-xl text-sm font-semibold">
+                <button className="w-full bg-gradient-to-r from-accent to-primary text-white py-2.5 rounded-full text-sm font-semibold">
                   {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך שאלון' : 'Continue') : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Assessment')}
                 </button>
               </Link>
@@ -262,33 +262,33 @@ function AppLayout({ children }) {
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#312E81] text-white/60 w-full py-16 pb-24 xl:pb-16">
+      <footer className="bg-[#F8FAFC] text-[#4B5563] border-t border-[#E5E7EB] w-full py-16 pb-24 xl:pb-16">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-              <span className="text-xl font-black tracking-tighter text-white flex items-center">
-                107<span className="text-primary">V</span>
-              </span>
+              <span className="text-xl font-black tracking-tighter text-[#111827] flex items-center">
+                   107<span className="text-primary">V</span>
+                 </span>
             </Link>
             <nav className="flex flex-wrap gap-6 justify-center">
-              <Link to={createPageUrl("Home")} className="text-sm transition-colors hover:text-white">{t('layout.nav_home')}</Link>
-              <Link to={createPageUrl("About")} className="text-sm transition-colors hover:text-white">{t('layout.nav_about')}</Link>
-              <Link to={createPageUrl("Articles")} className="text-sm transition-colors hover:text-white">{t('layout.nav_articles')}</Link>
-              <Link to={createPageUrl("TermsOfService")} className="text-sm transition-colors hover:text-white">{t('layout.footer_terms')}</Link>
-              <Link to={createPageUrl("PrivacyPolicy")} className="text-sm transition-colors hover:text-white">{language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy'}</Link>
-              <Link to={createPageUrl("AccessibilityStatement")} className="text-sm transition-colors hover:text-white">{language === 'he' ? 'נגישות' : 'Accessibility'}</Link>
-              <Link to="/Contact" className="text-sm transition-colors hover:text-white">{language === 'he' ? 'צור קשר' : 'Contact Us'}</Link>
-            </nav>
-            <div className="text-sm">
-              © 2026 v107. {language === 'he' ? 'כל הזכויות שמורות.' : 'All rights reserved.'}
-            </div>
+               <Link to={createPageUrl("Home")} className="text-sm transition-colors hover:text-[#111827]">{t('layout.nav_home')}</Link>
+               <Link to={createPageUrl("About")} className="text-sm transition-colors hover:text-[#111827]">{t('layout.nav_about')}</Link>
+               <Link to={createPageUrl("Articles")} className="text-sm transition-colors hover:text-[#111827]">{t('layout.nav_articles')}</Link>
+               <Link to={createPageUrl("TermsOfService")} className="text-sm transition-colors hover:text-[#111827]">{t('layout.footer_terms')}</Link>
+               <Link to={createPageUrl("PrivacyPolicy")} className="text-sm transition-colors hover:text-[#111827]">{language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy'}</Link>
+               <Link to={createPageUrl("AccessibilityStatement")} className="text-sm transition-colors hover:text-[#111827]">{language === 'he' ? 'נגישות' : 'Accessibility'}</Link>
+               <Link to="/Contact" className="text-sm transition-colors hover:text-[#111827]">{language === 'he' ? 'צור קשר' : 'Contact Us'}</Link>
+             </nav>
+             <div className="text-sm text-[#4B5563]">
+               © 2026 v107. {language === 'he' ? 'כל הזכויות שמורות.' : 'All rights reserved.'}
+             </div>
           </div>
 
-          <div className="border-t border-white/10 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-start gap-6">
-              <div className="flex-1 max-w-sm">
-                <h4 className="text-white font-semibold mb-3 text-sm">{t('layout.footer_newsletter')}</h4>
-                <p className="text-xs mb-3 text-white/50">{t('layout.footer_newsletter_desc')}</p>
+          <div className="border-t border-[#E5E7EB] pt-8">
+             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+               <div className="flex-1 max-w-sm">
+                 <h4 className="text-[#111827] font-semibold mb-3 text-sm">{t('layout.footer_newsletter')}</h4>
+                 <p className="text-xs mb-3 text-[#6B7280]">{t('layout.footer_newsletter_desc')}</p>
                 <form onSubmit={async (e) => {
                   e.preventDefault();
                   const email = e.target.email.value;
@@ -305,18 +305,18 @@ function AppLayout({ children }) {
                   }
                 }} className="flex gap-2">
                   <input
-                    type="email" name="email"
-                    placeholder={t('layout.footer_newsletter_placeholder')}
-                    required
-                    className="flex-1 bg-white/10 border border-white/10 text-white placeholder:text-white/30 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  />
-                  <button type="submit" className="bg-accent text-white px-5 py-2 rounded-lg font-semibold text-sm whitespace-nowrap hover:opacity-90 transition-all">
-                    {t('layout.footer_newsletter_button')}
-                  </button>
+                     type="email" name="email"
+                     placeholder={t('layout.footer_newsletter_placeholder')}
+                     required
+                     className="flex-1 bg-white border border-[#E5E7EB] text-[#111827] placeholder:text-[#6B7280] text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                   />
+                   <button type="submit" className="bg-accent text-white px-5 py-2 rounded-lg font-semibold text-sm whitespace-nowrap hover:opacity-90 transition-all">
+                     {t('layout.footer_newsletter_button')}
+                   </button>
                 </form>
               </div>
               <div className="text-sm space-y-1 text-start md:text-end">
-                <p className="text-white/50">{language === 'he' ? 'צריך עזרה?' : 'Need help?'}</p>
+                <p className="text-[#6B7280]">{language === 'he' ? 'צריך עזרה?' : 'Need help?'}</p>
                 <Link to="/Contact" className="text-primary hover:underline font-medium">
                   {language === 'he' ? 'צרו קשר כאן' : 'Contact us here'}
                 </Link>
@@ -325,13 +325,13 @@ function AppLayout({ children }) {
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-xs text-white/25 select-none">
-              V107™ Professional Framework | © 2026 V107 Global Strategist | Registered Intellectual Property
-            </p>
-            <p className="text-xs text-white/25 mt-1">
-              {language === 'he' ? 'האתר נבנה על ידי צוות פיתוח V107' : 'Website built by V107 development team'}
-            </p>
-          </div>
+             <p className="text-xs text-[#9CA3AF] select-none">
+               V107™ Professional Framework | © 2026 V107 Global Strategist | Registered Intellectual Property
+             </p>
+             <p className="text-xs text-[#9CA3AF] mt-1">
+               {language === 'he' ? 'האתר נבנה על ידי צוות פיתוח V107' : 'Website built by V107 development team'}
+             </p>
+           </div>
         </div>
       </footer>
     </div>
