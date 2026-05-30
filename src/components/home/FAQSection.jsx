@@ -35,7 +35,7 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section className="py-24 bg-background" dir="rtl">
+    <section className="py-28 bg-secondary/20" dir="rtl">
       <div className="max-w-3xl mx-auto px-8">
         <div className="text-center mb-14">
           <span className="text-primary font-semibold text-sm tracking-wide mb-3 block">שאלות ותשובות</span>
@@ -44,7 +44,7 @@ export default function FAQSection() {
         </div>
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, i) => (
-            <AccordionItem key={i} value={`item-${i}`} className="bg-white rounded-2xl border border-border px-6 shadow-sm">
+            <AccordionItem key={i} value={`item-${i}`} className="bg-white rounded-2xl border border-border/50 px-6 shadow-sm hover:shadow-md transition-shadow">
               <AccordionTrigger className="text-right font-semibold text-foreground hover:no-underline py-5 text-base">
                 {faq.q}
               </AccordionTrigger>
