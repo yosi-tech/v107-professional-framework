@@ -140,7 +140,7 @@ function AppLayout({ children }) {
     <div className="min-h-screen bg-background font-heebo" dir={language === 'he' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 backdrop-blur-2xl shadow-sm shadow-black/[0.03]' : 'bg-white/50 backdrop-blur-xl'}`}>
-        <div className="flex items-center w-full px-6 lg:px-10 py-3.5 max-w-7xl mx-auto">
+        <div className="flex items-center w-full py-3.5 saas-container">
           {/* Mobile Hamburger */}
           <div className="lg:hidden flex items-center gap-2 order-first">
             <button
@@ -263,7 +263,7 @@ function AppLayout({ children }) {
 
       {/* Footer */}
       <footer className="bg-[#F8FAFC] text-[#4B5563] border-t border-[#E5E7EB] w-full py-16 pb-24 xl:pb-16">
-        <div className="max-w-7xl mx-auto px-8">
+        <div className="saas-container">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
               <span className="text-xl font-black tracking-tighter text-[#111827] flex items-center">

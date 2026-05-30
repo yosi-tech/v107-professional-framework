@@ -58,7 +58,7 @@ export default function ArticlesPage() {
                 <div className="absolute bottom-0 left-0 w-[350px] h-[350px] -translate-x-1/3 translate-y-1/4 opacity-35 pointer-events-none">
                     <InsightOrb className="w-full h-full" />
                 </div>
-                <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col items-center relative z-10">
+                <div className="saas-container flex flex-col items-center relative z-10">
                     <div className="w-16 h-16 rounded-full bg-[#FF8F00] flex items-center justify-center mb-8 shadow-lg">
                         <Newspaper className="w-8 h-8 text-white" />
                     </div>
@@ -72,7 +72,7 @@ export default function ArticlesPage() {
             </header>
 
             {/* Main Content */}
-            <main className="pb-24 max-w-7xl mx-auto px-6 md:px-12 mt-16">
+            <main className="pb-24 saas-container mt-16">
                 {isLoading ? (
                     <div className="flex justify-center items-center h-64">
                         <Loader2 className="w-12 h-12 text-[#FF8F00] animate-spin" />

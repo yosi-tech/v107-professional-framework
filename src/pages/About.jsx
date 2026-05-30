@@ -8,7 +8,7 @@ export default function About() {
     <main className="font-heebo" dir="rtl">
 
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-8 py-24 text-center relative overflow-hidden">
+      <section className="saas-container py-24 text-center relative overflow-hidden">
         <div className="absolute top-0 left-0 w-[500px] h-[500px] -translate-x-1/3 -translate-y-1/4 opacity-60 pointer-events-none">
           <InsightOrb className="w-full h-full" />
         </div>
@@ -34,7 +34,7 @@ export default function About() {
 
       {/* What is V107 */}
       <section className="bg-white py-32 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-8 relative">
+        <div className="saas-container relative">
           <div className="text-center mb-20">
             <span className="text-primary font-semibold tracking-wide text-sm mb-4 block">מה זה V107</span>
             <h2 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-foreground">
@@ -78,9 +78,9 @@ export default function About() {
 
       {/* Process */}
       <section className="py-32 bg-background">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-16">
-            <span className="text-primary font-semibold text-sm tracking-wide mb-3 block">התהליך</span>
+        <div className="saas-container">
+        <div className="text-center mb-16">
+          <span className="text-primary font-semibold text-sm tracking-wide mb-3 block">התהליך</span>
             <h2 className="text-3xl font-extrabold text-foreground">תהליך העבודה</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
@@ -106,7 +106,7 @@ export default function About() {
 
       {/* Bento Grid */}
       <section className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-8">
+        <div className="saas-container">
           <div className="text-center mb-16">
             <span className="text-primary font-semibold text-sm tracking-wide mb-3 block">הדוח שלך</span>
             <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground">פרופיל אישי מבוסס נתונים</h2>
@@ -168,8 +168,8 @@ export default function About() {
 
       {/* The Booster */}
       <section className="py-32 overflow-hidden bg-background">
-        <div className="max-w-7xl mx-auto px-8 relative">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
+        <div className="saas-container relative">
+        <div className="flex flex-col lg:flex-row gap-16 items-center">
             <div className="flex-1 order-2 lg:order-1">
               <span className="bg-primary text-white font-bold px-5 py-2 rounded-xl text-sm mb-8 inline-block tracking-wide shadow-lg shadow-primary/20">THE BOOSTER</span>
               <h2 className="text-5xl md:text-6xl font-extrabold mb-8 leading-tight text-foreground">
@@ -222,7 +222,7 @@ export default function About() {
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGJhvzqsvjJ-w1z4z9Fkytwoo3IFe0-nDpChs9JxlXIxb6jpNHRt0MPfCRVrUxm2fAweLZNNZ6fsaLbGrFLSeZG3w7wHQC6hI_ufr0SdteUI4mGdRvy8cUEvdPulwsbCkRoQa95KDFk5_LLKZwSw3r3DiRJAxadn3gpE7ZojS-Zg2KKexceFxuTMGBmKM4P6s4Qg6rIrX3JJK6_24akrJRBnIKDF6W5nbSZv3DpSRnNuAYyv9mnro1n7sMki4Z9vdArPHvbAASt3H8"
           />
         </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-8">
+        <div className="relative z-10 saas-container max-w-4xl">
           <h2 className="text-5xl md:text-7xl font-extrabold mb-8">מוכן לחשוף את הפוטנציאל האמיתי שלך?</h2>
           <div className="mb-10 inline-block">
             <span className="text-2xl md:text-3xl font-bold bg-white/5 px-8 py-4 rounded-2xl border border-white/10 backdrop-blur-sm inline-block">

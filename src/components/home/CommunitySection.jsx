@@ -12,7 +12,7 @@ const avatars = [
 export default function CommunitySection() {
   return (
     <section className="py-28 bg-[#F8FAFC]" dir="rtl">
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="saas-container">
         <div className="flex flex-col lg:flex-row gap-14 items-center">
           {/* Content */}
           <div className="flex-1 text-right">

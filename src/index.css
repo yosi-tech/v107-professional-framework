@@ -54,8 +54,8 @@
       #F8FAFC;
     color: var(--text);
     font-family: var(--font-heebo);
-    border-left: 32px solid #F8FAFC;
-    border-right: 32px solid #F8FAFC;
+    border-left: 0;
+    border-right: 0;
   }
 
   * {
@@ -142,6 +142,23 @@
 }
 
 @layer utilities {
+  .saas-container {
+    @apply w-full mx-auto px-6 sm:px-8 lg:px-12;
+    max-width: 1180px;
+  }
+
+  @media (min-width: 1280px) {
+    .saas-container {
+      max-width: 1200px;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .saas-container {
+      max-width: 1240px;
+    }
+  }
+
   .bg-gradient-accent {
     @apply bg-gradient-to-r from-[#7C3AED] to-[#4338CA];
   }

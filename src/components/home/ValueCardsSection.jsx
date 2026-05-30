@@ -26,7 +26,7 @@ const cards = [
 export default function ValueCardsSection() {
   return (
     <section className="py-32 bg-[#EEF2FF]/40" dir="rtl">
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="saas-container">
         <div className="text-center mb-20">
           <span className="text-primary font-semibold text-sm tracking-wide mb-4 block uppercase">מה תקבלו</span>
           <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-5 text-foreground">

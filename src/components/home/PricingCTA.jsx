@@ -13,7 +13,7 @@ const features = [
 export default function PricingCTA() {
   return (
     <section className="py-32 px-6 lg:px-8 bg-background" dir="rtl">
-      <div className="max-w-5xl mx-auto">
+      <div className="saas-container max-w-5xl">
         <div className="relative bg-white rounded-[1.75rem] border border-border/30 shadow-xl shadow-primary/[0.03] overflow-hidden">
           {/* Background decoration */}
           <div className="absolute top-0 left-0 w-80 h-80 bg-gradient-to-br from-[#EEF2FF] to-[#F5F3FF] rounded-full blur-[80px] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70" />

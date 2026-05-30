@@ -25,7 +25,7 @@ export default function Home() {
         <div className="absolute top-32 right-[15%] w-[600px] h-[600px] bg-primary/[0.025] rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-20 left-[10%] w-[500px] h-[500px] bg-accent/[0.02] rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 lg:gap-24 items-center relative z-10">
+        <div className="saas-container grid lg:grid-cols-2 gap-20 lg:gap-24 items-center relative z-10">
           {/* Text side */}
           <div className="text-right">
             <div className="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-primary/8 text-primary font-semibold px-5 py-2 rounded-full text-sm mb-10 shadow-sm">
@@ -87,7 +87,7 @@ export default function Home() {
 
       {/* ===== SOCIAL PROOF BAR ===== */}
       <section className="py-6 bg-white border-y border-border/20 shadow-sm">
-        <div className="max-w-7xl mx-auto px-8 flex flex-wrap items-center justify-center gap-12 lg:gap-16 text-center">
+        <div className="saas-container flex flex-wrap items-center justify-center gap-12 lg:gap-16 text-center">
           {[
             { value: `${userCount.toLocaleString()}+`, label: "משתמשים עברו את המבדק" },
             { value: "107", label: "נקודות ניתוח" },

@@ -28,7 +28,7 @@ const steps = [
 export default function HowItWorksSection() {
   return (
     <section className="py-32 bg-background" dir="rtl">
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="saas-container">
         <div className="text-center mb-20">
           <span className="text-primary font-semibold text-sm tracking-wide mb-4 block uppercase">איך זה עובד</span>
           <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">

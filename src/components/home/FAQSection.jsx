@@ -36,7 +36,7 @@ const faqs = [
 export default function FAQSection() {
   return (
     <section className="py-32 bg-[#EEF2FF]/30" dir="rtl">
-      <div className="max-w-3xl mx-auto px-8">
+      <div className="saas-container max-w-3xl">
         <div className="text-center mb-16">
           <span className="text-primary font-semibold text-sm tracking-wide mb-4 block uppercase">שאלות ותשובות</span>
           <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight mb-4 text-foreground">שאלות נפוצות</h2>
