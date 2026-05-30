@@ -14,6 +14,7 @@ import {
 '@/components/ui/dialog';
 
 import { getAbandonmentEmailTemplate } from '@/components/email/AbandonmentEmailTemplate';
+import FAQSection from '@/components/home/FAQSection';
 
 function ReportInfoModal({ isOpen, onClose }) {
   return (
@@ -256,6 +257,8 @@ export default function Completion() {
                 </div>
 
                 </div>
+
+                <FAQSection />
 
                 <div className="mt-12 p-6 bg-white rounded-xl shadow-lg border-2 border-dashed border-gray-300">
                     <h3 className="text-xl font-semibold text-gray-800 mb-3">לא בטוח/ה עדיין?</h3>

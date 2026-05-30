@@ -465,7 +465,7 @@ function AppLayout({ children }) {
               <button className="bg-[#FF8F00] text-white py-2.5 px-6 rounded-full font-bold transition-all hover:scale-105">
                 {hasAbandonedQuestionnaire
                   ? (language === 'he' ? 'המשך שאלון' : 'Continue Questionnaire')
-                  : t('layout.start_questionnaire_btn')
+                  : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Personal Mapping')
                 }
               </button>
             </Link>
@@ -505,7 +505,7 @@ function AppLayout({ children }) {
             <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
               <Link to={createPageUrl("Questionnaire")} onClick={() => setIsMobileMenuOpen(false)}>
                 <button className="w-full bg-[#FF8F00] text-white py-2.5 rounded-full font-bold">
-                  {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך שאלון' : 'Continue') : t('layout.start_questionnaire_btn')}
+                  {hasAbandonedQuestionnaire ? (language === 'he' ? 'המשך שאלון' : 'Continue') : (language === 'he' ? 'התחל מיפוי אישי' : 'Start Personal Mapping')}
                 </button>
               </Link>
               {!isLoadingUser && !user && (

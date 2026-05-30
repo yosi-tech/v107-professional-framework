@@ -13,6 +13,7 @@ import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X, Tag, 
 import { useTranslation } from "@/components/i18n/useTranslation";
 import MemberCard from "@/components/payment/MemberCard";
 import OrderSummary from "@/components/payment/OrderSummary";
+import TrustBadges from "@/components/home/TrustBadges";
 
 const ReportInfoModal = ({ isOpen, onClose }) => {
   const { language } = useTranslation();
@@ -372,6 +373,7 @@ export default function Payment() {
               ? 'השלם את רכישת החבילה שלך ל-v107 AI והתחל לעצב את העתיד המקצועי שלך עוד היום.'
               : 'Complete your v107 AI package purchase and start shaping your professional future today.'}
           </p>
+          <TrustBadges />
         </div>
 
         {!user && (

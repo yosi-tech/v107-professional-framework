@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Users, Rocket, TrendingUp, ClipboardList } from "lucide-react";
+import TrustBadges from "@/components/home/TrustBadges";
+import FAQSection from "@/components/home/FAQSection";
 
 export default function Home() {
   const userCount = 693;
@@ -28,7 +30,7 @@ export default function Home() {
             <div className="flex flex-row-reverse gap-4">
               <Link to={createPageUrl("Questionnaire")}>
                 <button className="bg-[#FF8F00] text-white text-lg font-bold px-10 py-5 rounded-3xl flex items-center gap-2 hover:scale-105 transition-transform">
-                  <span>לחץ כאן למילוי השאלון</span>
+                  <span>התחל מיפוי אישי</span>
                   <span>←</span>
                 </button>
               </Link>
@@ -68,6 +70,7 @@ export default function Home() {
                 <div className="bg-[#FF8F00] w-3/4 h-full rounded-full"></div>
               </div>
             </div>
+            <TrustBadges />
           </div>
         </div>
       </section>
@@ -159,7 +162,7 @@ export default function Home() {
               <div className="flex flex-col gap-4">
                 <Link to={createPageUrl("Questionnaire")}>
                   <button className="bg-[#FF8F00] text-white text-xl font-bold px-12 py-5 rounded-2xl hover:shadow-lg hover:shadow-[#FF8F00]/20 active:scale-95 transition-all w-full md:w-max">
-                   לחץ כאן למילוי השאלון
+                   התחל מיפוי אישי
                   </button>
                 </Link>
                 <p className="text-slate-400 text-sm flex items-center gap-2 justify-end">
@@ -178,6 +181,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ===== FAQ ===== */}
+      <FAQSection />
 
       {/* ===== COMMUNITY ===== */}
       <section className="py-24 bg-[#FF8F00]">
