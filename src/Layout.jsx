@@ -139,7 +139,7 @@ function AppLayout({ children }) {
   return (
     <div className="min-h-screen bg-background font-heebo" dir={language === 'he' ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-xl shadow-sm' : 'bg-white/60 backdrop-blur-md'}`}>
+      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 backdrop-blur-2xl shadow-sm shadow-black/[0.03]' : 'bg-white/50 backdrop-blur-xl'}`}>
         <div className="flex items-center w-full px-6 lg:px-10 py-3.5 max-w-7xl mx-auto">
           {/* Mobile Hamburger */}
           <div className="lg:hidden flex items-center gap-2 order-first">
@@ -262,7 +262,7 @@ function AppLayout({ children }) {
       </main>
 
       {/* Footer */}
-      <footer className="bg-foreground text-white/70 w-full py-16 pb-24 xl:pb-16">
+      <footer className="bg-[#312E81] text-white/60 w-full py-16 pb-24 xl:pb-16">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2 hover:opacity-90 transition-opacity">
@@ -325,10 +325,10 @@ function AppLayout({ children }) {
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-xs text-white/30 select-none">
+            <p className="text-xs text-white/25 select-none">
               V107™ Professional Framework | © 2026 V107 Global Strategist | Registered Intellectual Property
             </p>
-            <p className="text-xs text-white/30 mt-1">
+            <p className="text-xs text-white/25 mt-1">
               {language === 'he' ? 'האתר נבנה על ידי צוות פיתוח V107' : 'Website built by V107 development team'}
             </p>
           </div>

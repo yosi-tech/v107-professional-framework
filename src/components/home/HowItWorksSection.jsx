@@ -27,33 +27,29 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-28 bg-background" dir="rtl">
+    <section className="py-32 bg-background" dir="rtl">
       <div className="max-w-7xl mx-auto px-8">
-        <div className="text-center mb-16">
-          <span className="text-primary font-semibold text-sm tracking-wide mb-3 block">איך זה עובד</span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 text-foreground">
+        <div className="text-center mb-20">
+          <span className="text-primary font-semibold text-sm tracking-wide mb-4 block uppercase">איך זה עובד</span>
+          <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
             שלושה צעדים לבהירות מקצועית
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {steps.map((step, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+          {steps.map((step) => (
             <div key={step.num} className="relative group">
-              {/* Connector line */}
-              {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 -left-4 w-8 h-px bg-border" />
-              )}
-              <div className="bg-white p-8 rounded-3xl border border-border/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full flex flex-col text-right">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                    <step.icon className="w-7 h-7" />
+              <div className="bg-white p-9 lg:p-10 rounded-[1.25rem] border border-border/30 hover:border-primary/10 hover:shadow-xl hover:shadow-primary/[0.04] transition-all duration-500 h-full flex flex-col text-right">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="w-14 h-14 rounded-2xl bg-[#EEF2FF] text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm">
+                    <step.icon className="w-6 h-6" />
                   </div>
-                  <span className="text-5xl font-black text-border/60 group-hover:text-primary/10 transition-colors">{step.num}</span>
+                  <span className="text-5xl font-black text-border/40 group-hover:text-primary/8 transition-colors duration-500 select-none">{step.num}</span>
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
                 <p className="text-muted-foreground leading-relaxed flex-1">{step.desc}</p>
-                <div className="mt-6 pt-4 border-t border-border/50">
-                  <span className="text-sm text-primary font-medium">{step.meta}</span>
+                <div className="mt-8 pt-5 border-t border-border/30">
+                  <span className="text-sm text-primary font-semibold">{step.meta}</span>
                 </div>
               </div>
             </div>
