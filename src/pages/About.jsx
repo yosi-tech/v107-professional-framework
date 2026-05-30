@@ -1,13 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import InsightOrb from "@/components/home/InsightOrb";
 
 export default function About() {
   return (
     <main className="font-heebo" dir="rtl">
 
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-8 py-24 text-center">
+      <section className="max-w-7xl mx-auto px-8 py-24 text-center relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] -translate-x-1/3 -translate-y-1/4 opacity-60 pointer-events-none">
+          <InsightOrb className="w-full h-full" />
+        </div>
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] translate-x-1/4 translate-y-1/4 opacity-40 pointer-events-none">
+          <InsightOrb className="w-full h-full" />
+        </div>
+        <div className="relative z-10">
         <span className="text-primary font-semibold text-sm tracking-wide mb-3 block">הכירו את V107</span>
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 text-foreground">
           איך זה עובד?
@@ -20,6 +28,7 @@ export default function About() {
             allow="autoplay"
             allowFullScreen
           ></iframe>
+        </div>
         </div>
       </section>
 

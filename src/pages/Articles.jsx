@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Loader2, Newspaper, ArrowLeft, ChevronLeft } from 'lucide-react';
 import { useTranslation } from "@/components/i18n/useTranslation";
+import InsightOrb from "@/components/home/InsightOrb";
 
 export default function ArticlesPage() {
     const [articles, setArticles] = useState([]);
@@ -50,8 +51,14 @@ export default function ArticlesPage() {
     return (
         <div dir="rtl">
             {/* Header */}
-            <header className="pt-32 pb-24 text-center bg-slate-50 text-slate-900">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col items-center">
+            <header className="pt-32 pb-24 text-center bg-slate-50 text-slate-900 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[450px] h-[450px] translate-x-1/3 -translate-y-1/4 opacity-50 pointer-events-none">
+                    <InsightOrb className="w-full h-full" />
+                </div>
+                <div className="absolute bottom-0 left-0 w-[350px] h-[350px] -translate-x-1/3 translate-y-1/4 opacity-35 pointer-events-none">
+                    <InsightOrb className="w-full h-full" />
+                </div>
+                <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col items-center relative z-10">
                     <div className="w-16 h-16 rounded-full bg-[#FF8F00] flex items-center justify-center mb-8 shadow-lg">
                         <Newspaper className="w-8 h-8 text-white" />
                     </div>
