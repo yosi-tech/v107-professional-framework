@@ -9,7 +9,7 @@ import {
   FileText, Eye, Search, Loader2, Calendar, User as UserIcon, Mail,
   CheckCircle, Clock, AlertCircle, Trash2, FileSearch, RefreshCw, Send,
   DollarSign, Users, AlertTriangle, BarChart3, Edit3, Link2,
-  ShoppingCart, Download, Rocket
+  ShoppingCart, Download, Rocket, TrendingUp
 } from "lucide-react";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
@@ -30,6 +30,7 @@ import AdvancedAnalyticsTab from "@/components/admin/AdvancedAnalyticsTab";
 import UsersTab from "@/components/admin/UsersTab";
 import BoostersTab from "@/components/admin/BoostersTab";
 import PaymentsTab from "@/components/admin/PaymentsTab";
+import SiteAnalyticsTab from "@/components/admin/SiteAnalyticsTab";
 import {
   ViewResponseDialog, ViewEmailsDialog, LanguageDialog,
   SimulationDialog, TemplateSelectionDialog, BoosterRegistrationDialog
@@ -396,6 +397,7 @@ export default function AdminReports() {
             <TabsTrigger value="content-management" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2"><span>ניהול תוכן</span><Edit3 className="w-3 h-3" /></TabsTrigger>
             <TabsTrigger value="scheduled-tasks" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2"><span>תזמונים</span><Clock className="w-3 h-3" /></TabsTrigger>
             <TabsTrigger value="payments" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2"><span>תשלומים ({paymentOrders.length})</span><ShoppingCart className="w-3 h-3" /></TabsTrigger>
+            <TabsTrigger value="site-analytics" className="flex items-center gap-1 flex-row-reverse text-xs px-3 py-2"><span>תנועת אתר</span><TrendingUp className="w-3 h-3" /></TabsTrigger>
           </TabsList>
 
           <TabsContent value="reports">
@@ -572,6 +574,7 @@ export default function AdminReports() {
           </TabsContent>
           <TabsContent value="scheduled-tasks"><ScheduledTasksManager /></TabsContent>
           <TabsContent value="payments"><PaymentsTab paymentOrders={paymentOrders} responses={responses} /></TabsContent>
+          <TabsContent value="site-analytics"><SiteAnalyticsTab /></TabsContent>
         </Tabs>
       </div>
 
