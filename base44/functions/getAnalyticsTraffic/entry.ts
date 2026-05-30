@@ -41,37 +41,61 @@ Deno.serve(async (req) => {
 
     console.log('Using property:', propertyId);
 
-    // Query traffic data for last 3 months - organic vs paid
-    const reportRes = await fetch(`https://analyticsdata.googleapis.com/v1beta/${propertyId}:runReport`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        dateRanges: [
-          { startDate: '90daysAgo', endDate: 'today' }
-        ],
-        dimensions: [
-          { name: 'sessionDefaultChannelGroup' },
-          { name: 'month' }
-        ],
-        metrics: [
-          { name: 'sessions' },
-          { name: 'totalUsers' },
-          { name: 'newUsers' },
-          { name: 'screenPageViews' },
-          { name: 'averageSessionDuration' },
-          { name: 'bounceRate' }
-        ],
-        orderBys: [
-          { dimension: { dimensionName: 'month' }, desc: true }
-        ]
-      })
-    });
+    const headers = {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    };
+    const dateRanges = [{ startDate: '90daysAgo', endDate: 'today' }];
 
-    const reportData = await reportRes.json();
-    console.log('Report response status:', reportRes.status);
+    // Run all reports in parallel
+    const [reportRes, genderRes, ageRes, geoRes] = await Promise.all([
+      // 1. Traffic by channel & month
+      fetch(`https://analyticsdata.googleapis.com/v1beta/${propertyId}:runReport`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          dateRanges,
+          dimensions: [{ name: 'sessionDefaultChannelGroup' }, { name: 'month' }],
+          metrics: [
+            { name: 'sessions' }, { name: 'totalUsers' }, { name: 'newUsers' },
+            { name: 'screenPageViews' }, { name: 'averageSessionDuration' }, { name: 'bounceRate' }
+          ],
+          orderBys: [{ dimension: { dimensionName: 'month' }, desc: true }]
+        })
+      }),
+      // 2. Gender breakdown
+      fetch(`https://analyticsdata.googleapis.com/v1beta/${propertyId}:runReport`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          dateRanges,
+          dimensions: [{ name: 'userGender' }],
+          metrics: [{ name: 'totalUsers' }, { name: 'sessions' }]
+        })
+      }),
+      // 3. Age breakdown
+      fetch(`https://analyticsdata.googleapis.com/v1beta/${propertyId}:runReport`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          dateRanges,
+          dimensions: [{ name: 'userAgeBracket' }],
+          metrics: [{ name: 'totalUsers' }, { name: 'sessions' }]
+        })
+      }),
+      // 4. Geographic breakdown (country + city)
+      fetch(`https://analyticsdata.googleapis.com/v1beta/${propertyId}:runReport`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          dateRanges,
+          dimensions: [{ name: 'country' }, { name: 'city' }],
+          metrics: [{ name: 'totalUsers' }, { name: 'sessions' }],
+          orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+          limit: 50
+        })
+      })
+    ]);
+
+    const [reportData, genderData, ageData, geoData] = await Promise.all([
+      reportRes.json(), genderRes.json(), ageRes.json(), geoRes.json()
+    ]);
 
     if (!reportRes.ok) {
       return Response.json({ error: 'Failed to fetch analytics data', details: reportData }, { status: reportRes.status });
@@ -80,7 +104,10 @@ Deno.serve(async (req) => {
     return Response.json({
       propertyId,
       accounts: accountsData.accountSummaries,
-      report: reportData
+      report: reportData,
+      genderReport: genderData,
+      ageReport: ageData,
+      geoReport: geoData
     });
 
   } catch (error) {

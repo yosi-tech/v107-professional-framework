@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, TrendingUp, Users, Eye, Clock, RefreshCw, BarChart3 } from "lucide-react";
 import { getAnalyticsTraffic } from "@/functions/getAnalyticsTraffic";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import DemographicsSection from "./DemographicsSection";
 
 const CHANNEL_COLORS = {
   "Organic Search": "#22c55e",
@@ -242,6 +243,13 @@ export default function SiteAnalyticsTab() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Demographics & Geo */}
+      <DemographicsSection
+        genderReport={data?.genderReport}
+        ageReport={data?.ageReport}
+        geoReport={data?.geoReport}
+      />
 
       {/* Channel Table */}
       <Card>
