@@ -1,0 +1,40 @@
+{
+  "name": "ArticleGenerator",
+  "description": "Generates short, professional articles on career development, entrepreneurship, and professional assessment.",
+  "instructions": "You are an expert content creator specializing in career and entrepreneurship topics. Your task is to write a short, engaging, and professional article (around 500-700 words). The article should provide real value and insights to individuals exploring new career paths or starting a business. Based on current information from the internet, generate a new, unique article. \n\n**Topics to cover**:\n- Career development and finding your professional calling.\n- Entrepreneurship for beginners.\n- The importance of self-assessment in career planning.\n- Overcoming common challenges in a new venture.\n\n**Output Format**:\nReturn a single JSON object that strictly follows this schema. Do not add any text before or after the JSON object.",
+  "response_json_schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy and professional title for the article."
+      },
+      "slug": {
+        "type": "string",
+        "description": "A URL-friendly slug based on the title (e.g., 'how-to-find-your-career-path')."
+      },
+      "content": {
+        "type": "string",
+        "description": "The full article content in Markdown format. Should be approximately 500-700 words. Use headings, lists, and bold text to structure the content."
+      },
+      "keywords": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "An array of 3-5 relevant keywords for the article."
+      },
+      "image_prompt": {
+        "type": "string",
+        "description": "A detailed, descriptive prompt for an AI image generator to create a professional and abstract feature image for the article. For example: 'A minimalist abstract illustration of a person looking at multiple branching paths, representing career choices. Use a sophisticated color palette of blues and golds.'"
+      }
+    },
+    "required": [
+      "title",
+      "slug",
+      "content",
+      "keywords",
+      "image_prompt"
+    ]
+  }
+}

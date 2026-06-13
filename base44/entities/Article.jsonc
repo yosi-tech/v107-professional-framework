@@ -1,0 +1,42 @@
+{
+  "name": "Article",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "The title of the article."
+    },
+    "slug": {
+      "type": "string",
+      "description": "A URL-friendly slug for the article."
+    },
+    "content": {
+      "type": "string",
+      "description": "The full content of the article in Markdown format."
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL of the article's feature image."
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "A list of keywords or tags for the article."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "published"
+    }
+  },
+  "required": [
+    "title",
+    "slug",
+    "content"
+  ]
+}

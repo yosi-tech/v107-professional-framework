@@ -1,0 +1,110 @@
+{
+  "name": "EmailTemplate",
+  "type": "object",
+  "properties": {
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "abandonment_incomplete",
+        "abandonment_reminder_96h",
+        "abandonment_after_completion",
+        "full_report_purchase",
+        "answers_download_purchase",
+        "online_coaching_purchase",
+        "report_ready",
+        "consultation_request",
+        "questionnaire_completion",
+        "booster_email"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05ea\u05d1\u05e0\u05d9\u05ea \u05d4\u05de\u05d9\u05d9\u05dc"
+    },
+    "trigger_event": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "on_navigation_away",
+        "after_96_hours",
+        "after_completion_no_purchase",
+        "on_purchase",
+        "on_report_generation",
+        "on_consultation_request",
+        "on_questionnaire_submit",
+        "daily_booster"
+      ],
+      "description": "\u05de\u05ea\u05d9 \u05e0\u05e9\u05dc\u05d7 \u05d4\u05de\u05d9\u05d9\u05dc"
+    },
+    "booster_track": {
+      "type": "string",
+      "enum": [
+        "execution",
+        "digital",
+        "finance",
+        "marketing",
+        "management",
+        "vision"
+      ],
+      "description": "\u05de\u05e1\u05dc\u05d5\u05dc \u05d4\u05d1\u05d5\u05e1\u05d8\u05e8 (\u05d0\u05dd \u05e8\u05dc\u05d5\u05d5\u05e0\u05d8\u05d9)"
+    },
+    "booster_day": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 7,
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05d4\u05d9\u05d5\u05dd \u05d1\u05de\u05e1\u05dc\u05d5\u05dc \u05d4\u05d1\u05d5\u05e1\u05d8\u05e8 (1-7)"
+    },
+    "name_he": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05ea\u05d1\u05e0\u05d9\u05ea \u05d1\u05e2\u05d1\u05e8\u05d9\u05ea"
+    },
+    "name_en": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05ea\u05d1\u05e0\u05d9\u05ea \u05d1\u05d0\u05e0\u05d2\u05dc\u05d9\u05ea"
+    },
+    "subject_he": {
+      "type": "string",
+      "description": "\u05e0\u05d5\u05e9\u05d0 \u05d4\u05de\u05d9\u05d9\u05dc \u05d1\u05e2\u05d1\u05e8\u05d9\u05ea"
+    },
+    "subject_en": {
+      "type": "string",
+      "description": "\u05e0\u05d5\u05e9\u05d0 \u05d4\u05de\u05d9\u05d9\u05dc \u05d1\u05d0\u05e0\u05d2\u05dc\u05d9\u05ea"
+    },
+    "content_he": {
+      "type": "string",
+      "description": "\u05ea\u05d5\u05db\u05df HTML \u05e9\u05dc \u05d4\u05de\u05d9\u05d9\u05dc \u05d1\u05e2\u05d1\u05e8\u05d9\u05ea"
+    },
+    "content_en": {
+      "type": "string",
+      "description": "\u05ea\u05d5\u05db\u05df HTML \u05e9\u05dc \u05d4\u05de\u05d9\u05d9\u05dc \u05d1\u05d0\u05e0\u05d2\u05dc\u05d9\u05ea"
+    },
+    "description_he": {
+      "type": "string",
+      "description": "\u05ea\u05d9\u05d0\u05d5\u05e8 \u05d4\u05ea\u05d1\u05e0\u05d9\u05ea \u05d1\u05e2\u05d1\u05e8\u05d9\u05ea"
+    },
+    "description_en": {
+      "type": "string",
+      "description": "\u05ea\u05d9\u05d0\u05d5\u05e8 \u05d4\u05ea\u05d1\u05e0\u05d9\u05ea \u05d1\u05d0\u05e0\u05d2\u05dc\u05d9\u05ea"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "\u05d4\u05d0\u05dd \u05d4\u05ea\u05d1\u05e0\u05d9\u05ea \u05e4\u05e2\u05d9\u05dc\u05d4"
+    },
+    "include_coupon": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05d4\u05d0\u05dd \u05dc\u05d4\u05d5\u05e1\u05d9\u05e3 \u05e7\u05d5\u05d3 \u05e7\u05d5\u05e4\u05d5\u05df \u05dc\u05de\u05d9\u05d9\u05dc"
+    },
+    "coupon_amount": {
+      "type": "number",
+      "description": "\u05e1\u05db\u05d5\u05dd \u05d4\u05e0\u05d7\u05d4 \u05d1\u05e7\u05d5\u05e4\u05d5\u05df (\u05d0\u05dd \u05d9\u05e9)"
+    }
+  },
+  "required": [
+    "template_type",
+    "name_he",
+    "name_en",
+    "subject_he",
+    "subject_en",
+    "content_he",
+    "content_en"
+  ]
+}

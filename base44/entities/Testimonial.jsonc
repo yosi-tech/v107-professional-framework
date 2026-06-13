@@ -1,0 +1,41 @@
+{
+  "name": "Testimonial",
+  "type": "object",
+  "properties": {
+    "quote_he": {
+      "type": "string",
+      "description": "\u05ea\u05d5\u05db\u05df \u05d4\u05e2\u05d3\u05d5\u05ea \u05d1\u05e2\u05d1\u05e8\u05d9\u05ea"
+    },
+    "quote_en": {
+      "type": "string",
+      "description": "The testimonial content in English"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the person giving the testimonial"
+    },
+    "title_he": {
+      "type": "string",
+      "description": "\u05d4\u05ea\u05e4\u05e7\u05d9\u05d3 \u05d0\u05d5 \u05ea\u05d9\u05d0\u05d5\u05e8 \u05d4\u05d0\u05d3\u05dd \u05d1\u05e2\u05d1\u05e8\u05d9\u05ea"
+    },
+    "title_en": {
+      "type": "string",
+      "description": "The title or role of the person in English"
+    },
+    "stars": {
+      "type": "number",
+      "description": "The star rating from 1 to 5"
+    }
+  },
+  "required": [
+    "quote_he",
+    "name",
+    "title_he",
+    "stars"
+  ],
+  "rls": {
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
