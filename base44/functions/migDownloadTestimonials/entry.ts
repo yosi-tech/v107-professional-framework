@@ -1,0 +1,31 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    const testimonials = await base44.entities.Testimonial.list('-created_date', 50);
+    const clean = testimonials.map(t => ({
+      quote_he: (t.quote_he || '').trim(),
+      quote_en: t.quote_en || '',
+      name: (t.name || '').trim(),
+      title_he: (t.title_he || '').trim(),
+      title_en: t.title_en || '',
+      stars: t.stars || 5
+    }));
+
+    return new Response(JSON.stringify(clean, null, 2), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Disposition': 'attachment; filename=testimonials-export.json'
+      }
+    });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+});
