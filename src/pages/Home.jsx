@@ -10,6 +10,7 @@ import ValueCardsSection from "@/components/home/ValueCardsSection";
 import PricingCTA from "@/components/home/PricingCTA";
 import FAQSection from "@/components/home/FAQSection";
 import CommunitySection from "@/components/home/CommunitySection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 
 export default function Home() {
   const userCount = 693;
@@ -113,6 +114,9 @@ export default function Home() {
 
       {/* ===== PRICING CTA ===== */}
       <PricingCTA />
+
+      {/* ===== TESTIMONIALS ===== */}
+      <TestimonialsSection />
 
       {/* ===== FAQ ===== */}
       <FAQSection />
