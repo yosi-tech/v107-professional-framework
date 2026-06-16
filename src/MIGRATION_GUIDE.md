@@ -686,7 +686,85 @@ Admin simulates purchase → simulatePurchase function
 
 ---
 
-## 8. FRONTEND — PAYMENT PAGE (pages/Payment.js)
+## 8. PRODUCT ENTITY — FRONTEND USAGE
+
+### 8.1 Completion Page (pages/Completion.js) — Product Consumer
+The Completion page is the **primary consumer** of the Product entity. It fetches active products and renders pricing cards.
+
+**Key behavior:**
+```js
+// Fetches only active products of type 'full_report'
+const data = await base44.entities.Product.filter({ active: true });
+const completionProducts = data.filter(p => p.product_type === 'full_report');
+```
+
+**Product card logic:**
+- Products with `name_he` containing "מואץ" (accelerated) → treated as express delivery (`sortOrder: 3`)
+- Products without "מואץ" → standard full report (`sortOrder: 2`, marked `recommended: true`)
+- `answers_download` type → basic tier (`sortOrder: 1`)
+- URL-based discount: `?discount=10` applies 10% multiplier to all prices
+- Each card links to Payment page: `/Payment?product={type}&price={calculated}&express={bool}&responseId={id}`
+
+### 8.2 Admin ContentManager (components/admin/ContentManager.js) — Product CRUD
+The ContentManager provides full admin CRUD for Product, Coupon, Article, and ContentItem entities in a tabbed interface.
+
+**Product management features:**
+- Create/edit/delete products with fields: `name_he`, `name_en`, `description_he`, `description_en`, `price`, `product_type`, `active`, `featured`, `discount_eligible`, `allowed_coupon_codes`, `order`
+- `product_type` select: `full_report`, `answers_download`, `online_coaching_7days`, `booster_track`, `other`
+- Toggle flags: active, featured, discount_eligible
+- `allowed_coupon_codes`: comma-separated list of coupon codes valid for this product (empty = all coupons allowed)
+- Quick coupon creation dialog: creates a Coupon entity and adds its code to the product's `allowed_coupon_codes`
+
+**Coupon management features:**
+- Full CRUD: code, discount_amount, discount_percentage, valid_until, used, user_email, source
+- Source options: `abandonment_survey`, `promotion`, `referral`
+
+**Data loading:**
+```js
+const [articlesData, productsData, couponsData] = await Promise.all([
+  base44.entities.Article.list('-created_date'),
+  base44.entities.Product.list('order'),
+  base44.entities.Coupon.list('-created_date')
+]);
+```
+
+### 8.3 Payment Page — Product NOT Read From Entity
+**Important:** The Payment page does NOT fetch the Product entity. It receives price and type via URL params from the Completion page. The Payment page only reads: `Coupon`, `QuestionnaireResponse`, `PaymentOrder`, `GeneratedReport`, and `User`.
+
+---
+
+## 9. SITESETTINGS ENTITY — USAGE AUDIT
+
+### Current Status: Minimal Frontend Usage
+The SiteSettings entity exists as a generic key-value store but is **barely consumed** in the current frontend:
+
+- **Layout (layout.js):** GTM tag (`GTM-N68LLCXP`) and accessibility widget (`nagich.co.il`) are **hardcoded directly** in the layout, NOT read from SiteSettings.
+- **Admin dashboard:** SiteSettings can be managed via the admin interface but the values aren't dynamically loaded by frontend pages.
+- **ContentItem entity:** The dynamic CMS content is handled by the `ContentItem` entity (page/section/content_key structure), not SiteSettings.
+
+**SiteSettings is designed for:** feature flags, tracking IDs (GA, Facebook Pixel), configuration toggles. In the current system it's populated but the frontend mostly hardcodes these values.
+
+**Migration recommendation:** Recreate the entity but prioritize making the frontend actually read from it (especially GTM ID, accessibility widget config) instead of hardcoding.
+
+---
+
+## 10. CONTENTITEM ENTITY — DYNAMIC CMS
+
+The `ContentItem` entity powers the admin-editable CMS. Each record has:
+- `page`: `home`, `about`, `articles`, `terms`
+- `section`: e.g., `hero`, `stats`, `benefits`, `testimonials`
+- `content_key`: unique identifier like `hero_title`, `hero_subtitle`
+- `content_type`: `text`, `image`, `html`
+- `content_he` / `content_en`: bilingual content
+- `order`: display ordering
+
+**Admin UI:** The ContentManager component organizes content by page tabs, then sections within each tab. Supports inline editing, auto-translation via InvokeLLM, and create/delete operations.
+
+**Relation to SiteSettings:** ContentItem handles page-level CMS content; SiteSettings handles app-wide configuration. They don't overlap.
+
+---
+
+## 11. FRONTEND — PAYMENT PAGE (pages/Payment.js)
 
 This is the complete Tranzila payment integration frontend. It handles:
 - Product selection from URL params
@@ -966,4 +1044,3 @@ Steps: `questionnaire` → `choose` → `payment` → `done`
       - Marks Coupon.used=true
    i. Tranzila iframe sends postMessage → frontend navigates to /ThankYou
 5. PaymentOrder automation fires → sendPaymentConfirmation → sends email
-`
