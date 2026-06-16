@@ -4,13 +4,38 @@
 
 ---
 
-## 1. 📰 מאמרים (Articles) ✅ הושלם
+## 🔍 סיכום מהיר — פריטים שלא קיימים באפליקציה החדשה
+
+| # | פריט | סעיף | סטטוס |
+|---|------|-------|-------|
+| 1 | Function: sendNewArticleEmail | §1 | ❌ לא קיים |
+| 2 | Entity: Product | §6 | ❌ לא קיים |
+| 3 | Entity: PaymentOrder | §7 | ❌ לא קיים (יש Payment Page אבל אין entity) |
+| 4 | Entity: EmailLog | §7 | ❌ לא קיים |
+| 5 | Page: ThankYou | §7 | ❌ לא קיים |
+| 6 | Function: tranzilaCreateHandshake | §7 | ❌ לא קיים |
+| 7 | Function: tranzilaNotify | §7 | ❌ לא קיים |
+| 8 | Function: sendPaymentConfirmation | §7 | ❌ לא קיים |
+| 9 | Entity: EmailTemplate | §8 | ❌ לא קיים |
+| 10 | Entity: SiteSettings | §9 | ❌ לא קיים |
+| 11 | Entity: ContentItem | §10 | ❌ לא קיים |
+| 12 | דף אדמין — איחוד | §11 | ❌ טרם הושלם |
+| 13 | Entity: SimulatedPurchase | §12 | ⏭️ דולג בכוונה |
+| 14 | Entity: SurveyResponse | §12 | ⏭️ דולג בכוונה |
+| 15 | Page: Survey | §12 | ⏭️ דולג בכוונה |
+| 16 | Function: sendAbandonmentSurvey | §12 | ⏭️ דולג בכוונה |
+| 17 | Function: sendAbandonmentReminder | §12 | ⏭️ דולג בכוונה |
+| 18 | Function: sendCompletionNoPurchase | §12 | ⏭️ דולג בכוונה |
+
+---
+
+## 1. 📰 מאמרים (Articles) 🟡 חלקי
 | חלק | סטטוס | הערות |
 |------|--------|-------|
 | Entity: Article | ✅ הושלם | Schema + data |
 | Page: Articles | ✅ הושלם | רשימת מאמרים |
 | Page: ArticleDetails | ✅ הושלם | מאמר בודד |
-| Function: sendNewArticleEmail | ✅ הושלם | |
+| Function: sendNewArticleEmail | ❌ לא קיים | מתועד ב-§1 |
 | תיעוד במיגרציה | ✅ הושלם | §1 |
 
 ---

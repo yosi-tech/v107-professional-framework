@@ -20,7 +20,60 @@
 
 ---
 
-## 1. ARTICLES ✅ DONE
+## 🔍 NEW APP AUDIT — Item-by-Item Status
+
+This table maps every item from the old system to its current status in the **new app**.
+
+### ✅ Already exists in new app
+| פריט | סעיף | הערה |
+|------|-------|------|
+| Entity: Article | §1 | ✅ Schema + data imported |
+| Page: Articles | §1 | ✅ רשימת מאמרים |
+| Page: ArticleDetails | §1 | ✅ מאמר בודד |
+| Entity: Testimonial | §2 | ✅ Schema + 13 עדויות imported |
+| Component: TestimonialsSection | §2 | ✅ בדף הבית |
+| Entity: Coupon | §3 | ✅ Schema + RLS |
+| Entity: ContactInquiry | §4 | ✅ Schema + RLS |
+| Page: Contact | §4 | ✅ טופס צור קשר |
+| Page: Home | §5 | ✅ 8 סקציות |
+| Page: About | §5 | ✅ איך זה עובד |
+| Page: TermsOfService | §5 | ✅ תנאי שימוש |
+| Page: PrivacyPolicy | §5 | ✅ מדיניות פרטיות |
+| Page: AccessibilityStatement | §5 | ✅ הצהרת נגישות |
+| Page: CareerPaths | §5 | ✅ מסלולי קריירה |
+| Layout + i18n | §5 | ✅ header/footer, שפות |
+
+### ❌ Does NOT exist in new app — TO BUILD
+| פריט | סעיף | הערה |
+|------|-------|------|
+| Function: sendNewArticleEmail | §1 | ❌ לא קיים — תיעוד מלא ב-§1 |
+| Entity: Product | §6 | ❌ לא קיים — Schema + usage מתועד ב-§6 |
+| Entity: PaymentOrder | §7 | ❌ לא קיים — יש Payment Page אבל אין entity. Schema ב-§7 |
+| Entity: EmailLog | §7 | ❌ לא קיים — נדרש לדדופליקציית מיילים. Schema ב-§7 |
+| Page: ThankYou | §7 | ❌ לא קיים — תיעוד ב-§7 |
+| Function: tranzilaCreateHandshake | §7 | ❌ לא קיים — קוד מלא ב-§7 |
+| Function: tranzilaNotify | §7 | ❌ לא קיים — קוד מלא ב-§7 (CRITICAL webhook) |
+| Function: sendPaymentConfirmation | §7 | ❌ לא קיים — קוד מלא ב-§7 |
+| Entity: EmailTemplate | §8 | ❌ לא קיים — Schema ב-§8 |
+| Entity: SiteSettings | §9 | ❌ לא קיים — Schema ב-§9 |
+| Entity: ContentItem | §10 | ❌ לא קיים — Schema ב-§10 |
+| דף אדמין — איחוד | §11 | ❌ טרם הושלם — 11 טאבים, תיעוד מלא ב-§11 |
+
+### ⏭️ Skipped on purpose — will NOT build
+| פריט | סעיף | הערה |
+|------|-------|------|
+| Entity: SimulatedPurchase | §12 | ⏭️ דולג — לוג לרכישות מדומות, עדיפות נמוכה |
+| Entity: SurveyResponse | §12 | ⏭️ דולג — סקר נטישה, האוטומציה כבויה בישנה |
+| Page: Survey | §12 | ⏭️ דולג — דף סקר נטישה, לא קריטי |
+| Function: sendAbandonmentSurvey | §12 | ⏭️ דולג — כבוי במערכת הישנה |
+| Function: sendAbandonmentReminder | §12 | ⏭️ דולג — עדיפות נמוכה, ניתן להוסיף אח"כ |
+| Function: sendCompletionNoPurchase | §12 | ⏭️ דולג — עדיפות נמוכה, ניתן להוסיף אח"כ |
+
+---
+
+## 1. ARTICLES ✅ DONE (partial — function missing)
+
+> **Entity + Pages exist ✅ | Function: sendNewArticleEmail ❌ does NOT exist in new app**
 
 ### Entity: Article
 ```json
@@ -40,11 +93,12 @@
 ```
 
 ### Pages
-- **Articles** — List page showing published articles, search/filter by keywords
-- **ArticleDetails** — Single article view, renders Markdown content
+- **Articles** — List page showing published articles, search/filter by keywords ✅ exists
+- **ArticleDetails** — Single article view, renders Markdown content ✅ exists
 
-### Backend Function
-- **sendNewArticleEmail** — Scheduled daily 7:00 AM. Finds articles created in last 24h, sends notification email to subscribed users.
+### Backend Function: sendNewArticleEmail ❌ DOES NOT EXIST IN NEW APP
+- Scheduled daily 7:00 AM. Finds articles created in last 24h, sends notification email to subscribed users.
+- Full source available in old system's `functions/sendNewArticleEmail`.
 
 ### Admin
 - Article CRUD in ContentManager tab (create/edit/delete, Markdown editor, keywords, status toggle)
@@ -803,4 +857,4 @@ These can all be rebuilt as needed after the core system is live.
 
 6. Admin generates report → GeneratedReport created
    └─ automation: autoGenerateCareerPaths
-``
+`
