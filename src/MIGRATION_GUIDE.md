@@ -352,3 +352,287 @@ Admin simulates purchase → simulatePurchase function
 > Build an email deduplication system using EmailLog — every email function checks EmailLog before sending. Create scheduled automations for abandonment reminders (15 min), post-completion coupons (6h), and booster encouragement (12h). Create entity automations for payment confirmation (PaymentOrder update) and questionnaire completion (QuestionnaireResponse update).
 >
 > All emails are bilingual (Hebrew/English) with branded HTML templates. The system supports express delivery for full reports. Coupons can be single-use or multi-use, user-specific or general.
+
+---
+
+## 8. FRONTEND — PAYMENT PAGE (pages/Payment.js)
+
+This is the complete Tranzila payment integration frontend. It handles:
+- Product selection from URL params
+- Coupon validation & application
+- Zero-price flow (100% coupon skips Tranzila)
+- PaymentOrder creation
+- Tranzila handshake + iframe embedding
+- postMessage listener for payment result
+
+```jsx
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
+import { tranzilaCreateHandshake } from "@/functions/tranzilaCreateHandshake";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ShieldCheck, CheckCircle, Loader2, FileText, Star, Clock, Zap, X, Tag, Lock } from "lucide-react";
+
+export default function Payment() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const language = 'he'; // or from i18n context
+
+  const [product, setProduct] = useState(null);
+  const [price, setPrice] = useState(0);
+  const [originalPrice, setOriginalPrice] = useState(0);
+  const [isExpress, setIsExpress] = useState(false);
+  const [responseId, setResponseId] = useState(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [handshakeData, setHandshakeData] = useState(null);
+  const [isLoadingHandshake, setIsLoadingHandshake] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+
+  // Coupon states
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState('');
+  const [isCheckingCoupon, setIsCheckingCoupon] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setProduct(params.get('product'));
+    const priceFromUrl = Number(params.get('price')) || 0;
+    setPrice(priceFromUrl);
+    setOriginalPrice(priceFromUrl);
+    setIsExpress(params.get('express') === 'true');
+    const urlResponseId = params.get('responseId') || params.get('responseid');
+    setResponseId(urlResponseId && urlResponseId !== 'null' ? urlResponseId : null);
+    checkUserStatus();
+  }, [location.search]);
+
+  // Auto-find responseId from user's latest completed questionnaire
+  useEffect(() => {
+    const fetchResponseId = async () => {
+      if (responseId || !user) return;
+      try {
+        const responses = await base44.entities.QuestionnaireResponse.filter(
+          { created_by: user.email, status: 'completed' }, '-updated_date', 1
+        );
+        if (responses.length > 0) setResponseId(responses[0].id);
+      } catch (e) {}
+    };
+    fetchResponseId();
+  }, [user, responseId]);
+
+  const checkUserStatus = async () => {
+    try { setUser(await base44.auth.me()); } catch (e) {}
+  };
+
+  // ── COUPON LOGIC ──
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setIsCheckingCoupon(true);
+    setCouponError('');
+    try {
+      const coupons = await base44.entities.Coupon.filter({ code: couponCode.trim() });
+      if (coupons.length === 0) { setCouponError('קוד קופון לא תקין'); setIsCheckingCoupon(false); return; }
+      const coupon = coupons[0];
+      const isSingleUse = coupon.is_single_use !== false;
+      if (isSingleUse && coupon.used) { setCouponError('קוד הקופון כבר נוצל'); setIsCheckingCoupon(false); return; }
+      if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) { setCouponError('קוד הקופון פג תוקף'); setIsCheckingCoupon(false); return; }
+      if (coupon.is_user_specific && user && coupon.user_email && coupon.user_email !== user.email) { setCouponError('קוד הקופון לא תקף עבור המשתמש הזה'); setIsCheckingCoupon(false); return; }
+      let discount = coupon.discount_amount || Math.round(originalPrice * (coupon.discount_percentage / 100));
+      setPrice(Math.max(0, originalPrice - discount));
+      setAppliedCoupon(coupon);
+    } catch (e) { setCouponError('שגיאה בבדיקת הקופון'); }
+    setIsCheckingCoupon(false);
+  };
+
+  const removeCoupon = () => { setPrice(originalPrice); setAppliedCoupon(null); setCouponCode(''); };
+
+  // ── PAYMENT INITIATION ──
+  const initializePayment = async () => {
+    if (!termsAccepted || !user) return;
+    setIsLoadingHandshake(true);
+    try {
+      // 1. Create PaymentOrder
+      const orderData = {
+        status: price === 0 ? 'paid' : 'pending',
+        amount: price,
+        user_email: user.email,
+        user_name: user.full_name || '',
+        product_type: product,
+        is_express: isExpress,
+        questionnaire_response_id: responseId || null,
+        coupon_code: appliedCoupon?.code || null,
+        coupon_id: appliedCoupon?.id || null
+      };
+      const createdOrder = await base44.entities.PaymentOrder.create(orderData);
+      setCurrentOrderId(createdOrder.id);
+
+      // 2. If price is 0 (100% coupon), skip Tranzila
+      if (price === 0) {
+        const userUpdateData = { purchase_date: new Date().toISOString(), payment_amount: 0 };
+        if (product === 'full_report') { userUpdateData.has_purchased_full_report = true; userUpdateData.express_delivery = isExpress; }
+        else if (product === 'answers_download') { userUpdateData.has_purchased_answers_download = true; }
+        else if (product === 'online_coaching_7days') { userUpdateData.has_purchased_online_coaching = true; }
+        await base44.auth.updateMe(userUpdateData);
+        if (appliedCoupon?.is_single_use !== false) await base44.entities.Coupon.update(appliedCoupon.id, { used: true });
+        if (responseId && product === 'full_report') {
+          try {
+            const reports = await base44.entities.GeneratedReport.filter({ questionnaire_response_id: responseId }, '-created_date', 1);
+            if (reports.length > 0) await base44.entities.GeneratedReport.update(reports[0].id, { purchased: true });
+          } catch (e) {}
+        }
+        setIsLoadingHandshake(false);
+        navigate("/ThankYou");
+        return;
+      }
+
+      // 3. Get Tranzila handshake token
+      const { data } = await tranzilaCreateHandshake({ sum: price });
+      setHandshakeData(data);
+    } catch (e) {
+      alert('שגיאה ביצירת תשלום. נסה שוב.');
+    }
+    setIsLoadingHandshake(false);
+  };
+
+  // ── LISTEN FOR TRANZILA IFRAME POSTMESSAGE ──
+  useEffect(() => {
+    const handleMessage = async (event) => {
+      if (event.data?.iframe_message === 'success') {
+        setIsProcessing(false);
+        navigate("/ThankYou");
+      } else if (event.data?.iframe_message === 'error') {
+        setIsProcessing(false);
+        alert('התשלום נכשל. נסה שוב.');
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  // ── TRANZILA IFRAME (rendered after handshake) ──
+  // CRITICAL: The iframe URL format:
+  // https://direct.tranzila.com/{supplier}/iframenew.php?
+  //   sum={amount}&currency=1&cred_type=1&tranmode=A&new_process=1
+  //   &thtk={handshake_token}
+  //   &lang=il (or us for English)
+  //   &buttonLabel={encoded_text}
+  //   &trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb
+  //   &pdesc={product_description}
+  //   &contact={user_name}
+  //   &email={user_email}
+  //   &cfield1={order_id}  ← CRITICAL: this is how tranzilaNotify matches the payment to the order!
+
+  const iframeSrc = handshakeData ? 
+    `https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php?sum=${handshakeData.sum}&currency=1&cred_type=1&tranmode=A&new_process=1&thtk=${handshakeData.thtk}&lang=${language === 'he' ? 'il' : 'us'}&buttonLabel=${encodeURIComponent('שלם עכשיו')}&trBgColor=f7fafc&trTextColor=1a202c&trButtonColor=2563eb&pdesc=${encodeURIComponent(product || '')}&contact=${encodeURIComponent(user?.full_name || '')}&email=${encodeURIComponent(user?.email || '')}&cfield1=${encodeURIComponent(currentOrderId)}` 
+    : '';
+
+  return (
+    <div dir="rtl">
+      {/* Before handshake: show coupon input + terms checkbox + "Continue to Payment" button */}
+      {/* After handshake: show Tranzila iframe */}
+      {handshakeData && (
+        <iframe
+          title="Tranzila Payment"
+          allowpaymentrequest="true"
+          src={iframeSrc}
+          style={{ width: '100%', height: '600px', border: 'none', borderRadius: '8px' }}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+### KEY TRANZILA IFRAME PARAMETERS:
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| `sum` | from handshake | Payment amount in ILS |
+| `currency` | `1` | ILS (Israeli Shekel) |
+| `cred_type` | `1` | Regular credit card |
+| `tranmode` | `A` | Authorization mode |
+| `new_process` | `1` | Use new Tranzila process |
+| `thtk` | from handshake | Transaction Handshake Token |
+| `lang` | `il` or `us` | Hebrew or English |
+| `cfield1` | order ID | **CRITICAL** — PaymentOrder.id sent to webhook for matching |
+| `pdesc` | product name | Product description shown in Tranzila |
+| `contact` | user name | Customer name |
+| `email` | user email | Customer email |
+
+### TRANZILA WEBHOOK SETUP:
+In Tranzila's terminal settings, configure the "notify URL" to point to the `tranzilaNotify` backend function's webhook URL. Tranzila POSTs form-data to this URL after every payment attempt.
+
+---
+
+## 9. FRONTEND — COMPLETION PAGE (pages/Completion.js)
+
+Post-questionnaire page that shows product cards and links to Payment. Key logic:
+- Loads active products from Product entity (filtered to `full_report` type)
+- Applies URL-based discount (`?discount=10` = 10% off)
+- Sorts products: answers_download → full_report (recommended) → express full_report
+- "Not sure?" section sends abandonment email + survey link
+- Links to Payment page with URL params: `?product={type}&price={amount}&express={true/false}&responseId={id}`
+
+---
+
+## 10. FRONTEND — THANK YOU PAGE (pages/ThankYou.js)
+
+Post-payment success page. Key logic:
+- Reads user flags: `has_purchased_full_report`, `has_purchased_answers_download`, `express_delivery`
+- Full report: shows delivery timeline (3 or 7 business days), consultation request button
+- Answers download: shows download button + upsell to full report
+- Consultation request sends email via `Core.SendEmail`
+
+---
+
+## 11. FRONTEND — SUPPORTING COMPONENTS
+
+### components/payment/MemberCard.jsx
+Visual "credit card" style display showing user name + plan name. Decorative only.
+
+### components/payment/OrderSummary.jsx
+Sticky sidebar with:
+- Product line item + original price
+- Express delivery (if applicable)
+- Booster access (included)
+- Coupon discount line (if applied)
+- VAT calculation (18% — prices are VAT-inclusive, breakdown shows `price / 1.18`)
+- Total
+- Security badge + card logos
+
+### components/checkout/CheckoutProgressBar.jsx
+4-step progress bar: מילוי שאלון → בחירת חבילה → תשלום → סיום
+Steps: `questionnaire` → `choose` → `payment` → `done`
+
+---
+
+## 12. COMPLETE USER FLOW SUMMARY
+
+```
+1. User completes questionnaire → QuestionnaireResponse (status: completed)
+2. Redirect to /Completion?responseId={id}
+   └─ Completion page loads Product entity, shows pricing cards
+3. User clicks product → navigates to /Payment?product=full_report&price=299&responseId={id}
+4. Payment page:
+   a. User optionally enters coupon → validated against Coupon entity
+   b. User accepts terms → clicks "Continue to Payment"
+   c. Frontend creates PaymentOrder (status: pending)
+   d. Frontend calls tranzilaCreateHandshake backend function → gets thtk token
+   e. Tranzila iframe renders with thtk + cfield1=orderId
+   f. User enters card details in iframe
+   g. Tranzila processes payment
+   h. Tranzila POSTs to tranzilaNotify webhook:
+      - Matches order by cfield1 (order ID) or fallback by amount
+      - Updates PaymentOrder → paid/failed
+      - Updates User flags
+      - Marks GeneratedReport.purchased=true
+      - Marks Coupon.used=true
+   i. Tranzila iframe sends postMessage → frontend navigates to /ThankYou
+5. PaymentOrder automation fires → sendPaymentConfirmation → sends email
+``
