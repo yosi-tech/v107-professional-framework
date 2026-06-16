@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Download, CheckCircle, Database } from "lucide-react";
 
 const ENTITIES = [
-  "Article", "Testimonial", "Product", "Coupon", "SiteSettings",
+  "User", "Article", "Testimonial", "Product", "Coupon", "SiteSettings",
   "ContentItem", "EmailTemplate", "SimulatedPurchase", "ContactInquiry",
   "SurveyResponse", "PaymentOrder", "QuestionnaireResponse",
   "GeneratedReport", "OnlineCoachingSubscription", "BoosterTask", "EmailLog"
