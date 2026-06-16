@@ -193,52 +193,387 @@ This document describes the 5 requested entities, their relationships to other t
 
 ## 3. BACKEND FUNCTIONS (recreate these)
 
-### 3.1 tranzilaCreateHandshake — Payment Initiation
+### 3.1 tranzilaCreateHandshake — Payment Initiation (FULL SOURCE)
 **Trigger:** Called from frontend Payment page
 **Secrets needed:** `supplier`, `TranzilaPW`
-**Logic:**
-1. Authenticate user
-2. Takes `{ sum }` from request body
-3. Calls Tranzila API: `https://api.tranzila.com/v1/handshake/create?supplier=${supplier}&sum=${roundedSum}&TranzilaPW=${TranzilaPW}`
-4. Extracts `thtk` (Transaction Handshake Token) from response
-5. Returns `{ thtk, supplier, sum }` to frontend
 
-### 3.2 tranzilaNotify — Payment Webhook (CRITICAL)
+```js
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { sum } = await req.json();
+    if (!sum || sum <= 0) return Response.json({ error: 'Invalid sum' }, { status: 400 });
+    const roundedSum = Math.round(sum);
+
+    const supplier = Deno.env.get('supplier');
+    const TranzilaPW = Deno.env.get('TranzilaPW');
+    if (!supplier || !TranzilaPW) return Response.json({ error: 'Missing Tranzila credentials' }, { status: 500 });
+
+    const handshakeUrl = `https://api.tranzila.com/v1/handshake/create?supplier=${supplier}&sum=${roundedSum}&TranzilaPW=${TranzilaPW}`;
+    const response = await fetch(handshakeUrl);
+    const data = await response.text();
+
+    let thtk = data.trim();
+    if (thtk.startsWith('thtk=')) thtk = thtk.substring(5);
+
+    return Response.json({ thtk, supplier, sum: roundedSum });
+  } catch (error) {
+    console.error('Tranzila handshake error:', error);
+    return Response.json({ error: 'Failed to create handshake', details: error.message }, { status: 500 });
+  }
+});
+```
+
+### 3.2 tranzilaNotify — Payment Webhook (FULL SOURCE — CRITICAL)
 **Trigger:** Webhook called by Tranzila after payment attempt
 **Auth:** Service role (no user auth — this is a webhook)
-**Logic:**
-1. Receives form data from Tranzila
-2. Checks `Response` field: "000" or "0" = success
-3. Matches to PaymentOrder: first by `cfield1` (order ID), fallback by amount + recent pending orders (30 min window)
-4. On success:
-   - Updates PaymentOrder → status="paid", stores tranzila_reference, confirmation_code, raw_data
-   - Updates User: sets `has_purchased_full_report`/`has_purchased_answers_download`/`has_purchased_online_coaching`, `purchase_date`, `payment_amount`
-   - If full_report: marks GeneratedReport.purchased=true
-   - If coupon used: marks Coupon.used=true
-5. On failure: Updates PaymentOrder → status="failed"
-6. Always returns HTTP 200 (Tranzila requirement)
 
-### 3.3 sendPaymentConfirmation — Post-Payment Email
+```js
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+
+Deno.serve(async (req) => {
+  if (req.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
+
+  try {
+    const base44 = createClientFromRequest(req);
+    const formData = await req.formData();
+    const notify = {};
+    for (const [key, value] of formData.entries()) notify[key] = value;
+
+    const responseCode = notify["Response"];
+    const amount = parseFloat(notify["sum"] || 0);
+    const roundedAmount = Math.round(amount);
+    const isSuccess = responseCode === "000" || responseCode === "0";
+
+    // Match order — by cfield1 (order ID) first, fallback by amount + 30min window
+    const orderId = notify["cfield1"] || null;
+    let order = null;
+
+    if (orderId) {
+      try {
+        const exactOrders = await base44.asServiceRole.entities.PaymentOrder.filter({ id: orderId, status: 'pending' }, '-created_date', 1);
+        if (exactOrders.length > 0) order = exactOrders[0];
+      } catch (e) {}
+    }
+
+    if (!order) {
+      const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+      const orders = await base44.asServiceRole.entities.PaymentOrder.filter({ status: 'pending', amount: roundedAmount }, '-created_date', 10);
+      const recentOrders = orders.filter(o => new Date(o.created_date) >= new Date(thirtyMinutesAgo));
+      if (recentOrders.length > 0) order = recentOrders[0];
+    }
+
+    if (order) {
+      await base44.asServiceRole.entities.PaymentOrder.update(order.id, {
+        status: isSuccess ? "paid" : "failed",
+        tranzila_reference: notify["TranzilaTK"] || null,
+        confirmation_code: notify["ConfirmationCode"] || null,
+        raw_data: JSON.stringify(notify)
+      });
+
+      if (isSuccess) {
+        // Update User purchase flags
+        const userUpdateData = { purchase_date: new Date().toISOString(), payment_amount: order.amount };
+        if (order.product_type === 'full_report') { userUpdateData.has_purchased_full_report = true; userUpdateData.express_delivery = order.is_express || false; }
+        else if (order.product_type === 'answers_download') userUpdateData.has_purchased_answers_download = true;
+        else if (order.product_type === 'online_coaching_7days') userUpdateData.has_purchased_online_coaching = true;
+
+        const users = await base44.asServiceRole.entities.User.filter({ email: order.user_email });
+        if (users.length > 0) await base44.asServiceRole.entities.User.update(users[0].id, userUpdateData);
+
+        // Mark GeneratedReport as purchased
+        if (order.questionnaire_response_id && order.questionnaire_response_id !== 'null' && order.product_type === 'full_report') {
+          try {
+            const reports = await base44.asServiceRole.entities.GeneratedReport.filter({ questionnaire_response_id: order.questionnaire_response_id }, '-created_date', 1);
+            if (reports.length > 0) await base44.asServiceRole.entities.GeneratedReport.update(reports[0].id, { purchased: true });
+          } catch (e) {}
+        }
+
+        // Mark Coupon as used
+        if (order.coupon_id) {
+          try { await base44.asServiceRole.entities.Coupon.update(order.coupon_id, { used: true }); } catch (e) {}
+        }
+      }
+    }
+
+    return new Response('OK', { status: 200 }); // ALWAYS 200 for Tranzila
+  } catch (error) {
+    console.error('Tranzila Notify Error:', error);
+    return new Response('OK', { status: 200 }); // ALWAYS 200
+  }
+});
+```
+
+### 3.3 sendPaymentConfirmation — Post-Payment Email (FULL SOURCE)
 **Trigger:** Entity automation on PaymentOrder UPDATE (when status changes to "paid")
-**Logic:**
-1. Checks old_data.status !== 'paid' && data.status === 'paid'
-2. Checks EmailLog for duplicate prevention
-3. Sends branded HTML confirmation email (bilingual HE/EN)
-4. If full_report: includes link to report view
-5. Creates EmailLog record
 
-### 3.4 simulatePurchase — Admin Test Purchase
-**Trigger:** Called from admin dashboard
-**Auth:** Admin only
-**Logic:**
-1. Takes `{ userEmail, productType, price, expressDelivery, language }`
-2. Updates User with purchase flags (same as real payment)
-3. Sends confirmation email based on product type
-4. If online_coaching_7days: creates OnlineCoachingSubscription
-5. Creates SimulatedPurchase record for audit trail
-6. Creates EmailLog record
+```js
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-### 3.5 sendAbandonmentReminder — Quick Reminder (10-30 min)
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const body = await req.json();
+    const orderId = body?.event?.entity_id;
+    const orderData = body?.data;
+    const oldData = body?.old_data;
+
+    if (!orderId) return Response.json({ skipped: true, reason: 'no entity_id' });
+    if (orderData?.status !== 'paid' || oldData?.status === 'paid') return Response.json({ skipped: true, reason: 'status not changed to paid' });
+
+    const userEmail = orderData.user_email;
+    const userName = orderData.user_name || userEmail;
+    const amount = orderData.amount || 0;
+    const productType = orderData.product_type;
+    if (!userEmail) return Response.json({ skipped: true, reason: 'no user email' });
+
+    // Dedup check
+    try {
+      const existingLogs = await base44.asServiceRole.entities.EmailLog.filter({ related_report_id: orderId, email_type: 'full_report_purchase' }, '-created_date', 1);
+      if (existingLogs.length > 0) return Response.json({ skipped: true, reason: 'already sent' });
+    } catch (e) {}
+
+    const language = 'he';
+    const appUrl = Deno.env.get('BASE44_APP_URL') || 'https://app.base44.com';
+    const productNames = {
+      full_report: 'דוח V107 המלא',
+      answers_download: 'הורדת תשובות השאלון',
+      online_coaching_7days: 'ליווי מקוון – 7 ימים'
+    };
+    const productName = productNames[productType] || productType;
+
+    // Find report link for full_report
+    let reportLink = '';
+    if (productType === 'full_report' && orderData.questionnaire_response_id) {
+      try {
+        const reports = await base44.asServiceRole.entities.GeneratedReport.filter({ questionnaire_response_id: orderData.questionnaire_response_id }, '-created_date', 1);
+        if (reports.length > 0) reportLink = `${appUrl}/ReportView?reportId=${reports[0].id}`;
+      } catch (e) {}
+    }
+
+    const subject = `✅ אישור תשלום – ${productName}`;
+    const emailBody = `
+      <div dir="rtl" style="font-family: 'Assistant', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
+          <h1 style="color: #FF8F00; font-size: 28px; margin: 0;">107V</h1>
+          <p style="color: #e2e8f0; margin: 10px 0 0;">אישור תשלום</p>
+        </div>
+        <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none;">
+          <h2 style="color: #1a202c; margin-top: 0;">שלום ${userName},</h2>
+          <p style="color: #4a5568; font-size: 16px;">התשלום שלך בוצע בהצלחה! 🎉</p>
+          <div style="background: #f7fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 8px 0; color: #718096;">מוצר:</td><td style="padding: 8px 0; color: #1a202c; font-weight: bold; text-align: left;">${productName}</td></tr>
+              <tr><td style="padding: 8px 0; color: #718096;">סכום:</td><td style="padding: 8px 0; color: #1a202c; font-weight: bold; text-align: left;">${amount} ₪</td></tr>
+              <tr><td style="padding: 8px 0; color: #718096;">מזהה הזמנה:</td><td style="padding: 8px 0; color: #1a202c; font-weight: bold; text-align: left;">${orderId}</td></tr>
+            </table>
+          </div>
+          ${reportLink ? `<div style="text-align: center; margin: 30px 0;"><a href="${reportLink}" style="display: inline-block; background: #FF8F00; color: white; padding: 14px 32px; border-radius: 30px; text-decoration: none; font-weight: bold;">צפה בדוח שלך →</a></div>` : `<p style="color: #4a5568; font-size: 14px; text-align: center;">הדוח שלך יהיה מוכן תוך 24 שעות.</p>`}
+          <p style="color: #718096; font-size: 13px; margin-top: 30px; text-align: center;">שאלות? <a href="${appUrl}/Contact" style="color: #FF8F00;">צרו קשר</a></p>
+        </div>
+        <div style="background: #f7fafc; padding: 15px; border-radius: 0 0 16px 16px; text-align: center; border: 1px solid #e2e8f0; border-top: none;">
+          <p style="color: #a0aec0; font-size: 12px; margin: 0;">© 2026 V107. כל הזכויות שמורות.</p>
+        </div>
+      </div>`;
+
+    await base44.asServiceRole.integrations.Core.SendEmail({ to: userEmail, subject, body: emailBody, from_name: 'V107' });
+    await base44.asServiceRole.entities.EmailLog.create({ to_email: userEmail, email_type: 'full_report_purchase', subject, related_user_email: userEmail, related_report_id: orderId, language });
+
+    return Response.json({ success: true, email_sent_to: userEmail });
+  } catch (error) {
+    console.error('sendPaymentConfirmation error:', error.message);
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+});
+```
+
+### 3.4 simulatePurchase — Admin Test Purchase (FULL SOURCE)
+**Trigger:** Called from admin dashboard | **Auth:** Admin only
+
+```js
+import { createClientFromRequest } from '@base44/sdk';
+
+function getFullReportPurchaseEmailTemplate(userName, transactionId, date, hasCompletedQuestionnaire, questionnaireUrl, isExpress, language = 'he') {
+  const isHebrew = language === 'he';
+  const dir = isHebrew ? 'rtl' : 'ltr';
+  const c = isHebrew ? {
+    subject: "אישור רכישה — V107 (מסלול מלא)",
+    greeting: `שלום ${userName},`,
+    paymentReceived: `התשלום עבור המסלול המלא של V107 התקבל בהצלחה (סכום: 299 ₪, מזהה עסקה: ${transactionId}, תאריך: ${date}).`,
+    step1Completed: `אם השאלון כבר הושלם — הדו״ח יישלח ב־D+5${isExpress ? ' (אספקה מואצת - 3 ימי עבודה)' : ''}.`,
+    step2NotCompleted: "אם השאלון טרם הושלם — נשמח להשלים כעת:",
+    startQuestionnaire: "להתחלת השאלון",
+    noQuestionnaireWarning: "(ללא מילוי השאלון לא נוכל להפיק דו״ח.)",
+  } : {
+    subject: "Purchase Confirmation — V107 (Full Package)",
+    greeting: `Dear ${userName},`,
+    paymentReceived: `Payment for V107 full package received (Amount: $79, ID: ${transactionId}, Date: ${date}).`,
+    step1Completed: `If questionnaire completed — report sent D+5${isExpress ? ' (express - 3 business days)' : ''}.`,
+    step2NotCompleted: "If not yet completed — please complete now:",
+    startQuestionnaire: "Start Questionnaire",
+    noQuestionnaireWarning: "(Without completing questionnaire, we cannot generate a report.)",
+  };
+  // Returns { subject, html } with branded HTML template (see full source in existing system)
+  return { subject: c.subject, html: `<div dir="${dir}">...</div>` }; // Full HTML in actual function
+}
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const adminUser = await base44.auth.me();
+    if (!adminUser || adminUser.role !== 'admin') return Response.json({ error: 'Unauthorized - Admin only' }, { status: 401 });
+
+    const { userEmail, productType, price, expressDelivery, language } = await req.json();
+    if (!userEmail || !productType || !price) return Response.json({ error: 'Missing required fields' }, { status: 400 });
+
+    // Update user purchase flags (same as real payment)
+    const userDataUpdate = { purchase_date: new Date().toISOString(), payment_amount: price };
+    if (productType === 'full_report') { userDataUpdate.has_purchased_full_report = true; userDataUpdate.express_delivery = expressDelivery || false; }
+    else if (productType === 'answers_download') userDataUpdate.has_purchased_answers_download = true;
+    else if (productType === 'online_coaching_7days') userDataUpdate.has_purchased_online_coaching = true;
+
+    const allUsers = await base44.asServiceRole.entities.User.list();
+    const targetUser = allUsers.find(u => u.email === userEmail);
+    if (!targetUser) return Response.json({ error: `User ${userEmail} not found` }, { status: 404 });
+    await base44.asServiceRole.entities.User.update(targetUser.id, userDataUpdate);
+
+    // Send confirmation email based on product type
+    if (productType === 'full_report') {
+      const responses = await base44.asServiceRole.entities.QuestionnaireResponse.filter({ created_by: userEmail }, '-created_date', 1);
+      const hasCompleted = responses.length > 0 && responses[0].status === 'completed';
+      const transactionId = `SIM-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
+      const date = new Date().toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US');
+      const emailTemplate = getFullReportPurchaseEmailTemplate(targetUser.full_name || targetUser.email, transactionId, date, hasCompleted, `${new URL(req.url).origin}/questionnaire`, expressDelivery || false, language || 'he');
+      await base44.integrations.Core.SendEmail({ to: userEmail, subject: emailTemplate.subject, body: emailTemplate.html });
+      await base44.asServiceRole.entities.EmailLog.create({ to_email: userEmail, email_type: 'full_report_purchase', subject: emailTemplate.subject, related_user_email: userEmail, language: language || 'he', sent_manually: true });
+    } else if (productType === 'online_coaching_7days') {
+      // Create OnlineCoachingSubscription
+      const startDate = new Date();
+      const endDate = new Date(startDate); endDate.setDate(endDate.getDate() + 7);
+      await base44.asServiceRole.entities.OnlineCoachingSubscription.create({ user_email: userEmail, user_name: targetUser.full_name || targetUser.email, start_date: startDate.toISOString(), end_date: endDate.toISOString(), current_day: 1, status: 'active', language: language || 'he' });
+    }
+
+    // Audit trail
+    await base44.asServiceRole.entities.SimulatedPurchase.create({ user_email: userEmail, product_type: productType, price, express_delivery: expressDelivery || false, admin_who_simulated: adminUser.email });
+
+    return Response.json({ success: true, message: `Purchase simulated for ${userEmail}`, productType, price });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+});
+```
+
+### 3.5 onQuestionnaireCompleted — Post-Questionnaire Email (FULL SOURCE)
+**Trigger:** Entity automation on QuestionnaireResponse UPDATE (when status → "completed")
+
+```js
+import { createClientFromRequest } from '@base44/sdk';
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const payload = await req.json();
+    const responseId = payload.event?.entity_id;
+    const responseData = payload.data;
+    if (!responseId || !responseData || responseData.status !== 'completed') return Response.json({ success: true, message: 'Skipping' });
+
+    const userEmail = responseData.personal_info?.email || responseData.created_by;
+    if (!userEmail) return Response.json({ success: false, error: 'No email' }, { status: 400 });
+
+    // Dedup check
+    const existingEmail = await base44.asServiceRole.entities.EmailLog.filter({ email_type: 'questionnaire_completion', related_questionnaire_response_id: responseId }, '', 1);
+    if (existingEmail?.length > 0) return Response.json({ success: true, message: 'Already sent' });
+
+    const language = responseData.language || 'he';
+    const userName = responseData.personal_info?.full_name || userEmail.split('@')[0];
+    const baseUrl = Deno.env.get('BASE44_APP_URL');
+    const purchaseUrl = baseUrl ? `${baseUrl}/Completion?responseId=${responseId}` : `${new URL(req.url).origin}/Completion?responseId=${responseId}`;
+
+    const subject = language === 'he' ? '✅ השאלון הושלם בהצלחה! הצעד הבא - רכוש את הדו"ח המלא' : '✅ Questionnaire Completed! Next Step - Purchase Your Full Report';
+
+    // Full branded bilingual HTML email with purchase CTA button linking to purchaseUrl
+    const emailBody = language === 'he' ? `
+      <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 30px; border-radius: 15px 15px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0;">✅ כל הכבוד ${userName}!</h1>
+          <p style="color: #d1fae5; margin-top: 10px;">השאלון הושלם בהצלחה</p>
+        </div>
+        <div style="background-color: white; padding: 40px 30px; border-radius: 0 0 15px 15px;">
+          <p style="font-size: 16px; color: #4b5563;">תודה רבה על השלמת שאלון V107!</p>
+          <div style="background: #eff6ff; padding: 20px; border-radius: 12px; margin: 25px 0; border-right: 4px solid #3b82f6;">
+            <h3 style="color: #1e40af;">📊 מה הצעד הבא?</h3>
+            <p style="color: #1e40af;">הדו"ח המלא כולל ניתוח מעמיק של 11 ממדים מקצועיים, המלצות מותאמות אישית, ותוכנית פעולה.</p>
+          </div>
+          <div style="text-align: center; margin: 35px 0;">
+            <a href="${purchaseUrl}" style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; padding: 16px 40px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px;">רכוש דו"ח מלא עכשיו 🎯</a>
+          </div>
+        </div>
+      </div>` : `[English version with same structure]`;
+
+    await base44.asServiceRole.integrations.Core.SendEmail({ to: userEmail, subject, body: emailBody });
+    await base44.asServiceRole.entities.EmailLog.create({ to_email: userEmail, email_type: 'questionnaire_completion', subject, related_user_email: userEmail, related_questionnaire_response_id: responseId, language });
+
+    return Response.json({ success: true, message: `Email sent to ${userEmail}` });
+  } catch (error) {
+    return Response.json({ success: false, error: error.message }, { status: 500 });
+  }
+});
+```
+
+### 3.6 sendBoosterEncouragement — Booster Upsell Email (FULL SOURCE)
+**Trigger:** Scheduled automation, every 12 hours
+
+```js
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const cutoffTime = new Date(Date.now() - (96 * 60 * 60 * 1000)).toISOString(); // 96h ago
+
+    // Find purchased reports created > 96h ago
+    const eligibleReports = await base44.asServiceRole.entities.GeneratedReport.filter({ purchased: true, created_date: { $lte: cutoffTime } }, '-created_date');
+
+    let emailsSent = 0;
+    for (const report of eligibleReports) {
+      const userEmail = report.user_email;
+      if (!userEmail || userEmail.includes('anonymized@') || !userEmail.includes('@')) continue;
+
+      // Skip if already sent booster_encouragement
+      const existingEmail = await base44.asServiceRole.entities.EmailLog.filter({ email_type: 'booster_encouragement', related_user_email: userEmail }, '', 1);
+      if (existingEmail?.length > 0) continue;
+
+      // Skip if already has booster subscription
+      const boosterSub = await base44.asServiceRole.entities.OnlineCoachingSubscription.filter({ user_email: userEmail }, '', 1);
+      if (boosterSub?.length > 0) continue;
+
+      const language = report.language || 'he';
+      const userName = report.user_name || userEmail.split('@')[0];
+      const boosterUrl = `${Deno.env.get('BASE44_APP_URL') || 'https://v107.co.il'}/BoosterRegistration?reportId=${report.id}`;
+      const trackName = report.recommended_booster_track || 'execution';
+      const subject = language === 'he' ? `${userName}, מוכן/ה להפוך את הדו"ח שלך לתוצאות? 🚀` : `${userName}, ready to turn your report into results? 🚀`;
+
+      // Branded email with V107 BOOSTER CTA, 7 free days offer, track-specific messaging
+      const emailBody = `[Branded bilingual HTML email with boosterUrl CTA]`;
+
+      await base44.asServiceRole.integrations.Core.SendEmail({ to: userEmail, subject, body: emailBody });
+      await base44.asServiceRole.entities.EmailLog.create({ to_email: userEmail, email_type: 'booster_encouragement', subject, related_user_email: userEmail, related_report_id: report.id, language });
+      emailsSent++;
+    }
+
+    return Response.json({ success: true, emailsSent, totalChecked: eligibleReports.length });
+  } catch (error) {
+    return Response.json({ success: false, error: error.message }, { status: 500 });
+  }
+});
+```
+
+### 3.7 sendAbandonmentReminder — Quick Reminder (10-30 min)
 **Trigger:** Scheduled automation, every 15 minutes
 **Logic:**
 1. Finds QuestionnaireResponse with status="abandoned", updated 10-30 min ago
@@ -246,7 +581,7 @@ This document describes the 5 requested entities, their relationships to other t
 3. Sends encouraging email with link to continue questionnaire
 4. Creates EmailLog record
 
-### 3.6 sendAbandonmentSurvey — 96h Abandonment Survey
+### 3.8 sendAbandonmentSurvey — 96h Abandonment Survey
 **Trigger:** Scheduled automation, every 6 hours (currently DISABLED)
 **Logic:**
 1. Finds QuestionnaireResponse with status in_progress/abandoned, updated >96h ago
@@ -254,7 +589,7 @@ This document describes the 5 requested entities, their relationships to other t
 3. Sends email with survey link and 50₪ coupon offer
 4. Creates EmailLog record
 
-### 3.7 sendCompletionNoPurchase — Post-Completion Coupon
+### 3.9 sendCompletionNoPurchase — Post-Completion Coupon
 **Trigger:** Scheduled automation, every 6 hours
 **Logic:**
 1. Finds completed questionnaires from 24-48 hours ago
@@ -263,17 +598,13 @@ This document describes the 5 requested entities, their relationships to other t
 4. Sends email with coupon code and purchase link
 5. Creates EmailLog record
 
-### 3.8 sendReportReadyWithSurvey — Report Delivery Email
+### 3.10 sendReportReadyWithSurvey — Report Delivery Email
 **Trigger:** Entity automation on GeneratedReport CREATE (currently DISABLED)
 **Logic:**
 1. Receives report data from automation payload
 2. Checks EmailLog for duplicate
 3. Sends email with link to view report + invitation to fill feedback survey (6 questions → 100% discount coupon "MEKORAVIM")
 4. Creates EmailLog record
-
-### 3.9 onQuestionnaireCompleted — Post-Questionnaire Email
-**Trigger:** Entity automation on QuestionnaireResponse UPDATE (when status → "completed")
-**Logic:** Sends immediate confirmation email after questionnaire completion
 
 ---
 
@@ -635,4 +966,4 @@ Steps: `questionnaire` → `choose` → `payment` → `done`
       - Marks Coupon.used=true
    i. Tranzila iframe sends postMessage → frontend navigates to /ThankYou
 5. PaymentOrder automation fires → sendPaymentConfirmation → sends email
-``
+`
