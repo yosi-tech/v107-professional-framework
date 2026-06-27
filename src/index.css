@@ -124,20 +124,89 @@
   }
 
   .insight-orb {
+    position: relative;
     width: 120px;
     height: 120px;
-    border-radius: 50%;
-    box-shadow: 0 0 60px rgba(124,58,237,0.42), inset 0 0 35px rgba(255,255,255,0.55);
+    border-radius: 999px;
+    pointer-events: none;
+    z-index: 3;
     background:
-      radial-gradient(circle at 35% 30%, #FFFFFF, transparent 22%),
-      radial-gradient(circle at 65% 70%, rgba(37,99,235,0.65), transparent 28%),
-      radial-gradient(circle, rgba(124,58,237,0.88), rgba(67,56,202,0.32));
-    animation: orbFloat 6s ease-in-out infinite;
+      radial-gradient(circle at 30% 25%, rgba(255,255,255,0.95), transparent 18%),
+      radial-gradient(circle at 70% 75%, rgba(37,99,235,0.75), transparent 28%),
+      radial-gradient(circle at 45% 55%, rgba(124,58,237,0.85), rgba(67,56,202,0.35) 48%, rgba(255,255,255,0.28) 72%);
+    box-shadow:
+      0 0 40px rgba(124,58,237,0.35),
+      0 0 90px rgba(37,99,235,0.18),
+      inset 0 0 28px rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.72);
+    animation: orbFloat 6s ease-in-out infinite, orbGlow 5s ease-in-out infinite;
   }
+
+  .insight-orb::before {
+    content: "";
+    position: absolute;
+    inset: -28px;
+    border-radius: inherit;
+    background: radial-gradient(circle, rgba(124,58,237,0.22), transparent 68%);
+    filter: blur(12px);
+    z-index: -1;
+  }
+
+  .insight-orb::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: inherit;
+    background:
+      linear-gradient(135deg, transparent 20%, rgba(255,255,255,0.45) 48%, transparent 70%);
+    opacity: 0.55;
+  }
+
+  .orb-core {
+    position: absolute;
+    inset: 28px;
+    border-radius: inherit;
+    background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(124,58,237,0.18), transparent 72%);
+  }
+
+  .orb-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+    transform-origin: center;
+  }
+
+  .line-1 { width: 58px; top: 42px; right: 30px; transform: rotate(-24deg); }
+  .line-2 { width: 64px; top: 66px; right: 25px; transform: rotate(18deg); }
+  .line-3 { width: 46px; top: 82px; right: 42px; transform: rotate(-38deg); }
+
+  .orb-node {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 0 14px rgba(255,255,255,0.95);
+  }
+
+  .node-1 { top: 37px; right: 34px; }
+  .node-2 { top: 56px; right: 75px; }
+  .node-3 { top: 76px; right: 43px; }
+  .node-4 { top: 85px; right: 78px; }
+
+  .insight-orb-hero { width: 140px; height: 140px; }
+  .insight-orb-small { width: 72px; height: 72px; }
+  .insight-orb-footer { width: 86px; height: 86px; opacity: 0.85; }
+  .insight-orb-questionnaire { width: 96px; height: 96px; position: fixed; left: 32px; bottom: 32px; }
 
   @keyframes orbFloat {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-14px); }
+  }
+
+  @keyframes orbGlow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.12); }
   }
 }
 
@@ -195,5 +264,22 @@
 
   section {
     @apply px-5 py-16 lg:px-8 lg:py-24;
+  }
+}
+
+@media (max-width: 768px) {
+  .insight-orb {
+    width: 72px;
+    height: 72px;
+  }
+
+  .insight-orb-questionnaire {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .insight-orb {
+    animation: none;
   }
 }
